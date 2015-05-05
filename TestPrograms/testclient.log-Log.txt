@@ -1,0 +1,6 @@
+Client {"Client":1}
+Initialization Complete
+Client {"Client":2}
+Asking time
+Client {"Client":3, "Server":3}
+Received

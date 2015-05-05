@@ -1,0 +1,73 @@
+decl-version 2.0
+var-comparability none
+
+ppt p-41-32:::41-32
+ppt-type point
+variable server.msg
+var-kind variable
+dec-type string
+rep-type string
+comparability -1
+variable client.msg
+var-kind variable
+dec-type string
+rep-type string
+comparability -1
+variable client.n
+var-kind variable
+dec-type int
+rep-type int
+comparability -1
+variable client.incoming_msg
+var-kind variable
+dec-type string
+rep-type string
+comparability -1
+
+ppt p-27-32:::27-32
+ppt-type point
+variable client.msg
+var-kind variable
+dec-type string
+rep-type string
+comparability -1
+variable client.n
+var-kind variable
+dec-type int
+rep-type int
+comparability -1
+variable client.incoming_msg
+var-kind variable
+dec-type string
+rep-type string
+comparability -1
+
+p-41-32:::41-32
+this_invocation_nonce
+0
+server.msg
+Hello There! time now is 2015-05-01 10:27:47.275279528 -0700 PDT  
+1
+client.msg
+get me the message !
+1
+client.n
+119
+1
+client.incoming_msg
+Hello There! time now is 2015-05-01 10:27:47.275279528 -0700 PDT  
+1
+
+p-27-32:::27-32
+this_invocation_nonce
+1
+client.msg
+get me the message !
+1
+client.n
+119
+1
+client.incoming_msg
+Hello There! time now is 2015-05-01 10:27:47.275279528 -0700 PDT  
+1
+
