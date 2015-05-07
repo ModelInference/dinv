@@ -1,3 +1,4 @@
+
 package main
 
 import (
@@ -34,8 +35,8 @@ func main() {
 	printErr(errRead)
 	incoming_msg := string(Logger.UnpackReceive("Received", buf[:n]))
 	fmt.Println(">>>" + incoming_msg)
-	vars32 := []interface{}{errL,lAddr,errDial,Logger,buf,errRead,errR,rAddr,msg,conn,errWrite,n,incoming_msg}
-varsName32 := []string{"errL","lAddr","errDial","Logger","buf","errRead","errR","rAddr","msg","conn","errWrite","n","incoming_msg"}
+	vars32 := []interface{}{n,errR,errL,errDial,msg,conn,incoming_msg,lAddr,rAddr,Logger,errWrite,errRead}
+varsName32 := []string{"n","errR","errL","errDial","msg","conn","incoming_msg","lAddr","rAddr","Logger","errWrite","errRead"}
 point32 := createPoint(vars32, varsName32, 32)
 encoder.Encode(point32)
 
