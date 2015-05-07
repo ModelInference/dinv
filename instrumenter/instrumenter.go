@@ -34,7 +34,7 @@ var c *CFGWrapper
 
 func main() {
 
-	optimize := false
+	optimize := true
 
 	source := initializeInstrumenter()
 	dumpNodes := GetDumpNodes()
@@ -48,6 +48,7 @@ func main() {
 			line := c.fset.Position(dump.Pos()).Line
 			//fmt.Println(line)
 			// log all vars
+
 			generated_code = append(generated_code, GenerateDumpCode(GetAccessedVarsInScope(dump, astFile, c.f), line))
 
 		}
@@ -59,7 +60,8 @@ func main() {
 			line := c.fset.Position(dump.Pos()).Line
 			//fmt.Println(line)
 			// log all vars
-			generated_code = append(generated_code, GenerateDumpCode(getAffectedVars(), line))
+			fmt.Println(dump)
+			generated_code = append(generated_code, GenerateDumpCode(getAccessedAffectedVars(dump), line))
 
 		}
 	}
@@ -80,13 +82,49 @@ func main() {
 
 }
 
+func getAccessedAffectedVars(dump *ast.Comment) []string {
+
+	var affectedInScope []string
+	inScope := GetAccessedVarsInScope(dump, astFile, c.f)
+	affected := getAffectedVars()
+
+	for _, inScopeVar := range inScope {
+		for _, affectedVar := range affected {
+			if inScopeVar == affectedVar {
+				affectedInScope = append(affectedInScope, inScopeVar)
+				break
+			}
+		}
+	}
+
+	return affectedInScope
+
+}
+
+func findFunction(stmt ast.Stmt) int {
+	for dcl := 0; dcl < len(c.f.Decls)-1; dcl++ {
+		if stmt.Pos() > c.f.Decls[dcl].Pos() && stmt.Pos() < c.f.Decls[dcl+1].Pos() {
+			return dcl
+		}
+	}
+	return -1
+}
+
 func getAffectedVars() []string {
-	recvNodes := detectReceive(astFile)
-	sendNodes := detectSend(astFile)
+	recvNodes := detectReceive(c.f)
+	sendNodes := detectSend(c.f)
+
+	fmt.Println(recvNodes)
+	fmt.Println(sendNodes)
 	var affectedVars []*types.Var
 
 	for _, node := range recvNodes {
 		recvStmt := (*node).(ast.Stmt)
+		dcl := findFunction(recvStmt)
+		fmt.Println("function")
+		fmt.Println(dcl)
+		firstFunc := c.f.Decls[dcl].(*ast.FuncDecl)
+		c.cfg = cfg.FromFunc(firstFunc)
 		vars := programslicer.GetForwardAffectedVariables(recvStmt, c.cfg, c.prog.Created[0], c.prog.Fset)
 		affectedVars = append(affectedVars, vars...)
 	}
@@ -94,7 +132,13 @@ func getAffectedVars() []string {
 	for _, node := range sendNodes {
 		recvStmt := (*node).(ast.Stmt)
 
+		dcl := findFunction(recvStmt)
+		fmt.Println("function")
+		fmt.Println(dcl)
+		firstFunc := c.f.Decls[dcl].(*ast.FuncDecl)
+		c.cfg = cfg.FromFunc(firstFunc)
 		vars := programslicer.GetBackwardAffectedVariables(recvStmt, c.cfg, c.prog.Created[0], c.prog.Fset)
+
 		affectedVars = append(affectedVars, vars...)
 	}
 	var affectedVarName []string
@@ -112,7 +156,7 @@ func initializeInstrumenter() string {
 
 	// Print the AST.
 
-	c = getWrapper(nil, src_location)
+	c = getWrapper(nil, src_location, 2)
 	//ast.Print(fset, astFile)
 
 	addImports()
@@ -146,9 +190,21 @@ func detectReceive(f *ast.File) []*ast.Node {
 			case *ast.CallExpr:
 				switch y := x.Fun.(type) {
 				case *ast.SelectorExpr:
-					left, ok := y.X.(*ast.Ident)
-					if ok && left.Name == "conn" && y.Sel.Name == "ReadFrom" {
-						//fmt.Println(left.Name, y.Sel.Name)
+					left, _ := y.X.(*ast.Ident)
+					if left.Name == "conn" && (y.Sel.Name == "ReadFrom" || y.Sel.Name == "Read") {
+						fmt.Println(left.Name, y.Sel.Name)
+						results = append(results, &n)
+					}
+				}
+			}
+		case *ast.AssignStmt:
+			switch x := z.Rhs[0].(type) {
+			case *ast.CallExpr:
+				switch y := x.Fun.(type) {
+				case *ast.SelectorExpr:
+					left, _ := y.X.(*ast.Ident)
+					if left.Name == "conn" && (y.Sel.Name == "ReadFrom" || y.Sel.Name == "Read") {
+						fmt.Println(left.Name, y.Sel.Name)
 						results = append(results, &n)
 					}
 				}
@@ -171,9 +227,22 @@ func detectSend(f *ast.File) []*ast.Node {
 			case *ast.CallExpr:
 				switch y := x.Fun.(type) {
 				case *ast.SelectorExpr:
-					left, ok := y.X.(*ast.Ident)
-					if ok && left.Name == "conn" && y.Sel.Name == "WriteTo" {
-						//fmt.Println(left.Name, y.Sel.Name)
+					left, _ := y.X.(*ast.Ident)
+					if left.Name == "conn" && (y.Sel.Name == "WriteTo" || y.Sel.Name == "Write") {
+						fmt.Println(left.Name, y.Sel.Name)
+						results = append(results, &n)
+					}
+				}
+			}
+
+		case *ast.AssignStmt:
+			switch x := z.Rhs[0].(type) {
+			case *ast.CallExpr:
+				switch y := x.Fun.(type) {
+				case *ast.SelectorExpr:
+					left, _ := y.X.(*ast.Ident)
+					if left.Name == "conn" && (y.Sel.Name == "WriteTo" || y.Sel.Name == "Write") {
+						fmt.Println(left.Name, y.Sel.Name)
 						results = append(results, &n)
 					}
 				}
@@ -509,7 +578,7 @@ type CFGWrapper struct {
 // uses first function in given string to produce CFG
 // w/ some other convenient fields for printing in test
 // cases when need be...
-func getWrapper(t *testing.T, filename string) *CFGWrapper {
+func getWrapper(t *testing.T, filename string, funcIndex int) *CFGWrapper {
 	var config loader.Config
 	f, err := config.ParseFile(filename, nil)
 	if err != nil {
@@ -528,7 +597,7 @@ func getWrapper(t *testing.T, filename string) *CFGWrapper {
 		return nil
 	}
 
-	firstFunc, ok := f.Decls[0].(*ast.FuncDecl)
+	firstFunc, ok := f.Decls[funcIndex].(*ast.FuncDecl)
 	if !ok { // skip import decl if exists
 		firstFunc = f.Decls[1].(*ast.FuncDecl) // panic here if no first func
 	}
