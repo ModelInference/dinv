@@ -2,11 +2,12 @@
 package main
 
 import (
-	"./vclock"
 	"encoding/gob"
 	"fmt"
 	"os"
 	"strings"
+
+	"bitbucket.org/bestchai/dinv/logmerger/vclock"
 	//"reflect"
 )
 
@@ -33,7 +34,7 @@ func addNodeName(name string, logs []Point) {
 
 func writeLogToFile(log []Point) {
 
-	file, _ := os.Create("daikonLog.txt")
+	file, _ := os.Create("daikonLog.dtrace")
 
 	mapOfPoints := createMapOfLogsForEachPoint(log)
 	writeDeclaration(file, mapOfPoints)
@@ -86,9 +87,8 @@ func writeValues(file *os.File, log []Point) {
 			if variable.Type == "int" {
 				file.WriteString(fmt.Sprintf("%d\n", variable.Value))
 			} else {
-				file.WriteString(strings.Replace(fmt.Sprintf("%s", variable.Value),"\n"," ",-1)+"\n")
-			} 
-
+				file.WriteString(strings.Replace(fmt.Sprintf("%s", variable.Value), "\n", " ", -1) + "\n")
+			}
 
 			file.WriteString(fmt.Sprintf("1\n"))
 

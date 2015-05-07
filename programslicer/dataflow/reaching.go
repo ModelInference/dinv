@@ -7,7 +7,7 @@ package dataflow
 import (
 	"go/ast"
 
-	"../cfg"
+	"bitbucket.org/bestchai/dinv/programslicer/cfg"
 	"github.com/willf/bitset"
 	"golang.org/x/tools/go/loader"
 	"golang.org/x/tools/go/types"
