@@ -7,19 +7,22 @@ import (
 	"go/parser"
 	"go/printer"
 	"go/token"
-	"golang.org/x/tools/go/ast/astutil"
-	//"os"
-	//"reflect"
-	"../programslicer"
+
+	"os"
+
 	"regexp"
 	"strings"
 	"testing"
 
+	"golang.org/x/tools/go/ast/astutil"
+
+	"bitbucket.org/bestchai/dinv/programslicer"
+
 	"golang.org/x/tools/go/loader"
 	"golang.org/x/tools/go/types"
 
-	"../programslicer/cfg"
-	"../programslicer/dataflow"
+	"bitbucket.org/bestchai/dinv/programslicer/cfg"
+	"bitbucket.org/bestchai/dinv/programslicer/dataflow"
 )
 
 const (
@@ -27,15 +30,29 @@ const (
 	END   = 100000000
 )
 
-var src_location string = "../TestPrograms/assignment1.go"
+var src_location string
+var usage string = "go run insturmenter.go toInsturment > insturmented.go"
+
 var fset *token.FileSet
 var astFile *ast.File
 var c *CFGWrapper
 
 func main() {
+	//get the command line argument
+	if len(os.Args) != 2 {
+		fmt.Printf("%s\n", usage)
+		os.Exit(1)
+	}
+	//fmt.Printf("\n%s\n", os.Args[1])
+	//exit if the files does not exits
+	exists, err := fileExists(os.Args[1])
+	if !exists {
+		fmt.Printf("the file %s, does not exist\n%s\n", os.Args[1], err)
+		os.Exit(1)
+	}
+	src_location = os.Args[1]
 
 	optimize := false
-
 	source := initializeInstrumenter()
 	dumpNodes := GetDumpNodes()
 
@@ -109,8 +126,6 @@ func initializeInstrumenter() string {
 	// Create the AST by parsing src.
 	fset = token.NewFileSet() // positions are relative to fset
 	astFile, _ = parser.ParseFile(fset, src_location, nil, parser.ParseComments)
-
-	// Print the AST.
 
 	c = getWrapper(nil, src_location)
 	//ast.Print(fset, astFile)
@@ -344,12 +359,9 @@ func GetAccessibleVarsInScope(start int, file *ast.File) []string {
 					idents := t.Decl.(*ast.GenDecl).Specs[0].(*ast.ValueSpec).Names
 					for _, identifier := range idents {
 						results = append(results, fmt.Sprintf("%v, ", identifier.Name))
-
 					}
-
 				}
 			}
-
 		}
 	}
 
@@ -467,8 +479,6 @@ func addImports() {
 	packagesToImport := []string{"\"encoding/gob\"", "\"os\"", "\"reflect\"", "\"strconv\""}
 	im := ImportAdder{packagesToImport}
 	ast.Walk(im, astFile)
-	ast.SortImports(fset, astFile)
-
 }
 
 type ImportAdder struct {
@@ -479,11 +489,13 @@ func (im ImportAdder) Visit(node ast.Node) (w ast.Visitor) {
 	switch t := node.(type) {
 	case *ast.GenDecl:
 		if t.Tok == token.IMPORT {
-			newSpecs := make([]ast.Spec, len(t.Specs)+len(im.PackagesToImport))
+			//remove duplicate imports
+			releventImports := nonDuplicateImports(im.PackagesToImport, t.Specs)
+			newSpecs := make([]ast.Spec, len(t.Specs)+len(releventImports))
 			for i, spec := range t.Specs {
 				newSpecs[i] = spec
 			}
-			for i, spec := range im.PackagesToImport {
+			for i, spec := range releventImports {
 				newPackage := &ast.BasicLit{token.NoPos, token.STRING, spec}
 				newSpecs[len(t.Specs)+i] = &ast.ImportSpec{nil, nil, newPackage, nil, token.NoPos}
 			}
@@ -493,6 +505,27 @@ func (im ImportAdder) Visit(node ast.Node) (w ast.Visitor) {
 		}
 	}
 	return im
+}
+
+func nonDuplicateImports(packagesToImport []string, specs []ast.Spec) []string {
+	var releventImports []string
+	for _, potential := range packagesToImport {
+		var duplicate bool = false
+		for _, existing := range specs {
+			enode := existing.(ast.Node)
+			switch e := enode.(type) {
+			case *ast.ImportSpec:
+				if potential == e.Path.Value { //not sure this compairison works
+					duplicate = true
+					break
+				}
+			}
+		}
+		if !duplicate {
+			releventImports = append(releventImports, potential)
+		}
+	}
+	return releventImports
 }
 
 type CFGWrapper struct {
@@ -582,4 +615,15 @@ func getWrapper(t *testing.T, filename string) *CFGWrapper {
 //prints given AST
 func (c *CFGWrapper) printAST() {
 	ast.Print(c.fset, c.f)
+}
+
+func fileExists(path string) (bool, error) {
+	_, err := os.Stat(path)
+	if err == nil {
+		return true, nil
+	}
+	if os.IsNotExist(err) {
+		return false, nil
+	}
+	return false, err
 }

@@ -1,11 +1,12 @@
 package main
 
 import (
-	"../govec"
-	"encoding/gob"
 	"fmt"
 	"net"
 	"os"
+
+	"../govec"
+	"encoding/gob"
 	"reflect"
 	"strconv"
 )
@@ -34,10 +35,10 @@ func main() {
 	printErr(errRead)
 	incoming_msg := string(Logger.UnpackReceive("Received", buf[:n]))
 	fmt.Println(">>>" + incoming_msg)
-	vars32 := []interface{}{errL,lAddr,errDial,Logger,buf,errRead,errR,rAddr,msg,conn,errWrite,n,incoming_msg}
-varsName32 := []string{"errL","lAddr","errDial","Logger","buf","errRead","errR","rAddr","msg","conn","errWrite","n","incoming_msg"}
-point32 := createPoint(vars32, varsName32, 32)
-encoder.Encode(point32)
+	vars33 := []interface{}{errR,lAddr,rAddr,errWrite,errRead,incoming_msg,errL,errDial,conn,Logger,msg,buf,n}
+varsName33 := []string{"errR","lAddr","rAddr","errWrite","errRead","incoming_msg","errL","errDial","conn","Logger","msg","buf","n"}
+point33 := createPoint(vars33, varsName33, 33)
+encoder.Encode(point33)
 
 	os.Exit(0)
 }

@@ -1,16 +1,18 @@
 package main
 
 import (
-	"../govec"
-	"encoding/gob"
 	"fmt"
 	"net"
+	"time"
+
+	"../govec"
+	"encoding/gob"
+
+	
 	"os"
 	"reflect"
 	"strconv"
-	"time"
 )
-
 
 func main() {
  InstrumenterInit()
@@ -30,10 +32,10 @@ func main() {
 		}
 		handleConn(conn)
 		fmt.Println("some one connected!")
-		vars27 := []interface{}{err,conn}
-varsName27 := []string{"err","conn"}
-point27 := createPoint(vars27, varsName27, 27)
-encoder.Encode(point27)
+		vars28 := []interface{}{err,conn}
+varsName28 := []string{"err","conn"}
+point28 := createPoint(vars28, varsName28, 28)
+encoder.Encode(point28)
 	}
 	conn.Close()
 
@@ -47,10 +49,10 @@ func handleConn(conn net.PacketConn) {
 	printErr(err)
 	msg := fmt.Sprintf("Hello There! time now is %s \n", time.Now().String())
 	conn.WriteTo(Logger.PrepareSend("Sending", []byte(msg)), addr)
-	vars41 := []interface{}{conn,buf,Logger,err,msg,addr}
-varsName41 := []string{"conn","buf","Logger","err","msg","addr"}
-point41 := createPoint(vars41, varsName41, 41)
-encoder.Encode(point41)
+	vars42 := []interface{}{conn,Logger,err,msg,addr,buf}
+varsName42 := []string{"conn","Logger","err","msg","addr","buf"}
+point42 := createPoint(vars42, varsName42, 42)
+encoder.Encode(point42)
 }
 
 func printErr(err error) {
