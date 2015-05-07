@@ -11,9 +11,27 @@ import (
 	//"reflect"
 )
 
+var usage = "logmerger log1.txt log2.txt"
+
+const (
+	INPUT_LOGS = 2
+)
+
 func main() {
-	log1 := readLog("../TestPrograms/assignment1.go.txt")
-	log2 := readLog("../TestPrograms/serverUDP.go.txt")
+	if len(os.Args) != INPUT_LOGS+1 {
+		fmt.Printf("%s\n", usage)
+		os.Exit(1)
+	}
+	for i := 1; i < len(os.Args); i++ {
+		exists, err := fileExists(os.Args[i])
+		if !exists {
+			fmt.Printf("the file %s, does not exist\n%s\n", os.Args[1], err)
+			os.Exit(1)
+		}
+	}
+	//TODO refactor for n-logs later
+	log1 := readLog(os.Args[1])
+	log2 := readLog(os.Args[2])
 	addNodeName("client.", log1)
 	addNodeName("server.", log2)
 	fmt.Println(log1[0])
@@ -194,4 +212,15 @@ func (nvp NameValuePair) String() string {
 
 func (p Point) String() string {
 	return fmt.Sprintf("%d : %s", p.LineNumber, p.Dump)
+}
+
+func fileExists(path string) (bool, error) {
+	_, err := os.Stat(path)
+	if err == nil {
+		return true, nil
+	}
+	if os.IsNotExist(err) {
+		return false, nil
+	}
+	return false, err
 }
