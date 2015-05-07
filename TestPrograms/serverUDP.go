@@ -1,10 +1,11 @@
 package main
 
 import (
-	"../govec"
 	"fmt"
 	"net"
 	"time"
+
+	"../govec"
 )
 
 //@dump
