@@ -2,12 +2,13 @@
 package programslicer
 
 import (
-	"./cfg"
-	"./dataflow"
 	"bytes"
 	"fmt"
 	"go/ast"
 	"go/token"
+
+	"bitbucket.org/bestchai/dinv/programslicer/cfg"
+	"bitbucket.org/bestchai/dinv/programslicer/dataflow"
 	"golang.org/x/tools/go/loader"
 	"golang.org/x/tools/go/types"
 )
@@ -177,7 +178,7 @@ func ComputeBackwardSlice(start ast.Stmt, cfg *cfg.CFG, info *loader.PackageInfo
 //   }`
 // 	src = `
 // 	package main
-		
+
 // func main() {
 // 	sum := 0
 // 	i := 1
