@@ -3,7 +3,7 @@ package govec
 import "fmt"
 import "encoding/gob"
 import "bytes"
-import "../govec/vclock"
+import "bitbucket.org/bestchai/dinv/govec/vclock"
 import "os"
 
 /*

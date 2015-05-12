@@ -2,8 +2,6 @@
 package programslicer
 
 import (
-	"bytes"
-	"fmt"
 	"go/ast"
 	"go/token"
 
@@ -26,6 +24,7 @@ func ComputeForwardSlice(start ast.Stmt, cfg *cfg.CFG, info *loader.PackageInfo,
 	invC := cfg.BuildPostDomTree()
 	invC.FindControlDeps()
 
+	/* Debugging
 	var buf bytes.Buffer
 	invC.PrintControlDepDot(&buf, fset, func(s ast.Stmt) string {
 		if _, ok := s.(*ast.AssignStmt); ok {
@@ -37,6 +36,7 @@ func ComputeForwardSlice(start ast.Stmt, cfg *cfg.CFG, info *loader.PackageInfo,
 
 	dot := buf.String()
 	fmt.Println(dot)
+	*/
 
 	visited := make(map[ast.Stmt]bool)
 	queue := make([]ast.Stmt, 0)
@@ -49,21 +49,23 @@ func ComputeForwardSlice(start ast.Stmt, cfg *cfg.CFG, info *loader.PackageInfo,
 		u := invC.Blocks[uStmt]
 
 		//debugging
-		fmt.Println("visiting ")
-		fmt.Println(fset.Position(u.Stmt.Pos()).Line)
-		fmt.Println("control deps :")
+		/*
+			fmt.Println("visiting ")
+			fmt.Println(fset.Position(u.Stmt.Pos()).Line)
+			fmt.Println("control deps :")
+		*/
 		for _, v := range u.ControlDepee {
 
-			fmt.Println(fset.Position(v.Stmt.Pos()).Line)
+			//fmt.Println(fset.Position(v.Stmt.Pos()).Line)
 			if !visited[v.Stmt] {
 				visited[v.Stmt] = true
 				queue = append(queue, v.Stmt)
 				slice = append(slice, v.Stmt)
 			}
 		}
-		fmt.Println("data deps :")
+		//fmt.Println("data deps :")
 		for _, v := range u.DataDepee {
-			fmt.Println(fset.Position(v.Stmt.Pos()).Line)
+			//fmt.Println(fset.Position(v.Stmt.Pos()).Line)
 			if !visited[v.Stmt] {
 				visited[v.Stmt] = true
 				queue = append(queue, v.Stmt)
@@ -108,17 +110,18 @@ func ComputeBackwardSlice(start ast.Stmt, cfg *cfg.CFG, info *loader.PackageInfo
 	invC := cfg.BuildPostDomTree()
 	invC.FindControlDeps()
 
-	var buf bytes.Buffer
-	invC.PrintControlDepDot(&buf, fset, func(s ast.Stmt) string {
-		if _, ok := s.(*ast.AssignStmt); ok {
-			return "!"
-		} else {
-			return ""
-		}
-	})
-
-	dot := buf.String()
-	fmt.Println(dot)
+	/*
+		var buf bytes.Buffer
+		invC.PrintControlDepDot(&buf, fset, func(s ast.Stmt) string {
+			if _, ok := s.(*ast.AssignStmt); ok {
+				return "!"
+			} else {
+				return ""
+			}
+		})
+		dot := buf.String()
+		fmt.Println(dot)
+	*/
 
 	visited := make(map[ast.Stmt]bool)
 	queue := make([]ast.Stmt, 0)
@@ -131,21 +134,23 @@ func ComputeBackwardSlice(start ast.Stmt, cfg *cfg.CFG, info *loader.PackageInfo
 		u := invC.Blocks[uStmt]
 
 		//debugging
-		fmt.Println("visiting ")
-		fmt.Println(fset.Position(u.Stmt.Pos()).Line)
-		fmt.Println("control deps :")
+		/*
+			fmt.Println("visiting ")
+			fmt.Println(fset.Position(u.Stmt.Pos()).Line)
+			fmt.Println("control deps :")
+		*/
 		for _, v := range u.ControlDep {
 
-			fmt.Println(fset.Position(v.Stmt.Pos()).Line)
+			//fmt.Println(fset.Position(v.Stmt.Pos()).Line)
 			if !visited[v.Stmt] {
 				visited[v.Stmt] = true
 				queue = append(queue, v.Stmt)
 				slice = append(slice, v.Stmt)
 			}
 		}
-		fmt.Println("data deps :")
+		//fmt.Println("data deps :")
 		for _, v := range u.DataDep {
-			fmt.Println(fset.Position(v.Stmt.Pos()).Line)
+			//fmt.Println(fset.Position(v.Stmt.Pos()).Line)
 			if !visited[v.Stmt] {
 				visited[v.Stmt] = true
 				queue = append(queue, v.Stmt)

@@ -23,8 +23,9 @@ import (
 	//"math/big"
 	//"os"
 	"go/token"
-	"golang.org/x/tools/go/ast/astutil"
 	"sort"
+
+	"golang.org/x/tools/go/ast/astutil"
 )
 
 // Idom returns the block that immediately dominates b:
@@ -186,7 +187,7 @@ func BuildDomTree(c *CFG) {
 	// In reverse preorder...
 	for i := int32(n) - 1; i > 0; i-- {
 		w := preorder[i]
-		fmt.Println(preorder)
+		//fmt.Println(preorder)
 		// Step 3. Implicitly define the immediate dominator of each node.
 		for v := buckets[i]; v != w; v = buckets[v.dom.pre] {
 			u := lt.eval(v)
