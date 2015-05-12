@@ -51,7 +51,6 @@ func main() {
 		os.Exit(1)
 	}
 	src_location = os.Args[1]
-
 	optimize := true
 
 	source := initializeInstrumenter()
@@ -78,7 +77,7 @@ func main() {
 			line := c.fset.Position(dump.Pos()).Line
 			//fmt.Println(line)
 			// log all vars
-			fmt.Println(dump)
+			//fmt.Println(dump)
 			generated_code = append(generated_code, GenerateDumpCode(getAccessedAffectedVars(dump), line))
 
 		}
@@ -132,15 +131,15 @@ func getAffectedVars() []string {
 	recvNodes := detectReceive(c.f)
 	sendNodes := detectSend(c.f)
 
-	fmt.Println(recvNodes)
-	fmt.Println(sendNodes)
+	//fmt.Println(recvNodes)
+	//fmt.Println(sendNodes)
 	var affectedVars []*types.Var
 
 	for _, node := range recvNodes {
 		recvStmt := (*node).(ast.Stmt)
 		dcl := findFunction(recvStmt)
-		fmt.Println("function")
-		fmt.Println(dcl)
+		//fmt.Println("function") //BUG These dual print statements seemt to be totally corrupting the output
+		//fmt.Println(dcl)
 		firstFunc := c.f.Decls[dcl].(*ast.FuncDecl)
 		c.cfg = cfg.FromFunc(firstFunc)
 		vars := programslicer.GetForwardAffectedVariables(recvStmt, c.cfg, c.prog.Created[0], c.prog.Fset)
@@ -151,8 +150,8 @@ func getAffectedVars() []string {
 		recvStmt := (*node).(ast.Stmt)
 
 		dcl := findFunction(recvStmt)
-		fmt.Println("function")
-		fmt.Println(dcl)
+		//fmt.Println("function")
+		//fmt.Println(dcl)
 		firstFunc := c.f.Decls[dcl].(*ast.FuncDecl)
 		c.cfg = cfg.FromFunc(firstFunc)
 		vars := programslicer.GetBackwardAffectedVariables(recvStmt, c.cfg, c.prog.Created[0], c.prog.Fset)
@@ -172,7 +171,7 @@ func initializeInstrumenter() string {
 	fset = token.NewFileSet() // positions are relative to fset
 	astFile, _ = parser.ParseFile(fset, src_location, nil, parser.ParseComments)
 
-	c = getWrapper(nil, src_location)
+	c = getWrapper(nil, src_location, 2)
 	//ast.Print(fset, astFile)
 
 	addImports()
@@ -208,7 +207,7 @@ func detectReceive(f *ast.File) []*ast.Node {
 				case *ast.SelectorExpr:
 					left, _ := y.X.(*ast.Ident)
 					if left.Name == "conn" && (y.Sel.Name == "ReadFrom" || y.Sel.Name == "Read") {
-						fmt.Println(left.Name, y.Sel.Name)
+						//fmt.Println(left.Name, y.Sel.Name)
 						results = append(results, &n)
 					}
 				}
@@ -220,7 +219,7 @@ func detectReceive(f *ast.File) []*ast.Node {
 				case *ast.SelectorExpr:
 					left, _ := y.X.(*ast.Ident)
 					if left.Name == "conn" && (y.Sel.Name == "ReadFrom" || y.Sel.Name == "Read") {
-						fmt.Println(left.Name, y.Sel.Name)
+						//fmt.Println(left.Name, y.Sel.Name)
 						results = append(results, &n)
 					}
 				}
@@ -245,7 +244,7 @@ func detectSend(f *ast.File) []*ast.Node {
 				case *ast.SelectorExpr:
 					left, _ := y.X.(*ast.Ident)
 					if left.Name == "conn" && (y.Sel.Name == "WriteTo" || y.Sel.Name == "Write") {
-						fmt.Println(left.Name, y.Sel.Name)
+						//fmt.Println(left.Name, y.Sel.Name)
 						results = append(results, &n)
 					}
 				}
@@ -258,7 +257,7 @@ func detectSend(f *ast.File) []*ast.Node {
 				case *ast.SelectorExpr:
 					left, _ := y.X.(*ast.Ident)
 					if left.Name == "conn" && (y.Sel.Name == "WriteTo" || y.Sel.Name == "Write") {
-						fmt.Println(left.Name, y.Sel.Name)
+						//fmt.Println(left.Name, y.Sel.Name)
 						results = append(results, &n)
 					}
 				}
