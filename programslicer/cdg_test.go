@@ -1,9 +1,11 @@
 // ProgramSlicer
-package cdgTest
+package programslicer
 
 import (
-	"./cfg"
 	"fmt"
+	"testing"
+
+	"bitbucket.org/bestchai/dinv/programslicer/cfg"
 	//"github.com/godoctor/godoctor/analysis/dataflow"
 	"bytes"
 	"go/ast"
@@ -17,8 +19,7 @@ import (
 // Create Data Dependence Graph
 // Create Program Dependence Graph
 
-func main() {
-	src := `
+const cfgSrc = `
   package main
 
   func foo(c int, nums []int) int {
@@ -37,11 +38,11 @@ func main() {
     //END
   }`
 
+func TestCfg(t *testing.T) {
 	fset := token.NewFileSet()
-	f, err := parser.ParseFile(fset, "", src, 0)
+	f, err := parser.ParseFile(fset, "", cfgSrc, 0)
 	if err != nil {
-		fmt.Println(err)
-		return
+		t.Errorf("Encounterd Error %s", err)
 	}
 
 	funcOne := f.Decls[0].(*ast.FuncDecl)
@@ -72,7 +73,6 @@ func main() {
 
 	dot = buf.String()
 	fmt.Println(dot)
-
 	//createMyCFG(c)
 
 }

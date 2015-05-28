@@ -38,16 +38,16 @@ type CFG struct {
 	Entry, Exit *ast.BadStmt
 	// All defers found in CFG, disjoint from Blocks. May be flowed to after Exit.
 	Defers     []*ast.DeferStmt
-	Blocks     map[ast.Stmt]*Block
-	BlockSlice []*Block
+	Blocks     map[ast.Stmt]*Block //TODO add wrappr
+	BlockSlice []*Block            //TODO added move to own library ( program slice )
 }
 
 type Block struct {
-	Index        int
+	Index        int //TODO remove added
 	Stmt         ast.Stmt
 	Preds        []ast.Stmt
 	Succs        []ast.Stmt
-	PredBs       []*Block
+	PredBs       []*Block //TODO from here down all fields are added
 	SuccBs       []*Block
 	dom          domInfo
 	ControlDep   []*Block
@@ -56,6 +56,7 @@ type Block struct {
 	DataDepee    []*Block
 }
 
+//TODO move into own library (control dep)
 func (c *CFG) InitializeBlocks() {
 	for _, b := range c.Blocks {
 		for _, stmt := range b.Preds {
@@ -85,6 +86,7 @@ func (c *CFG) InitializeBlocks() {
 
 }
 
+//TODO move into own library (control dep)
 func (c *CFG) InvertCFG() *CFG {
 	invCFG := new(CFG)
 
@@ -154,6 +156,7 @@ splines="ortho";
 	fmt.Fprintf(f, "}\n")
 }
 
+//TODO move into own library ( control Dep )
 func (c *CFG) PrintControlDepDot(f io.Writer, fset *token.FileSet, addl func(n ast.Stmt) string) {
 	fmt.Fprintf(f, `digraph mgraph {
 mode="heir";
@@ -170,6 +173,7 @@ splines="ortho";
 	fmt.Fprintf(f, "}\n")
 }
 
+//TODO move to own library ( control Dep )
 func (c *CFG) PrintDataDepDot(f io.Writer, fset *token.FileSet, addl func(n ast.Stmt) string) {
 	fmt.Fprintf(f, `digraph mgraph {
 mode="heir";
