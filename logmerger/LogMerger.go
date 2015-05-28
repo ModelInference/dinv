@@ -13,31 +13,40 @@ import (
 
 var usage = "logmerger log1.txt log2.txt"
 
-const (
-	INPUT_LOGS = 2
-)
-
 func main() {
-	if len(os.Args) != INPUT_LOGS+1 {
-		fmt.Printf("%s\n", usage)
-		os.Exit(1)
-	}
 	for i := 1; i < len(os.Args); i++ {
 		exists, err := fileExists(os.Args[i])
 		if !exists {
-			fmt.Printf("the file %s, does not exist\n%s\n", os.Args[1], err)
+			fmt.Printf("the file %s, does not exist\n%s\nusage:%s\n", os.Args[1], err, usage)
 			os.Exit(1)
 		}
 	}
+	/*
+			logs := make([][]Point, len(os.Args))
+			for i, v := range os.Args {
+				log := readLog(v)
+				logs[i] = log
+				name := fmt.Sprintf("L%d.", i)
+				addNodeName(name, logs[i])
+			}
+			for i := range logs {
+				fmt.Println(logs[i])
+			}
+			for i := 1; i < len(logs); i++ {
+				logs[i] = mergeLogs(logs[i-1], logs[i])
+				fmt.Println(i, logs[i])
+			}
+		writeLogToFile(logs[len(logs)-1])
+	*/
 	//TODO refactor for n-logs later
 	log1 := readLog(os.Args[1])
 	log2 := readLog(os.Args[2])
-	addNodeName("client.", log1)
-	addNodeName("server.", log2)
+	addNodeName("1.", log1)
+	addNodeName("2.", log2)
 	fmt.Println(log1[0])
 	fmt.Println(log2[0])
-	mergedLog := mergeLogs(log1, log2)
-	writeLogToFile(mergedLog)
+	m1 := mergeLogs(log1, log2)
+	writeLogToFile(m1)
 
 }
 
@@ -62,11 +71,9 @@ func writeLogToFile(log []Point) {
 
 func createMapOfLogsForEachPoint(log []Point) map[string][]Point {
 	mapOfPoints := make(map[string][]Point, 0)
-
 	for i := 0; i < len(log); i++ {
 		mapOfPoints[log[i].LineNumber] = append(mapOfPoints[log[i].LineNumber], log[i])
 	}
-
 	return mapOfPoints
 }
 
@@ -148,10 +155,12 @@ func mergePoints(p1, p2 Point) Point {
 
 }
 
+// findMatch matches the vector clock at point with all points in log
+// the set of points with matching vector clocks are returned
 func findMatch(point Point, log []Point) []Point {
 	matched := make([]Point, 0)
 	pVClock, err := vclock.FromBytes(point.VectorClock)
-	fmt.Println(pVClock)
+	//fmt.Println(pVClock)
 	printErr(err)
 	for i := 0; i < len(log); i++ {
 
