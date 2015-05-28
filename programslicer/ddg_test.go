@@ -1,12 +1,14 @@
 // ProgramSlicer
-package main
+package programslicer
 
 import (
-	"./cfg"
-	"./dataflow"
 	"bytes"
 	"fmt"
 	"go/ast"
+	"testing"
+
+	"bitbucket.org/bestchai/dinv/programslicer/cfg"
+	"bitbucket.org/bestchai/dinv/programslicer/dataflow"
 	"golang.org/x/tools/go/loader"
 )
 
@@ -16,8 +18,7 @@ import (
 // Create Data Dependence Graph
 // Create Program Dependence Graph
 
-func main() {
-	src := `
+const ddgSrc = `
   package main
 
   func foo(c int, nums []int) int {
@@ -37,15 +38,16 @@ func main() {
     //END
   }`
 
+func TestDDG(t *testing.T) {
 	var config loader.Config
-	f, err := config.ParseFile("testing", src)
+	f, err := config.ParseFile("testing", ddgSrc)
 	if err != nil {
-		return // probably don't proceed
+		t.Errorf("Encounterd Error %s", err)
 	}
 	config.CreateFromFiles("testing", f)
 	prog, err := config.Load()
 	if err != nil {
-		return
+		t.Errorf("Encounterd Error %s", err)
 	}
 
 	funcOne := f.Decls[0].(*ast.FuncDecl)
