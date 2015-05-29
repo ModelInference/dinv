@@ -10,8 +10,8 @@ import (
 
 const SIZEOFINT = 4
 
-//dump
 func main() {
+	//dump
 	Logger = govec.Initialize("Server", "slog.log")
 	conn, err := net.ListenPacket("udp", ":8080")
 	if err != nil {

@@ -38,6 +38,7 @@ func handleConn(conn net.PacketConn) {
 
 	_, addr, err := conn.ReadFrom(buf[0:])
 	args := Logger.UnpackReceive("Received", buf[0:])
+	//@dump
 	comm.PrintErr(err)
 	//fmt.Printf("recieved: %s of size %d, with args %d", buf, n, args)
 

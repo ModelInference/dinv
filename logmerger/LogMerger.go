@@ -5,9 +5,11 @@ import (
 	"encoding/gob"
 	"fmt"
 	"os"
+	"regexp"
+	"strconv"
 	"strings"
 
-	"bitbucket.org/bestchai/dinv/logmerger/vclock"
+	"bitbucket.org/bestchai/dinv/govec/vclock"
 	//"reflect"
 )
 
@@ -21,33 +23,16 @@ func main() {
 			os.Exit(1)
 		}
 	}
-	/*
-			logs := make([][]Point, len(os.Args))
-			for i, v := range os.Args {
-				log := readLog(v)
-				logs[i] = log
-				name := fmt.Sprintf("L%d.", i)
-				addNodeName(name, logs[i])
-			}
-			for i := range logs {
-				fmt.Println(logs[i])
-			}
-			for i := 1; i < len(logs); i++ {
-				logs[i] = mergeLogs(logs[i-1], logs[i])
-				fmt.Println(i, logs[i])
-			}
-		writeLogToFile(logs[len(logs)-1])
-	*/
-	//TODO refactor for n-logs later
-	log1 := readLog(os.Args[1])
-	log2 := readLog(os.Args[2])
-	addNodeName("1.", log1)
-	addNodeName("2.", log2)
-	fmt.Println(log1[0])
-	fmt.Println(log2[0])
-	m1 := mergeLogs(log1, log2)
-	writeLogToFile(m1)
-
+	logs := make([][]Point, 0)
+	for i := 1; i < len(os.Args); i++ {
+		print(i)
+		log := readLog(os.Args[i])
+		name := fmt.Sprintf("L%d.", i)
+		addNodeName(name, log)
+		logs = append(logs, log)
+	}
+	merged := mergeLogs(logs)
+	writeLogToFile(merged)
 }
 
 func addNodeName(name string, logs []Point) {
@@ -123,7 +108,7 @@ func writeValues(file *os.File, log []Point) {
 	}
 }
 
-func mergeLogs(log1, log2 []Point) []Point {
+func merge2Logs(log1, log2 []Point) []Point {
 
 	mergedPoints := make([]Point, 0)
 	for i := 0; i < len(log1); i++ {
@@ -131,7 +116,7 @@ func mergeLogs(log1, log2 []Point) []Point {
 		matchedPoints := findMatch(log1[i], log2)
 		fmt.Println(matchedPoints)
 		for j := 0; j < len(matchedPoints); j++ {
-			mergedPoints = append(mergedPoints, mergePoints(matchedPoints[j], log1[i]))
+			mergedPoints = append(mergedPoints, mergePoints([]Point{matchedPoints[j], log1[i]}))
 		}
 	}
 
@@ -139,20 +124,109 @@ func mergeLogs(log1, log2 []Point) []Point {
 
 }
 
-func mergePoints(p1, p2 Point) Point {
+func mergeLogs(logs [][]Point) []Point {
+	cuts := carveLogs(logs)
+	return cuts
+}
+
+func carveLogs(logs [][]Point) []Point {
+	subV := vclock.New()
+	logMap := idLogMapper(logs)
+	cuts := make([]Point, 0)
+	cutFound := true
+	for cutFound {
+		subV, cutFound = minJoinClock(logs, subV)
+		cut := getCut(subV, logs, logMap)
+		cuts = append(cuts, cut)
+		//create cuts from minimum vector clock
+	}
+	return cuts
+}
+
+func getCut(subV *vclock.VClock, logs [][]Point, logMap map[int]string) Point {
+	fmt.Println("getting Cut")
+	subV.PrintVC()
+	cutPoints := make([]Point, 0)
+	for i, log := range logs {
+		id := logMap[i]
+		ticks, _ := subV.FindTicks(id)
+		fmt.Printf("searching log :id %s, ticks %d\n", id, ticks)
+		exp := fmt.Sprintf("\"%s\":([0-9]+)", id)
+		re := regexp.MustCompile(exp)
+		for _, point := range log {
+			vc, _ := vclock.FromBytes(point.VectorClock)
+			vString := vc.ReturnVCString()
+			match := re.FindStringSubmatch(vString)
+			vector, _ := strconv.Atoi(match[1])
+			//fmt.Printf("Check :%s\n", vString)
+			if vector == int(ticks) {
+				fmt.Printf("Match :%s\n", vString)
+				cutPoints = append(cutPoints, point)
+				break
+			}
+		}
+	}
+	cut := mergePoints(cutPoints)
+	return cut
+
+}
+
+//minJoinClock searches through a set of logs searching for the first point at which all nodes
+//have communicated past the poinst specified by subV. That clock value is returned.
+func minJoinClock(logs [][]Point, subV *vclock.VClock) (minClock *vclock.VClock, found bool) {
+	cutFound := false
+	minG := 0
+	minV := vclock.New()
+	for _, log := range logs {
+		for _, point := range log {
+			vp, _ := vclock.FromBytes(point.VectorClock)
+			localMin, pnodes := subV.Difference(vp)
+			//a new min cut is found if it involvs all nodes, and has the smallest vclock value
+			if (localMin < minG || minG == 0) && pnodes == len(logs) {
+				minV = vp.Copy()
+				minG = localMin
+				cutFound = true
+			}
+		}
+	}
+	return minV, cutFound
+}
+
+func idLogMapper(logs [][]Point) map[int]string {
+	logMap := make(map[int]string)
+	for i, log := range logs {
+		id := getLogId(log)
+		logMap[i] = id
+	}
+	return logMap
+}
+
+//getLogId returns the first entry in the vector clock assuming that to be the owner
+//TODO this is not that robust and takes advantage of the fact the logs have not been sorted
+func getLogId(log []Point) string {
+	point := log[0]
+	re := regexp.MustCompile("{\"([A-Za-z0-9]+)\"")
+	vc, _ := vclock.FromBytes(point.VectorClock)
+	vString := vc.ReturnVCString()
+	match := re.FindStringSubmatch(vString)
+	return match[1]
+}
+
+//Merge Points merges an array of points into a single aggregated point
+func mergePoints(points []Point) Point {
 	var mergedPoint Point
-	mergedPoint.Dump = append(p1.Dump, p2.Dump...)
-	mergedPoint.LineNumber = p1.LineNumber + "-" + p2.LineNumber
-	pVClock1, err := vclock.FromBytes(p1.VectorClock)
-	printErr(err)
-	pVClock2, err2 := vclock.FromBytes(p2.VectorClock)
-	printErr(err2)
-	temp := pVClock1.Copy()
-	temp.Merge(pVClock2)
-	mergedPoint.VectorClock = temp.Bytes()
-
+	for _, point := range points {
+		mergedPoint.Dump = append(mergedPoint.Dump, point.Dump...) //...
+		mergedPoint.LineNumber = mergedPoint.LineNumber + "-" + point.LineNumber
+		pVClock1, err := vclock.FromBytes(mergedPoint.VectorClock)
+		printErr(err)
+		pVClock2, err := vclock.FromBytes(point.VectorClock)
+		temp := pVClock1.Copy()
+		printErr(err)
+		temp.Merge(pVClock2)
+		mergedPoint.VectorClock = temp.Bytes()
+	}
 	return mergedPoint
-
 }
 
 // findMatch matches the vector clock at point with all points in log
@@ -166,6 +240,7 @@ func findMatch(point Point, log []Point) []Point {
 
 		otherVClock, err2 := vclock.FromBytes(log[i].VectorClock)
 		printErr(err2)
+
 		if pVClock.Matches(otherVClock) {
 			matched = append(matched, log[i])
 		}
