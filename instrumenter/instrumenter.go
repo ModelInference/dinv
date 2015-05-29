@@ -518,7 +518,7 @@ func createPoint(vars []interface{}, varNames []string, lineNumber int) Point {
 			dumps = append(dumps, dump)
 		}
 	}
-
+	
 	point := Point{dumps, strconv.Itoa(lineNumber), Logger.GetCurrentVC()}
 	return point
 }

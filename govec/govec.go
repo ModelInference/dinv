@@ -55,6 +55,7 @@ type GoLog struct {
 	logfile string
 }
 
+// TODO remove, not in GoVector implementation
 func (gv *GoLog) GetCurrentVC() []byte {
 	return gv.currentVC
 }

@@ -13,7 +13,7 @@ import (
 const (
 	ADDITION_ARGS = 2
 	LARGEST_TERM  = 100
-	RUNS          = 2
+	RUNS          = 1000
 )
 
 func main() {
@@ -36,6 +36,7 @@ func main() {
 		msg := comm.MarshallInts([]int{term1, term2})
 		// sending UDP packet to specified address and port
 		_, errWrite := conn.Write(Logger.PrepareSend("", msg))
+		//@dump
 		comm.PrintErr(errWrite)
 
 		// Reading the response message

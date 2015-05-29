@@ -33,13 +33,70 @@
 package vclock
 
 import (
+	"bytes"
 	"errors"
+	"fmt"
 	"math"
 	"sort"
-	"fmt"
-	"bytes"
 	"strconv"
 )
+
+//Some additional methods used to create consistant cuts
+func (vc *VClock) Matches(other *VClock) bool {
+	lenVC := (float64)(len(vc.items))
+	lenOther := (float64)(len(other.items))
+
+	difference := math.Abs(lenVC - lenOther)
+
+	if difference > 1 {
+		return false
+	}
+	numDiff := 0
+	for oi := 0; oi != len(other.items); oi++ {
+		if vci, found := vc.findItem(other.items[oi].id); found {
+			otherTicks := (float64)(other.items[oi].ticks)
+			vcTicks := (float64)(vc.items[vci].ticks)
+			if math.Abs(otherTicks-vcTicks) > 1 {
+				return false
+			} else if math.Abs(otherTicks-vcTicks) == 1 {
+				numDiff++
+			}
+		} else {
+			numDiff++
+		}
+	}
+
+	for oi := 0; oi != len(vc.items); oi++ {
+		if vci, found := other.findItem(vc.items[oi].id); found {
+			otherTicks := (float64)(vc.items[oi].ticks)
+			vcTicks := (float64)(other.items[vci].ticks)
+			if math.Abs(otherTicks-vcTicks) > 1 {
+				return false
+			} else if math.Abs(otherTicks-vcTicks) == 1 {
+				numDiff++
+			}
+		} else {
+			numDiff++
+		}
+	}
+
+	return numDiff == 1 || numDiff == 2 || numDiff == 3
+}
+
+//difference calculates the positive difference in tick values between two clocks,
+//diff is the absolute positive differnce between the two nodes
+//nodes is the number of nodes that contributed to the difference
+func (vc *VClock) Difference(other *VClock) (diff, nodes int) {
+	min, nodes := 0, 0
+	for _, oitem := range other.items {
+		ticks, _ := vc.FindTicks(oitem.id)
+		if oitem.ticks > ticks {
+			min += int(oitem.ticks - ticks)
+			nodes++
+		}
+	}
+	return min, nodes
+}
 
 // Condition constants define how to compare a vector clock against another,
 // and may be ORed together when being provided to the Compare method.
@@ -85,33 +142,34 @@ func (vc *VClock) FindTicks(id string) (curt uint64, found bool) {
 
 func (vc *VClock) PrintVC() {
 	fmt.Print("{")
-	for i:= range vc.items {
+	for i := range vc.items {
 		fmt.Print("\"")
 		fmt.Print(vc.items[i].id)
 		fmt.Print("\":")
 		fmt.Print(vc.items[i].ticks)
-		if(i+1 < len(vc.items)){
+		if i+1 < len(vc.items) {
 			fmt.Print(", ")
 		}
 	}
 	fmt.Println("}")
 }
 
-func (vc *VClock) ReturnVCString() (string) {
+func (vc *VClock) ReturnVCString() string {
 	var buffer bytes.Buffer
 	buffer.WriteString("{")
-	for i:= range vc.items {
+	for i := range vc.items {
 		buffer.WriteString("\"")
 		buffer.WriteString(vc.items[i].id)
 		buffer.WriteString("\":")
-		buffer.WriteString(strconv.FormatUint(vc.items[i].ticks,10))
-		if(i+1 < len(vc.items)){
+		buffer.WriteString(strconv.FormatUint(vc.items[i].ticks, 10))
+		if i+1 < len(vc.items) {
 			buffer.WriteString(", ")
 		}
 	}
 	buffer.WriteString("}")
 	return buffer.String()
 }
+
 // updateItem changes or appends the given id with ticks and when.
 func (vc *VClock) updateItem(id string, ticks, when uint64) {
 	if when > 0 {

@@ -13,10 +13,11 @@ const (
 	SIZEOFINT     = 4
 	ADDITION_ARGS = 2
 	LARGEST_TERM  = 100
-	RUNS          = 10000
+	RUNS          = 1000
 )
 
 func main() {
+	//dump
 	Logger = govec.Initialize("Client", "testclient.log")
 	rAddr, errR := net.ResolveUDPAddr("udp4", ":8080")
 	printErr(errR)
@@ -36,6 +37,8 @@ func main() {
 		msg := MarshallInts([]int{term1, term2})
 		// sending UDP packet to specified address and port
 		_, errWrite := conn.Write(Logger.PrepareSend("", msg))
+
+		//@dump
 		printErr(errWrite)
 
 		// Reading the response message
