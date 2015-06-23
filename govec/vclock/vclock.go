@@ -41,6 +41,17 @@ import (
 	"strconv"
 )
 
+func (vc *VClock) HappenedBefore(other *VClock) bool {
+	for i := range vc.items {
+		ticks, err := other.FindTicks(vc.items[i].id)
+		if !err && vc.items[i].ticks > ticks {
+			fmt.Printf("%s, t:%d\n", vc.items[i].id, vc.items[i].ticks)
+			return false
+		}
+	}
+	return true
+}
+
 //Some additional methods used to create consistant cuts
 func (vc *VClock) Matches(other *VClock) bool {
 	lenVC := (float64)(len(vc.items))
