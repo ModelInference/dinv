@@ -13,7 +13,7 @@ const (
 	SIZEOFINT     = 4
 	ADDITION_ARGS = 2
 	LARGEST_TERM  = 100
-	RUNS          = 1000
+	RUNS          = 2
 )
 
 func main() {
@@ -40,7 +40,10 @@ func main() {
 
 		//@dump
 		printErr(errWrite)
-
+		//adding local events for testing lattice /jan 23 2015
+		for i := 0; i < 3; i++ {
+			Logger.LogLocalEvent("Twittle Thumbs")
+		}
 		// Reading the response message
 
 		_, errRead := conn.Read(buf[0:])

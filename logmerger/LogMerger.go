@@ -35,16 +35,33 @@ func main() {
 }
 */
 
+//
 func buildLogs(logFiles []string) [][]Point {
 	logs := make([][]Point, 0)
 	for i := 0; i < len(logFiles); i++ {
 		print(i)
 		log := readLog(logFiles[i])
+		log = addBaseLog(log)
 		name := fmt.Sprintf("L%d.", i)
 		addNodeName(name, log)
 		logs = append(logs, log)
 	}
 	return logs
+}
+
+func addBaseLog(log []Point) []Point {
+	name := getLogId(log)
+	clock := vclock.New()
+	clock.Update(name, 0)
+	first := new(Point)
+	first.VectorClock = clock.Bytes()
+	baseLog := make([]Point, 0)
+	baseLog = append(baseLog, *first)
+	for i := range log {
+		baseLog = append(baseLog, log[i])
+	}
+	return baseLog
+
 }
 
 //addNodeName appends the name of the log file to the beginning of
@@ -148,12 +165,12 @@ func ConsistantCuts(logs [][]Point) int {
 	ids := idLogMapper(logs)
 	for i := range logs {
 		latticePoint.Update(ids[i], 0)
+		print(ids[i])
 	}
 	current := queue.New()
 	next := queue.New()
 	next.Add(latticePoint)
 	for next.Length() > 0 {
-		fmt.Printf("next len :%d --------\n", next.Length())
 		current = next
 		next = queue.New()
 		for current.Length() > 0 {
@@ -162,11 +179,8 @@ func ConsistantCuts(logs [][]Point) int {
 			for i := range ids {
 				pu := p.Copy()
 				pu.Update(ids[i], 0)
-				print("p")
-				pu.PrintVC()
-				//if !queueContainsClock(next, pu) && validLatticePoint(logs[i], pu, ids[i]) {
-				if !queueContainsClock(next, pu) {
-					print("+")
+				if !queueContainsClock(next, pu) && validLatticePoint(logs[i], pu, ids[i]) {
+					pu.PrintVC()
 					next.Add(pu)
 				}
 			}
@@ -175,33 +189,71 @@ func ConsistantCuts(logs [][]Point) int {
 	return 0
 }
 
-func validLatticePoint(log []Point, v *vclock.VClock, id string) bool {
-	min, max, mid := 0, len(log), 0
-	found := false
+//validLattice point determines if the proposed clock value represends
+//a possible state for a host with and id and log
+func validLatticePoint(log []Point, proposedClock *vclock.VClock, id string) bool {
+	found, index := searchLogForClock(log, proposedClock, id)
+	//if the exact value was not found, then it was a non logged local
+	//event, in this case the vector clock previous to the recieve is
+	//used
+	if !found {
+		index, found = bestAttemptLog(log, proposedClock, index, id)
+	}
+	foundClock, _ := vclock.FromBytes(log[index].VectorClock)
+	if foundClock.HappenedBefore(proposedClock) && found {
+		return true
+	}
+	return false
+}
+
+//searchLogForClock searches the log file for a clock value in key
+//clock with the specified id
+//if such an index is found, the index is returned with a matching
+//true value, if no such index is found, the closest index is returned
+//with a false value
+//TODO error checking
+func searchLogForClock(log []Point, keyClock *vclock.VClock, id string) (bool, int) {
+	min, max, mid := 0, len(log)-1, 0
 	for max >= min {
-		mid = ((max + min) / 2)
-		clock, _ := vclock.FromBytes(log[mid].VectorClock)
-		a, _ := clock.FindTicks(id)
-		b, _ := v.FindTicks(id)
+		mid = min + ((max - min) / 2)
+		searchClock, _ := vclock.FromBytes(log[mid].VectorClock)
+		a, _ := searchClock.FindTicks(id)
+		b, _ := keyClock.FindTicks(id)
 		if a == b {
-			print("found")
-			found = true
-			break
+			return true, mid
 		} else if a < b {
 			min = mid + 1
 		} else {
 			max = mid - 1
 		}
-		//print(mid, " ", max, " ", min, " ")
 	}
-	closest, _ := vclock.FromBytes(log[mid].VectorClock)
-	print("f")
-	closest.PrintVC()
-	if found && closest.HappenedBefore(v) {
-		return true
-	}
-	return false
+	return false, mid
+
 }
+
+//bestAttemptLog tries to find a logging point if the searched for
+//index searched for did not return an exact matching timestamp.
+//bestAttempt returns false if the index is out of bounds
+//if the indexed log happened before the proposed value, that log is
+//used
+//if the indexed log happened after, the most recent preceding index
+//is returned
+func bestAttemptLog(log []Point, proposedClock *vclock.VClock, index int, id string) (int, bool) {
+	loggedClock, _ := vclock.FromBytes(log[index].VectorClock)
+	loggedTicks, _ := loggedClock.FindTicks(id)
+	proposedTicks, _ := proposedClock.FindTicks(id)
+	if index == 0 && proposedTicks < loggedTicks {
+		print("out of bounds")
+		return 0, false
+	} else if index >= len(log)-1 && proposedTicks > loggedTicks {
+		return 0, false
+	} else if proposedTicks > loggedTicks {
+		return index, true
+	} else {
+		return index - 1, true
+	}
+}
+
 func queueContainsClock(q *queue.Queue, v *vclock.VClock) bool {
 	for i := 0; i < q.Length(); i++ {
 		check := q.Get(i).(*vclock.VClock)
@@ -377,11 +429,6 @@ type NameValuePair struct {
 	Value   interface{}
 	Type    string
 }
-
-//////////////////////////////////////////Lattice declarations////////////////////////////
-type latticePoint []int
-
-////////////////////end
 
 func (nvp NameValuePair) String() string {
 	return fmt.Sprintf("(%s,%s,%s)", nvp.VarName, nvp.Value, nvp.Type)
