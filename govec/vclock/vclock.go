@@ -41,11 +41,13 @@ import (
 	"strconv"
 )
 
+//HappenedBefore returns true if vc happened before the other Vclock
+//TODO // this is more of a total ordering function and should
+//potentially be renamed
 func (vc *VClock) HappenedBefore(other *VClock) bool {
 	for i := range vc.items {
-		ticks, err := other.FindTicks(vc.items[i].id)
-		if !err && vc.items[i].ticks > ticks {
-			fmt.Printf("%s, t:%d\n", vc.items[i].id, vc.items[i].ticks)
+		ticks, _ := other.FindTicks(vc.items[i].id)
+		if vc.items[i].ticks > ticks {
 			return false
 		}
 	}
