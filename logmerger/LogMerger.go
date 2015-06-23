@@ -1,5 +1,5 @@
 // LogMerger
-package main
+package logmerger
 
 import (
 	"encoding/gob"
@@ -10,11 +10,13 @@ import (
 	"strings"
 
 	"bitbucket.org/bestchai/dinv/govec/vclock"
+	"gopkg.in/eapache/queue.v1"
 	//"reflect"
 )
 
 var usage = "logmerger log1.txt log2.txt"
 
+/*
 func main() {
 	for i := 1; i < len(os.Args); i++ {
 		exists, err := fileExists(os.Args[i])
@@ -23,18 +25,32 @@ func main() {
 			os.Exit(1)
 		}
 	}
+	logfiles :=make([]string,0)
+	for i:=1;i<os.Args;i++{
+		logfiles = append(logfiles,os.Args[i])
+	}
+	logs := buildLogs(os.Args)
+	merged := mergeLogs(logs)
+	writeLogToFile(merged)
+}
+*/
+
+func buildLogs(logFiles []string) [][]Point {
 	logs := make([][]Point, 0)
-	for i := 1; i < len(os.Args); i++ {
+	for i := 0; i < len(logFiles); i++ {
 		print(i)
-		log := readLog(os.Args[i])
+		log := readLog(logFiles[i])
 		name := fmt.Sprintf("L%d.", i)
 		addNodeName(name, log)
 		logs = append(logs, log)
 	}
-	merged := mergeLogs(logs)
-	writeLogToFile(merged)
+	return logs
 }
 
+//addNodeName appends the name of the log file to the beginning of
+//each variable in the log.
+//TODO extend this naming scheme to classifiy variable names on a cut
+//and interaction basis.
 func addNodeName(name string, logs []Point) {
 	for i := range logs {
 		for j := range logs[i].Dump {
@@ -44,10 +60,11 @@ func addNodeName(name string, logs []Point) {
 	}
 }
 
+//writeLogToFile produces a daikon dtrace file based on a log
+//represented as an array of points
 func writeLogToFile(log []Point) {
 
 	file, _ := os.Create("daikonLog.dtrace")
-
 	mapOfPoints := createMapOfLogsForEachPoint(log)
 	writeDeclaration(file, mapOfPoints)
 	writeValues(file, log)
@@ -108,6 +125,7 @@ func writeValues(file *os.File, log []Point) {
 	}
 }
 
+//deprecated log merger
 func merge2Logs(log1, log2 []Point) []Point {
 
 	mergedPoints := make([]Point, 0)
@@ -122,6 +140,76 @@ func merge2Logs(log1, log2 []Point) []Point {
 
 	return mergedPoints
 
+}
+
+func ConsistantCuts(logs [][]Point) int {
+	latticePoint := vclock.New()
+	//initalize lattice clock
+	ids := idLogMapper(logs)
+	for i := range logs {
+		latticePoint.Update(ids[i], 0)
+	}
+	current := queue.New()
+	next := queue.New()
+	next.Add(latticePoint)
+	for next.Length() > 0 {
+		fmt.Printf("next len :%d --------\n", next.Length())
+		current = next
+		next = queue.New()
+		for current.Length() > 0 {
+			p := current.Peek().(*vclock.VClock)
+			current.Remove()
+			for i := range ids {
+				pu := p.Copy()
+				pu.Update(ids[i], 0)
+				print("p")
+				pu.PrintVC()
+				//if !queueContainsClock(next, pu) && validLatticePoint(logs[i], pu, ids[i]) {
+				if !queueContainsClock(next, pu) {
+					print("+")
+					next.Add(pu)
+				}
+			}
+		}
+	}
+	return 0
+}
+
+func validLatticePoint(log []Point, v *vclock.VClock, id string) bool {
+	min, max, mid := 0, len(log), 0
+	found := false
+	for max >= min {
+		mid = ((max + min) / 2)
+		clock, _ := vclock.FromBytes(log[mid].VectorClock)
+		a, _ := clock.FindTicks(id)
+		b, _ := v.FindTicks(id)
+		if a == b {
+			print("found")
+			found = true
+			break
+		} else if a < b {
+			min = mid + 1
+		} else {
+			max = mid - 1
+		}
+		//print(mid, " ", max, " ", min, " ")
+	}
+	closest, _ := vclock.FromBytes(log[mid].VectorClock)
+	print("f")
+	closest.PrintVC()
+	if found && closest.HappenedBefore(v) {
+		return true
+	}
+	return false
+}
+func queueContainsClock(q *queue.Queue, v *vclock.VClock) bool {
+	for i := 0; i < q.Length(); i++ {
+		check := q.Get(i).(*vclock.VClock)
+		if v.Compare(check, vclock.Equal) {
+			return true
+		}
+	}
+	return false
 }
 
 func mergeLogs(logs [][]Point) []Point {
@@ -289,6 +377,11 @@ type NameValuePair struct {
 	Value   interface{}
 	Type    string
 }
+
+//////////////////////////////////////////Lattice declarations////////////////////////////
+type latticePoint []int
+
+////////////////////end
 
 func (nvp NameValuePair) String() string {
 	return fmt.Sprintf("(%s,%s,%s)", nvp.VarName, nvp.Value, nvp.Type)
