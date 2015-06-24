@@ -1,4 +1,4 @@
-package main
+package instrumenter
 
 import (
 	"bytes"
@@ -7,8 +7,6 @@ import (
 	"go/parser"
 	"go/printer"
 	"go/token"
-
-	"os"
 
 	"regexp"
 	"strings"
@@ -31,26 +29,15 @@ const (
 )
 
 var src_location string
-var usage string = "go run insturmenter.go toInsturment > insturmented.go"
+var usage string = "go run instrumenter.go toinstrument > instrumented.go"
 
 var fset *token.FileSet
 var astFile *ast.File
 var c *CFGWrapper
 
-func main() {
-	//get the command line argument
-	if len(os.Args) != 2 {
-		fmt.Printf("%s\n", usage)
-		os.Exit(1)
-	}
-	//fmt.Printf("\n%s\n", os.Args[1])
-	//exit if the files does not exits
-	exists, err := fileExists(os.Args[1])
-	if !exists {
-		fmt.Printf("the file %s, does not exist\n%s\n", os.Args[1], err)
-		os.Exit(1)
-	}
-	src_location = os.Args[1]
+func Instrument(file string) {
+	//TODO extend for nary files
+	src_location = file
 	optimize := true
 
 	source := initializeInstrumenter()
@@ -96,7 +83,6 @@ func main() {
 	//fmt.Println(transformed)
 	fmt.Println(rp.ReplaceAllString(transformed, "func main() {\n InstrumenterInit()\n"))
 	//fmt.Println(detectSendReceive(astFile))
-
 }
 
 func getAccessedAffectedVars(dump *ast.Comment) []string {
@@ -684,15 +670,4 @@ func getWrapper(t *testing.T, filename string, funcIndex int) *CFGWrapper {
 //prints given AST
 func (c *CFGWrapper) printAST() {
 	ast.Print(c.fset, c.f)
-}
-
-func fileExists(path string) (bool, error) {
-	_, err := os.Stat(path)
-	if err == nil {
-		return true, nil
-	}
-	if os.IsNotExist(err) {
-		return false, nil
-	}
-	return false, err
 }
