@@ -18,22 +18,14 @@ var usage = "logmerger log1.txt log2.txt"
 
 /*
 func main() {
-	for i := 1; i < len(os.Args); i++ {
-		exists, err := fileExists(os.Args[i])
-		if !exists {
-			fmt.Printf("the file %s, does not exist\n%s\nusage:%s\n", os.Args[1], err, usage)
-			os.Exit(1)
-		}
-	}
-	logfiles :=make([]string,0)
-	for i:=1;i<os.Args;i++{
-		logfiles = append(logfiles,os.Args[i])
-	}
-	logs := buildLogs(os.Args)
+}
+*/
+
+func Merge(logfiles []string) {
+	logs := buildLogs(logfiles)
 	merged := mergeLogs(logs)
 	writeLogToFile(merged)
 }
-*/
 
 //
 func buildLogs(logFiles []string) [][]Point {
