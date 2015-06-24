@@ -160,6 +160,12 @@ func merge2Logs(log1, log2 []Point) []Point {
 }
 
 func ConsistantCuts(logs [][]Point) int {
+	lattice := GenerateLattice(logs)
+	printLattice(lattice)
+	return 0
+}
+
+func GenerateLattice(logs [][]Point) [][]vclock.VClock {
 	latticePoint := vclock.New()
 	//initalize lattice clock
 	ids := idLogMapper(logs)
@@ -167,10 +173,12 @@ func ConsistantCuts(logs [][]Point) int {
 		latticePoint.Update(ids[i], 0)
 		print(ids[i])
 	}
+	lattice := make([][]vclock.VClock, 0)
 	current := queue.New()
 	next := queue.New()
 	next.Add(latticePoint)
 	for next.Length() > 0 {
+		lattice = append(lattice, make([]vclock.VClock, 0))
 		current = next
 		next = queue.New()
 		for current.Length() > 0 {
@@ -180,17 +188,26 @@ func ConsistantCuts(logs [][]Point) int {
 				pu := p.Copy()
 				pu.Update(ids[i], 0)
 				if !queueContainsClock(next, pu) && validLatticePoint(logs[i], pu, ids[i]) {
-					pu.PrintVC()
+					//pu.PrintVC()
 					next.Add(pu)
 				}
 			}
+			lattice[len(lattice)-1] = append(lattice[len(lattice)-1], *p.Copy())
 		}
 	}
-	return 0
+	return lattice
 }
 
-//validLattice point determines if the proposed clock value represends
-//a possible state for a host with and id and log
+func printLattice(lattice [][]vclock.VClock) {
+	for i := range lattice {
+		for j := range lattice[i] {
+			v := lattice[i][j].ReturnVCString()
+			fmt.Print(v)
+		}
+		fmt.Println()
+	}
+}
+
 func validLatticePoint(log []Point, proposedClock *vclock.VClock, id string) bool {
 	found, index := searchLogForClock(log, proposedClock, id)
 	//if the exact value was not found, then it was a non logged local
@@ -210,8 +227,7 @@ func validLatticePoint(log []Point, proposedClock *vclock.VClock, id string) boo
 //clock with the specified id
 //if such an index is found, the index is returned with a matching
 //true value, if no such index is found, the closest index is returned
-//with a false value
-//TODO error checking
+//with a false valuR
 func searchLogForClock(log []Point, keyClock *vclock.VClock, id string) (bool, int) {
 	min, max, mid := 0, len(log)-1, 0
 	for max >= min {
