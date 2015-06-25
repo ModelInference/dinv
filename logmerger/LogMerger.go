@@ -148,14 +148,52 @@ func merge2Logs(log1, log2 []Point) []Point {
 	}
 
 	return mergedPoints
-
 }
 
 func ConsistantCuts(logs [][]Point) int {
+	for i := range logs {
+		for j := range logs[i] {
+			vc, _ := vclock.FromBytes(logs[i][j].VectorClock)
+			fmt.Println(vc.ReturnVCString())
+		}
+		print("\n")
+	}
 	lattice := GenerateLattice(logs)
 	printLattice(lattice)
 	logs = enumerateCommunication(logs)
+	consistentCuts := mineConsistentCuts(lattice, logs)
+	for i := range consistentCuts {
+		fmt.Println(consistentCuts[i].String())
+	}
 	return 0
+}
+
+func mineConsistentCuts(lattice [][]vclock.VClock, logs [][]Point) []Cut {
+	ids := idLogMapper(logs)
+	consistentCuts := make([]Cut, 0)
+	for i := range lattice {
+		for j := range lattice[i] {
+			communicationDelta := 0
+			var potentialCut Cut
+			for k := range ids {
+				_, found := lattice[i][j].FindTicks(ids[k])
+				if !found {
+					break
+				}
+				found, index := searchLogForClock(logs[k], &lattice[i][j], ids[k])
+				communicationDelta += logs[k][index].CommunicationDelta
+				potentialCut.Points = append(potentialCut.Points, logs[k][index])
+			}
+			if communicationDelta == 0 {
+				consistentCuts = append(consistentCuts, potentialCut)
+				fmt.Printf("consistent: %s\n", potentialCut.String())
+
+			} else {
+				fmt.Printf("inconsistent: %s\n", potentialCut.String())
+			}
+		}
+	}
+	return consistentCuts
 }
 
 func GenerateLattice(logs [][]Point) [][]vclock.VClock {
@@ -272,12 +310,25 @@ func enumerateCommunication(logs [][]Point) [][]Point {
 			sendClock, _ := vclock.FromBytes(logs[i][j].VectorClock)
 			var receiveClock = vclock.New()
 			for k := range logs {
-				receiver, receiverEvent := -1, -1
 				if k != i {
+					print(i, " ", j, "\n")
+					receiver, receiverEvent := -1, -1
 					//fmt.Printf("k = %d, i= %d\n", k, i)
 					found, index := searchLogForClock(logs[k], sendClock, ids[i])
 					if found {
 						foundClock, _ := vclock.FromBytes(logs[k][index].VectorClock)
+						//backtrack for earliest clock
+						for index > 0 {
+							lesserClock, _ := vclock.FromBytes(logs[k][index-1].VectorClock)
+							lesserTicks, _ := lesserClock.FindTicks(ids[i])
+							foundTicks, _ := foundClock.FindTicks(ids[i])
+							if foundTicks == lesserTicks {
+								foundClock = lesserClock.Copy()
+								index--
+							} else {
+								break
+							}
+						}
 						if receiver < 0 {
 							receiveClock = foundClock.Copy()
 							receiver, receiverEvent = k, index
@@ -287,14 +338,29 @@ func enumerateCommunication(logs [][]Point) [][]Point {
 								receiver, receiverEvent = k, index
 							}
 						}
+						fmt.Printf("Searching %s, %s\n", sendClock.ReturnVCString(), receiveClock.ReturnVCString())
+					}
+					if receiver >= 0 {
+						fmt.Printf("SR pair found %s, %s\n", sendClock.ReturnVCString(), receiveClock.ReturnVCString())
+						logs[i][j].CommunicationDelta++
+						logs[k][receiverEvent].CommunicationDelta--
+						fmt.Printf("Sender %s:%d ----> Receiver %s:%d\n", ids[i], logs[i][j].CommunicationDelta, ids[k], logs[k][receiverEvent].CommunicationDelta)
 					}
 				}
-				if receiver >= 0 {
-					logs[i][j].CommunicationDelta++
-					logs[k][receiverEvent].CommunicationDelta--
-					//fmt.Printf("Sender %s:%s ----> Receiver %s:%s\n", ids[i], sendClock.ReturnVCString(), ids[k], receiveClock.ReturnVCString())
-				}
 
+			}
+		}
+	}
+	//fill in the blanks
+	for i := range logs {
+		fill := 0
+		for j := range logs[i] {
+			if logs[i][j].CommunicationDelta != 0 {
+				temp := logs[i][j].CommunicationDelta
+				logs[i][j].CommunicationDelta += fill
+				fill += temp
+			} else {
+				logs[i][j].CommunicationDelta += fill
 			}
 		}
 	}
@@ -463,6 +529,20 @@ func printErr(err error) {
 	if err != nil {
 		fmt.Println(err)
 	}
+}
+
+type Cut struct {
+	Points []Point
+}
+
+func (c Cut) String() string {
+	catString := fmt.Sprintf("{")
+	for i := range c.Points {
+		vc, _ := vclock.FromBytes(c.Points[i].VectorClock)
+		catString = fmt.Sprintf("%s | (VC: %s, CD: %d", catString, vc.ReturnVCString(), c.Points[i].CommunicationDelta)
+	}
+	catString = fmt.Sprintf("%s}", catString)
+	return catString
 }
 
 type Point struct {
