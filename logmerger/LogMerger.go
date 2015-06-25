@@ -154,6 +154,7 @@ func merge2Logs(log1, log2 []Point) []Point {
 func ConsistantCuts(logs [][]Point) int {
 	lattice := GenerateLattice(logs)
 	printLattice(lattice)
+	logs = enumerateCommunication(logs)
 	return 0
 }
 
@@ -236,7 +237,6 @@ func searchLogForClock(log []Point, keyClock *vclock.VClock, id string) (bool, i
 		}
 	}
 	return false, mid
-
 }
 
 //bestAttemptLog tries to find a logging point if the searched for
@@ -260,6 +260,45 @@ func bestAttemptLog(log []Point, proposedClock *vclock.VClock, index int, id str
 	} else {
 		return index - 1, true
 	}
+}
+
+//enumerateCommunication searches all the logs for sends and receives
+//and keeps track of how many have been done on each host
+func enumerateCommunication(logs [][]Point) [][]Point {
+	ids := idLogMapper(logs)
+	for i := range logs {
+		fmt.Printf("searching logs of %s\n", ids[i])
+		for j := range logs[i] {
+			sendClock, _ := vclock.FromBytes(logs[i][j].VectorClock)
+			var receiveClock = vclock.New()
+			for k := range logs {
+				receiver, receiverEvent := -1, -1
+				if k != i {
+					//fmt.Printf("k = %d, i= %d\n", k, i)
+					found, index := searchLogForClock(logs[k], sendClock, ids[i])
+					if found {
+						foundClock, _ := vclock.FromBytes(logs[k][index].VectorClock)
+						if receiver < 0 {
+							receiveClock = foundClock.Copy()
+							receiver, receiverEvent = k, index
+						} else {
+							if receiveClock.Compare(foundClock, vclock.Ancestor) {
+								receiveClock = foundClock.Copy()
+								receiver, receiverEvent = k, index
+							}
+						}
+					}
+				}
+				if receiver >= 0 {
+					logs[i][j].CommunicationDelta++
+					logs[k][receiverEvent].CommunicationDelta--
+					//fmt.Printf("Sender %s:%s ----> Receiver %s:%s\n", ids[i], sendClock.ReturnVCString(), ids[k], receiveClock.ReturnVCString())
+				}
+
+			}
+		}
+	}
+	return logs
 }
 
 func queueContainsClock(q *queue.Queue, v *vclock.VClock) bool {
@@ -427,9 +466,10 @@ func printErr(err error) {
 }
 
 type Point struct {
-	Dump        []NameValuePair
-	LineNumber  string
-	VectorClock []byte
+	Dump               []NameValuePair
+	LineNumber         string
+	VectorClock        []byte
+	CommunicationDelta int
 }
 
 type NameValuePair struct {
