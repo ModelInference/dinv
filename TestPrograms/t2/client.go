@@ -13,7 +13,7 @@ const (
 	SIZEOFINT     = 4
 	ADDITION_ARGS = 2
 	LARGEST_TERM  = 100
-	RUNS          = 100
+	RUNS          = 5
 )
 
 func main() {
