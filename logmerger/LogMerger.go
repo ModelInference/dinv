@@ -309,10 +309,9 @@ func enumerateCommunication(logs [][]Point) [][]Point {
 		for j := range logs[i] {
 			sendClock, _ := vclock.FromBytes(logs[i][j].VectorClock)
 			var receiveClock = vclock.New()
+			receiver, receiverEvent := -1, -1
 			for k := range logs {
 				if k != i {
-					print(i, " ", j, "\n")
-					receiver, receiverEvent := -1, -1
 					//fmt.Printf("k = %d, i= %d\n", k, i)
 					found, index := searchLogForClock(logs[k], sendClock, ids[i])
 					if found {
@@ -340,14 +339,14 @@ func enumerateCommunication(logs [][]Point) [][]Point {
 						}
 						fmt.Printf("Searching %s, %s\n", sendClock.ReturnVCString(), receiveClock.ReturnVCString())
 					}
-					if receiver >= 0 {
-						fmt.Printf("SR pair found %s, %s\n", sendClock.ReturnVCString(), receiveClock.ReturnVCString())
-						logs[i][j].CommunicationDelta++
-						logs[k][receiverEvent].CommunicationDelta--
-						fmt.Printf("Sender %s:%d ----> Receiver %s:%d\n", ids[i], logs[i][j].CommunicationDelta, ids[k], logs[k][receiverEvent].CommunicationDelta)
-					}
 				}
 
+			}
+			if receiver >= 0 {
+				fmt.Printf("SR pair found %s, %s\n", sendClock.ReturnVCString(), receiveClock.ReturnVCString())
+				logs[i][j].CommunicationDelta++
+				logs[receiver][receiverEvent].CommunicationDelta--
+				fmt.Printf("Sender %s:%d ----> Receiver %s:%d\n", ids[i], logs[i][j].CommunicationDelta, ids[receiver], logs[receiver][receiverEvent].CommunicationDelta)
 			}
 		}
 	}
