@@ -239,6 +239,16 @@ func BuildLattice(clocks [][]vclock.VClock) [][]vclock.VClock {
 	return lattice
 }
 
+func queueContainsClock(q *queue.Queue, v *vclock.VClock) bool {
+	for i := 0; i < q.Length(); i++ {
+		check := q.Get(i).(*vclock.VClock)
+		if v.Compare(check, vclock.Equal) {
+			return true
+		}
+	}
+	return false
+}
+
 func correctLatticePoint(clocks []vclock.VClock, proposedClock *vclock.VClock, id string) bool {
 	found, index := searchClockById(clocks, proposedClock, id)
 	//if the exact value was not found, then it was a non logged local
@@ -258,7 +268,7 @@ func correctLatticePoint(clocks []vclock.VClock, proposedClock *vclock.VClock, i
 //clock with the specified id
 //if such an index is found, the index is returned with a matching
 //true value, if no such index is found, the closest index is returned
-//with a false valuR
+//with a false value
 func searchClockById(clocks []vclock.VClock, keyClock *vclock.VClock, id string) (bool, int) {
 	min, max, mid := 0, len(clocks)-1, 0
 	for max >= min {
@@ -338,7 +348,9 @@ func printLattice(lattice [][]vclock.VClock) {
 }
 
 //searchLogForClock searches the log file for a clock value in key
-//clock with the specified id
+//clock with the specified id,
+//searchLogForClock assumes that the clocks are ordered in ascendin
+//value
 //if such an index is found, the index is returned with a matching
 //true value, if no such index is found, the closest index is returned
 //with a false valuR
@@ -364,53 +376,68 @@ func searchLogForClock(log []Point, keyClock *vclock.VClock, id string) (bool, i
 //and keeps track of how many have been done on each host
 func enumerateCommunication(logs [][]Point) [][]Point {
 	ids := idLogMapper(logs)
+	clocks, _ := VectorClockArraysFromLogs(logs)
 	for i := range logs {
 		fmt.Printf("searching logs of %s\n", ids[i])
 		for j := range logs[i] {
-			sendClock, _ := vclock.FromBytes(logs[i][j].VectorClock)
-			var receiveClock = vclock.New()
-			receiver, receiverEvent := -1, -1
-			for k := range logs {
-				if k != i {
-					//fmt.Printf("k = %d, i= %d\n", k, i)
-					found, index := searchLogForClock(logs[k], sendClock, ids[i])
-					if found {
-						foundClock, _ := vclock.FromBytes(logs[k][index].VectorClock)
-						//backtrack for earliest clock
-						for index > 0 {
-							lesserClock, _ := vclock.FromBytes(logs[k][index-1].VectorClock)
-							lesserTicks, _ := lesserClock.FindTicks(ids[i])
-							foundTicks, _ := foundClock.FindTicks(ids[i])
-							if foundTicks == lesserTicks {
-								foundClock = lesserClock.Copy()
-								index--
-							} else {
-								break
-							}
-						}
-						if receiver < 0 {
-							receiveClock = foundClock.Copy()
-							receiver, receiverEvent = k, index
-						} else {
-							if receiveClock.Compare(foundClock, vclock.Ancestor) {
-								receiveClock = foundClock.Copy()
-								receiver, receiverEvent = k, index
-							}
-						}
-						fmt.Printf("Searching %s, %s\n", sendClock.ReturnVCString(), receiveClock.ReturnVCString())
-					}
-				}
-
-			}
-			if receiver >= 0 {
-				fmt.Printf("SR pair found %s, %s\n", sendClock.ReturnVCString(), receiveClock.ReturnVCString())
+			receiver, receiverEvent, matched := matchSendAndReceive(clocks[i][j], clocks, ids[i])
+			if matched {
 				logs[i][j].CommunicationDelta++
 				logs[receiver][receiverEvent].CommunicationDelta--
-				fmt.Printf("Sender %s:%d ----> Receiver %s:%d\n", ids[i], logs[i][j].CommunicationDelta, ids[receiver], logs[receiver][receiverEvent].CommunicationDelta)
+				if debug {
+					fmt.Printf("SR pair found %s, %s\n", clocks[i][j].ReturnVCString(), clocks[receiver][receiverEvent].ReturnVCString())
+					fmt.Printf("Sender %s:%d ----> Receiver %s:%d\n", ids[i], logs[i][j].CommunicationDelta, ids[receiver], logs[receiver][receiverEvent].CommunicationDelta)
+				}
 			}
 		}
 	}
+	logs = fillCommunicationDelta(logs)
 	//fill in the blanks
+	return logs
+}
+
+//matchSendAndRecieve find a corresponding recieve event based on a
+//proposed sending vectorclock, if no such recive event can be found
+//in the corresponding clocks, then matched is returned false,
+//otherwise the receiver and receiver event correspond to the index in
+//clocks where the receive occured
+func matchSendAndReceive(sender vclock.VClock, clocks [][]vclock.VClock, senderId string) (receiver int, receiverEvent int, matched bool) {
+	matched = false
+	var receiveClock = vclock.New()
+	for k := range clocks {
+		if getClockId(clocks[k]) != senderId {
+			found, index := searchClockById(clocks[k], &sender, senderId)
+			if found {
+				foundClock := clocks[k][index]
+				//backtrack for earliest clock
+				//TODO this is ugly make it better
+				for index > 0 {
+					lesserClock := clocks[k][index-1]
+					lesserTicks, _ := lesserClock.FindTicks(senderId)
+					foundTicks, _ := foundClock.FindTicks(senderId)
+					if foundTicks == lesserTicks {
+						foundClock = *lesserClock.Copy()
+						index--
+					} else {
+						break
+					}
+				}
+				if receiver < 0 || receiveClock.Compare(&foundClock, vclock.Ancestor) {
+					receiveClock = foundClock.Copy()
+					receiver, receiverEvent, matched = k, index, true
+				}
+			}
+		}
+	}
+	return receiver, receiverEvent, matched
+}
+
+//fillCommunicationDelta markes the difference in sends and recieves that
+//have occured on a particualr host at every point throughout there
+//exectuion
+// a host with 5 sends and 2 recieves will be given the delta = 3
+// a host with 10 receives and 5 sends will be given the delta = -5
+func fillCommunicationDelta(logs [][]Point) [][]Point {
 	for i := range logs {
 		fill := 0
 		for j := range logs[i] {
@@ -424,16 +451,6 @@ func enumerateCommunication(logs [][]Point) [][]Point {
 		}
 	}
 	return logs
-}
-
-func queueContainsClock(q *queue.Queue, v *vclock.VClock) bool {
-	for i := 0; i < q.Length(); i++ {
-		check := q.Get(i).(*vclock.VClock)
-		if v.Compare(check, vclock.Equal) {
-			return true
-		}
-	}
-	return false
 }
 
 func mergeLogs(logs [][]Point) []Point {
