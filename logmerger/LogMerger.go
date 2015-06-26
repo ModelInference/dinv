@@ -135,26 +135,10 @@ func writeValues(file *os.File, log []Point) {
 	}
 }
 
-//deprecated log merger
-func merge2Logs(log1, log2 []Point) []Point {
-
-	mergedPoints := make([]Point, 0)
-	for i := 0; i < len(log1); i++ {
-
-		matchedPoints := findMatch(log1[i], log2)
-		fmt.Println(matchedPoints)
-		for j := 0; j < len(matchedPoints); j++ {
-			mergedPoints = append(mergedPoints, mergePoints([]Point{matchedPoints[j], log1[i]}))
-		}
-	}
-
-	return mergedPoints
-}
-
 func ConsistantCuts(logs [][]Point) int {
 	clocks, _ := VectorClockArraysFromLogs(logs)
 	lattice := BuildLattice(clocks)
-	printLattice(lattice)
+	//printLattice(lattice)
 	logs = enumerateCommunication(logs)
 	consistentCuts := mineConsistentCuts(lattice, logs)
 	for i := range consistentCuts {
@@ -215,8 +199,7 @@ func BuildLattice(clocks [][]vclock.VClock) [][]vclock.VClock {
 		print(ids[i])
 	}
 	lattice := make([][]vclock.VClock, 0)
-	current := queue.New()
-	next := queue.New()
+	current, next := queue.New(), queue.New()
 	next.Add(latticePoint)
 	for next.Length() > 0 {
 		lattice = append(lattice, make([]vclock.VClock, 0))
@@ -229,7 +212,6 @@ func BuildLattice(clocks [][]vclock.VClock) [][]vclock.VClock {
 				pu := p.Copy()
 				pu.Update(ids[i], 0)
 				if !queueContainsClock(next, pu) && correctLatticePoint(clocks[i], pu, ids[i]) {
-					//pu.PrintVC()
 					next.Add(pu)
 				}
 			}
@@ -402,29 +384,26 @@ func enumerateCommunication(logs [][]Point) [][]Point {
 //otherwise the receiver and receiver event correspond to the index in
 //clocks where the receive occured
 func matchSendAndReceive(sender vclock.VClock, clocks [][]vclock.VClock, senderId string) (receiver int, receiverEvent int, matched bool) {
-	matched = false
+	receiver, receiverEvent, matched = -1, -1, false
 	var receiveClock = vclock.New()
-	for k := range clocks {
-		if getClockId(clocks[k]) != senderId {
-			found, index := searchClockById(clocks[k], &sender, senderId)
+	for i := range clocks {
+		if getClockId(clocks[i]) != senderId {
+			found, event := searchClockById(clocks[i], &sender, senderId)
 			if found {
-				foundClock := clocks[k][index]
 				//backtrack for earliest clock
 				//TODO this is ugly make it better
-				for index > 0 {
-					lesserClock := clocks[k][index-1]
-					lesserTicks, _ := lesserClock.FindTicks(senderId)
-					foundTicks, _ := foundClock.FindTicks(senderId)
-					if foundTicks == lesserTicks {
-						foundClock = *lesserClock.Copy()
-						index--
+				for event > 0 {
+					currentTicks, _ := clocks[i][event].FindTicks(senderId)
+					prevTicks, _ := clocks[i][event-1].FindTicks(senderId)
+					if currentTicks == prevTicks {
+						event--
 					} else {
 						break
 					}
 				}
-				if receiver < 0 || receiveClock.Compare(&foundClock, vclock.Ancestor) {
-					receiveClock = foundClock.Copy()
-					receiver, receiverEvent, matched = k, index, true
+				if receiver < 0 || receiveClock.Compare(&clocks[i][event], vclock.Ancestor) {
+					receiveClock = clocks[i][event].Copy()
+					receiver, receiverEvent, matched = i, event, true
 				}
 			}
 		}
