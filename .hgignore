@@ -1,0 +1,6 @@
+#use glob syntax
+syntax: glob
+
+*.swp
+mod_*
+TestPrograms/t3/*.txt

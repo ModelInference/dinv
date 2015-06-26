@@ -48,7 +48,6 @@ func handleConn(conn net.PacketConn) {
 	fmt.Printf("C: %d*%d + %d = %d\n", coeff, term1, term2, lin)
 	msg := comm.MarshallInts([]int{lin})
 	conn.WriteTo(Logger.PrepareSend("Sending", msg), addr)
-	//@dump
 }
 
 var Logger *govec.GoLog

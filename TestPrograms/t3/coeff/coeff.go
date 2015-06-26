@@ -73,7 +73,6 @@ func handleConn(conn net.PacketConn, conn2 *net.UDPConn) {
 	msg2 := comm.MarshallInts([]int{lin})
 
 	conn.WriteTo(Logger.PrepareSend("Sending", msg2), addr)
-	//@dump
 }
 
 var Logger *govec.GoLog

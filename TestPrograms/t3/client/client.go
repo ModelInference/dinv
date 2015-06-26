@@ -13,7 +13,7 @@ import (
 const (
 	ADDITION_ARGS = 2
 	LARGEST_TERM  = 100
-	RUNS          = 1000
+	RUNS          = 3
 )
 
 func main() {
