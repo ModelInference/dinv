@@ -45,9 +45,9 @@ func handleConn(conn net.PacketConn) {
 	//fmt.Printf("recieved: %s of size %d, with args %d", buf, n, args)
 
 	//adding local events for testing lattice /jan 23 2015
-	for i := 0; i < 3; i++ {
-		Logger.LogLocalEvent("Twittle Thumbs")
-	}
+	//	for i := 0; i < 3; i++ {
+	//		Logger.LogLocalEvent("Twittle Thumbs")
+	//	}
 	uArgs := UnmarshallInts(args)
 	term1, term2 = uArgs[0], uArgs[1]
 	sum = term1 + term2

@@ -126,9 +126,7 @@ func writeValues(file *os.File, log []Point) {
 			} else {
 				file.WriteString(strings.Replace(fmt.Sprintf("%s", variable.Value), "\n", " ", -1) + "\n")
 			}
-
 			file.WriteString(fmt.Sprintf("1\n"))
-
 		}
 		file.WriteString("\n")
 
@@ -141,10 +139,86 @@ func ConsistantCuts(logs [][]Point) int {
 	//printLattice(lattice)
 	logs = enumerateCommunication(logs)
 	consistentCuts := mineConsistentCuts(lattice, logs)
-	for i := range consistentCuts {
-		fmt.Println(consistentCuts[i].String())
+	states := statesFromCuts(consistentCuts, clocks)
+	for i := range states {
+		fmt.Println(states[i].String())
 	}
 	return 0
+}
+
+func countAncestors(cut Cut) []int {
+	ancestors := make([]int, len(cut.Points))
+	for i := range cut.Points {
+		for j := range cut.Points {
+			if i != j {
+				clock1, _ := vclock.FromBytes(cut.Points[i].VectorClock)
+				clock2, _ := vclock.FromBytes(cut.Points[j].VectorClock)
+				if clock1.Compare(clock2, vclock.Ancestor) {
+					ancestors[i]++
+				}
+			}
+		}
+	}
+	return ancestors
+}
+
+func totalOrderFromCut(cut Cut, clocks [][]vclock.VClock) [][]int {
+	used := make([]bool, len(cut.Points))
+	ancestors := countAncestors(cut)
+	ids := idClockMapper(clocks)
+	ordering := make([][]int, 0)
+	extracted := true
+	for extracted {
+		extracted = false
+		//get oldest clock
+		max, index := -1, -1
+		for i := range ancestors {
+			if ancestors[i] > max && !used[i] {
+				max, index = ancestors[i], i
+			}
+		}
+		if max < 0 {
+			return ordering
+		}
+		ordering = append(ordering, make([]int, 0))
+		ordering[len(ordering)-1] = append(ordering[len(ordering)-1], index)
+		used[index] = true
+		extracted = true
+
+		child := true
+		for child {
+			child = false
+			//rclock, _ := vclock.FromBytes(cut.Points[index].VectorClock)
+			maxEvent, sendIndex := -1, -1
+			for i := range cut.Points {
+				if i != index && !used[i] {
+					sclock, _ := vclock.FromBytes(cut.Points[i].VectorClock)
+					receiver, event, found := matchSendAndReceive(*sclock, clocks, ids[i])
+					if found && receiver == index && event > maxEvent {
+						maxEvent, sendIndex = event, i
+					}
+				}
+			}
+			if maxEvent >= 0 {
+				ordering[len(ordering)-1] = append(ordering[len(ordering)-1], sendIndex)
+				used[sendIndex] = true
+				child = true
+				index = sendIndex
+			}
+		}
+	}
+	return ordering
+}
+
+func statesFromCuts(cuts []Cut, clocks [][]vclock.VClock) []State {
+	states := make([]State, 0)
+	for _, cut := range cuts {
+		state := &State{}
+		state.TotalOrdering = totalOrderFromCut(cut, clocks)
+		state.Cut = cut
+		states = append(states, *state)
+	}
+	return states
 }
 
 //VectorClockArraysFromLogs extracts the set of vector clocks
@@ -401,6 +475,7 @@ func matchSendAndReceive(sender vclock.VClock, clocks [][]vclock.VClock, senderI
 						break
 					}
 				}
+				//uses partial evaluation for protection, dont switch
 				if receiver < 0 || receiveClock.Compare(&clocks[i][event], vclock.Ancestor) {
 					receiveClock = clocks[i][event].Copy()
 					receiver, receiverEvent, matched = i, event, true
@@ -584,6 +659,24 @@ func printErr(err error) {
 	if err != nil {
 		fmt.Println(err)
 	}
+}
+
+type State struct {
+	Cut           Cut
+	TotalOrdering [][]int
+}
+
+func (state State) String() string {
+	catString := fmt.Sprintf("%s\n[", state.Cut.String())
+	for i := range state.TotalOrdering {
+		catString = fmt.Sprintf("%s[", catString)
+		for j := range state.TotalOrdering[i] {
+			catString = fmt.Sprintf("%s %d,", catString, state.TotalOrdering[i][j])
+		}
+		catString = fmt.Sprintf("%s]", catString)
+	}
+	catString = fmt.Sprintf("%s]", catString)
+	return catString
 }
 
 type Cut struct {
