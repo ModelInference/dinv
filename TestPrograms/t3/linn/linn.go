@@ -26,7 +26,6 @@ func main() {
 			continue
 		}
 		handleConn(conn)
-		//@dump
 		//fmt.Println("some one connected!")
 	}
 	conn.Close()
@@ -37,8 +36,8 @@ func handleConn(conn net.PacketConn) {
 	var term1, term2, coeff, lin int
 
 	_, addr, err := conn.ReadFrom(buf[0:])
-	args := Logger.UnpackReceive("Received", buf[0:])
 	//@dump
+	args := Logger.UnpackReceive("Received", buf[0:])
 	comm.PrintErr(err)
 	//fmt.Printf("recieved: %s of size %d, with args %d", buf, n, args)
 
@@ -47,6 +46,7 @@ func handleConn(conn net.PacketConn) {
 	lin = coeff*term1 + term2
 	fmt.Printf("C: %d*%d + %d = %d\n", coeff, term1, term2, lin)
 	msg := comm.MarshallInts([]int{lin})
+	//@dump
 	conn.WriteTo(Logger.PrepareSend("Sending", msg), addr)
 }
 

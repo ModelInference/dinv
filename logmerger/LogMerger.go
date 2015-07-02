@@ -24,8 +24,45 @@ func main() {
 
 func Merge(logfiles []string) {
 	logs := buildLogs(logfiles)
-	merged := mergeLogs(logs)
-	writeLogToFile(merged)
+	for i := range logs {
+		for j := range logs[i] {
+			fmt.Println(logs[i][j].String())
+		}
+	}
+
+	states := mineStates(logs)
+	writeTraceFiles(states)
+}
+
+func writeTraceFiles(states []State) {
+	written := make([][]bool, len(states))
+	for i := range states {
+		written[i] = make([]bool, len(states[i].MergedPoints))
+	}
+	newFile := true
+	for newFile {
+		newFile = false
+		var filename string
+		pointLog := make([]Point, 0)
+		for i := range states {
+			for j := range states[i].MergedPoints {
+				if !written[i][j] {
+					if !newFile {
+						filename = states[i].MergedPoints[j].LineNumber
+						newFile = true
+					}
+					if filename == states[i].MergedPoints[j].LineNumber {
+						pointLog = append(pointLog, states[i].MergedPoints[j])
+						written[i][j] = true
+					}
+				}
+			}
+		}
+		if newFile {
+			writeLogToFile(pointLog, filename)
+		}
+	}
+
 }
 
 //
@@ -36,6 +73,7 @@ func buildLogs(logFiles []string) [][]Point {
 		log := readLog(logFiles[i])
 		log = addBaseLog(log)
 		name := fmt.Sprintf("L%d.", i)
+		fmt.Println(name)
 		addNodeName(name, log)
 		logs = append(logs, log)
 	}
@@ -64,21 +102,20 @@ func addBaseLog(log []Point) []Point {
 func addNodeName(name string, logs []Point) {
 	for i := range logs {
 		for j := range logs[i].Dump {
-			//fmt.Println(dp.VarName)
 			logs[i].Dump[j].VarName = name + logs[i].Dump[j].VarName
+			fmt.Println(logs[i].Dump[j].VarName)
 		}
 	}
 }
 
 //writeLogToFile produces a daikon dtrace file based on a log
 //represented as an array of points
-func writeLogToFile(log []Point) {
-
-	file, _ := os.Create("daikonLog.dtrace")
+func writeLogToFile(log []Point, filename string) {
+	filenameWithExtenstion := fmt.Sprintf("%s.dtrace", filename)
+	file, _ := os.Create(filenameWithExtenstion)
 	mapOfPoints := createMapOfLogsForEachPoint(log)
 	writeDeclaration(file, mapOfPoints)
 	writeValues(file, log)
-
 }
 
 func createMapOfLogsForEachPoint(log []Point) map[string][]Point {
@@ -133,17 +170,17 @@ func writeValues(file *os.File, log []Point) {
 	}
 }
 
-func ConsistantCuts(logs [][]Point) int {
+func mineStates(logs [][]Point) []State {
 	clocks, _ := VectorClockArraysFromLogs(logs)
 	lattice := BuildLattice(clocks)
 	//printLattice(lattice)
 	logs = enumerateCommunication(logs)
 	consistentCuts := mineConsistentCuts(lattice, logs)
 	states := statesFromCuts(consistentCuts, clocks)
-	for i := range states {
+	/*for i := range states {
 		fmt.Println(states[i].String())
-	}
-	return 0
+	}*/
+	return states
 }
 
 func countAncestors(cut Cut) []int {
@@ -180,12 +217,15 @@ func totalOrderFromCut(cut Cut, clocks [][]vclock.VClock) [][]int {
 		if max < 0 {
 			return ordering
 		}
+
 		ordering = append(ordering, make([]int, 0))
 		ordering[len(ordering)-1] = append(ordering[len(ordering)-1], index)
 		used[index] = true
 		extracted = true
 
 		child := true
+		//TODO fix the base case for some reason this is making pairs
+		//where it should not be
 		for child {
 			child = false
 			//rclock, _ := vclock.FromBytes(cut.Points[index].VectorClock)
@@ -214,8 +254,15 @@ func statesFromCuts(cuts []Cut, clocks [][]vclock.VClock) []State {
 	states := make([]State, 0)
 	for _, cut := range cuts {
 		state := &State{}
-		state.TotalOrdering = totalOrderFromCut(cut, clocks)
 		state.Cut = cut
+		state.TotalOrdering = totalOrderFromCut(cut, clocks)
+		for i := range state.TotalOrdering {
+			points := make([]Point, 0)
+			for j := range state.TotalOrdering[i] {
+				points = append(points, state.Cut.Points[state.TotalOrdering[i][j]])
+			}
+			state.MergedPoints = append(state.MergedPoints, mergePoints(points))
+		}
 		states = append(states, *state)
 	}
 	return states
@@ -383,10 +430,10 @@ func mineConsistentCuts(lattice [][]vclock.VClock, logs [][]Point) []Cut {
 			}
 			if communicationDelta == 0 {
 				consistentCuts = append(consistentCuts, potentialCut)
-				fmt.Printf("consistent: %s\n", potentialCut.String())
+				//fmt.Printf("consistent: %s\n", potentialCut.String())
 
 			} else {
-				fmt.Printf("inconsistent: %s\n", potentialCut.String())
+				//fmt.Printf("inconsistent: %s\n", potentialCut.String())
 			}
 		}
 	}
@@ -600,7 +647,7 @@ func mergePoints(points []Point) Point {
 	var mergedPoint Point
 	for _, point := range points {
 		mergedPoint.Dump = append(mergedPoint.Dump, point.Dump...) //...
-		mergedPoint.LineNumber = mergedPoint.LineNumber + "-" + point.LineNumber
+		mergedPoint.LineNumber = mergedPoint.LineNumber + "_" + point.LineNumber
 		pVClock1, err := vclock.FromBytes(mergedPoint.VectorClock)
 		printErr(err)
 		pVClock2, err := vclock.FromBytes(point.VectorClock)
@@ -664,6 +711,21 @@ func printErr(err error) {
 type State struct {
 	Cut           Cut
 	TotalOrdering [][]int
+	MergedPoints  []Point
+}
+
+type Cut struct {
+	Points []Point
+}
+
+func (c Cut) String() string {
+	catString := fmt.Sprintf("{")
+	for i := range c.Points {
+		vc, _ := vclock.FromBytes(c.Points[i].VectorClock)
+		catString = fmt.Sprintf("%s | (P: %s)\n (VC: %s)\n, (CD: %d)\n\n", catString, c.Points[i].String(), vc.ReturnVCString(), c.Points[i].CommunicationDelta)
+	}
+	catString = fmt.Sprintf("%s}", catString)
+	return catString
 }
 
 func (state State) String() string {
@@ -676,20 +738,6 @@ func (state State) String() string {
 		catString = fmt.Sprintf("%s]", catString)
 	}
 	catString = fmt.Sprintf("%s]", catString)
-	return catString
-}
-
-type Cut struct {
-	Points []Point
-}
-
-func (c Cut) String() string {
-	catString := fmt.Sprintf("{")
-	for i := range c.Points {
-		vc, _ := vclock.FromBytes(c.Points[i].VectorClock)
-		catString = fmt.Sprintf("%s | (VC: %s, CD: %d", catString, vc.ReturnVCString(), c.Points[i].CommunicationDelta)
-	}
-	catString = fmt.Sprintf("%s}", catString)
 	return catString
 }
 
