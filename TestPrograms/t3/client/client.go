@@ -13,7 +13,7 @@ import (
 const (
 	ADDITION_ARGS = 2
 	LARGEST_TERM  = 100
-	RUNS          = 3
+	RUNS          = 1000
 )
 
 func main() {
@@ -41,6 +41,7 @@ func main() {
 
 		// Reading the response message
 
+		//@dump
 		_, errRead := conn.Read(buf[0:])
 		ret := Logger.UnpackReceive("Received", buf[0:])
 		comm.PrintErr(errRead)
@@ -48,7 +49,6 @@ func main() {
 		uret := comm.UnmarshallInts(ret)
 		sum = uret[0]
 		fmt.Printf("C: x*%d + %d = %d\n", term1, term2, sum)
-		//@dump
 		sum = 0
 	}
 	os.Exit(0)

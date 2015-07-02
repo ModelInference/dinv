@@ -13,10 +13,10 @@ const (
 	SIZEOFINT     = 4
 	ADDITION_ARGS = 2
 	LARGEST_TERM  = 100
-	RUNS          = 100
+	RUNS          = 3
 )
 
-func main() {
+func main) {
 	//dump
 	Logger = govec.Initialize("Client", "testclient.log")
 	rAddr, errR := net.ResolveUDPAddr("udp4", ":8080")

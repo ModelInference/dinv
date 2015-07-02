@@ -34,7 +34,6 @@ func main() {
 			continue
 		}
 		handleConn(conn, conn2)
-		//@dump
 		//fmt.Println("some one connected!")
 	}
 	conn.Close()
@@ -57,13 +56,13 @@ func handleConn(conn net.PacketConn, conn2 *net.UDPConn) {
 	fmt.Printf("Coeff: T1:%d\tT2:%d\tCoeff:%d\n", term1, term2, coeff)
 	msg := comm.MarshallInts([]int{term1, term2, coeff})
 	_, errWrite := conn2.Write(Logger.PrepareSend("Sending terms", msg))
-	//@dump
 	comm.PrintErr(errWrite)
+	//@dump
 
 	//read response from linn server
 	_, errRead := conn2.Read(buf[0:])
-	ret := Logger.UnpackReceive("Received", buf[0:])
 	//@dump
+	ret := Logger.UnpackReceive("Received", buf[0:])
 	comm.PrintErr(errRead)
 	//unmarshall response from linn server
 	uret := comm.UnmarshallInts(ret)
@@ -73,6 +72,7 @@ func handleConn(conn net.PacketConn, conn2 *net.UDPConn) {
 	msg2 := comm.MarshallInts([]int{lin})
 
 	conn.WriteTo(Logger.PrepareSend("Sending", msg2), addr)
+	//@dump
 }
 
 var Logger *govec.GoLog

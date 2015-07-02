@@ -38,7 +38,7 @@ var c *CFGWrapper
 func Instrument(file string) {
 	//TODO extend for nary files
 	src_location = file
-	optimize := true
+	optimize := false
 
 	source := initializeInstrumenter()
 	dumpNodes := GetDumpNodes()
