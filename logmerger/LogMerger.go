@@ -13,19 +13,25 @@ import (
 )
 
 var usage = "logmerger log1.txt log2.txt"
-var debug = true
+var debug = false
 
 /*
 func main() {
 }
 */
 
+/*
 func Merge(logfiles []string) {
 	logs := buildLogs(logfiles)
 	states := mineStates(logs)
 	writeTraceFiles(states)
 }
-
+*/
+func Merge(logfiles []string) {
+	logs := buildLogs(logfiles)
+	states := mineStates2(logs)
+	writeTraceFiles2(states)
+}
 func buildLogs(logFiles []string) [][]Point {
 	logs := make([][]Point, 0)
 	for i := 0; i < len(logFiles); i++ {
@@ -128,10 +134,19 @@ func writeValues(file *os.File, log []Point) {
 	}
 }
 
-func mineStates(logs [][]Point) []State {
+func mineStates2(logs [][]Point) []State2 {
 	clocks, _ := VectorClockArraysFromLogs(logs)
 	lattice := BuildLattice(clocks)
 	//printLattice(lattice)
+	deltaComm := enumerateCommunication2(clocks)
+	consistentCuts := mineConsistentCuts2(lattice, clocks, deltaComm)
+	states := statesFromCuts2(consistentCuts, clocks, logs)
+	return states
+}
+
+func mineStates(logs [][]Point) []State {
+	clocks, _ := VectorClockArraysFromLogs(logs)
+	lattice := BuildLattice(clocks)
 	logs = enumerateCommunication(logs)
 	consistentCuts := mineConsistentCuts(lattice, logs)
 	states := statesFromCuts(consistentCuts, clocks)
@@ -151,6 +166,18 @@ func countAncestors(cut Cut) []int {
 				if clock1.Compare(clock2, vclock.Ancestor) {
 					ancestors[i]++
 				}
+			}
+		}
+	}
+	return ancestors
+}
+
+func countAncestors2(cut Cut2) []int {
+	ancestors := make([]int, len(cut.Clocks))
+	for i := range cut.Clocks {
+		for j := range cut.Clocks {
+			if i != j && cut.Clocks[i].Compare(&cut.Clocks[j], vclock.Ancestor) {
+				ancestors[i]++
 			}
 		}
 	}
@@ -207,6 +234,55 @@ func totalOrderFromCut(cut Cut, clocks [][]vclock.VClock) [][]int {
 	return ordering
 }
 
+func totalOrderFromCut2(cut Cut2, clocks [][]vclock.VClock) [][]int {
+	used := make([]bool, len(cut.Clocks))
+	ancestors := countAncestors2(cut)
+	ids := idClockMapper(clocks)
+	ordering := make([][]int, 0)
+	extracted := true
+	for extracted {
+		extracted = false
+		//get oldest clock
+		max, index := -1, -1
+		for i := range ancestors {
+			if ancestors[i] > max && !used[i] {
+				max, index = ancestors[i], i
+			}
+		}
+		if max < 0 {
+			return ordering
+		}
+		ordering = append(ordering, make([]int, 0))
+		ordering[len(ordering)-1] = append(ordering[len(ordering)-1], index)
+		used[index] = true
+		extracted = true
+
+		child := true
+		//TODO fix the base case for some reason this is making pairs
+		//where it should not be
+		for child {
+			child = false
+			//rclock, _ := vclock.FromBytes(cut.Points[index].VectorClock)
+			maxEvent, sendIndex := -1, -1
+			for i := range cut.Clocks {
+				if i != index && !used[i] {
+					receiver, event, found := matchSendAndReceive(cut.Clocks[i], clocks, ids[i])
+					if found && receiver == index && event > maxEvent {
+						maxEvent, sendIndex = event, i
+					}
+				}
+			}
+			if maxEvent >= 0 {
+				ordering[len(ordering)-1] = append(ordering[len(ordering)-1], sendIndex)
+				used[sendIndex] = true
+				child = true
+				index = sendIndex
+			}
+		}
+	}
+	return ordering
+}
+
 func statesFromCuts(cuts []Cut, clocks [][]vclock.VClock) []State {
 	states := make([]State, 0)
 	for _, cut := range cuts {
@@ -219,6 +295,29 @@ func statesFromCuts(cuts []Cut, clocks [][]vclock.VClock) []State {
 				points = append(points, state.Cut.Points[state.TotalOrdering[i][j]])
 			}
 			state.MergedPoints = append(state.MergedPoints, mergePoints(points))
+		}
+		states = append(states, *state)
+	}
+	return states
+}
+
+func statesFromCuts2(cuts []Cut2, clocks [][]vclock.VClock, logs [][]Point) []State2 {
+	states := make([]State2, 0)
+	ids := idClockMapper(clocks)
+	for _, cut := range cuts {
+		state := &State2{}
+		state.Cut = cut
+		for i, clock := range state.Cut.Clocks {
+			found, index := searchClockById(clocks[i], &clock, ids[i])
+			if !found {
+				print("GOD DAMN IT HOW CAN I SORT THIS!!!!!!!!\n")
+			} else {
+				state.Points = append(state.Points, logs[i][index])
+			}
+		}
+		state.TotalOrdering = totalOrderFromCut2(cut, clocks)
+		if debug {
+			fmt.Printf("%s\n", state.String())
 		}
 		states = append(states, *state)
 	}
@@ -247,6 +346,33 @@ func VectorClockArraysFromLogs(logs [][]Point) ([][]vclock.VClock, error) {
 		}
 	}
 	return clocks, nil
+}
+
+func mineConsistentCuts2(lattice [][]vclock.VClock, clocks [][]vclock.VClock, deltaComm [][]int) []Cut2 {
+	ids := idClockMapper(clocks)
+	consistentCuts := make([]Cut2, 0)
+	for i := range lattice {
+		for j := range lattice[i] {
+			communicationDelta := 0
+			var potentialCut Cut2
+			for k := range ids {
+				_, found := lattice[i][j].FindTicks(ids[k])
+				if !found {
+					break
+				}
+				found, index := searchClockById(clocks[k], &lattice[i][j], ids[k])
+				communicationDelta += deltaComm[k][index]
+				potentialCut.Clocks = append(potentialCut.Clocks, clocks[k][index])
+			}
+			if communicationDelta == 0 {
+				if debug {
+					fmt.Printf("%s\n", potentialCut.String())
+				}
+				consistentCuts = append(consistentCuts, potentialCut)
+			}
+		}
+	}
+	return consistentCuts
 }
 
 func mineConsistentCuts(lattice [][]vclock.VClock, logs [][]Point) []Cut {
@@ -298,6 +424,27 @@ func searchLogForClock(log []Point, keyClock *vclock.VClock, id string) (bool, i
 	return false, mid
 }
 
+//fillCommunicationDelta markes the difference in sends and recieves that
+//have occured on a particualr host at every point throughout there
+//exectuion
+// a host with 5 sends and 2 recieves will be given the delta = 3
+// a host with 10 receives and 5 sends will be given the delta = -5
+func fillCommunicationDelta2(commDelta [][]int) [][]int {
+	for i := range commDelta {
+		fill := 0
+		for j := range commDelta[i] {
+			if commDelta[i][j] != 0 {
+				temp := commDelta[i][j]
+				commDelta[i][j] += fill
+				fill += temp
+			} else {
+				commDelta[i][j] += fill
+			}
+		}
+	}
+	return commDelta
+}
+
 //enumerateCommunication searches all the logs for sends and receives
 //and keeps track of how many have been done on each host
 func enumerateCommunication(logs [][]Point) [][]Point {
@@ -319,6 +466,30 @@ func enumerateCommunication(logs [][]Point) [][]Point {
 	logs = fillCommunicationDelta(logs)
 	//fill in the blanks
 	return logs
+}
+
+func enumerateCommunication2(clocks [][]vclock.VClock) [][]int {
+	ids := idClockMapper(clocks)
+	commDelta := make([][]int, len(clocks))
+	for i := range clocks {
+		commDelta[i] = make([]int, len(clocks[i]))
+	}
+	for i := range clocks {
+		for j := range clocks[i] {
+			receiver, receiverEvent, matched := matchSendAndReceive(clocks[i][j], clocks, ids[i])
+			if matched {
+				commDelta[i][j]++
+				commDelta[receiver][receiverEvent]--
+				if debug {
+					fmt.Printf("SR pair found %s, %s\n", clocks[i][j].ReturnVCString(), clocks[receiver][receiverEvent].ReturnVCString())
+					fmt.Printf("Sender %s:%d ----> Receiver %s:%d\n", ids[i], commDelta[i][j], ids[receiver], commDelta[receiver][receiverEvent])
+				}
+			}
+		}
+	}
+	commDelta = fillCommunicationDelta2(commDelta)
+	//fill in the blanks
+	return commDelta
 }
 
 //fillCommunicationDelta markes the difference in sends and recieves that
@@ -375,7 +546,6 @@ func matchSendAndReceive(sender vclock.VClock, clocks [][]vclock.VClock, senderI
 	}
 	return receiver, receiverEvent, matched
 }
-
 func writeTraceFiles(states []State) {
 	written := make([][]bool, len(states))
 	for i := range states {
@@ -393,6 +563,7 @@ func writeTraceFiles(states []State) {
 						filename = states[i].MergedPoints[j].LineNumber
 						newFile = true
 					}
+					//TODO add some more heuristics for merging points
 					if filename == states[i].MergedPoints[j].LineNumber {
 						pointLog = append(pointLog, states[i].MergedPoints[j])
 						written[i][j] = true
@@ -404,6 +575,62 @@ func writeTraceFiles(states []State) {
 			writeLogToFile(pointLog, filename)
 		}
 	}
+
+}
+
+func writeTraceFiles2(states []State2) {
+	//TODO impelement tones of merging methods
+	mergedPoints := mergeFunction(states)
+	written := make([][]bool, len(mergedPoints))
+	for i := range mergedPoints {
+		written[i] = make([]bool, len(mergedPoints[i]))
+	}
+	newFile := true
+	for newFile {
+		newFile = false
+		var filename string
+		pointLog := make([]Point, 0)
+		for i := range mergedPoints {
+			for j := range mergedPoints[i] {
+				if !written[i][j] {
+					if !newFile {
+						if debug {
+							fmt.Printf("New file :%s\n", mergedPoints[i][j].LineNumber)
+						}
+						filename = mergedPoints[i][j].LineNumber
+						newFile = true
+					}
+					//TODO add some more heuristics for merging points
+					if filename == mergedPoints[i][j].LineNumber {
+						pointLog = append(pointLog, mergedPoints[i][j])
+						written[i][j] = true
+					}
+				}
+			}
+		}
+		if newFile {
+			writeLogToFile(pointLog, filename)
+		}
+	}
+
+}
+
+func mergeFunction(states []State2) [][]Point {
+	mergedPoints := make([][]Point, len(states))
+	for i, state := range states {
+		mergedPoints[i] = make([]Point, len(state.TotalOrdering))
+		for j := range state.TotalOrdering {
+			points := make([]Point, 0)
+			for k := range state.TotalOrdering[j] {
+				points = append(points, state.Points[state.TotalOrdering[j][k]])
+			}
+			mergedPoints[i][j] = mergePoints(points)
+			if debug {
+				fmt.Println("%s\n", mergedPoints[i][j].LineNumber)
+			}
+		}
+	}
+	return mergedPoints
 
 }
 
@@ -445,12 +672,9 @@ func mergePoints(points []Point) Point {
 func readLog(filePath string) []Point {
 	fileR, err := os.Open(filePath)
 	printErr(err)
-
 	fmt.Println("decoding " + filePath)
 	decoder := gob.NewDecoder(fileR)
-
 	pointArray := make([]Point, 0)
-
 	var e error = nil
 	for e == nil {
 		var decodedPoint Point
@@ -461,7 +685,6 @@ func readLog(filePath string) []Point {
 			fmt.Println(e)
 		}
 	}
-
 	return pointArray
 }
 
@@ -471,10 +694,8 @@ func printErr(err error) {
 	}
 }
 
-type State struct {
-	Cut           Cut
-	TotalOrdering [][]int
-	MergedPoints  []Point
+type Cut2 struct {
+	Clocks []vclock.VClock
 }
 
 type Cut struct {
@@ -491,16 +712,12 @@ func (c Cut) String() string {
 	return catString
 }
 
-func (state State) String() string {
-	catString := fmt.Sprintf("%s\n[", state.Cut.String())
-	for i := range state.TotalOrdering {
-		catString = fmt.Sprintf("%s[", catString)
-		for j := range state.TotalOrdering[i] {
-			catString = fmt.Sprintf("%s %d,", catString, state.TotalOrdering[i][j])
-		}
-		catString = fmt.Sprintf("%s]", catString)
+func (c Cut2) String() string {
+	catString := fmt.Sprintf("{")
+	for _, clock := range c.Clocks {
+		catString = fmt.Sprintf("%s |(VC: %s)", catString, clock.ReturnVCString())
 	}
-	catString = fmt.Sprintf("%s]", catString)
+	catString = fmt.Sprintf("%s}", catString)
 	return catString
 }
 

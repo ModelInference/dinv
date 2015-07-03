@@ -13,7 +13,7 @@ import (
 const (
 	ADDITION_ARGS = 2
 	LARGEST_TERM  = 100
-	RUNS          = 1000
+	RUNS          = 10000
 )
 
 func main() {
@@ -41,9 +41,9 @@ func main() {
 
 		// Reading the response message
 
-		//@dump
 		_, errRead := conn.Read(buf[0:])
 		ret := Logger.UnpackReceive("Received", buf[0:])
+		//@dump
 		comm.PrintErr(errRead)
 
 		uret := comm.UnmarshallInts(ret)
