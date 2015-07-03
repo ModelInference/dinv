@@ -9,6 +9,8 @@ import (
 	"bitbucket.org/bestchai/dinv/govec"
 )
 
+//var debug = false
+
 //dump
 func main() {
 	Logger = govec.Initialize("linn", "linn.log")
@@ -40,12 +42,13 @@ func handleConn(conn net.PacketConn) {
 	//@dump
 	args := Logger.UnpackReceive("Received", buf[0:])
 	comm.PrintErr(err)
-	//fmt.Printf("recieved: %s of size %d, with args %d", buf, n, args)
 
 	uArgs := comm.UnmarshallInts(args)
 	term1, term2, coeff = uArgs[0], uArgs[1], uArgs[2]
 	lin = coeff*term1 + term2
-	fmt.Printf("C: %d*%d + %d = %d\n", coeff, term1, term2, lin)
+	//if debug {
+	//	fmt.Printf("C: %d*%d + %d = %d\n", coeff, term1, term2, lin)
+	//}
 	msg := comm.MarshallInts([]int{lin})
 
 	//@dump

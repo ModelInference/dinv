@@ -13,8 +13,10 @@ import (
 const (
 	ADDITION_ARGS = 2
 	LARGEST_TERM  = 100
-	RUNS          = 100
+	RUNS          = 100000
 )
+
+//var debug = false
 
 func main() {
 	Logger = govec.Initialize("client", "client.log")
@@ -29,8 +31,9 @@ func main() {
 		buf               [1024]byte
 		term1, term2, sum int
 	)
-
-	for t := 0; t < RUNS; t++ {
+	fmt.Println()
+	for t := 0; t <= RUNS; t++ {
+		fmt.Printf("\rExecuting[%2.0f]", float32(t)/float32(RUNS)*100)
 		term1, term2 = rand.Int()%LARGEST_TERM, rand.Int()%LARGEST_TERM
 
 		msg := comm.MarshallInts([]int{term1, term2})
@@ -48,9 +51,12 @@ func main() {
 
 		uret := comm.UnmarshallInts(ret)
 		sum = uret[0]
-		fmt.Printf("C: x*%d + %d = %d\n", term1, term2, sum)
-		sum = 0
+		//if debug {
+		//	fmt.Printf("C: x*%d + %d = %d\n", term1, term2, sum)
+		//}
+		term1 = sum
 	}
+	fmt.Println()
 	os.Exit(0)
 }
 
