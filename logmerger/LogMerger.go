@@ -22,8 +22,8 @@ func main() {
 
 func Merge(logfiles []string) {
 	logs := buildLogs(logfiles)
-	states := mineStates2(logs)
-	writeTraceFiles2(states)
+	states := mineStates(logs)
+	writeTraceFiles(states)
 }
 func buildLogs(logFiles []string) [][]Point {
 	logs := make([][]Point, 0)
@@ -126,17 +126,17 @@ func writeValues(file *os.File, log []Point) {
 	}
 }
 
-func mineStates2(logs [][]Point) []State2 {
+func mineStates(logs [][]Point) []State {
 	clocks, _ := VectorClockArraysFromLogs(logs)
 	lattice := BuildLattice(clocks)
 	//printLattice(lattice)
-	deltaComm := enumerateCommunication2(clocks)
-	consistentCuts := mineConsistentCuts2(lattice, clocks, deltaComm)
-	states := statesFromCuts2(consistentCuts, clocks, logs)
+	deltaComm := enumerateCommunication(clocks)
+	consistentCuts := mineConsistentCuts(lattice, clocks, deltaComm)
+	states := statesFromCuts(consistentCuts, clocks, logs)
 	return states
 }
 
-func countAncestors2(cut Cut2) []int {
+func countAncestors(cut Cut) []int {
 	ancestors := make([]int, len(cut.Clocks))
 	for i := range cut.Clocks {
 		for j := range cut.Clocks {
@@ -148,9 +148,9 @@ func countAncestors2(cut Cut2) []int {
 	return ancestors
 }
 
-func totalOrderFromCut2(cut Cut2, clocks [][]vclock.VClock) [][]int {
+func totalOrderFromCut(cut Cut, clocks [][]vclock.VClock) [][]int {
 	used := make([]bool, len(cut.Clocks))
-	ancestors := countAncestors2(cut)
+	ancestors := countAncestors(cut)
 	ids := idClockMapper(clocks)
 	ordering := make([][]int, 0)
 	extracted := true
@@ -197,11 +197,11 @@ func totalOrderFromCut2(cut Cut2, clocks [][]vclock.VClock) [][]int {
 	return ordering
 }
 
-func statesFromCuts2(cuts []Cut2, clocks [][]vclock.VClock, logs [][]Point) []State2 {
-	states := make([]State2, 0)
+func statesFromCuts(cuts []Cut, clocks [][]vclock.VClock, logs [][]Point) []State {
+	states := make([]State, 0)
 	ids := idClockMapper(clocks)
 	for _, cut := range cuts {
-		state := &State2{}
+		state := &State{}
 		state.Cut = cut
 		for i, clock := range state.Cut.Clocks {
 			found, index := searchClockById(clocks[i], &clock, ids[i])
@@ -211,7 +211,7 @@ func statesFromCuts2(cuts []Cut2, clocks [][]vclock.VClock, logs [][]Point) []St
 				state.Points = append(state.Points, logs[i][index])
 			}
 		}
-		state.TotalOrdering = totalOrderFromCut2(cut, clocks)
+		state.TotalOrdering = totalOrderFromCut(cut, clocks)
 		if debug {
 			fmt.Printf("%s\n", state.String())
 		}
@@ -244,13 +244,13 @@ func VectorClockArraysFromLogs(logs [][]Point) ([][]vclock.VClock, error) {
 	return clocks, nil
 }
 
-func mineConsistentCuts2(lattice [][]vclock.VClock, clocks [][]vclock.VClock, deltaComm [][]int) []Cut2 {
+func mineConsistentCuts(lattice [][]vclock.VClock, clocks [][]vclock.VClock, deltaComm [][]int) []Cut {
 	ids := idClockMapper(clocks)
-	consistentCuts := make([]Cut2, 0)
+	consistentCuts := make([]Cut, 0)
 	for i := range lattice {
 		for j := range lattice[i] {
 			communicationDelta := 0
-			var potentialCut Cut2
+			var potentialCut Cut
 			for k := range ids {
 				_, found := lattice[i][j].FindTicks(ids[k])
 				if !found {
@@ -301,7 +301,7 @@ func searchLogForClock(log []Point, keyClock *vclock.VClock, id string) (bool, i
 //exectuion
 // a host with 5 sends and 2 recieves will be given the delta = 3
 // a host with 10 receives and 5 sends will be given the delta = -5
-func fillCommunicationDelta2(commDelta [][]int) [][]int {
+func fillCommunicationDelta(commDelta [][]int) [][]int {
 	for i := range commDelta {
 		fill := 0
 		for j := range commDelta[i] {
@@ -320,7 +320,7 @@ func fillCommunicationDelta2(commDelta [][]int) [][]int {
 //enumerateCommunication searches through a log of vector clocks
 //matching sends and receives, the number of sends and recives are
 //tallyed at each program point and the enumerated values are returned
-func enumerateCommunication2(clocks [][]vclock.VClock) [][]int {
+func enumerateCommunication(clocks [][]vclock.VClock) [][]int {
 	ids := idClockMapper(clocks)
 	commDelta := make([][]int, len(clocks))
 	for i := range clocks {
@@ -339,7 +339,7 @@ func enumerateCommunication2(clocks [][]vclock.VClock) [][]int {
 			}
 		}
 	}
-	commDelta = fillCommunicationDelta2(commDelta)
+	commDelta = fillCommunicationDelta(commDelta)
 	//fill in the blanks
 	return commDelta
 }
@@ -378,7 +378,7 @@ func matchSendAndReceive(sender vclock.VClock, clocks [][]vclock.VClock, senderI
 	return receiver, receiverEvent, matched
 }
 
-func writeTraceFiles2(states []State2) {
+func writeTraceFiles(states []State) {
 	//TODO impelement tones of merging methods
 	mergedPoints := mergeFunction(states)
 	written := make([][]bool, len(mergedPoints))
@@ -415,7 +415,7 @@ func writeTraceFiles2(states []State2) {
 
 }
 
-func mergeFunction(states []State2) [][]Point {
+func mergeFunction(states []State) [][]Point {
 	mergedPoints := make([][]Point, len(states))
 	for i, state := range states {
 		mergedPoints[i] = make([]Point, len(state.TotalOrdering))
@@ -431,7 +431,6 @@ func mergeFunction(states []State2) [][]Point {
 		}
 	}
 	return mergedPoints
-
 }
 
 func idLogMapper(logs [][]Point) map[int]string {
@@ -494,25 +493,11 @@ func printErr(err error) {
 	}
 }
 
-type Cut2 struct {
+type Cut struct {
 	Clocks []vclock.VClock
 }
 
-type Cut struct {
-	Points []Point
-}
-
 func (c Cut) String() string {
-	catString := fmt.Sprintf("{")
-	for i := range c.Points {
-		vc, _ := vclock.FromBytes(c.Points[i].VectorClock)
-		catString = fmt.Sprintf("%s | (P: %s)\n (VC: %s)\n, (CD: %d)\n\n", catString, c.Points[i].String(), vc.ReturnVCString(), c.Points[i].CommunicationDelta)
-	}
-	catString = fmt.Sprintf("%s}", catString)
-	return catString
-}
-
-func (c Cut2) String() string {
 	catString := fmt.Sprintf("{")
 	for _, clock := range c.Clocks {
 		catString = fmt.Sprintf("%s |(VC: %s)", catString, clock.ReturnVCString())
