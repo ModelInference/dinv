@@ -36,6 +36,7 @@ func handleConn(conn net.PacketConn) {
 	var term1, term2, coeff, lin int
 
 	_, addr, err := conn.ReadFrom(buf[0:])
+
 	//@dump
 	args := Logger.UnpackReceive("Received", buf[0:])
 	comm.PrintErr(err)
@@ -46,6 +47,7 @@ func handleConn(conn net.PacketConn) {
 	lin = coeff*term1 + term2
 	fmt.Printf("C: %d*%d + %d = %d\n", coeff, term1, term2, lin)
 	msg := comm.MarshallInts([]int{lin})
+
 	//@dump
 	conn.WriteTo(Logger.PrepareSend("Sending", msg), addr)
 }

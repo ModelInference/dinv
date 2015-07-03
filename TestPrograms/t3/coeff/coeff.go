@@ -61,8 +61,8 @@ func handleConn(conn net.PacketConn, conn2 *net.UDPConn) {
 
 	//read response from linn server
 	_, errRead := conn2.Read(buf[0:])
-	//@dump
 	ret := Logger.UnpackReceive("Received", buf[0:])
+	//@dump
 	comm.PrintErr(errRead)
 	//unmarshall response from linn server
 	uret := comm.UnmarshallInts(ret)
