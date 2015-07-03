@@ -14,7 +14,6 @@ func BuildLattice(clocks [][]vclock.VClock) [][]vclock.VClock {
 	ids := idClockMapper(clocks)
 	for i := range clocks {
 		latticePoint.Update(ids[i], 0)
-		print(ids[i])
 	}
 	lattice := make([][]vclock.VClock, 0)
 	current, next := queue.New(), queue.New()
@@ -37,37 +36,6 @@ func BuildLattice(clocks [][]vclock.VClock) [][]vclock.VClock {
 		}
 	}
 	return lattice
-}
-
-//searchLogForClock searches the log file for a clock value in key
-//clock with the specified id
-//if such an index is found, the index is returned with a matching
-//true value, if no such index is found, the closest index is returned
-//with a false value
-func searchClockById(clocks []vclock.VClock, keyClock *vclock.VClock, id string) (bool, int) {
-	min, max, mid := 0, len(clocks)-1, 0
-	for max >= min {
-		mid = min + ((max - min) / 2)
-		a, _ := clocks[mid].FindTicks(id)
-		b, _ := keyClock.FindTicks(id)
-		if a == b {
-			return true, mid
-		} else if a < b {
-			min = mid + 1
-		} else {
-			max = mid - 1
-		}
-	}
-	return false, mid
-}
-
-func idClockMapper(clocks [][]vclock.VClock) []string {
-	clockMap := make([]string, 0)
-	for _, clock := range clocks {
-		id := getClockId(clock)
-		clockMap = append(clockMap, id)
-	}
-	return clockMap
 }
 
 func queueContainsClock(q *queue.Queue, v *vclock.VClock) bool {

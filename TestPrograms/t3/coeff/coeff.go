@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"math/rand"
 	"net"
 
@@ -12,6 +11,8 @@ import (
 const (
 	LARGEST_COEFF = 6
 )
+
+//var debug = false
 
 //dump
 func main() {
@@ -53,7 +54,9 @@ func handleConn(conn net.PacketConn, conn2 *net.UDPConn) {
 	term1, term2 = uArgs[0], uArgs[1]
 	coeff = rand.Int() % LARGEST_COEFF
 	//marshall coefficient, with terms, send to linn server
-	fmt.Printf("Coeff: T1:%d\tT2:%d\tCoeff:%d\n", term1, term2, coeff)
+	//if debug {
+	//	fmt.Printf("Coeff: T1:%d\tT2:%d\tCoeff:%d\n", term1, term2, coeff)
+	//}
 	msg := comm.MarshallInts([]int{term1, term2, coeff})
 	_, errWrite := conn2.Write(Logger.PrepareSend("Sending terms", msg))
 	comm.PrintErr(errWrite)
@@ -67,7 +70,7 @@ func handleConn(conn net.PacketConn, conn2 *net.UDPConn) {
 	//unmarshall response from linn server
 	uret := comm.UnmarshallInts(ret)
 	lin := uret[0]
-	fmt.Printf("C: %d*%d + %d = %d\n", coeff, term1, term2, lin)
+	//fmt.Printf("C: %d*%d + %d = %d\n", coeff, term1, term2, lin)
 	//marshall response and send back to client
 	msg2 := comm.MarshallInts([]int{lin})
 

@@ -11,8 +11,11 @@ import (
 	"bitbucket.org/bestchai/dinv/logmerger"
 )
 
-var inst bool
-var lm bool
+var (
+	inst    bool
+	lm      bool
+	verbose = true
+)
 
 func main() {
 	flag.BoolVar(&inst, "instrumenter", false, "go run dinv -instrumenter file1 > instrumented.go")
@@ -28,7 +31,13 @@ func main() {
 				panic(err)
 			}
 		}
+		if verbose {
+			fmt.Printf("Merging Files...")
+		}
 		logmerger.Merge(files)
+		if verbose {
+			fmt.Printf("Complete\n")
+		}
 	}
 
 	if inst {
@@ -36,7 +45,13 @@ func main() {
 		if !valid {
 			panic(err)
 		}
+		if verbose {
+			//fmt.Printf("Insturmenting %s...", files[0])
+		}
 		instrumenter.Instrument(files[0])
+		if verbose {
+			//fmt.Printf("Complete\n")
+		}
 	}
 }
 
