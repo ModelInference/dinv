@@ -1,13 +1,31 @@
+/*
+Logging distributed programs with vector clocks provides a partial
+ordering of events across all participating hosts. The exact order of
+events cannot be determined, however the clocks provide bounds to the
+number of possible event orderings. Using the clocks as boundries all
+potential event orderings can be calculated. The set of all such
+orderings can be represented as a lattice, where each verticie
+represents a potential state across all hosts in the distreibuted
+program. This package generates such a lattice based on a set of
+vector clocks
+
+Author: Stewart Grant
+Edited: July 6 2015
+*/
+
 package logmerger
 
 import (
 	"fmt"
-	"regexp"
 
 	"bitbucket.org/bestchai/dinv/govec/vclock"
 	"gopkg.in/eapache/queue.v1"
 )
 
+//BuildLattice constructs a lattice based on an ordered set of vector clocks. The
+//computed lattice is represented as a 2-D array of vector clocks
+//[i][j] where the i is the level of the lattice, and j is a set of
+//events at that level
 func BuildLattice(clocks [][]vclock.VClock) [][]vclock.VClock {
 	latticePoint := vclock.New()
 	//initalize lattice clock
@@ -38,6 +56,9 @@ func BuildLattice(clocks [][]vclock.VClock) [][]vclock.VClock {
 	return lattice
 }
 
+//queueContainsClock searches a queue of unorded vector clocks q for a
+//match to the argument v. If v is in the queue return true, otherwise
+//false
 func queueContainsClock(q *queue.Queue, v *vclock.VClock) bool {
 	for i := 0; i < q.Length(); i++ {
 		check := q.Get(i).(*vclock.VClock)
@@ -48,6 +69,10 @@ func queueContainsClock(q *queue.Queue, v *vclock.VClock) bool {
 	return false
 }
 
+//correctLatticePoint searches an array of clocks, belonging to a
+//host specificed by id. The proposed clock is a set of clock values
+//which could have potentially happened with respect to the host. If
+//the set is possible return true, otherwise false.
 func correctLatticePoint(clocks []vclock.VClock, proposedClock *vclock.VClock, id string) bool {
 	found, index := searchClockById(clocks, proposedClock, id)
 	//if the exact value was not found, then it was a non logged local
@@ -86,17 +111,9 @@ func nearestPrecedingClock(clocks []vclock.VClock, proposedClock *vclock.VClock,
 	}
 }
 
-//getLogId returns the first entry in the vector clock assuming that to be the owner
-//TODO this is not that robust and takes advantage of the fact the logs have not been sorted
-func getClockId(clocks []vclock.VClock) string {
-	clock := clocks[0]
-	re := regexp.MustCompile("{\"([A-Za-z0-9]+)\"")
-	vString := clock.ReturnVCString()
-	match := re.FindStringSubmatch(vString)
-	return match[1]
-}
-
-func printLattice(lattice [][]vclock.VClock) {
+//PrintLattice itterates through each level of the lattice structure
+//and prints out the clocks at each level
+func PrintLattice(lattice [][]vclock.VClock) {
 	for i := range lattice {
 		for j := range lattice[i] {
 			v := lattice[i][j].ReturnVCString()

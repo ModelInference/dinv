@@ -1,13 +1,29 @@
+/*
+	The state of a distributed program can be represented as the set
+	of all variable values across all hosts a moment in time. The
+	moment in time is denoted by the Cut, the set of all variable
+	values is within the set of points. and the total ordering within
+	the cut represents the communication at that point in time.
+
+	Author: Stewart Grant
+	Edited: July 6 2015
+*/
+
 package logmerger
 
 import "fmt"
 
+//State of a distributed program at a moment corresponding to a cut
 type State struct {
 	Cut           Cut
 	Points        []Point
 	TotalOrdering [][]int
 }
 
+//String representation of state, the cut is returned aloing with the
+//point and all of the coresponding variable values. The total
+//ordering is represened as a string matching the host indexes in the
+//cut
 func (state State) String() string {
 	catString := fmt.Sprintf("%s\n[", state.Cut.String())
 	for i := range state.Points {
