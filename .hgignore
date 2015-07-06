@@ -1,6 +1,10 @@
 #use glob syntax
 syntax: glob
-
+*.gz
+*.inv
+*.dtrace
 *.swp
+*.txt
 mod_*
+TestPrograms/*.txt
 TestPrograms/t3/*.txt
