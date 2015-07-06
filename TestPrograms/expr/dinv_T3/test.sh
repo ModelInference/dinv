@@ -85,4 +85,4 @@ runTestPrograms
 runLogMerger
 shivizMerge
 runDaikon
-#cleanUp
+cleanUp
