@@ -1,6 +1,16 @@
-# Distributed Invariant Detector
+# DInv: distributed invariant detector
 
-## Instructions
+State in a distributed system is not easily accessible and must be pieced together from the state at the individual nodes. Developers have few tools to help them extract, check, and reason about distributed state.
+
+DInv is a suite of tools to (1) semi-automatically detect distributed state, and (2) infer invariants over distributed state.
+
+More concretely DInv analyzes Go programs and can:
+
+  * Identify variables at processes that influence messaging behavior or data sent to other processes
+  * Identify data relationships between these variables (e.g., server.counter >= client.counter)
+
+
+## Usage
 
  * Use `instrumenter.go` to replace dump annotations in your program with statements to dump state at those points as follows: ` go run instrumenter.go > ../TestPrograms/assignment1_modified.go`
 
