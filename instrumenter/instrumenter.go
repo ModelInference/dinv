@@ -156,8 +156,9 @@ func initializeInstrumenter() string {
 	// Create the AST by parsing src.
 	fset = token.NewFileSet() // positions are relative to fset
 	astFile, _ = parser.ParseFile(fset, src_location, nil, parser.ParseComments)
+	cfgs := getWrappers(nil, src_location)
 
-	c = getWrapper(nil, src_location, 2)
+	c = cfgs[0]
 	//ast.Print(fset, astFile)
 
 	addImports()
@@ -290,24 +291,6 @@ func GetAccessedVarsInScope(dumpNode *ast.Comment, f *ast.File, g *ast.File) []s
 			})
 		}
 
-		//fmt.Println("Decl:::%v", astutil.NodeDescription(astnode))
-		//switch t := astnode.(type) {
-		//case *ast.BlockStmt:
-
-		//	stmts := t.List
-		//	for _, stmtnode := range stmts {
-		//		switch t := stmtnode.(type) {
-		//		case *ast.DeclStmt:
-		//			idents := t.Decl.(*ast.GenDecl).Specs[0].(*ast.ValueSpec).Names
-		//			for _, identifier := range idents {
-		//				fmt.Println("Ident::%v, ", identifier.Name)
-
-		//			}
-
-		//		}
-		//	}
-
-		//}
 	}
 	//fmt.Println(stmts)
 	_, uses := dataflow.ReferencedVars(stmts, c.prog.Created[0])
@@ -318,74 +301,6 @@ func GetAccessedVarsInScope(dumpNode *ast.Comment, f *ast.File, g *ast.File) []s
 	}
 
 	return results
-
-	//c := getWrapper(nil, "../TestPrograms/assignment1.go")
-
-	//for _, decl := range f.Decls {
-	//	//fmt.Println(GetAccessibleVarsInScope(int(dumps.Slash), astFile))
-	//	funcDecl, ok := decl.(*ast.FuncDecl)
-	//	if ok { // skip import decl if exists
-	//		fmt.Println("FnDecl:::%v", astutil.NodeDescription(funcDecl))
-	//	}
-	//}
-
-	//firstFunc, ok := f.Decls[0].(*ast.FuncDecl)
-	//if !ok { // skip import decl if exists
-	//	firstFunc = f.Decls[1].(*ast.FuncDecl) // panic here if no first func
-	//}
-	//cfg := cfg.FromFunc(firstFunc)
-	//v := make(map[int]ast.Stmt)
-	//stmts := make(map[ast.Stmt]int)
-	////objs := make(map[string]*types.Var)
-	////objNames := make(map[*types.Var]string)
-	//i := 1
-	//ast.Inspect(firstFunc, func(n ast.Node) bool {
-	//	switch x := n.(type) {
-	//	case ast.Stmt:
-	//		switch x.(type) {
-	//		case *ast.BlockStmt:
-	//			return true
-	//		}
-	//		v[i] = x
-	//		stmts[x] = i
-	//		i++
-	//	case *ast.FuncLit:
-	//		// skip statements in anonymous functions
-	//		return false
-	//	}
-	//	return true
-	//})
-	//v[END] = cfg.Exit
-	//v[START] = cfg.Entry
-	//stmts[cfg.Entry] = START
-	//stmts[cfg.Exit] = END
-	//if len(v) != len(cfg.Blocks()) {
-	//	fmt.Errorf("expected %d vertices, got %d --construction error", len(v), len(cfg.Blocks()))
-	//}
-
-	////c.expectUses(t, START, 2, "c")
-	////end := 11
-	////start := START
-
-	////c.printAST()
-	////blocks := c.cfg.Blocks()
-	////info := c.prog.Created[0]
-	////in, _ := ReachingDefs(c.cfg, info)
-	////ins := in[c.exp[s]]
-
-	//if _, ok := c.stmts[c.exp[0]]; !ok {
-	//	fmt.Println("did not find start", 0)
-	//	return
-	//}
-	//if _, ok := c.stmts[dumpNode]; !ok {
-	//	fmt.Println("did not find end", dumpNode)
-	//	return
-	//}
-
-	//var stmts []ast.Stmt
-	//for i := start; i <= end; i++ { // include end
-	//	stmts = append(stmts, c.exp[i])
-	//}
 
 }
 
@@ -434,22 +349,6 @@ func GetDumpNodes() []*ast.Comment {
 	}
 	return dumpNodes
 }
-
-//type DumpVisitor struct{}
-
-//func (v DumpVisitor) Visit(node ast.Node) (w ast.Visitor) {
-//	//fmt.Println(node)
-//	switch t := node.(type) {
-//	case *ast.Comment:
-
-//		if strings.Contains(t.Text, "@dump") {
-//			fmt.Println("dump encountered !!")
-//			dumpNodes = append(dumpNodes, t)
-//		}
-//	}
-
-//	return v
-//}
 
 // returns dump code that should replace that specific line number
 func GenerateDumpCode(vars []string, lineNumber int) string {
@@ -594,39 +493,47 @@ type CFGWrapper struct {
 	f        *ast.File
 }
 
+func getWrappers(t *testing.T, filename string) []*CFGWrapper {
+	var config loader.Config
+	//fmt.Println("\n\n" + filename + "\n\n")
+	f, err := config.ParseFile(filename, nil)
+	if err != nil {
+		fmt.Println("CannotParse")
+		t.Error(err.Error())
+		t.FailNow()
+		return nil
+	}
+	config.CreateFromFiles("testing", f)
+	prog, err := config.Load()
+	if err != nil {
+		fmt.Println("CannotLoad")
+		t.Error(err.Error())
+		t.FailNow()
+		return nil
+	}
+
+	cfgs := make([]*CFGWrapper, 0)
+	for i := 0; i < len(f.Decls); i++ {
+		functionDec, ok := f.Decls[i].(*ast.FuncDecl)
+		if ok {
+			wrap := getWrapper(t, f, functionDec, prog)
+			cfgs = append(cfgs, wrap)
+		}
+	}
+	return cfgs
+}
+
 // uses first function in given string to produce CFG
 // w/ some other convenient fields for printing in test
 // cases when need be...
-func getWrapper(t *testing.T, filename string, funcIndex int) *CFGWrapper {
-	var config loader.Config
-	f, err := config.ParseFile(filename, nil)
-	if err != nil {
-		t.Error(err.Error())
-		t.FailNow()
-		return nil
-	}
-
-	config.CreateFromFiles("testing", f)
-
-	prog, err := config.Load()
-
-	if err != nil {
-		t.Error(err.Error())
-		t.FailNow()
-		return nil
-	}
-
-	firstFunc, ok := f.Decls[funcIndex].(*ast.FuncDecl)
-	if !ok { // skip import decl if exists
-		firstFunc = f.Decls[1].(*ast.FuncDecl) // panic here if no first func
-	}
-	cfg := cfg.FromFunc(firstFunc)
+func getWrapper(t *testing.T, f *ast.File, functionDec *ast.FuncDecl, prog *loader.Program) *CFGWrapper {
+	cfg := cfg.FromFunc(functionDec)
 	v := make(map[int]ast.Stmt)
 	stmts := make(map[ast.Stmt]int)
 	objs := make(map[string]*types.Var)
 	objNames := make(map[*types.Var]string)
 	i := 1
-	ast.Inspect(firstFunc, func(n ast.Node) bool {
+	ast.Inspect(functionDec, func(n ast.Node) bool {
 		switch x := n.(type) {
 		case *ast.Ident:
 			if obj, ok := prog.Created[0].ObjectOf(x).(*types.Var); ok {
