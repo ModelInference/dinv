@@ -15,10 +15,8 @@ function installDinv {
 }
 
 function runInstrumenter {
-    cd $DINV
-    dinv -instrumenter $DINV/TestPrograms/$TEST/$P1/$P1.go > $DINV/TestPrograms/$TEST/mod_$P1.go
-    dinv -instrumenter $DINV/TestPrograms/$TEST/$P2/$P2.go > $DINV/TestPrograms/$TEST/mod_$P2.go
-    dinv -instrumenter $DINV/TestPrograms/$TEST/$P3/$P3.go > $DINV/TestPrograms/$TEST/mod_$P3.go
+    cd $DINV/TestPrograms/$TEST
+    dinv -instrumenter $DINV/TestPrograms/$TEST/$P1/$P1.go $DINV/TestPrograms/$TEST/$P2/$P2.go $DINV/TestPrograms/$TEST/$P3/$P3.go
 }
 
 function runTestPrograms {
@@ -30,16 +28,15 @@ function runTestPrograms {
     go run mod_$P1.go &
     wait $!
     kill `ps | pgrep mod_ | awk '{print $1}'`
-    mv $P1/$P1.go.txt $P1.go.txt
-    mv $P2/$P2.go.txt $P2.go.txt
-    mv $P3/$P3.go.txt $P3.go.txt
+    mv $DINV/TestPrograms/$TEST/$P1/$P1.go.txt $DINV/TestPrograms/$TEST
+    mv $DINV/TestPrograms/$TEST/$P2/$P2.go.txt $DINV/TestPrograms/$TEST
+    mv $DINV/TestPrograms/$TEST/$P3/$P3.go.txt $DINV/TestPrograms/$TEST
 
 }
 
 function runLogMerger {
     cd $DINV
     dinv -logmerger $DINV/TestPrograms/$TEST/$P1.go.txt $DINV/TestPrograms/$TEST/$P2.go.txt $DINV/TestPrograms/$TEST/$P3.go.txt
-    #dinv -logmerger $DINV/TestPrograms/$TEST/$P2.go.txt $DINV/TestPrograms/$TEST/$P3.go.txt
 
     mv ./*.dtrace $DINV/TestPrograms/expr/dinv_T3/
 }
@@ -85,4 +82,4 @@ runTestPrograms
 runLogMerger
 shivizMerge
 runDaikon
-cleanUp
+#cleanUp

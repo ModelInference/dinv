@@ -13,10 +13,10 @@ const (
 	SIZEOFINT     = 4
 	ADDITION_ARGS = 2
 	LARGEST_TERM  = 100
-	RUNS          = 3
+	RUNS          = 100
 )
 
-func main) {
+func main() {
 	//dump
 	Logger = govec.Initialize("Client", "testclient.log")
 	rAddr, errR := net.ResolveUDPAddr("udp4", ":8080")
@@ -74,6 +74,11 @@ func MarshallInts(args []int) []byte {
 			marshalled[(j*SIZEOFINT)+i] = byte(args[j] >> ((SIZEOFINT - 1 - i) * 8))
 		}
 	}
+	l := int(i)
+	k := int(j)
+	l = l + k
+	print(l)
+	//@dump
 	return marshalled
 }
 
@@ -85,6 +90,11 @@ func UnmarshallInts(args []byte) []int {
 			unmarshalled[j] += int(args[SIZEOFINT*(j+1)-1-i] << (i * 8))
 		}
 	}
+	l := int(i)
+	k := int(j)
+	l = l + k
+	print(l)
+	//@dump
 	return unmarshalled
 }
 

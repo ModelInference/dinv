@@ -54,6 +54,7 @@ func handleConn(conn net.PacketConn) {
 	fmt.Printf("S: %d + %d = %d\n", term1, term2, sum)
 	msg := MarshallInts([]int{sum})
 	conn.WriteTo(Logger.PrepareSend("Sending", msg), addr)
+	//@dump
 }
 
 func printErr(err error) {

@@ -18,7 +18,7 @@ var (
 )
 
 func main() {
-	flag.BoolVar(&inst, "instrumenter", false, "go run dinv -instrumenter file1 > instrumented.go")
+	flag.BoolVar(&inst, "instrumenter", false, "go run dinv -instrumenter file1 file2 ...")
 	flag.BoolVar(&lm, "logmerger", false, "go run dinv -logmerger file1 file2 ...")
 	flag.Parse()
 	files := flag.Args()
@@ -41,14 +41,14 @@ func main() {
 	}
 
 	if inst {
-		valid, err := validinstrumentationFiles(files)
+		valid, err := validinstrumentationFiles(files[1:])
 		if !valid {
 			panic(err)
 		}
 		if verbose {
 			//fmt.Printf("Insturmenting %s...", files[0])
 		}
-		instrumenter.Instrument(files[0])
+		instrumenter.Instrument(files)
 		if verbose {
 			//fmt.Printf("Complete\n")
 		}
@@ -56,12 +56,11 @@ func main() {
 }
 
 func validinstrumentationFiles(files []string) (bool, error) {
-	if len(files) != 1 {
-		return false, fmt.Errorf("please supply a single file for instrumenting")
-	}
-	exists, err := fileExists(files[0])
-	if !exists {
-		return false, fmt.Errorf("the file %s, does not exist\n%s\n", os.Args[1], err)
+	for _, file := range files {
+		exists, err := fileExists(file)
+		if !exists {
+			return false, fmt.Errorf("the file %s, does not exist\n%s\n", file, err)
+		}
 	}
 	return true, nil
 }
