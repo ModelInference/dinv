@@ -16,7 +16,7 @@ const (
 	RUNS          = 1000
 )
 
-//var debug = false
+var debug = false
 
 func main() {
 	Logger = govec.Initialize("client", "client.log")
