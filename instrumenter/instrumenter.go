@@ -39,6 +39,7 @@ var c *CFGWrapper
 var wrappers []*CFGWrapper
 
 func Instrument(files []string) {
+	fmt.Println("INSTRUMENTING FILES")
 	for _, file := range files {
 		//TODO extend for nary files
 		src_location = file
@@ -262,6 +263,9 @@ func GetAccessedVarsInScope(dumpNode *ast.Comment, f *ast.File) []string {
 					switch x.(type) {
 					case *ast.BlockStmt:
 						return true
+						//return false //dont dive into if statements
+						////grabs nothing for some reason
+						//and out of scope
 					}
 					if x.Pos() < dumpNode.Pos() {
 						stmts = append(stmts, x)
@@ -476,7 +480,7 @@ func getWrappers(t *testing.T, filename string) []*CFGWrapper {
 	files := make([]*ast.File, 0)
 	files = append(files, f)
 	dir, _ := filepath.Split(filename)
-	//fmt.Println(dir, filename)
+	fmt.Println(dir, filename)
 	err = filepath.Walk(dir, func(path string, info os.FileInfo, err error) error {
 		ext := filepath.Ext(path)
 		sdir, _ := filepath.Split(path)
@@ -484,7 +488,7 @@ func getWrappers(t *testing.T, filename string) []*CFGWrapper {
 		if ext != ".go" || path == filename || sdir != dir {
 			return nil
 		}
-		//fmt.Println(path)
+		fmt.Println(path)
 		g, err := config.ParseFile(path, nil)
 		if err != nil {
 			return nil

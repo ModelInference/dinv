@@ -12,24 +12,16 @@ function installDinv {
 }
 
 function runInstrumenter {
-    cd $DINV
+    cd $RAFT
     echo "Insturmenting"
-    dinv -instrumenter $RAFT/raft.go > $RAFT/raft_mod.go
+    dinv -instrumenter $RAFT/raft.go
 }
 
 function runTestPrograms {
-    cd $DINV/TestPrograms/$TEST
-    go run mod_$P3.go &
-    sleep 1
-    go run mod_$P2.go &
-    sleep 1
-    go run mod_$P1.go &
-    wait $!
-    kill `ps | pgrep mod_ | awk '{print $1}'`
-    mv $P1/$P1.go.txt $P1.go.txt
-    mv $P2/$P2.go.txt $P2.go.txt
-    mv $P3/$P3.go.txt $P3.go.txt
-
+    cd $RAFT
+    mv raft.go ..
+    go test
+    mv ../raft.go ./
 }
 
 function runLogMerger {
@@ -59,26 +51,15 @@ function shivizMerge {
 }
 
 function cleanUp {
-    rm $DINV/TestPrograms/$TEST/$P1.go.txt
-    rm $DINV/TestPrograms/$TEST/$P2.go.txt
-    rm $DINV/TestPrograms/$TEST/$P3.go.txt
-    rm $DINV/TestPrograms/$TEST/mod_$P1.go
-    rm $DINV/TestPrograms/$TEST/mod_$P2.go
-    rm $DINV/TestPrograms/$TEST/mod_$P3.go
-    rm $DINV/TestPrograms/$TEST/$P1.log-Log.txt
-    rm $DINV/TestPrograms/$TEST/$P2.log-Log.txt
-    rm $DINV/TestPrograms/$TEST/$P3.log-Log.txt
-    cd $DINV/TestPrograms/expr/dinv_T3
-        rm ./*.dtrace
-        rm ./*.gz
+    rm $RAFT/mod_raft.go
 }
 
 
 
 installDinv
 runInstrumenter
-#runTestPrograms
+runTestPrograms
 #runLogMerger
 #shivizMerge
 #runDaikon
-#cleanUp
+cleanUp
