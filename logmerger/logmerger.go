@@ -345,6 +345,7 @@ func readLog(filePath string) []Point {
 		var decodedPoint Point
 		e = decoder.Decode(&decodedPoint)
 		if e == nil {
+			fmt.Println(decodedPoint.String())
 			pointArray = append(pointArray, decodedPoint)
 		}
 	}

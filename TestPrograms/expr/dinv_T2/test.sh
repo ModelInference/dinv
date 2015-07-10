@@ -38,7 +38,7 @@ function runTestPrograms {
 function runLogMerger {
     cd $DINV
     dinv -logmerger $DINV/TestPrograms/$TEST/$P2.txt $DINV/TestPrograms/$TEST/$P1.txt
-    mv ./*.dtrace $DINV/TestPrograms/expr/dinv_T3/
+    mv ./*.dtrace $DINV/TestPrograms/expr/dinv_T2/
 }
 
 function runDaikon {
@@ -76,4 +76,4 @@ runTestPrograms
 runLogMerger
 shivizMerge
 runDaikon
-cleanUp
+#cleanUp
