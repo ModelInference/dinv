@@ -41,11 +41,10 @@ var wrappers []*CFGWrapper
 func Instrument(files []string) {
 	fmt.Println("INSTRUMENTING FILES")
 	for _, file := range files {
-		//TODO extend for nary files
 		src_location = file
 		optimize := false
 		source := initializeInstrumenter()
-		dumpNodes := GetDumpNodes()
+		dumpNodes := GetDumpNodes(astFile)
 
 		var generated_code []string
 
@@ -53,7 +52,8 @@ func Instrument(files []string) {
 			for _, dump := range dumpNodes {
 				line := c.fset.Position(dump.Pos()).Line
 				// log all vars
-				generated_code = append(generated_code, GenerateDumpCode(GetAccessedVarsInScope(dump, c.f), line))
+				generated_code = append(generated_code, GenerateDumpCode(GetAccessedVarsInScope(dump, c.f, c), line))
+				fmt.Println(generated_code[0])
 			}
 		} else {
 			for _, dump := range dumpNodes {
@@ -84,7 +84,7 @@ func Instrument(files []string) {
 func getAccessedAffectedVars(dump *ast.Comment) []string {
 
 	var affectedInScope []string
-	inScope := GetAccessedVarsInScope(dump, c.f)
+	inScope := GetAccessedVarsInScope(dump, c.f, c)
 	affected := getAffectedVars()
 
 	for _, inScopeVar := range inScope {
@@ -161,7 +161,7 @@ func initializeInstrumenter() string {
 	wrappers := getWrappers(nil, src_location)
 	c = wrappers[0] //TODO this is an artifact from only one function being analyized delete this eventually
 
-	addImports()
+	addImports(astFile)
 
 	var buf bytes.Buffer
 	printer.Fprint(&buf, fset, astFile)
@@ -246,14 +246,15 @@ func detectSend(f *ast.File) []*ast.Node {
 	return results
 }
 
-func GetAccessedVarsInScope(dumpNode *ast.Comment, f *ast.File) []string {
+func GetAccessedVarsInScope(dumpNode *ast.Comment, f *ast.File, cf *CFGWrapper) []string {
 	var results []string
 	path, _ := astutil.PathEnclosingInterval(f, dumpNode.Pos(), dumpNode.End())
 
 	var stmts []ast.Stmt
 
+	//print("inspecting")
 	for _, astnode := range path {
-
+		//print("node")
 		funcDecl, ok := astnode.(*ast.FuncDecl)
 		if ok { // skip import decl if exists
 
@@ -279,8 +280,8 @@ func GetAccessedVarsInScope(dumpNode *ast.Comment, f *ast.File) []string {
 		}
 
 	}
-	//fmt.Println(stmts)
-	_, uses := dataflow.ReferencedVars(stmts, c.prog.Created[0])
+	fmt.Println(stmts)
+	_, uses := dataflow.ReferencedVars(stmts, cf.prog.Created[0])
 
 	//actualUse := make(map[*types.Var]struct{})
 	for u, _ := range uses {
@@ -324,9 +325,9 @@ func GetAccessibleVarsInScope(start int, file *ast.File) []string {
 	return results
 }
 
-func GetDumpNodes() []*ast.Comment {
+func GetDumpNodes(file *ast.File) []*ast.Comment {
 	var dumpNodes []*ast.Comment
-	for _, commentGroup := range astFile.Comments {
+	for _, commentGroup := range file.Comments {
 		for _, comment := range commentGroup.List {
 			if strings.Contains(comment.Text, "@dump") {
 				dumpNodes = append(dumpNodes, comment)
@@ -409,10 +410,10 @@ type NameValuePair struct {
 //}
 `
 
-func addImports() {
+func addImports(file *ast.File) {
 	packagesToImport := []string{"\"encoding/gob\"", "\"os\"", "\"reflect\"", "\"strconv\""}
 	im := ImportAdder{packagesToImport}
-	ast.Walk(im, astFile)
+	ast.Walk(im, file)
 }
 
 type ImportAdder struct {
@@ -503,7 +504,7 @@ func getWrappers(t *testing.T, filename string) []*CFGWrapper {
 		return nil
 	}
 
-	config.CreateFromFiles("testing", files...) //formerly "testing"
+	config.CreateFromFiles("testing", files...)
 	prog, err := config.Load()
 	if err != nil {
 		fmt.Println("CannotLoad")
