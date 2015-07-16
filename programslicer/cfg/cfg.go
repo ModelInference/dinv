@@ -39,7 +39,7 @@ type CFG struct {
 	// All defers found in CFG, disjoint from Blocks. May be flowed to after Exit.
 	Defers     []*ast.DeferStmt
 	Blocks     map[ast.Stmt]*Block //TODO add wrappr
-	BlockSlice []*Block            //TODO added move to own library ( program slice )
+	BlockSlice []*Block            //TODO // just an array of every thing in Blocks added move to own library ( program slice )
 }
 
 type Block struct {
@@ -58,6 +58,8 @@ type Block struct {
 
 //TODO move into own library (control dep)
 func (c *CFG) InitializeBlocks() {
+	//define preceding and successive block statements based on
+	//pres/succ
 	for _, b := range c.Blocks {
 		for _, stmt := range b.Preds {
 			b.PredBs = append(b.PredBs, c.Blocks[stmt])
