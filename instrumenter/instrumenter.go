@@ -29,62 +29,52 @@ const (
 	END   = 100000000
 )
 
-var src_location string
 var usage string = "go run instrumenter.go toinstrument > instrumented.go"
-
-var fset *token.FileSet
-var astFile *ast.File
-var c *CFGWrapper
-var wrappers []*CFGWrapper
 
 func Instrument(files []string) {
 	fmt.Println("INSTRUMENTING FILES")
 	for _, file := range files {
-		src_location = file
 		optimize := false
-		source := initializeInstrumenter()
-		dumpNodes := GetDumpNodes(astFile)
+		program := initializeInstrumenter(file)
+		dumpNodes := GetDumpNodes(program.source[0].comments)
 		var generated_code []string
 		if !optimize {
 			fmt.Println("GETTING VARS 1")
 			for _, dump := range dumpNodes {
-				line := c.fset.Position(dump.Pos()).Line
+				line := program.fset.Position(dump.Pos()).Line
 				// log all vars
 				//generated_code = append(generated_code, GenerateDumpCode(GetAccessedVarsInScope(dump, c.f, c), line))
-				generated_code = append(generated_code, GenerateDumpCode(GetAccessibleVarsInScope(int(dump.Pos()), astFile, c.fset), line))
+				generated_code = append(generated_code, GenerateDumpCode(GetAccessibleVarsInScope(int(dump.Pos()), program.source[0].comments, program.fset), line))
 				fmt.Println(generated_code[0])
 			}
 		} else {
 			for _, dump := range dumpNodes {
-				line := c.fset.Position(dump.Pos()).Line
-				generated_code = append(generated_code, GenerateDumpCode(getAccessedAffectedVars(dump, astFile, c), line))
+				line := program.fset.Position(dump.Pos()).Line
+				generated_code = append(generated_code, GenerateDumpCode(getAccessedAffectedVars(dump, program), line))
 
 			}
 		}
 		count := 0
 		rp := regexp.MustCompile("\\/\\/@dump")
-		transformed := rp.ReplaceAllStringFunc(source, func(s string) string {
+		insturmented := rp.ReplaceAllStringFunc(program.source[0].text, func(s string) string {
 			replacement := generated_code[count]
 			count++
 			return replacement
 		})
 
-		transformed = transformed + "\n" + extra_code
+		insturmented = insturmented + "\n" + extra_code
 
-		rp = regexp.MustCompile("[ ]*func[ ]+main\\(\\)[ ]+{")
-		//fmt.Println(transformed)
-		insturmented := fmt.Sprintf("%s", rp.ReplaceAllString(transformed, "func main() {\n InstrumenterInit()\n"))
 		//fmt.Print(insturmented)
 		writeInstrumentedFile(insturmented, file)
 		//fmt.Println(detectSendReceive(astFile))
 	}
 }
 
-func getAccessedAffectedVars(dump *ast.Comment, file *ast.File, cf *CFGWrapper) []string {
+func getAccessedAffectedVars(dump *ast.Comment, program *ProgramWrapper) []string {
 
 	var affectedInScope []string
-	inScope := GetAccessibleVarsInScope(int(dump.Pos()), file, cf.fset)
-	affected := getAffectedVars(cf)
+	inScope := GetAccessibleVarsInScope(int(dump.Pos()), program.source[0].comments, program.fset)
+	affected := getAffectedVars(program)
 
 	for _, inScopeVar := range inScope {
 		for _, affectedVar := range affected {
@@ -99,18 +89,18 @@ func getAccessedAffectedVars(dump *ast.Comment, file *ast.File, cf *CFGWrapper) 
 
 }
 
-func findFunction(stmt ast.Stmt, cf *CFGWrapper) int {
-	for dcl := 0; dcl < len(cf.f.Decls)-1; dcl++ {
-		if stmt.Pos() > cf.f.Decls[dcl].Pos() && stmt.Pos() < cf.f.Decls[dcl+1].Pos() {
+func findFunction(stmt ast.Stmt, decls []ast.Decl) int {
+	for dcl := 0; dcl < len(decls)-1; dcl++ {
+		if stmt.Pos() > decls[dcl].Pos() && stmt.Pos() < decls[dcl+1].Pos() {
 			return dcl
 		}
 	}
 	return -1
 }
 
-func getAffectedVars(cf *CFGWrapper) []string {
-	recvNodes := detectFunctionCalls(cf.f, "conn", []string{"Read", "ReadFrom"})
-	sendNodes := detectFunctionCalls(cf.f, "conn", []string{"Write", "WriteTo"})
+func getAffectedVars(program *ProgramWrapper) []string {
+	recvNodes := detectFunctionCalls(program.source[0].source, "conn", []string{"Read", "ReadFrom"})
+	sendNodes := detectFunctionCalls(program.source[0].source, "conn", []string{"Write", "WriteTo"})
 
 	for i := 0; i < len(recvNodes)+len(sendNodes); i++ {
 		fmt.Printf("%d,", i)
@@ -122,25 +112,24 @@ func getAffectedVars(cf *CFGWrapper) []string {
 
 	for _, node := range recvNodes {
 		recvStmt := (*node).(ast.Stmt)
-		dcl := findFunction(recvStmt, cf)
+		dcl := findFunction(recvStmt, program.source[0].source.Decls)
 		fmt.Println("receive function") //BUG These dual print statements seemt to be totally corrupting the output
 		fmt.Println(dcl)
-		firstFunc := cf.f.Decls[dcl].(*ast.FuncDecl)
-		cf.cfg = cfg.FromFunc(firstFunc)
-		vars := programslicer.GetAffectedVariables(recvStmt, cf.cfg, cf.prog.Created[0], cf.prog.Fset, programslicer.ComputeForwardSlice)
+		firstFunc := program.source[0].source.Decls[dcl].(*ast.FuncDecl)
+		program.source[0].cfgs[0].cfg = cfg.FromFunc(firstFunc)
+		vars := programslicer.GetAffectedVariables(recvStmt, program.source[0].cfgs[0].cfg, program.prog.Created[0], program.fset, programslicer.ComputeForwardSlice)
 		affectedVars = append(affectedVars, vars...)
 	}
 
 	for _, node := range sendNodes {
 		sendStmt := (*node).(ast.Stmt)
 
-		dcl := findFunction(sendStmt, cf)
+		dcl := findFunction(sendStmt, program.source[0].source.Decls)
 		fmt.Println("send function")
 		fmt.Println(dcl)
-		firstFunc := cf.f.Decls[dcl].(*ast.FuncDecl)
-		cf.cfg = cfg.FromFunc(firstFunc)
-		vars := programslicer.GetAffectedVariables(sendStmt, cf.cfg, cf.prog.Created[0], cf.prog.Fset, programslicer.ComputeBackwardSlice)
-
+		firstFunc := program.source[0].source.Decls[dcl].(*ast.FuncDecl)
+		program.source[0].cfgs[0].cfg = cfg.FromFunc(firstFunc)
+		vars := programslicer.GetAffectedVariables(sendStmt, program.source[0].cfgs[0].cfg, program.prog.Created[0], program.fset, programslicer.ComputeForwardSlice)
 		affectedVars = append(affectedVars, vars...)
 	}
 	var affectedVarName []string
@@ -155,23 +144,20 @@ func getAffectedVars(cf *CFGWrapper) []string {
 //the program
 //TODO is a really bad function and requires way too many globals,
 //lets turf it at some point
-func initializeInstrumenter() string {
+func initializeInstrumenter(src_location string) *ProgramWrapper {
 	extra_code = template_code
 	extra_code = fmt.Sprintf(extra_code, src_location)
 	// Create the AST by parsing src.
-	fset = token.NewFileSet() // positions are relative to fset
-	astFile, _ = parser.ParseFile(fset, src_location, nil, parser.ParseComments)
-	wrappers := getWrappers(nil, src_location)
-	c = wrappers[0] //TODO this is an artifact from only one function being analyized delete this eventually
+	program := getWrappers(nil, src_location)
 
-	addImports(astFile)
+	addImports(program.source[0].comments)
 
 	var buf bytes.Buffer
-	printer.Fprint(&buf, fset, astFile)
+	printer.Fprint(&buf, program.fset, program.source[0].comments)
 
-	s := buf.String()
+	program.source[0].text = buf.String()
 	//print(s)
-	return s
+	return program
 }
 
 //replacement for match send and receive
@@ -221,91 +207,6 @@ func matchCallExpression(n *ast.CallExpr, varName string, funcNames []string) bo
 	return false
 }
 
-/*
-func GetAccessedVarsInScope(dumpNode *ast.Comment, f *ast.File, cf *CFGWrapper) []string {
-	var results []string
-	path, _ := astutil.PathEnclosingInterval(f, dumpNode.Pos(), dumpNode.End())
-
-	var stmts []ast.Stmt
-	var unwantedVars []string
-
-	//print("inspecting")
-	for _, astnode := range path {
-		//print("node")
-		funcDecl, ok := astnode.(*ast.FuncDecl)
-		if ok { // skip import decl if exists
-
-			ast.Inspect(funcDecl, func(n ast.Node) bool {
-				switch x := n.(type) {
-				case ast.Stmt:
-					switch x.(type) {
-					case *ast.BlockStmt:
-						return true
-
-					//begin assignment checking
-					case *ast.AssignStmt:
-						astmnt := x.(*ast.AssignStmt)
-
-						if astmnt.Tok.String() == ":=" {
-							var localStmts []ast.Stmt
-							ast.Inspect(x, func(r ast.Node) bool {
-								print("s")
-								switch s := r.(type) {
-								case ast.Stmt:
-									if (s.(ast.Stmt)).Pos() < dumpNode.Pos() {
-										localStmts = append(localStmts, s)
-									}
-								}
-								return true
-							})
-								defs, _ := dataflow.ReferencedVars(localStmts, cf.prog.Created[0])
-								for d, _ := range defs {
-									scope := d.Parent
-									names := scope.Names()
-									for _, name := range names {
-										fmt.Print(name)
-									}
-									fmt.Println()
-									unwantedVars = append(unwantedVars, d.Name())
-								}
-						}
-						return true
-
-						//end assignment checking
-					}
-					if x.Pos() < dumpNode.Pos() {
-						stmts = append(stmts, x)
-					}
-				case *ast.FuncLit:
-					// skip statements in anonymous functions
-					return false
-				}
-				return true
-			})
-		}
-
-	}
-	_, uses := dataflow.ReferencedVars(stmts, cf.prog.Created[0])
-
-	//actualUse := make(map[*types.Var]struct{})
-	for u, _ := range uses {
-		results = append(results, u.Name())
-	}
-
-	//test
-	print("unwanted\n")
-	for _, name := range unwantedVars {
-		fmt.Println(name)
-	}
-	//for _, result := range results {
-	//	fmt.Printf("%s\n", result)
-	//}
-
-	return results
-
-}
-*/
-
 func GetAccessibleVarsInScope(start int, file *ast.File, fset *token.FileSet) []string {
 	fmt.Println("GETTING VARS!!!")
 	var results []string
@@ -313,18 +214,18 @@ func GetAccessibleVarsInScope(start int, file *ast.File, fset *token.FileSet) []
 	for identifier, _ := range global_objs {
 		if global_objs[identifier].Kind == ast.Var || global_objs[identifier].Kind == ast.Con { //|| global_objs[identifier].Kind == ast.Typ { //can be used for diving into structs
 			fmt.Printf("Global Found :%s\n", fmt.Sprintf("%v", identifier))
-			fmt.Printf("Checking for struct Type")
+			/*fmt.Printf("Checking for struct Type")
 			structure, ok := global_objs[identifier].Decl.(*ast.StructType)
 			if ok {
 				for _, fields := range structure.Fields.List {
 					fmt.Println("found Field Name", fields.Names[0].Name)
 				}
-			}
+			}*/
 			results = append(results, fmt.Sprintf("%v", identifier))
 		}
 	}
 	filePos := fset.File(file.Package)
-	path, _ := astutil.PathEnclosingInterval(file, filePos.Pos(start), filePos.Pos(start+2))
+	path, _ := astutil.PathEnclosingInterval(file, filePos.Pos(start), filePos.Pos(start+2)) // why +2
 
 	for _, astnode := range path {
 		//fmt.Println("%v", astutil.NodeDescription(astnode))
@@ -489,23 +390,40 @@ func nonDuplicateImports(packagesToImport []string, specs []ast.Spec) []string {
 	return releventImports
 }
 
+type ProgramWrapper struct {
+	prog   *loader.Program
+	fset   *token.FileSet
+	source []*SourceWrapper
+}
+
+type SourceWrapper struct {
+	comments *ast.File
+	source   *ast.File
+	text     string
+	cfgs     []*CFGWrapper
+}
+
 type CFGWrapper struct {
 	cfg      *cfg.CFG
-	prog     *loader.Program
 	exp      map[int]ast.Stmt
 	stmts    map[ast.Stmt]int
 	objs     map[string]*types.Var
 	objNames map[*types.Var]string
-	fset     *token.FileSet
-	f        *ast.File
 }
 
-func getWrappers(t *testing.T, filename string) []*CFGWrapper {
+func getWrappers(t *testing.T, filename string) *ProgramWrapper {
+	fmt.Println("Getting Wrappers")
+
 	var config loader.Config
 	//fmt.Println("\n\n" + filename + "\n\n")
-	f, err := config.ParseFile(filename, nil)
-	files := make([]*ast.File, 0)
-	files = append(files, f)
+	commentFile, _ := parser.ParseFile(token.NewFileSet(), filename, nil, parser.ParseComments)
+	commentFiles := make([]*ast.File, 0)
+	commentFiles = append(commentFiles, commentFile)
+
+	sourceFile, err := config.ParseFile(filename, nil)
+	sourceFiles := make([]*ast.File, 0)
+	sourceFiles = append(sourceFiles, sourceFile)
+
 	dir, _ := filepath.Split(filename)
 	fmt.Println(dir, filename)
 	err = filepath.Walk(dir, func(path string, info os.FileInfo, err error) error {
@@ -516,11 +434,17 @@ func getWrappers(t *testing.T, filename string) []*CFGWrapper {
 			return nil
 		}
 		fmt.Println(path)
-		g, err := config.ParseFile(path, nil)
+		source, err := config.ParseFile(path, nil)
 		if err != nil {
 			return nil
 		}
-		files = append(files, g)
+		sourceFiles = append(sourceFiles, source)
+
+		comments, err := parser.ParseFile(token.NewFileSet(), path, nil, parser.ParseComments)
+		if err != nil {
+			return nil
+		}
+		commentFiles = append(commentFiles, comments)
 		return nil
 	})
 	if err != nil {
@@ -529,8 +453,8 @@ func getWrappers(t *testing.T, filename string) []*CFGWrapper {
 		t.FailNow()
 		return nil
 	}
-
-	config.CreateFromFiles("testing", files...)
+	fmt.Println("Loading Files")
+	config.CreateFromFiles("testing", sourceFiles...)
 	prog, err := config.Load()
 	if err != nil {
 		fmt.Println("CannotLoad")
@@ -538,23 +462,39 @@ func getWrappers(t *testing.T, filename string) []*CFGWrapper {
 		t.FailNow()
 		return nil
 	}
+	fmt.Println("Files Loaded")
 
-	cfgs := make([]*CFGWrapper, 0)
-	for i := 0; i < len(f.Decls); i++ {
-		functionDec, ok := f.Decls[i].(*ast.FuncDecl)
-		if ok {
-			print("FuncFound\n")
-			wrap := getWrapper(t, f, functionDec, prog)
-			cfgs = append(cfgs, wrap)
+	sources := make([]*SourceWrapper, 0)
+	for i, file := range sourceFiles {
+		cfgs := make([]*CFGWrapper, 0)
+		for j := 0; j < len(file.Decls); j++ {
+			fmt.Printf("building CFG[%d]\n", j)
+			functionDec, ok := file.Decls[j].(*ast.FuncDecl)
+			if ok {
+				print("FuncFound\n")
+				wrap := getWrapper(t, functionDec, prog)
+				cfgs = append(cfgs, wrap)
+			}
 		}
+		fmt.Println("Source Built")
+		sources = append(sources, &SourceWrapper{
+			comments: commentFiles[i],
+			source:   sourceFiles[i],
+			cfgs:     cfgs})
 	}
-	return cfgs
+	fmt.Println("Wrappers Built")
+	return &ProgramWrapper{
+		prog:   prog,
+		fset:   prog.Fset,
+		source: sources,
+	}
+
 }
 
 // uses first function in given string to produce CFG
 // w/ some other convenient fields for printing in test
 // cases when need be...
-func getWrapper(t *testing.T, f *ast.File, functionDec *ast.FuncDecl, prog *loader.Program) *CFGWrapper {
+func getWrapper(t *testing.T, functionDec *ast.FuncDecl, prog *loader.Program) *CFGWrapper {
 	cfg := cfg.FromFunc(functionDec)
 	v := make(map[int]ast.Stmt)
 	stmts := make(map[ast.Stmt]int)
@@ -596,19 +536,18 @@ func getWrapper(t *testing.T, f *ast.File, functionDec *ast.FuncDecl, prog *load
 
 	return &CFGWrapper{
 		cfg:      cfg,
-		prog:     prog,
 		exp:      v,
 		stmts:    stmts,
 		objs:     objs,
 		objNames: objNames,
-		fset:     prog.Fset,
-		f:        f,
 	}
 }
 
 //prints given AST
-func (c *CFGWrapper) printAST() {
-	ast.Print(c.fset, c.f)
+func (p *ProgramWrapper) printAST() {
+	for _, source := range p.source {
+		ast.Print(p.fset, source.source)
+	}
 }
 
 func writeInstrumentedFile(source string, filename string) {

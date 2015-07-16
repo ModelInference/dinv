@@ -73,10 +73,10 @@ function shivizMerge {
 }
 
 
+cleanUp
 installDinv
 runInstrumenter
 runTestPrograms
 runLogMerger
 shivizMerge
 runDaikon
-cleanUp
