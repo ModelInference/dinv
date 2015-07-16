@@ -11,7 +11,6 @@ import (
 const SIZEOFINT = 4
 
 func main() {
-	//@dump
 	Logger = govec.Initialize("Server", "slog.log")
 	conn, err := net.ListenPacket("udp", ":8080")
 	if err != nil {
@@ -27,14 +26,12 @@ func main() {
 			continue
 		}
 		handleConn(conn)
-		//@dump
 		//fmt.Println("some one connected!")
 	}
 	conn.Close()
 }
 
 func handleConn(conn net.PacketConn) {
-	//@dump
 	var buf [1024]byte
 	var term1, term2, sum int
 
