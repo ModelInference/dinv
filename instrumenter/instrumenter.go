@@ -22,7 +22,6 @@ import (
 	"golang.org/x/tools/go/types"
 
 	"bitbucket.org/bestchai/dinv/programslicer/cfg"
-	"bitbucket.org/bestchai/dinv/programslicer/dataflow"
 )
 
 const (
@@ -45,20 +44,20 @@ func Instrument(files []string) {
 		optimize := false
 		source := initializeInstrumenter()
 		dumpNodes := GetDumpNodes(astFile)
-
 		var generated_code []string
-
 		if !optimize {
+			fmt.Println("GETTING VARS 1")
 			for _, dump := range dumpNodes {
 				line := c.fset.Position(dump.Pos()).Line
 				// log all vars
-				generated_code = append(generated_code, GenerateDumpCode(GetAccessedVarsInScope(dump, c.f, c), line))
+				//generated_code = append(generated_code, GenerateDumpCode(GetAccessedVarsInScope(dump, c.f, c), line))
+				generated_code = append(generated_code, GenerateDumpCode(GetAccessibleVarsInScope(int(dump.Pos()), astFile, c.fset), line))
 				fmt.Println(generated_code[0])
 			}
 		} else {
 			for _, dump := range dumpNodes {
 				line := c.fset.Position(dump.Pos()).Line
-				generated_code = append(generated_code, GenerateDumpCode(getAccessedAffectedVars(dump), line))
+				generated_code = append(generated_code, GenerateDumpCode(getAccessedAffectedVars(dump, astFile, c), line))
 
 			}
 		}
@@ -81,11 +80,11 @@ func Instrument(files []string) {
 	}
 }
 
-func getAccessedAffectedVars(dump *ast.Comment) []string {
+func getAccessedAffectedVars(dump *ast.Comment, file *ast.File, cf *CFGWrapper) []string {
 
 	var affectedInScope []string
-	inScope := GetAccessedVarsInScope(dump, c.f, c)
-	affected := getAffectedVars()
+	inScope := GetAccessibleVarsInScope(int(dump.Pos()), file, cf.fset)
+	affected := getAffectedVars(cf)
 
 	for _, inScopeVar := range inScope {
 		for _, affectedVar := range affected {
@@ -100,18 +99,22 @@ func getAccessedAffectedVars(dump *ast.Comment) []string {
 
 }
 
-func findFunction(stmt ast.Stmt) int {
-	for dcl := 0; dcl < len(c.f.Decls)-1; dcl++ {
-		if stmt.Pos() > c.f.Decls[dcl].Pos() && stmt.Pos() < c.f.Decls[dcl+1].Pos() {
+func findFunction(stmt ast.Stmt, cf *CFGWrapper) int {
+	for dcl := 0; dcl < len(cf.f.Decls)-1; dcl++ {
+		if stmt.Pos() > cf.f.Decls[dcl].Pos() && stmt.Pos() < cf.f.Decls[dcl+1].Pos() {
 			return dcl
 		}
 	}
 	return -1
 }
 
-func getAffectedVars() []string {
-	recvNodes := detectReceive(c.f)
-	sendNodes := detectSend(c.f)
+func getAffectedVars(cf *CFGWrapper) []string {
+	recvNodes := detectFunctionCalls(cf.f, "conn", []string{"Read", "ReadFrom"})
+	sendNodes := detectFunctionCalls(cf.f, "conn", []string{"Write", "WriteTo"})
+
+	for i := 0; i < len(recvNodes)+len(sendNodes); i++ {
+		fmt.Printf("%d,", i)
+	}
 
 	//fmt.Println(recvNodes)
 	//fmt.Println(sendNodes)
@@ -119,24 +122,24 @@ func getAffectedVars() []string {
 
 	for _, node := range recvNodes {
 		recvStmt := (*node).(ast.Stmt)
-		dcl := findFunction(recvStmt)
-		//fmt.Println("function") //BUG These dual print statements seemt to be totally corrupting the output
-		//fmt.Println(dcl)
-		firstFunc := c.f.Decls[dcl].(*ast.FuncDecl)
-		c.cfg = cfg.FromFunc(firstFunc)
-		vars := programslicer.GetForwardAffectedVariables(recvStmt, c.cfg, c.prog.Created[0], c.prog.Fset)
+		dcl := findFunction(recvStmt, cf)
+		fmt.Println("receive function") //BUG These dual print statements seemt to be totally corrupting the output
+		fmt.Println(dcl)
+		firstFunc := cf.f.Decls[dcl].(*ast.FuncDecl)
+		cf.cfg = cfg.FromFunc(firstFunc)
+		vars := programslicer.GetAffectedVariables(recvStmt, cf.cfg, cf.prog.Created[0], cf.prog.Fset, programslicer.ComputeForwardSlice)
 		affectedVars = append(affectedVars, vars...)
 	}
 
 	for _, node := range sendNodes {
-		recvStmt := (*node).(ast.Stmt)
+		sendStmt := (*node).(ast.Stmt)
 
-		dcl := findFunction(recvStmt)
-		//fmt.Println("function")
-		//fmt.Println(dcl)
-		firstFunc := c.f.Decls[dcl].(*ast.FuncDecl)
-		c.cfg = cfg.FromFunc(firstFunc)
-		vars := programslicer.GetBackwardAffectedVariables(recvStmt, c.cfg, c.prog.Created[0], c.prog.Fset)
+		dcl := findFunction(sendStmt, cf)
+		fmt.Println("send function")
+		fmt.Println(dcl)
+		firstFunc := cf.f.Decls[dcl].(*ast.FuncDecl)
+		cf.cfg = cfg.FromFunc(firstFunc)
+		vars := programslicer.GetAffectedVariables(sendStmt, cf.cfg, cf.prog.Created[0], cf.prog.Fset, programslicer.ComputeBackwardSlice)
 
 		affectedVars = append(affectedVars, vars...)
 	}
@@ -169,88 +172,62 @@ func initializeInstrumenter() string {
 	s := buf.String()
 	//print(s)
 	return s
-
 }
 
-func detectReceive(f *ast.File) []*ast.Node {
+//replacement for match send and receive
+//detectFunctionCalls searches an ast.File for instances of a varible
+//(varname) making a calls to a list of functions. Nodes in the ast
+//where such calls are made are returned
+//ex. conn.Write, and conn.WriteTo are searchable
+func detectFunctionCalls(f *ast.File, varName string, funcNames []string) []*ast.Node {
 	var results []*ast.Node
 	ast.Inspect(f, func(n ast.Node) bool {
 		switch z := n.(type) {
 		case *ast.ExprStmt:
 			switch x := z.X.(type) {
 			case *ast.CallExpr:
-				switch y := x.Fun.(type) {
-				case *ast.SelectorExpr:
-					left, _ := y.X.(*ast.Ident)
-					if left.Name == "conn" && (y.Sel.Name == "ReadFrom" || y.Sel.Name == "Read") {
-						//fmt.Println(left.Name, y.Sel.Name)
-						results = append(results, &n)
-					}
+				if matchCallExpression(x, varName, funcNames) {
+					results = append(results, &n)
 				}
 			}
 		case *ast.AssignStmt:
 			switch x := z.Rhs[0].(type) {
 			case *ast.CallExpr:
-				switch y := x.Fun.(type) {
-				case *ast.SelectorExpr:
-					left, _ := y.X.(*ast.Ident)
-					if left.Name == "conn" && (y.Sel.Name == "ReadFrom" || y.Sel.Name == "Read") {
-						//fmt.Println(left.Name, y.Sel.Name)
-						results = append(results, &n)
-					}
+				if matchCallExpression(x, varName, funcNames) {
+					results = append(results, &n)
 				}
 			}
-
 			return true
 		}
-
 		return true
 	})
 	return results
 }
 
-func detectSend(f *ast.File) []*ast.Node {
-	var results []*ast.Node
-	ast.Inspect(f, func(n ast.Node) bool {
-		switch z := n.(type) {
-		case *ast.ExprStmt:
-			switch x := z.X.(type) {
-			case *ast.CallExpr:
-				switch y := x.Fun.(type) {
-				case *ast.SelectorExpr:
-					left, _ := y.X.(*ast.Ident)
-					if left.Name == "conn" && (y.Sel.Name == "WriteTo" || y.Sel.Name == "Write") {
-						//fmt.Println(left.Name, y.Sel.Name)
-						results = append(results, &n)
-					}
+//matchCallExpression determines if a particular call expression
+//involvs (varName) calling any of the listed functions
+func matchCallExpression(n *ast.CallExpr, varName string, funcNames []string) bool {
+	switch y := n.Fun.(type) {
+	case *ast.SelectorExpr:
+		left, _ := y.X.(*ast.Ident)
+		if left.Name == varName {
+			for _, name := range funcNames {
+				if y.Sel.Name == name {
+					return true
 				}
 			}
-
-		case *ast.AssignStmt:
-			switch x := z.Rhs[0].(type) {
-			case *ast.CallExpr:
-				switch y := x.Fun.(type) {
-				case *ast.SelectorExpr:
-					left, _ := y.X.(*ast.Ident)
-					if left.Name == "conn" && (y.Sel.Name == "WriteTo" || y.Sel.Name == "Write") {
-						//fmt.Println(left.Name, y.Sel.Name)
-						results = append(results, &n)
-					}
-				}
-			}
-			return true
 		}
-
-		return true
-	})
-	return results
+	}
+	return false
 }
 
+/*
 func GetAccessedVarsInScope(dumpNode *ast.Comment, f *ast.File, cf *CFGWrapper) []string {
 	var results []string
 	path, _ := astutil.PathEnclosingInterval(f, dumpNode.Pos(), dumpNode.End())
 
 	var stmts []ast.Stmt
+	var unwantedVars []string
 
 	//print("inspecting")
 	for _, astnode := range path {
@@ -264,9 +241,37 @@ func GetAccessedVarsInScope(dumpNode *ast.Comment, f *ast.File, cf *CFGWrapper) 
 					switch x.(type) {
 					case *ast.BlockStmt:
 						return true
-						//return false //dont dive into if statements
-						////grabs nothing for some reason
-						//and out of scope
+
+					//begin assignment checking
+					case *ast.AssignStmt:
+						astmnt := x.(*ast.AssignStmt)
+
+						if astmnt.Tok.String() == ":=" {
+							var localStmts []ast.Stmt
+							ast.Inspect(x, func(r ast.Node) bool {
+								print("s")
+								switch s := r.(type) {
+								case ast.Stmt:
+									if (s.(ast.Stmt)).Pos() < dumpNode.Pos() {
+										localStmts = append(localStmts, s)
+									}
+								}
+								return true
+							})
+								defs, _ := dataflow.ReferencedVars(localStmts, cf.prog.Created[0])
+								for d, _ := range defs {
+									scope := d.Parent
+									names := scope.Names()
+									for _, name := range names {
+										fmt.Print(name)
+									}
+									fmt.Println()
+									unwantedVars = append(unwantedVars, d.Name())
+								}
+						}
+						return true
+
+						//end assignment checking
 					}
 					if x.Pos() < dumpNode.Pos() {
 						stmts = append(stmts, x)
@@ -280,12 +285,17 @@ func GetAccessedVarsInScope(dumpNode *ast.Comment, f *ast.File, cf *CFGWrapper) 
 		}
 
 	}
-	fmt.Println(stmts)
 	_, uses := dataflow.ReferencedVars(stmts, cf.prog.Created[0])
 
 	//actualUse := make(map[*types.Var]struct{})
 	for u, _ := range uses {
 		results = append(results, u.Name())
+	}
+
+	//test
+	print("unwanted\n")
+	for _, name := range unwantedVars {
+		fmt.Println(name)
 	}
 	//for _, result := range results {
 	//	fmt.Printf("%s\n", result)
@@ -294,15 +304,27 @@ func GetAccessedVarsInScope(dumpNode *ast.Comment, f *ast.File, cf *CFGWrapper) 
 	return results
 
 }
+*/
 
-func GetAccessibleVarsInScope(start int, file *ast.File) []string {
+func GetAccessibleVarsInScope(start int, file *ast.File, fset *token.FileSet) []string {
+	fmt.Println("GETTING VARS!!!")
 	var results []string
-	global_objs := astFile.Scope.Objects
+	global_objs := file.Scope.Objects
 	for identifier, _ := range global_objs {
-		results = append(results, fmt.Sprintf("%v, ", identifier))
+		if global_objs[identifier].Kind == ast.Var || global_objs[identifier].Kind == ast.Con { //|| global_objs[identifier].Kind == ast.Typ { //can be used for diving into structs
+			fmt.Printf("Global Found :%s\n", fmt.Sprintf("%v", identifier))
+			fmt.Printf("Checking for struct Type")
+			structure, ok := global_objs[identifier].Decl.(*ast.StructType)
+			if ok {
+				for _, fields := range structure.Fields.List {
+					fmt.Println("found Field Name", fields.Names[0].Name)
+				}
+			}
+			results = append(results, fmt.Sprintf("%v", identifier))
+		}
 	}
-	filePos := fset.File(astFile.Package)
-	path, _ := astutil.PathEnclosingInterval(astFile, filePos.Pos(start), filePos.Pos(start+2))
+	filePos := fset.File(file.Package)
+	path, _ := astutil.PathEnclosingInterval(file, filePos.Pos(start), filePos.Pos(start+2))
 
 	for _, astnode := range path {
 		//fmt.Println("%v", astutil.NodeDescription(astnode))
@@ -315,7 +337,8 @@ func GetAccessibleVarsInScope(start int, file *ast.File) []string {
 				case *ast.DeclStmt:
 					idents := t.Decl.(*ast.GenDecl).Specs[0].(*ast.ValueSpec).Names
 					for _, identifier := range idents {
-						results = append(results, fmt.Sprintf("%v, ", identifier.Name))
+						fmt.Printf("Local Found :%s\n", fmt.Sprintf("%v", identifier))
+						results = append(results, fmt.Sprintf("%v", identifier.Name))
 					}
 				}
 			}
@@ -344,6 +367,7 @@ func GenerateDumpCode(vars []string, lineNumber int) string {
 	}
 	var buffer bytes.Buffer
 	// write vars' values
+	buffer.WriteString(fmt.Sprintf("InstrumenterInit()\n"))
 	buffer.WriteString(fmt.Sprintf("vars%d := []interface{}{", lineNumber))
 	for i := 0; i < len(vars)-1; i++ {
 		buffer.WriteString(fmt.Sprintf("%s,", vars[i]))
@@ -366,8 +390,10 @@ var template_code string = `
 var encoder *gob.Encoder
 
 func InstrumenterInit() {
-	fileW, _ := os.Create("%s.txt")
-	encoder = gob.NewEncoder(fileW)
+	if encoder == nil {
+		fileW, _ := os.Create("%s.txt")
+		encoder = gob.NewEncoder(fileW)
+	}
 }
 
 func createPoint(vars []interface{}, varNames []string, lineNumber int) Point {
