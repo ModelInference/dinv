@@ -16,6 +16,11 @@ const (
 	RUNS          = 100
 )
 
+var (
+	buf               [1024]byte
+	term1, term2, sum int
+)
+
 func main() {
 	//dump
 	Logger = govec.Initialize("Client", "testclient.log")
@@ -25,11 +30,6 @@ func main() {
 	printErr(errL)
 	conn, errDial := net.DialUDP("udp", lAddr, rAddr)
 	printErr(errDial)
-
-	var (
-		buf               [1024]byte
-		term1, term2, sum int
-	)
 
 	for t := 0; t < RUNS; t++ {
 		term1, term2 = rand.Int()%LARGEST_TERM, rand.Int()%LARGEST_TERM

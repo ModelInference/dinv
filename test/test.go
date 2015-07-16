@@ -1,67 +1,4 @@
-package instrumenter
-
-import (
-	"fmt"
-	"go/ast"
-	"go/parser"
-	"go/token"
-	"os"
-	"path/filepath"
-	"testing"
-
-	"golang.org/x/tools/go/loader"
-)
-
-var astCommentFile *ast.File
-var cfgs []*CFGWrapper
-
-var clientDump [][]string = [][]string{
-	[]string{"RUNS", "cTerm1", "sTerm1", "printErr", "Init", "ADDITION_ARGS", "sConn", "main", "cConn", "sSum", "done", "MarshallInts", "Logger", "cSum", "LARGEST_TERM", "buf", "cTerm2", "sTerm2", "Client", "Server", "UnmarshallInts", "SIZEOFINT"},
-}
-
-func TestVars(t *testing.T) {
-	setup(t)
-
-	//get dump nodes
-	dumpNodes := GetDumpNodes(astCommentFile)
-
-	//nonOptimized Collection
-	var generated_code []string
-	for i, dump := range dumpNodes {
-		line := cfgs[0].fset.Position(dump.Pos()).Line
-		// log all vars
-		vars := GetAccessibleVarsInScope(int(dump.Pos()), astCommentFile, cfgs[0].fset)
-		for j, _ := range vars {
-			if !contains(vars[j], clientDump[i]) {
-				t.Errorf("inconsistent Variables found <%s>\n{%s} =/= wanted {%s}\n", vars[j], vars, clientDump[i])
-				t.Fatal()
-			}
-		}
-		for k, _ := range clientDump[i] {
-			if !contains(clientDump[i][k], vars) {
-				t.Errorf("wanted variable not found <%s>\n{%s} =/= wanted {%s}\n", clientDump[i][k], vars, clientDump[i])
-				t.Fatal()
-			}
-		}
-		code := GenerateDumpCode(vars, line)
-		generated_code = append(generated_code, code)
-	}
-	//fmt.Printf("%s\n", generated_code)
-
-}
-
-func writeFile(source string, filename string) string {
-	pwd, _ := filepath.Abs(filepath.Dir(os.Args[0]))
-	_, name := filepath.Split(filename)
-	modFilename := fmt.Sprintf("%s%s", pwd, name)
-	file, _ := os.Create(modFilename)
-	fmt.Printf("Writing file %s\n", modFilename)
-	file.WriteString(source)
-	file.Close()
-	return modFilename
-}
-
-const source = `package main
+package main
 
 import (
 	"fmt"
@@ -87,6 +24,7 @@ var (
 	cTerm1, cTerm2, cSum int
 	sTerm1, sTerm2, sSum int
 	done                 chan int
+	conn                 *toy
 )
 
 func main() {
@@ -101,16 +39,15 @@ func Client() {
 	for t := 0; t < RUNS; t++ {
 		cTerm1, cTerm2 = rand.Int()%LARGEST_TERM, rand.Int()%LARGEST_TERM
 
+		conn.Write()
+		conn.Read()
 		msg := MarshallInts([]int{cTerm1, cTerm2})
-		if cTerm1 < 5 {	//dummy should not be picked up
+		if cTerm1 < 5 { //dummy should not be picked up
 			dummy := 6
 			print(dummy)
 		}
 		// sending UDP packet to specified address and port
 		_, errWrite := cConn.Write(Logger.PrepareSend("", msg))
-		for i := 0; i< cTerm1 ;i++{
-			print(i)
-		}
 		//@dump
 		printErr(errWrite)
 		//adding local events for testing lattice /jan 23 2015
@@ -186,6 +123,7 @@ func UnmarshallInts(args []byte) []int {
 }
 
 func Init() {
+	conn = &toy{id: 5}
 	Logger = govec.Initialize("self", "self.log")
 	//setup receiving connection
 	sConn, _ = net.ListenPacket("udp", ":8080")
@@ -200,45 +138,24 @@ func Init() {
 	done = make(chan int)
 }
 
-var Logger *govec.GoLog`
-
-func setup(t *testing.T) {
-	//load source
-	var config loader.Config
-	fset := token.NewFileSet()
-
-	//write source out to file
-	filename := writeFile(source, "source.go")
-	f, err := config.ParseFile(filename, nil)
-	if err != nil {
-		t.Errorf("Encountered Error %s", err)
-	}
-	//silly global astfile bull
-	astCommentFile, _ = parser.ParseFile(fset, "", source, parser.ParseComments)
-
-	config.CreateFromFiles("testing", f)
-	prog, err := config.Load()
-	if err != nil {
-		t.Error("Cannot Load")
-	}
-
-	//create a cfg for every function
-	cfgs = make([]*CFGWrapper, 0)
-	for i := 0; i < len(f.Decls); i++ {
-		functionDec, ok := f.Decls[i].(*ast.FuncDecl)
-		if ok {
-			print("FuncFound\n")
-			wrap := getWrapper(t, f, functionDec, prog)
-			cfgs = append(cfgs, wrap)
-		}
-	}
+type toy struct {
+	id int
 }
 
-func contains(s string, arr []string) bool {
-	for i := range arr {
-		if arr[i] == s {
-			return true
-		}
-	}
-	return false
+func (t *toy) Read() {
+	print(t.id)
 }
+
+func (t *toy) ReadFrom() {
+	print(t.id)
+}
+
+func (t *toy) Write() {
+	print(t.id)
+}
+
+func (t *toy) WriteTo() {
+	print(t.id)
+}
+
+var Logger *govec.GoLog

@@ -12,55 +12,6 @@ import (
 	"golang.org/x/tools/go/loader"
 )
 
-var astCommentFile *ast.File
-var cfgs []*CFGWrapper
-
-var clientDump [][]string = [][]string{
-	[]string{"RUNS", "cTerm1", "sTerm1", "printErr", "Init", "ADDITION_ARGS", "sConn", "main", "cConn", "sSum", "done", "MarshallInts", "Logger", "cSum", "LARGEST_TERM", "buf", "cTerm2", "sTerm2", "Client", "Server", "UnmarshallInts", "SIZEOFINT"},
-}
-
-func TestVars(t *testing.T) {
-	setup(t)
-
-	//get dump nodes
-	dumpNodes := GetDumpNodes(astCommentFile)
-
-	//nonOptimized Collection
-	var generated_code []string
-	for i, dump := range dumpNodes {
-		line := cfgs[0].fset.Position(dump.Pos()).Line
-		// log all vars
-		vars := GetAccessibleVarsInScope(int(dump.Pos()), astCommentFile, cfgs[0].fset)
-		for j, _ := range vars {
-			if !contains(vars[j], clientDump[i]) {
-				t.Errorf("inconsistent Variables found <%s>\n{%s} =/= wanted {%s}\n", vars[j], vars, clientDump[i])
-				t.Fatal()
-			}
-		}
-		for k, _ := range clientDump[i] {
-			if !contains(clientDump[i][k], vars) {
-				t.Errorf("wanted variable not found <%s>\n{%s} =/= wanted {%s}\n", clientDump[i][k], vars, clientDump[i])
-				t.Fatal()
-			}
-		}
-		code := GenerateDumpCode(vars, line)
-		generated_code = append(generated_code, code)
-	}
-	//fmt.Printf("%s\n", generated_code)
-
-}
-
-func writeFile(source string, filename string) string {
-	pwd, _ := filepath.Abs(filepath.Dir(os.Args[0]))
-	_, name := filepath.Split(filename)
-	modFilename := fmt.Sprintf("%s%s", pwd, name)
-	file, _ := os.Create(modFilename)
-	fmt.Printf("Writing file %s\n", modFilename)
-	file.WriteString(source)
-	file.Close()
-	return modFilename
-}
-
 const source = `package main
 
 import (
@@ -87,6 +38,7 @@ var (
 	cTerm1, cTerm2, cSum int
 	sTerm1, sTerm2, sSum int
 	done                 chan int
+	conn                 *toy
 )
 
 func main() {
@@ -98,35 +50,33 @@ func main() {
 }
 
 func Client() {
-	for t := 0; t < RUNS; t++ {
-		cTerm1, cTerm2 = rand.Int()%LARGEST_TERM, rand.Int()%LARGEST_TERM
+	b := 5
+	c := 6
+	print (b,c)
+	for t := 0; t < RUNS; t++ {										//42
+		cTerm1, cTerm2 = rand.Int()%b, rand.Int()%c
 
-		msg := MarshallInts([]int{cTerm1, cTerm2})
-		if cTerm1 < 5 {	//dummy should not be picked up
+		msg := MarshallInts([]int{cTerm1, cTerm2})					//45
+		if cTerm1 < 5 { //dummy should not be picked up
 			dummy := 6
 			print(dummy)
 		}
-		// sending UDP packet to specified address and port
+		// sending UDP packet to specified address and port			//50
 		_, errWrite := cConn.Write(Logger.PrepareSend("", msg))
-		for i := 0; i< cTerm1 ;i++{
-			print(i)
-		}
+		//dumpline
 		//@dump
 		printErr(errWrite)
-		//adding local events for testing lattice /jan 23 2015
-		//		for i := 0; i < 3; i++ {
-		//			Logger.LogLocalEvent("Twittle Thumbs")
-		//		}
-		// Reading the response message
+		// Reading the response message 							//55
 
 		_, errRead := cConn.Read(buf[0:])
 		ret := Logger.UnpackReceive("Received", buf[0:])
 		printErr(errRead)
-
-		uret := UnmarshallInts(ret)
+		uret := UnmarshallInts(ret)									//60
 		cSum = uret[0]
 		fmt.Printf("C: %d + %d = %d\n", cTerm1, cTerm2, cSum)
 		cSum = 0
+		conn.Write()												//64
+		conn.Read()													//65
 	}
 	done <- 0
 }
@@ -186,6 +136,7 @@ func UnmarshallInts(args []byte) []int {
 }
 
 func Init() {
+	conn = &toy{id: 5}
 	Logger = govec.Initialize("self", "self.log")
 	//setup receiving connection
 	sConn, _ = net.ListenPacket("udp", ":8080")
@@ -200,7 +151,75 @@ func Init() {
 	done = make(chan int)
 }
 
+type toy struct {
+	id int
+}
+
+func (t *toy) Read() {
+	print(t.id)
+}
+
+func (t *toy) ReadFrom() {
+	print(t.id)
+}
+
+func (t *toy) Write() {
+	print(t.id)
+}
+
+func (t *toy) WriteTo() {
+	print(t.id)
+}
+
 var Logger *govec.GoLog`
+
+var astCommentFile *ast.File
+var cfgs []*CFGWrapper
+
+var clientDump [][]string = [][]string{
+	[]string{"t", "cTerm1", "cTerm2", "cConn", "Logger", "msg"},
+	[]string{"t", "cTerm1", "cTerm2", "cConn", "Logger", "msg"},
+}
+
+func TestVars(t *testing.T) {
+	setup(t)
+
+	//get dump nodes
+	dumpNodes := GetDumpNodes(astCommentFile)
+
+	//nonOptimized Collection
+	var generated_code []string
+	for i, dump := range dumpNodes {
+		line := cfgs[0].fset.Position(dump.Pos()).Line
+		// log all vars
+		vars := getAccessedAffectedVars(dump, astCommentFile, cfgs[0])
+		for j, _ := range vars {
+			if !contains(vars[j], clientDump[i]) {
+				t.Errorf("inconsistent Variables found {%s} =/= wanted {%s}\n", vars, clientDump[i])
+			}
+		}
+		for k, _ := range clientDump[i] {
+			if !contains(clientDump[i][k], vars) {
+				t.Errorf("inconsistent Variables found {%s} =/= wanted {%s}\n", vars, clientDump[i])
+			}
+		}
+		code := GenerateDumpCode(vars, line)
+		generated_code = append(generated_code, code)
+	}
+	//fmt.Printf("%s\n", generated_code)
+
+}
+
+func writeFile(source string, filename string) string {
+	pwd, _ := filepath.Abs(filepath.Dir(os.Args[0]))
+	_, name := filepath.Split(filename)
+	modFilename := fmt.Sprintf("%s%s", pwd, name)
+	file, _ := os.Create(modFilename)
+	fmt.Printf("Writing file %s\n", modFilename)
+	file.WriteString(source)
+	file.Close()
+	return modFilename
+}
 
 func setup(t *testing.T) {
 	//load source

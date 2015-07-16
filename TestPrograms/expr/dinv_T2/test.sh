@@ -3,8 +3,8 @@
 #and runs them through the entire process from start to finnish
 #clean up directory
 
-P1="server.go"
-P2="client.go"
+P1="server"
+P2="client"
 TEST="t2"
 
 function installDinv {
@@ -15,17 +15,17 @@ function installDinv {
 
 function runInstrumenter {
     cd $DINV
-    dinv -instrumenter $DINV/TestPrograms/$TEST/$P2 > $DINV/TestPrograms/$TEST/mod_$P2
-    dinv -instrumenter $DINV/TestPrograms/$TEST/$P1 > $DINV/TestPrograms/$TEST/mod_$P1
+    dinv -instrumenter $DINV/TestPrograms/$TEST/$P2/$P2.go
+    dinv -instrumenter $DINV/TestPrograms/$TEST/$P1/$P1.go
 }
 
 function runTestPrograms {
-    cd $DINV/TestPrograms/$TEST
-    go run mod_$P1 &
+    cd $DINV
+    go run mod_$P1.go &
     SERVER_PID=$!
     echo $SERVER_PID
     sleep 1
-    go run mod_$P2 &
+    go run mod_$P2.go &
     CLIENT_PID=$!
     echo $CLIENT_PID
     sleep 1
@@ -33,11 +33,13 @@ function runTestPrograms {
     kill $CLIENT_PID
     kill `ps | pgrep mod_server | awk '{print $1}'`
     kill `ps | pgrep mod_client | awk '{print $1}'`
+    mv $DINV/TestPrograms/$TEST/$P2/$P2.go.txt $DINV
+    mv $DINV/TestPrograms/$TEST/$P1/$P1.go.txt $DINV
 }
 
 function runLogMerger {
     cd $DINV
-    dinv -logmerger $DINV/TestPrograms/$TEST/$P2.txt $DINV/TestPrograms/$TEST/$P1.txt
+    dinv -logmerger $P2.go.txt $P1.go.txt
     mv ./*.dtrace $DINV/TestPrograms/expr/dinv_T2/
 }
 
@@ -54,14 +56,15 @@ function runDaikon {
 }
 
 function cleanUp {
-    rm $DINV/TestPrograms/$TEST/$P1.txt
-    rm $DINV/TestPrograms/$TEST/$P2.txt
-    rm $DINV/TestPrograms/$TEST/mod_$P1
-    rm $DINV/TestPrograms/$TEST/mod_$P2
-    rm $DINV/TestPrograms/$TEST/testclient.log-Log.txt
-    rm $DINV/TestPrograms/$TEST/slog.log-Log.txt
+    rm $DINV/$P1.go.txt
+    rm $DINV/$P2.go.txt
+    rm $DINV/mod_$P1.go
+    rm $DINV/mod_$P2.go
+    rm $DINV/testclient.log-Log.txt
+    rm $DINV/slog.log-Log.txt
     rm $DINV/TestPrograms/expr/dinv_T2/*.dtrace
     rm $DINV/TestPrograms/expr/dinv_T2/*.gz
+    rm $DINV/TestPrograms/expr/dinv_T2/output.txt
 }
 
 function shivizMerge {
@@ -76,4 +79,4 @@ runTestPrograms
 runLogMerger
 shivizMerge
 runDaikon
-#cleanUp
+cleanUp
