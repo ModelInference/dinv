@@ -36,37 +36,36 @@ func Instrument(files []string) {
 	for _, file := range files {
 		optimize := false
 		program := initializeInstrumenter(file)
-		dumpNodes := GetDumpNodes(program.source[0].comments)
-		var generated_code []string
-		if !optimize {
-			fmt.Println("GETTING VARS 1")
-			for _, dump := range dumpNodes {
-				line := program.fset.Position(dump.Pos()).Line
-				// log all vars
-				//generated_code = append(generated_code, GenerateDumpCode(GetAccessedVarsInScope(dump, c.f, c), line))
-				generated_code = append(generated_code, GenerateDumpCode(GetAccessibleVarsInScope(int(dump.Pos()), program.source[0].comments, program.fset), line))
-				fmt.Println(generated_code[0])
+		for i := range program.source {
+			dumpNodes := GetDumpNodes(program.source[i].comments)
+			extra_code = template_code
+			extra_code = fmt.Sprintf(extra_code, program.source[i].filename)
+			var generated_code []string
+			if !optimize {
+				fmt.Println("GETTING VARS 1")
+				for _, dump := range dumpNodes {
+					line := program.fset.Position(dump.Pos()).Line
+					// log all vars
+					//generated_code = append(generated_code, GenerateDumpCode(GetAccessedVarsInScope(dump, c.f, c), line))
+					generated_code = append(generated_code, GenerateDumpCode(GetAccessibleVarsInScope(int(dump.Pos()), program.source[i].comments, program.fset), line, program.source[i].filename))
+					fmt.Println(generated_code[0])
+				}
+			} else {
+				for _, dump := range dumpNodes {
+					line := program.fset.Position(dump.Pos()).Line
+					generated_code = append(generated_code, GenerateDumpCode(getAccessedAffectedVars(dump, program), line, program.source[i].filename))
+				}
 			}
-		} else {
-			for _, dump := range dumpNodes {
-				line := program.fset.Position(dump.Pos()).Line
-				generated_code = append(generated_code, GenerateDumpCode(getAccessedAffectedVars(dump, program), line))
-
-			}
+			count := 0
+			rp := regexp.MustCompile("\\/\\/@dump")
+			insturmented := rp.ReplaceAllStringFunc(program.source[i].text, func(s string) string {
+				replacement := generated_code[count]
+				count++
+				return replacement
+			})
+			insturmented = insturmented + "\n" + extra_code
+			writeInstrumentedFile(insturmented, program.source[i].filename)
 		}
-		count := 0
-		rp := regexp.MustCompile("\\/\\/@dump")
-		insturmented := rp.ReplaceAllStringFunc(program.source[0].text, func(s string) string {
-			replacement := generated_code[count]
-			count++
-			return replacement
-		})
-
-		insturmented = insturmented + "\n" + extra_code
-
-		//fmt.Print(insturmented)
-		writeInstrumentedFile(insturmented, file)
-		//fmt.Println(detectSendReceive(astFile))
 	}
 }
 
@@ -145,17 +144,15 @@ func getAffectedVars(program *ProgramWrapper) []string {
 //TODO is a really bad function and requires way too many globals,
 //lets turf it at some point
 func initializeInstrumenter(src_location string) *ProgramWrapper {
-	extra_code = template_code
-	extra_code = fmt.Sprintf(extra_code, src_location)
 	// Create the AST by parsing src.
 	program := getWrappers(nil, src_location)
 
-	addImports(program.source[0].comments)
-
-	var buf bytes.Buffer
-	printer.Fprint(&buf, program.fset, program.source[0].comments)
-
-	program.source[0].text = buf.String()
+	for i := range program.source {
+		var buf bytes.Buffer
+		printer.Fprint(&buf, program.fset, program.source[i].comments)
+		addImports(program.source[i].comments)
+		program.source[i].text = buf.String()
+	}
 	//print(s)
 	return program
 }
@@ -262,26 +259,30 @@ func GetDumpNodes(file *ast.File) []*ast.Comment {
 }
 
 // returns dump code that should replace that specific line number
-func GenerateDumpCode(vars []string, lineNumber int) string {
+func GenerateDumpCode(vars []string, lineNumber int, path string) string {
 	if len(vars) == 0 {
 		return ""
 	}
+
+	_, nameWithExt := filepath.Split(path)
+	ext := filepath.Ext(path)
+	filename := strings.Replace(nameWithExt, ext, "", 1)
 	var buffer bytes.Buffer
 	// write vars' values
-	buffer.WriteString(fmt.Sprintf("InstrumenterInit()\n"))
-	buffer.WriteString(fmt.Sprintf("vars%d := []interface{}{", lineNumber))
+	buffer.WriteString(fmt.Sprintf("\nInstrumenterInit()\n"))
+	buffer.WriteString(fmt.Sprintf("%svars%d := []interface{}{", filename, lineNumber))
 	for i := 0; i < len(vars)-1; i++ {
 		buffer.WriteString(fmt.Sprintf("%s,", vars[i]))
 	}
 	buffer.WriteString(fmt.Sprintf("%s}\n", vars[len(vars)-1]))
 	// write vars' names
-	buffer.WriteString(fmt.Sprintf("varsName%d := []string{", lineNumber))
+	buffer.WriteString(fmt.Sprintf("%svarsName%d := []string{", filename, lineNumber))
 	for i := 0; i < len(vars)-1; i++ {
 		buffer.WriteString(fmt.Sprintf("\"%s\",", vars[i]))
 	}
 	buffer.WriteString(fmt.Sprintf("\"%s\"}\n", vars[len(vars)-1]))
-	buffer.WriteString(fmt.Sprintf("point%d := createPoint(vars%d, varsName%d, %d)\n", lineNumber, lineNumber, lineNumber, lineNumber))
-	buffer.WriteString(fmt.Sprintf("encoder.Encode(point%d)", lineNumber))
+	buffer.WriteString(fmt.Sprintf("%spoint%d := createPoint(%svars%d, %svarsName%d, %d)\n", filename, lineNumber, filename, lineNumber, filename, lineNumber, lineNumber))
+	buffer.WriteString(fmt.Sprintf("encoder.Encode(%spoint%d)", filename, lineNumber))
 	return buffer.String()
 }
 
@@ -399,6 +400,7 @@ type ProgramWrapper struct {
 type SourceWrapper struct {
 	comments *ast.File
 	source   *ast.File
+	filename string
 	text     string
 	cfgs     []*CFGWrapper
 }
@@ -413,7 +415,6 @@ type CFGWrapper struct {
 
 func getWrappers(t *testing.T, filename string) *ProgramWrapper {
 	fmt.Println("Getting Wrappers")
-
 	var config loader.Config
 	//fmt.Println("\n\n" + filename + "\n\n")
 	commentFile, _ := parser.ParseFile(token.NewFileSet(), filename, nil, parser.ParseComments)
@@ -424,9 +425,12 @@ func getWrappers(t *testing.T, filename string) *ProgramWrapper {
 	sourceFiles := make([]*ast.File, 0)
 	sourceFiles = append(sourceFiles, sourceFile)
 
+	filenames := make([]string, 0)
+	filenames = append(filenames, filename)
+
 	dir, _ := filepath.Split(filename)
-	fmt.Println(dir, filename)
 	err = filepath.Walk(dir, func(path string, info os.FileInfo, err error) error {
+		fmt.Println(path)
 		ext := filepath.Ext(path)
 		sdir, _ := filepath.Split(path)
 		//add all other files in the same directory
@@ -445,6 +449,7 @@ func getWrappers(t *testing.T, filename string) *ProgramWrapper {
 			return nil
 		}
 		commentFiles = append(commentFiles, comments)
+		filenames = append(filenames, path)
 		return nil
 	})
 	if err != nil {
@@ -466,6 +471,7 @@ func getWrappers(t *testing.T, filename string) *ProgramWrapper {
 
 	sources := make([]*SourceWrapper, 0)
 	for i, file := range sourceFiles {
+		fmt.Printf("building source for %s\n", filenames[i])
 		cfgs := make([]*CFGWrapper, 0)
 		for j := 0; j < len(file.Decls); j++ {
 			fmt.Printf("building CFG[%d]\n", j)
@@ -480,6 +486,7 @@ func getWrappers(t *testing.T, filename string) *ProgramWrapper {
 		sources = append(sources, &SourceWrapper{
 			comments: commentFiles[i],
 			source:   sourceFiles[i],
+			filename: filenames[i],
 			cfgs:     cfgs})
 	}
 	fmt.Println("Wrappers Built")
@@ -527,12 +534,6 @@ func getWrapper(t *testing.T, functionDec *ast.FuncDecl, prog *loader.Program) *
 	v[START] = cfg.Entry
 	stmts[cfg.Entry] = START
 	stmts[cfg.Exit] = END
-	//if len(v) != len(cfg.GetBlocks()) {
-	//	t.Logf("expected %d vertices, got %d --construction error", len(v), len(cfg.GetBlocks()))
-	//}
-	//fmt.Printf("-----func start print---------------\n")
-	//ast.Print(prog.Fset, f)
-	//fmt.Printf("-----func end print-----------------\n")
 
 	return &CFGWrapper{
 		cfg:      cfg,
