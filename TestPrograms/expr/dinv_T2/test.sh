@@ -14,32 +14,58 @@ function installDinv {
 }
 
 function runInstrumenter {
-    cd $DINV
+    cd $DINV/TestPrograms/$TEST/$P2/breakup/
     dinv -instrumenter $DINV/TestPrograms/$TEST/$P2/breakup/$P2.go
-    dinv -instrumenter $DINV/TestPrograms/$TEST/$P1/$P1.go
+    mkdir ../temp
+    mv mod* ../temp
+    mkdir ../temp2
+    mv *.go ../temp2
+    mv ../temp/*.go ./
+    rmdir ../temp
+    
+    cd $DINV/TestPrograms/$TEST/$P1/breakup/
+    dinv -instrumenter $DINV/TestPrograms/$TEST/$P1/breakup/$P1.go
+    mkdir ../temp
+    mv mod* ../temp
+    mkdir ../temp2
+    mv *.go ../temp2
+    mv ../temp/*.go ./
+    rmdir ../temp
 }
 
 function runTestPrograms {
-    cd $DINV
-    go run mod_$P1.go &
+    cd $DINV/TestPrograms/$TEST/$P1
+    go run serverEntry.go &
     SERVER_PID=$!
     echo $SERVER_PID
     sleep 1
-    go run mod_$P2.go &
+    cd $DINV/TestPrograms/$TEST/$P2
+    go run clientEntry.go &
     CLIENT_PID=$!
     echo $CLIENT_PID
     sleep 1
     kill $SERVER_PID
     kill $CLIENT_PID
-    kill `ps | pgrep mod_server | awk '{print $1}'`
-    kill `ps | pgrep mod_client | awk '{print $1}'`
-    mv $DINV/TestPrograms/$TEST/$P2/$P2.go.txt $DINV
-    mv $DINV/TestPrograms/$TEST/$P1/$P1.go.txt $DINV
+    kill `ps | pgrep serverEntry | awk '{print $1}'`
+    kill `ps | pgrep clientEntry | awk '{print $1}'`
+    
+    cd $DINV/TestPrograms/$TEST/$P2/temp2
+    mv *.go ../breakup
+    cd ..
+    rmdir temp2
+    
+    cd $DINV/TestPrograms/$TEST/$P1/temp2
+    mv *.go ../breakup
+    cd ..
+    rmdir temp2
+    
+    mv $DINV/TestPrograms/$TEST/$P2/*.txt $DINV
+    mv $DINV/TestPrograms/$TEST/$P1/*.txt $DINV
 }
 
 function runLogMerger {
     cd $DINV
-    dinv -logmerger $P2.go.txt $P1.go.txt
+    dinv -logmerger client-*.txt server-*.txt
     mv ./*.dtrace $DINV/TestPrograms/expr/dinv_T2/
 }
 
@@ -58,13 +84,21 @@ function runDaikon {
 function cleanUp {
     rm $DINV/$P1.go.txt
     rm $DINV/$P2.go.txt
-    rm $DINV/mod_$P1.go
-    rm $DINV/mod_$P2.go
     rm $DINV/testclient.log-Log.txt
     rm $DINV/slog.log-Log.txt
-    rm $DINV/TestPrograms/expr/dinv_T2/*.dtrace
+    $DINV/TestPrograms/expr/dinv_T2/*.dtrace
     rm $DINV/TestPrograms/expr/dinv_T2/*.gz
     rm $DINV/TestPrograms/expr/dinv_T2/output.txt
+    
+    cd $DINV/TestPrograms/$TEST/$P1/breakup/
+    rm mod*
+    cd .. 
+    rm *.txt
+    cd $DINV/TestPrograms/$TEST/$P2/breakup/
+    rm mod*
+    rm *.txt
+    cd $DINV 
+    rm client-*.txt server-*.txt
 }
 
 function shivizMerge {
@@ -73,10 +107,10 @@ function shivizMerge {
 }
 
 
-cleanUp
 installDinv
 runInstrumenter
 runTestPrograms
 runLogMerger
 shivizMerge
 runDaikon
+cleanUp

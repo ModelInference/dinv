@@ -29,17 +29,14 @@ const (
 	END   = 100000000
 )
 
-var usage string = "go run instrumenter.go toinstrument > instrumented.go"
-
 func Instrument(files []string) {
 	fmt.Println("INSTRUMENTING FILES")
 	for _, file := range files {
 		optimize := false
 		program := initializeInstrumenter(file)
+		writeInjectionFile(program.packageName)
 		for i := range program.source {
 			dumpNodes := GetDumpNodes(program.source[i].comments)
-			extra_code = template_code
-			extra_code = fmt.Sprintf(extra_code, program.source[i].filename)
 			var generated_code []string
 			if !optimize {
 				fmt.Println("GETTING VARS 1")
@@ -63,8 +60,11 @@ func Instrument(files []string) {
 				count++
 				return replacement
 			})
-			insturmented = insturmented + "\n" + extra_code
-			writeInstrumentedFile(insturmented, program.source[i].filename)
+			/*
+				if i == 1 {
+					insturmented = insturmented + "\n" + extra_code
+				}*/
+			writeInstrumentedFile(insturmented, "mod_", program.source[i].filename)
 		}
 	}
 }
@@ -108,7 +108,6 @@ func getAffectedVars(program *ProgramWrapper) []string {
 	//fmt.Println(recvNodes)
 	//fmt.Println(sendNodes)
 	var affectedVars []*types.Var
-
 	for _, node := range recvNodes {
 		recvStmt := (*node).(ast.Stmt)
 		dcl := findFunction(recvStmt, program.source[0].source.Decls)
@@ -281,24 +280,49 @@ func GenerateDumpCode(vars []string, lineNumber int, path string) string {
 		buffer.WriteString(fmt.Sprintf("\"%s\",", vars[i]))
 	}
 	buffer.WriteString(fmt.Sprintf("\"%s\"}\n", vars[len(vars)-1]))
-	buffer.WriteString(fmt.Sprintf("%spoint%d := createPoint(%svars%d, %svarsName%d, %d)\n", filename, lineNumber, filename, lineNumber, filename, lineNumber, lineNumber))
-	buffer.WriteString(fmt.Sprintf("encoder.Encode(%spoint%d)", filename, lineNumber))
+	buffer.WriteString(fmt.Sprintf("%spoint%d := CreatePoint(%svars%d, %svarsName%d, %d, \"%s\")\n", filename, lineNumber, filename, lineNumber, filename, lineNumber, lineNumber, filename))
+	buffer.WriteString(fmt.Sprintf("Encoder.Encode(%spoint%d)", filename, lineNumber))
 	return buffer.String()
 }
 
-var extra_code string
-var template_code string = `
+func writeInjectionFile(packageName string) {
+	header := header_code
+	header = fmt.Sprintf(header, packageName, packageName)
+	fileString := header + "\n" + body_code
+	writeInstrumentedFile(fileString, "mod_", "inject.go")
+}
 
-var encoder *gob.Encoder
+/* Injection Code */
+var extra_code string
+var header_code string = `
+
+package %s
+
+import (
+	"encoding/gob"
+	"os"
+	"reflect"
+	"strconv"
+	"time"
+	"fmt"
+)
+
+var Encoder *gob.Encoder
+var packageName = "%s"
+`
+
+var body_code string = `
 
 func InstrumenterInit() {
-	if encoder == nil {
-		fileW, _ := os.Create("%s.txt")
-		encoder = gob.NewEncoder(fileW)
+	if Encoder == nil {
+		stamp := time.Now()
+		filename := fmt.Sprintf("%s-%d.txt",packageName,stamp.Nanosecond())
+		fileW, _ := os.Create(filename)
+		Encoder = gob.NewEncoder(fileW)
 	}
 }
 
-func createPoint(vars []interface{}, varNames []string, lineNumber int) Point {
+func CreatePoint(vars []interface{}, varNames []string, lineNumber int, filename string) Point {
 
 	length := len(varNames)
 	dumps := make([]NameValuePair, 0)
@@ -313,13 +337,14 @@ func createPoint(vars []interface{}, varNames []string, lineNumber int) Point {
 		}
 	}
 	
-	point := Point{dumps, strconv.Itoa(lineNumber), Logger.GetCurrentVC()}
+	point := Point{dumps, strconv.Itoa(lineNumber), filename, Logger.GetCurrentVC()}
 	return point
 }
 
 type Point struct {
 	Dump        []NameValuePair
 	LineNumber  string
+	FileName	string
 	VectorClock []byte
 }
 
@@ -328,15 +353,18 @@ type NameValuePair struct {
 	Value   interface{}
 	Type    string
 }
+`
 
+//ONLY INJECT IF DEBUGGING
 //func (nvp NameValuePair) String() string {
 //	return fmt.Sprintf("(%s,%s,%s)", nvp.VarName, nvp.Value, nvp.Type)
 //}
 
 //func (p Point) String() string {
 //	return fmt.Sprintf("%s : %s", p.LineNumber, p.Dump)
-//}
-`
+//`
+
+/* /Injection code */
 
 func addImports(file *ast.File) {
 	packagesToImport := []string{"\"encoding/gob\"", "\"os\"", "\"reflect\"", "\"strconv\""}
@@ -392,9 +420,10 @@ func nonDuplicateImports(packagesToImport []string, specs []ast.Spec) []string {
 }
 
 type ProgramWrapper struct {
-	prog   *loader.Program
-	fset   *token.FileSet
-	source []*SourceWrapper
+	prog        *loader.Program
+	fset        *token.FileSet
+	packageName string
+	source      []*SourceWrapper
 }
 
 type SourceWrapper struct {
@@ -427,6 +456,8 @@ func getWrappers(t *testing.T, filename string) *ProgramWrapper {
 
 	filenames := make([]string, 0)
 	filenames = append(filenames, filename)
+
+	pName := commentFile.Name.String()
 
 	dir, _ := filepath.Split(filename)
 	err = filepath.Walk(dir, func(path string, info os.FileInfo, err error) error {
@@ -491,9 +522,10 @@ func getWrappers(t *testing.T, filename string) *ProgramWrapper {
 	}
 	fmt.Println("Wrappers Built")
 	return &ProgramWrapper{
-		prog:   prog,
-		fset:   prog.Fset,
-		source: sources,
+		prog:        prog,
+		fset:        prog.Fset,
+		packageName: pName,
+		source:      sources,
 	}
 
 }
@@ -551,10 +583,10 @@ func (p *ProgramWrapper) printAST() {
 	}
 }
 
-func writeInstrumentedFile(source string, filename string) {
+func writeInstrumentedFile(source string, prefix string, filename string) {
 	pwd, _ := filepath.Abs(filepath.Dir(os.Args[0]))
 	_, name := filepath.Split(filename)
-	modFilename := fmt.Sprintf("%s/mod_%s", pwd, name)
+	modFilename := fmt.Sprintf("%s/%s%s", pwd, prefix, name)
 	file, _ := os.Create(modFilename)
 	fmt.Printf("Writing file %s\n", modFilename)
 	file.WriteString(source)
