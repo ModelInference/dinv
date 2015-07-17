@@ -15,7 +15,7 @@ function installDinv {
 
 function runInstrumenter {
     cd $DINV
-    dinv -instrumenter $DINV/TestPrograms/$TEST/$P2/$P2.go
+    dinv -instrumenter $DINV/TestPrograms/$TEST/$P2/breakup/$P2.go
     dinv -instrumenter $DINV/TestPrograms/$TEST/$P1/$P1.go
 }
 
