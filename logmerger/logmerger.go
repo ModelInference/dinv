@@ -47,6 +47,7 @@ func buildLogs(logFiles []string) [][]Point {
 		logs = append(logs, log)
 	}
 	clocks, _ := VectorClockArraysFromLogs(logs)
+	fmt.Printf("Found %d seperate clocks\n", len(clocks))
 	ids := idClockMapper(clocks)
 	for i, log := range logs {
 		log = addBaseLog(ids[i], log)
@@ -100,7 +101,7 @@ func writeLogToFile(log []Point, filename string) {
 func createMapOfLogsForEachPoint(log []Point) map[string][]Point {
 	mapOfPoints := make(map[string][]Point, 0)
 	for i := 0; i < len(log); i++ {
-		mapOfPoints[log[i].LineNumber] = append(mapOfPoints[log[i].LineNumber], log[i])
+		mapOfPoints[log[i].LineNumber+log[i].FileName] = append(mapOfPoints[log[i].LineNumber+log[i].FileName], log[i])
 	}
 	return mapOfPoints
 }
@@ -114,7 +115,7 @@ func writeDeclaration(file *os.File, mapOfPoints map[string][]Point) {
 	file.WriteString("\n")
 	for _, v := range mapOfPoints {
 		point := v[0]
-		file.WriteString(fmt.Sprintf("ppt p-%s:::%s\n", point.LineNumber, point.LineNumber))
+		file.WriteString(fmt.Sprintf("ppt p-%s%s:::%s%s\n", point.LineNumber, point.FileName, point.LineNumber, point.FileName))
 		file.WriteString(fmt.Sprintf("ppt-type point\n"))
 		for i := 0; i < len(point.Dump); i++ {
 			file.WriteString(fmt.Sprintf("variable %s\n", point.Dump[i].VarName))
@@ -133,7 +134,7 @@ func writeDeclaration(file *os.File, mapOfPoints map[string][]Point) {
 func writeValues(file *os.File, log []Point) {
 	for i := range log {
 		point := log[i]
-		file.WriteString(fmt.Sprintf("p-%s:::%s\n", point.LineNumber, point.LineNumber))
+		file.WriteString(fmt.Sprintf("p-%s%s:::%s%s\n", point.LineNumber, point.FileName, point.LineNumber, point.FileName))
 		file.WriteString(fmt.Sprintf("this_invocation_nonce\n"))
 		file.WriteString(fmt.Sprintf("%d\n", i))
 		for i := range point.Dump {
@@ -227,12 +228,12 @@ func writeTraceFiles(states []State, spec *MergeSpec) {
 				if !written[i][j] {
 					if !newFile {
 						if debug {
-							fmt.Printf("New file :%s\n", mergedPoints[i][j].LineNumber)
+							fmt.Printf("New file :%s\n", mergedPoints[i][j].LineNumber+mergedPoints[i][j].FileName)
 						}
-						filename = mergedPoints[i][j].LineNumber
+						filename = mergedPoints[i][j].LineNumber + mergedPoints[i][j].FileName
 						newFile = true
 					}
-					if filename == mergedPoints[i][j].LineNumber {
+					if filename == mergedPoints[i][j].LineNumber+mergedPoints[i][j].FileName {
 						//sample rate
 						if (rand.Int() % 100) < spec.sampleRate {
 							pointLog = append(pointLog, mergedPoints[i][j])
@@ -279,7 +280,7 @@ func totalOrderLineNumberMerge(states []State) [][]Point {
 			}
 			mergedPoints[i][j] = mergePoints(points)
 			if debug {
-				fmt.Println("%s\n", mergedPoints[i][j].LineNumber)
+				fmt.Println("%s\n", mergedPoints[i][j].LineNumber+mergedPoints[i][j].FileName)
 			}
 		}
 	}
@@ -321,6 +322,7 @@ func mergePoints(points []Point) Point {
 	for _, point := range points {
 		mergedPoint.Dump = append(mergedPoint.Dump, point.Dump...) //...
 		mergedPoint.LineNumber = mergedPoint.LineNumber + "_" + point.LineNumber
+		mergedPoint.FileName = mergedPoint.FileName + "_" + point.FileName
 		pVClock1, _ := vclock.FromBytes(mergedPoint.VectorClock)
 		pVClock2, _ := vclock.FromBytes(point.VectorClock)
 		temp := pVClock1.Copy()
@@ -345,7 +347,7 @@ func readLog(filePath string) []Point {
 		var decodedPoint Point
 		e = decoder.Decode(&decodedPoint)
 		if e == nil {
-			fmt.Println(decodedPoint.String())
+			//fmt.Println(decodedPoint.String())
 			pointArray = append(pointArray, decodedPoint)
 		}
 	}
@@ -376,6 +378,7 @@ type MergeSpec struct {
 type Point struct {
 	Dump               []NameValuePair
 	LineNumber         string
+	FileName           string
 	VectorClock        []byte
 	CommunicationDelta int
 }
