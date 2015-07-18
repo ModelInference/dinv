@@ -18,7 +18,7 @@ var (
 )
 
 func main() {
-	flag.BoolVar(&inst, "instrumenter", false, "go run dinv -instrumenter file1 file2 ...")
+	flag.BoolVar(&inst, "instrumenter", false, "go run dinv -instrumenter directory packagename")
 	flag.BoolVar(&lm, "logmerger", false, "go run dinv -logmerger file1 file2 ...")
 	flag.Parse()
 	files := flag.Args()
@@ -41,27 +41,24 @@ func main() {
 	}
 
 	if inst {
-		valid, err := validinstrumentationFiles(files[1:])
+		valid, err := validinstrumentationDir(files[1:])
 		if !valid {
 			panic(err)
 		}
 		if verbose {
 			//fmt.Printf("Insturmenting %s...", files[0])
 		}
-		instrumenter.Instrument(files)
+		instrumenter.Instrument(files[0], files[1])
 		if verbose {
 			//fmt.Printf("Complete\n")
 		}
 	}
 }
 
-func validinstrumentationFiles(files []string) (bool, error) {
-	for _, file := range files {
-		exists, err := fileExists(file)
-		if !exists {
-			return false, fmt.Errorf("the file %s, does not exist\n%s\n", file, err)
-		}
-	}
+func validinstrumentationDir(args []string) (bool, error) {
+	/*if len(args) != 3 {
+		return false, fmt.Errorf("Directory or package non existant\n")
+	}*/
 	return true, nil
 }
 
