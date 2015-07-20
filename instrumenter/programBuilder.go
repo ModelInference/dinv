@@ -1,3 +1,9 @@
+//ProgramBuilder.go constructs a wrapper for the package of code being
+//instrumented. The wrapper is built in tiers, with the
+//ProgramWrapper representing an entire package, SourceWrapper
+//defining one source code file, and CFGWrapper representing a control
+//flow graph for a function
+
 package instrumenter
 
 import (
@@ -11,6 +17,8 @@ import (
 	"golang.org/x/tools/go/types"
 )
 
+//Program wrapper is a wrapper for an entire package, the source code
+//of every file in the package is found in source.
 type ProgramWrapper struct {
 	prog        *loader.Program
 	fset        *token.FileSet
@@ -18,6 +26,9 @@ type ProgramWrapper struct {
 	source      []*SourceWrapper
 }
 
+//SourceWrapper abstracts a single source file. Text is the string
+//represtation of the source file. Each source wrapper contains a CFG
+//for each function defined.
 type SourceWrapper struct {
 	comments *ast.File
 	source   *ast.File
@@ -26,6 +37,9 @@ type SourceWrapper struct {
 	cfgs     []*CFGWrapper
 }
 
+//CFGWrapper abstract a control flow graph for a single function, The
+//statements and objects in the function are made available for
+//convienence.
 type CFGWrapper struct {
 	cfg      *cfg.CFG
 	exp      map[int]ast.Stmt
@@ -34,6 +48,9 @@ type CFGWrapper struct {
 	objNames map[*types.Var]string
 }
 
+//LoadPackage creates a loader program by loading all of the source
+//files in sourceFiles. All source files must compile and be in the
+//same package in order to be loaded.
 func LoadPackage(sourceFiles []*ast.File, config loader.Config) *loader.Program {
 	fmt.Println("Loading Packages")
 	config.CreateFromFiles("testing", sourceFiles...)
@@ -46,6 +63,10 @@ func LoadPackage(sourceFiles []*ast.File, config loader.Config) *loader.Program 
 	return prog
 }
 
+//getSourceAndCommentFiles scrapes all of the source files in the
+//package (packageName) ast's of each of the source files are built, a
+//corresponding ast of the comments is also built for dump statement
+//analysis
 func getSourceAndCommentFiles(dir, packageName string, config loader.Config) (sources, comments []*ast.File, filenames []string) {
 	astPackages, err := parser.ParseDir(token.NewFileSet(), dir, nil, parser.ParseComments)
 	if err != nil {
@@ -69,6 +90,8 @@ func getSourceAndCommentFiles(dir, packageName string, config loader.Config) (so
 	return sources, comments, filenames
 }
 
+//getWrappers Constructs a program wrapper from a package in dir,
+//specified by packageName
 func getWrappers(dir, packageName string) *ProgramWrapper {
 	var config loader.Config
 	sourceFiles, commentFiles, filenames := getSourceAndCommentFiles(dir, packageName, config)
@@ -105,6 +128,11 @@ func getWrappers(dir, packageName string) *ProgramWrapper {
 	}
 	return nil
 }
+
+const (
+	START = 0
+	END   = 100000000
+)
 
 //getWrapper creates a wrapper for a control flow graph
 func getWrapper(functionDec *ast.FuncDecl, prog *loader.Program) *CFGWrapper {

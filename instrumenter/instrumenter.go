@@ -1,3 +1,11 @@
+//Dinv - instrumenter is a static analysis tool and code modification
+//tool for go code. The Instrumenter injects logging code into existing go
+//source files. The injected code logs variable values at the point of
+//injection, along with the line number and vector clock corresponding
+//to the time of the logging.
+
+//modified : july 90 2015 - Stewart Grant
+
 package instrumenter
 
 import (
@@ -22,11 +30,7 @@ import (
 	"bitbucket.org/bestchai/dinv/programslicer/cfg"
 )
 
-const (
-	START = 0
-	END   = 100000000
-)
-
+//Settings houses all of the instrumenters configiguable options
 type Settings struct {
 	dataflow bool
 	debug    bool
@@ -79,6 +83,9 @@ func generateCode(program *ProgramWrapper, sourceIndex int, settings *Settings) 
 	return generated_code
 }
 
+//injectCode replaces dump statements in the source code of
+//program.source[sourceIndex] with lines of code defined in
+//injectionCode
 func injectCode(program *ProgramWrapper, sourceIndex int, injectionCode []string) string {
 	count := 0
 	rp := regexp.MustCompile("\\/\\/@dump")
@@ -334,6 +341,11 @@ func writeInjectionFile(packageName string) {
 }
 
 /* Injection Code */
+//injection code is used to dynamicly write an injection file,
+//containing methods called by dump statements
+
+//header_code contains all the needed imports for the injection code,
+//and is designed to have the package name written at runtime
 var header_code string = `
 
 package %s
@@ -351,6 +363,8 @@ var Encoder *gob.Encoder
 var packageName = "%s"
 `
 
+//body code contains utility functions called by the code injected at
+//dump statements
 var body_code string = `
 
 func InstrumenterInit() {
