@@ -9,7 +9,6 @@ TEST="t2"
 
 
 function installDinv {
-    echo "Install dinv"
     cd $DINV
     go install
 }
@@ -38,17 +37,15 @@ function runTestPrograms {
     cd $DINV/TestPrograms/$TEST/$P1
     go run serverEntry.go &
     SERVER_PID=$!
-    echo $SERVER_PID
     sleep 1
     cd $DINV/TestPrograms/$TEST/$P2
     go run clientEntry.go &
     CLIENT_PID=$!
-    echo $CLIENT_PID
     sleep 1
     kill $SERVER_PID
-    kill $CLIENT_PID
+    #kill $CLIENT_PID
     kill `ps | pgrep serverEntry | awk '{print $1}'`
-    kill `ps | pgrep clientEntry | awk '{print $1}'`
+    #kill `ps | pgrep clientEntry | awk '{print $1}'`
     
     cd $DINV/TestPrograms/$TEST/$P2/temp2
     mv *.go ../breakup
@@ -103,7 +100,7 @@ function cleanUp {
 }
 
 function shivizMerge {
-    cat $DINV/TestPrograms/$TEST/slog.log-Log.txt $DINV/TestPrograms/$TEST/testclient.log-Log.txt > ~/Research/expr/dinv_T2/shiviz.txt
+    cat $DINV/slog.log-Log.txt $DINV/testclient.log-Log.txt > ~/Research/expr/dinv_T2/shiviz.txt
     
 }
 

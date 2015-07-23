@@ -15,6 +15,7 @@ package logmerger
 import (
 	"encoding/gob"
 	"fmt"
+	"log"
 	"math/rand"
 	"os"
 	"strings"
@@ -22,14 +23,15 @@ import (
 	"bitbucket.org/bestchai/dinv/govec/vclock"
 )
 
-var usage = "logmerger log1.txt log2.txt"
-var debug = false
-var verbose = true
+var (
+	logger *log.Logger
+)
 
 //Merge is the control fuction for log merging. The input is an array
 //of strings corresponding to the log files which will be merged. The
 //output is a set of Daikon files
-func Merge(logfiles []string) {
+func Merge(logfiles []string, inlogger *log.Logger) {
+	logger = inlogger
 	logs := buildLogs(logfiles)
 	states := mineStates(logs)
 	spec := &MergeSpec{totalOrderLineNumberMerge, 100, false}
@@ -47,7 +49,7 @@ func buildLogs(logFiles []string) [][]Point {
 		logs = append(logs, log)
 	}
 	clocks, _ := VectorClockArraysFromLogs(logs)
-	fmt.Printf("Found %d seperate clocks\n", len(clocks))
+	logger.Printf("Found %d seperate clocks\n", len(clocks))
 	ids := idClockMapper(clocks)
 	for i, log := range logs {
 		log = addBaseLog(ids[i], log)
@@ -101,7 +103,7 @@ func writeLogToFile(log []Point, filename string) {
 func createMapOfLogsForEachPoint(log []Point) map[string][]Point {
 	mapOfPoints := make(map[string][]Point, 0)
 	for i := 0; i < len(log); i++ {
-		mapOfPoints[log[i].LineNumber+log[i].FileName] = append(mapOfPoints[log[i].LineNumber+log[i].FileName], log[i])
+		mapOfPoints[log[i].Package+log[i].File+log[i].Line] = append(mapOfPoints[log[i].Package+log[i].File+log[i].Line], log[i])
 	}
 	return mapOfPoints
 }
@@ -115,7 +117,7 @@ func writeDeclaration(file *os.File, mapOfPoints map[string][]Point) {
 	file.WriteString("\n")
 	for _, v := range mapOfPoints {
 		point := v[0]
-		file.WriteString(fmt.Sprintf("ppt p-%s%s:::%s%s\n", point.LineNumber, point.FileName, point.LineNumber, point.FileName))
+		file.WriteString(fmt.Sprintf("ppt p-%s%s%s:::%s%s%s\n", point.Package, point.File, point.Line, point.Package, point.File, point.Line))
 		file.WriteString(fmt.Sprintf("ppt-type point\n"))
 		for i := 0; i < len(point.Dump); i++ {
 			file.WriteString(fmt.Sprintf("variable %s\n", point.Dump[i].VarName))
@@ -134,7 +136,7 @@ func writeDeclaration(file *os.File, mapOfPoints map[string][]Point) {
 func writeValues(file *os.File, log []Point) {
 	for i := range log {
 		point := log[i]
-		file.WriteString(fmt.Sprintf("p-%s%s:::%s%s\n", point.LineNumber, point.FileName, point.LineNumber, point.FileName))
+		file.WriteString(fmt.Sprintf("p-%s%s%s:::%s%s%s\n", point.Package, point.File, point.Line, point.Package, point.File, point.Line))
 		file.WriteString(fmt.Sprintf("this_invocation_nonce\n"))
 		file.WriteString(fmt.Sprintf("%d\n", i))
 		for i := range point.Dump {
@@ -157,29 +159,17 @@ func writeValues(file *os.File, log []Point) {
 //logs, and the ouput is a set of ordered states extraced from those
 //logs.
 func mineStates(logs [][]Point) []State {
-	if verbose {
-		fmt.Printf("\nStripping Clocks... ")
-	}
+	logger.Printf("\nStripping Clocks... ")
 	clocks, _ := VectorClockArraysFromLogs(logs)
-	if verbose {
-		fmt.Printf("Done\nBuilding Lattice... ")
-	}
+	logger.Printf("Done\nBuilding Lattice... ")
 	lattice := BuildLattice(clocks)
-	if verbose {
-		fmt.Printf("Done\nCalculating Delta... ")
-	}
+	logger.Printf("Done\nCalculating Delta... ")
 	deltaComm := enumerateCommunication(clocks)
-	if verbose {
-		fmt.Printf("Done\nMining Consistent Cuts... ")
-	}
+	logger.Printf("Done\nMining Consistent Cuts... ")
 	consistentCuts := mineConsistentCuts(lattice, clocks, deltaComm)
-	if verbose {
-		fmt.Printf("Done\nExtracting States... ")
-	}
+	logger.Printf("Done\nExtracting States... ")
 	states := statesFromCuts(consistentCuts, clocks, logs)
-	if verbose {
-		fmt.Printf("Done\n")
-	}
+	logger.Printf("Done\n")
 	return states
 }
 
@@ -199,9 +189,7 @@ func statesFromCuts(cuts []Cut, clocks [][]vclock.VClock, logs [][]Point) []Stat
 			}
 		}
 		state.TotalOrdering = totalOrderFromCut(cut, clocks)
-		if debug {
-			fmt.Printf("%s\n", state.String())
-		}
+		logger.Printf("%s\n", state.String())
 		states = append(states, *state)
 	}
 	return states
@@ -227,13 +215,11 @@ func writeTraceFiles(states []State, spec *MergeSpec) {
 			for j := range mergedPoints[i] {
 				if !written[i][j] {
 					if !newFile {
-						if debug {
-							fmt.Printf("New file :%s\n", mergedPoints[i][j].LineNumber+mergedPoints[i][j].FileName)
-						}
-						filename = mergedPoints[i][j].LineNumber + mergedPoints[i][j].FileName
+						logger.Printf("New file :%s\n", mergedPoints[i][j].Package+mergedPoints[i][j].File+mergedPoints[i][j].Line)
+						filename = mergedPoints[i][j].Package + mergedPoints[i][j].File + mergedPoints[i][j].Line
 						newFile = true
 					}
-					if filename == mergedPoints[i][j].LineNumber+mergedPoints[i][j].FileName {
+					if filename == mergedPoints[i][j].Package+mergedPoints[i][j].File+mergedPoints[i][j].Line {
 						//sample rate
 						if (rand.Int() % 100) < spec.sampleRate {
 							pointLog = append(pointLog, mergedPoints[i][j])
@@ -279,9 +265,7 @@ func totalOrderLineNumberMerge(states []State) [][]Point {
 				points = append(points, state.Points[state.TotalOrdering[j][k]])
 			}
 			mergedPoints[i][j] = mergePoints(points)
-			if debug {
-				fmt.Println("%s\n", mergedPoints[i][j].LineNumber+mergedPoints[i][j].FileName)
-			}
+			logger.Println("%s\n", mergedPoints[i][j].Package+mergedPoints[i][j].File, mergedPoints[i][j].Line)
 		}
 	}
 	return mergedPoints
@@ -321,8 +305,9 @@ func mergePoints(points []Point) Point {
 	var mergedPoint Point
 	for _, point := range points {
 		mergedPoint.Dump = append(mergedPoint.Dump, point.Dump...) //...
-		mergedPoint.LineNumber = mergedPoint.LineNumber + "_" + point.LineNumber
-		mergedPoint.FileName = mergedPoint.FileName + "_" + point.FileName
+		mergedPoint.Line = mergedPoint.Line + "_" + point.Line
+		mergedPoint.File = mergedPoint.File + "_" + point.File
+		mergedPoint.Package = mergedPoint.Package + "_" + point.Package
 		pVClock1, _ := vclock.FromBytes(mergedPoint.VectorClock)
 		pVClock2, _ := vclock.FromBytes(point.VectorClock)
 		temp := pVClock1.Copy()
@@ -376,11 +361,10 @@ type MergeSpec struct {
 //variables were gathered on. VectorClock is byte valued vector clock
 //at that the time the program point was logged
 type Point struct {
-	Dump               []NameValuePair
-	LineNumber         string
-	FileName           string
-	VectorClock        []byte
-	CommunicationDelta int
+	Dump                []NameValuePair
+	Line, File, Package string
+	VectorClock         []byte
+	CommunicationDelta  int
 }
 
 //Name value pair matches variable names to their values, along with
@@ -398,7 +382,7 @@ func (nvp NameValuePair) String() string {
 
 //String representation of a program point
 func (p Point) String() string {
-	return fmt.Sprintf("%d : %s", p.LineNumber, p.Dump)
+	return fmt.Sprintf("%s-%s-%s : %s", p.Package, p.File, p.Line, p.Dump)
 }
 
 //fileExists returns true if the file specified by path exists. If not

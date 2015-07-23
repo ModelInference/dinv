@@ -7,7 +7,6 @@
 package instrumenter
 
 import (
-	"fmt"
 	"go/ast"
 	"go/parser"
 	"go/token"
@@ -53,14 +52,14 @@ type CFGWrapper struct {
 //files in sourceFiles. All source files must compile and be in the
 //same package in order to be loaded.
 func LoadPackage(sourceFiles []*ast.File, config loader.Config) *loader.Program {
-	fmt.Println("Loading Packages")
+	logger.Println("Loading Packages")
 	config.CreateFromFiles("testing", sourceFiles...)
 	prog, err := config.Load()
 	if err != nil {
-		fmt.Println("CannotLoad")
+		logger.Println("CannotLoad")
 		return nil
 	}
-	fmt.Println("Files Loaded")
+	logger.Println("Files Loaded")
 	return prog
 }
 
@@ -81,7 +80,7 @@ func getSourceAndCommentFiles(astPackage *ast.Package, config loader.Config) (so
 		sources = append(sources, source)
 		comments = append(comments, astPackage.Files[name])
 		filenames = append(filenames, name)
-		fmt.Println(name)
+		logger.Println(name)
 	}
 	return sources, comments, filenames
 }
@@ -101,27 +100,27 @@ func getWrappers(dir, packageName string) *ProgramWrapper {
 	pName := commentFiles[0].Name.String()
 
 	sources := make([]*SourceWrapper, 0)
-	fmt.Println(len(filenames), len(sourceFiles))
+	logger.Println(len(filenames), len(sourceFiles))
 	for i, file := range sourceFiles {
-		fmt.Printf("building source for %s\n", filenames[i])
+		logger.Printf("building source for %s\n", filenames[i])
 		cfgs := make([]*CFGWrapper, 0)
 		for j := 0; j < len(file.Decls); j++ {
-			fmt.Printf("building CFG[%d]\n", j)
+			logger.Printf("building CFG[%d]\n", j)
 			functionDec, ok := file.Decls[j].(*ast.FuncDecl)
 			if ok {
-				print("FuncFound\n")
+				logger.Printf("FuncFound\n")
 				wrap := getWrapper(functionDec, prog)
 				cfgs = append(cfgs, wrap)
 			}
 		}
-		fmt.Println("Source Built")
+		logger.Println("Source Built")
 		sources = append(sources, &SourceWrapper{
 			comments: commentFiles[i],
 			source:   sourceFiles[i],
 			filename: filenames[i],
 			cfgs:     cfgs})
 	}
-	fmt.Println("Wrappers Built")
+	logger.Println("Wrappers Built")
 	return &ProgramWrapper{
 		prog:        prog,
 		fset:        fset,
@@ -143,7 +142,7 @@ func getWrapper(functionDec *ast.FuncDecl, prog *loader.Program) *CFGWrapper {
 	objs := make(map[string]*types.Var)
 	objNames := make(map[*types.Var]string)
 	i := 1
-	//fmt.Println("GETTING WRAPPER")
+	//logger.Println("GETTING WRAPPER")
 	ast.Inspect(functionDec, func(n ast.Node) bool {
 		switch x := n.(type) {
 		case *ast.Ident:
