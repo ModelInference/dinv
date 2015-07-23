@@ -85,11 +85,10 @@ func generateCode(program *ProgramWrapper, sourceIndex int, settings *Settings) 
 	var collectedVariables []string
 	dumpNodes := GetDumpNodes(program.source[sourceIndex].comments) //test
 	for _, dump := range dumpNodes {
-		//get line of dump statement
-		//TODO refactor dump.Pos() into its own variable
+		dumpPos := dump.Pos()
 		//file relitive dump position (dump abs - file abs = dump rel)
-		fileRelitiveDumpPosition := int(dump.Pos() - program.source[sourceIndex].comments.Pos() + 1)
-		lineNumber := program.fset.Position(dump.Pos()).Line
+		fileRelitiveDumpPosition := int(dumpPos - program.source[sourceIndex].comments.Pos() + 1)
+		lineNumber := program.fset.Position(dumpPos).Line
 		if settings.dataflow {
 			collectedVariables = getAccessedAffectedVars(dump, program)
 		} else {
@@ -441,7 +440,7 @@ func (nvp NameValuePair) String() string {
 
 func (p Point) String() string {
 	clock, _ := vclock.FromBytes(p.VectorClock)
-	return fmt.Sprintf("%s : %s : %s", p.LineNumber, p.Dump, clock.ReturnVCString())
+	return fmt.Sprintf("LineNumber %s _ filename %s\nDump : %s\nVClock : %s\n\n", p.LineNumber, p.FileName, p.Dump, clock.ReturnVCString())
 }`
 
 //TODO move structs to seperate file remove duplication in log merger
