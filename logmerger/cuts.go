@@ -39,9 +39,7 @@ func mineConsistentCuts(lattice [][]vclock.VClock, clocks [][]vclock.VClock, del
 				potentialCut.Clocks = append(potentialCut.Clocks, clocks[k][index])
 			}
 			if communicationDelta == 0 {
-				if debug {
-					fmt.Printf("%s\n", potentialCut.String())
-				}
+				logger.Printf("%s\n", potentialCut.String())
 				consistentCuts = append(consistentCuts, potentialCut)
 			}
 		}
@@ -154,10 +152,8 @@ func enumerateCommunication(clocks [][]vclock.VClock) [][]int {
 			if matched {
 				commDelta[i][j]++
 				commDelta[receiver][receiverEvent]--
-				if debug {
-					fmt.Printf("SR pair found %s, %s\n", clocks[i][j].ReturnVCString(), clocks[receiver][receiverEvent].ReturnVCString())
-					fmt.Printf("Sender %s:%d ----> Receiver %s:%d\n", ids[i], commDelta[i][j], ids[receiver], commDelta[receiver][receiverEvent])
-				}
+				logger.Printf("SR pair found %s, %s\n", clocks[i][j].ReturnVCString(), clocks[receiver][receiverEvent].ReturnVCString())
+				logger.Printf("Sender %s:%d ----> Receiver %s:%d\n", ids[i], commDelta[i][j], ids[receiver], commDelta[receiver][receiverEvent])
 			}
 		}
 	}

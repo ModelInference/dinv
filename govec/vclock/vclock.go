@@ -54,6 +54,7 @@ func (vc *VClock) HappenedBefore(other *VClock) bool {
 	return true
 }
 
+/*
 //Some additional methods used to create consistant cuts
 func (vc *VClock) Matches(other *VClock) bool {
 	lenVC := (float64)(len(vc.items))
@@ -94,7 +95,7 @@ func (vc *VClock) Matches(other *VClock) bool {
 	}
 
 	return numDiff == 1 || numDiff == 2 || numDiff == 3
-}
+}*/
 
 //difference calculates the positive difference in tick values between two clocks,
 //diff is the absolute positive differnce between the two nodes

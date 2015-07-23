@@ -1,4 +1,4 @@
-package main
+package server
 
 import (
 	"fmt"
@@ -10,7 +10,7 @@ import (
 
 const SIZEOFINT = 4
 
-func main() {
+func Server() {
 	Logger = govec.Initialize("Server", "slog.log")
 	conn, err := net.ListenPacket("udp", ":8080")
 	if err != nil {
@@ -52,34 +52,6 @@ func handleConn(conn net.PacketConn) {
 	msg := MarshallInts([]int{sum})
 	conn.WriteTo(Logger.PrepareSend("Sending", msg), addr)
 	//@dump
-}
-
-func printErr(err error) {
-	if err != nil {
-		fmt.Println(err)
-	}
-}
-
-func MarshallInts(args []int) []byte {
-	var i, j uint
-	marshalled := make([]byte, len(args)*SIZEOFINT, len(args)*SIZEOFINT)
-	for j = 0; int(j) < len(args); j++ {
-		for i = 0; i < SIZEOFINT; i++ {
-			marshalled[(j*SIZEOFINT)+i] = byte(args[j] >> ((SIZEOFINT - 1 - i) * 8))
-		}
-	}
-	return marshalled
-}
-
-func UnmarshallInts(args []byte) []int {
-	var i, j uint
-	unmarshalled := make([]int, len(args)/SIZEOFINT, len(args)/SIZEOFINT)
-	for j = 0; int(j) < len(args)/SIZEOFINT; j++ {
-		for i = 0; i < SIZEOFINT; i++ {
-			unmarshalled[j] += int(args[SIZEOFINT*(j+1)-1-i] << (i * 8))
-		}
-	}
-	return unmarshalled
 }
 
 var Logger *govec.GoLog
