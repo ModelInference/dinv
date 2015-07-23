@@ -1,18 +1,26 @@
+//Dinv - instrumenter is a static analysis tool and code modification
+//tool for go code. The Instrumenter injects logging code into existing go
+//source files. The injected code logs variable values at the point of
+//injection, along with the line number and vector clock corresponding
+//to the time of the logging.
+
+//modified : july 9 2015 - Stewart Grant
+
 package instrumenter
 
 import (
 	"bytes"
 	"fmt"
 	"go/ast"
-	"go/parser"
 	"go/printer"
 	"go/token"
+	"log"
 	"os"
 	"path/filepath"
+	"strconv"
 
 	"regexp"
 	"strings"
-	"testing"
 
 	"golang.org/x/tools/go/ast/astutil"
 
@@ -24,67 +32,103 @@ import (
 	"bitbucket.org/bestchai/dinv/programslicer/cfg"
 )
 
-const (
-	START = 0
-	END   = 100000000
+var (
+	logger *log.Logger
 )
 
-var src_location string
-var usage string = "go run instrumenter.go toinstrument > instrumented.go"
+//Settings houses all of the instrumenters configiguable options
+type Settings struct {
+	dataflow bool
+	debug    bool
+}
 
-var fset *token.FileSet
-var astFile *ast.File
-var c *CFGWrapper
-var wrappers []*CFGWrapper
-
-func Instrument(files []string) {
-	fmt.Println("INSTRUMENTING FILES")
-	for _, file := range files {
-		src_location = file
-		optimize := false
-		source := initializeInstrumenter()
-		dumpNodes := GetDumpNodes(astFile)
-		var generated_code []string
-		if !optimize {
-			fmt.Println("GETTING VARS 1")
-			for _, dump := range dumpNodes {
-				line := c.fset.Position(dump.Pos()).Line
-				// log all vars
-				//generated_code = append(generated_code, GenerateDumpCode(GetAccessedVarsInScope(dump, c.f, c), line))
-				generated_code = append(generated_code, GenerateDumpCode(GetAccessibleVarsInScope(int(dump.Pos()), astFile, c.fset), line))
-				fmt.Println(generated_code[0])
-			}
-		} else {
-			for _, dump := range dumpNodes {
-				line := c.fset.Position(dump.Pos()).Line
-				generated_code = append(generated_code, GenerateDumpCode(getAccessedAffectedVars(dump, astFile, c), line))
-
-			}
-		}
-		count := 0
-		rp := regexp.MustCompile("\\/\\/@dump")
-		transformed := rp.ReplaceAllStringFunc(source, func(s string) string {
-			replacement := generated_code[count]
-			count++
-			return replacement
-		})
-
-		transformed = transformed + "\n" + extra_code
-
-		rp = regexp.MustCompile("[ ]*func[ ]+main\\(\\)[ ]+{")
-		//fmt.Println(transformed)
-		insturmented := fmt.Sprintf("%s", rp.ReplaceAllString(transformed, "func main() {\n InstrumenterInit()\n"))
-		//fmt.Print(insturmented)
-		writeInstrumentedFile(insturmented, file)
-		//fmt.Println(detectSendReceive(astFile))
+//defineSettings allows the
+//TODO put settings into dinv.go
+func defineSettings() *Settings {
+	return &Settings{
+		dataflow: false,
+		debug:    true,
 	}
 }
 
-func getAccessedAffectedVars(dump *ast.Comment, file *ast.File, cf *CFGWrapper) []string {
+//Instrument oversees the instrumentation of an entire package
+//for each file provided
+//TODO take a package name rather then a single file
+func Instrument(dir, packageName string, inlogger *log.Logger) {
+	logger = inlogger
+	logger.Printf("INSTRUMENTING FILES %s for package %s", dir, packageName)
+	settings := defineSettings()
+	program := initializeInstrumenter(dir, packageName)
+	writeInjectionFile(program.packageName)
+	//TODO rename i to source
+	for sourceFile := range program.source {
+		genCode := generateCode(program, sourceFile, settings)
+		instrumented := injectCode(program, sourceFile, genCode)
+		writeInstrumentedFile(instrumented, "mod_", program.source[sourceFile].filename)
+	}
+}
+
+//initializeInstrumenter builds cfg's based on the source location,
+//it must be run before other functions, it also returns the source of
+//the program
+func initializeInstrumenter(dir, packageName string) *ProgramWrapper {
+	// Create the AST by parsing src.
+	program := getWrappers(dir, packageName)
+
+	for i := range program.source {
+		buf := new(bytes.Buffer)
+		printer.Fprint(buf, program.fset, program.source[i].comments)
+
+		program.source[i].text = buf.String()
+	}
+	return program
+}
+
+//generateCode constructs code for dump statements for the source code
+//located at program.source[sourceIndex].
+func generateCode(program *ProgramWrapper, sourceIndex int, settings *Settings) []string {
+	var generated_code []string
+	var collectedVariables []string
+	dumpNodes := GetDumpNodes(program.source[sourceIndex].comments) //test
+	for _, dump := range dumpNodes {
+		dumpPos := dump.Pos()
+		//file relitive dump position (dump abs - file abs = dump rel)
+		fileRelitiveDumpPosition := int(dumpPos - program.source[sourceIndex].comments.Pos() + 1)
+		lineNumber := program.fset.Position(dumpPos).Line
+		if settings.dataflow {
+			collectedVariables = getAccessedAffectedVars(dump, program)
+		} else {
+			collectedVariables = GetAccessibleVarsInScope(fileRelitiveDumpPosition, program.source[sourceIndex].comments, program.fset)
+		}
+		dumpcode := GenerateDumpCode(collectedVariables, lineNumber, program.source[sourceIndex].filename, program.packageName)
+
+		logger.Println(dumpcode)
+		generated_code = append(generated_code, dumpcode)
+	}
+	return generated_code
+}
+
+//injectCode replaces dump statements in the source code of
+//program.source[sourceIndex] with lines of code defined in
+//injectionCode
+func injectCode(program *ProgramWrapper, sourceIndex int, injectionCode []string) string {
+	count := 0
+	rp := regexp.MustCompile("\\/\\/@dump")
+	instrumented := rp.ReplaceAllStringFunc(program.source[sourceIndex].text, func(s string) string {
+		replacement := injectionCode[count]
+		count++
+		return replacement
+	})
+	return instrumented
+}
+
+//getAccessedAffectedVars returns the names of all variables affected
+//by a send, or a receive within the scope of the dump statement
+func getAccessedAffectedVars(dump *ast.Comment, program *ProgramWrapper) []string {
 
 	var affectedInScope []string
-	inScope := GetAccessibleVarsInScope(int(dump.Pos()), file, cf.fset)
-	affected := getAffectedVars(cf)
+	inScope := GetAccessibleVarsInScope(int(dump.Pos()), program.source[0].comments, program.fset)
+	affected := getAffectedVars(program)
 
 	for _, inScopeVar := range inScope {
 		for _, affectedVar := range affected {
@@ -94,91 +138,62 @@ func getAccessedAffectedVars(dump *ast.Comment, file *ast.File, cf *CFGWrapper) 
 			}
 		}
 	}
-
 	return affectedInScope
-
 }
 
-func findFunction(stmt ast.Stmt, cf *CFGWrapper) int {
-	for dcl := 0; dcl < len(cf.f.Decls)-1; dcl++ {
-		if stmt.Pos() > cf.f.Decls[dcl].Pos() && stmt.Pos() < cf.f.Decls[dcl+1].Pos() {
+//findFunction searches through a set of declaractions decls, for the
+//statement stmt, the index of that statement is returned if it is
+//found, if not -1 is returned.
+func findFunction(stmt ast.Stmt, decls []ast.Decl) int {
+	for dcl := 0; dcl < len(decls)-1; dcl++ {
+		if stmt.Pos() > decls[dcl].Pos() && stmt.Pos() < decls[dcl+1].Pos() {
 			return dcl
 		}
 	}
 	return -1
 }
 
-func getAffectedVars(cf *CFGWrapper) []string {
-	recvNodes := detectFunctionCalls(cf.f, "conn", []string{"Read", "ReadFrom"})
-	sendNodes := detectFunctionCalls(cf.f, "conn", []string{"Write", "WriteTo"})
+//getAfffectedVars searches through an entire program specified by
+//program, and returns the names of all variables modified by
+//interprocess communication.
 
-	for i := 0; i < len(recvNodes)+len(sendNodes); i++ {
-		fmt.Printf("%d,", i)
+//TODO getAffectedVars does not work at the moment and should be
+//restructured. The variables returned should be thoses affected by
+//IPC around a particular dump statement, not the entire program
+func getAffectedVars(program *ProgramWrapper) []string {
+	recvNodes := detectFunctionCalls(program.source[0].source, "conn", []string{"Read", "ReadFrom"})
+	sendNodes := detectFunctionCalls(program.source[0].source, "conn", []string{"Write", "WriteTo"})
+	vars := sliceComputedVariables(program, recvNodes, programslicer.ComputeForwardSlice)
+	vars = append(vars, sliceComputedVariables(program, sendNodes, programslicer.ComputeBackwardSlice)...)
+	var varNames []string
+	for _, variable := range vars {
+		varNames = append(varNames, variable.Name())
 	}
+	return varNames
+}
 
-	//fmt.Println(recvNodes)
-	//fmt.Println(sendNodes)
+//TODO pass the program wrapper to the program slicer, along with
+//indexes to the what is being calculated
+func sliceComputedVariables(program *ProgramWrapper, nodes []*ast.Node, computer func(start ast.Stmt, cfg *cfg.CFG, info *loader.PackageInfo, fset *token.FileSet) []ast.Stmt) []*types.Var {
 	var affectedVars []*types.Var
-
-	for _, node := range recvNodes {
+	for _, node := range nodes {
 		recvStmt := (*node).(ast.Stmt)
-		dcl := findFunction(recvStmt, cf)
-		fmt.Println("receive function") //BUG These dual print statements seemt to be totally corrupting the output
-		fmt.Println(dcl)
-		firstFunc := cf.f.Decls[dcl].(*ast.FuncDecl)
-		cf.cfg = cfg.FromFunc(firstFunc)
-		vars := programslicer.GetAffectedVariables(recvStmt, cf.cfg, cf.prog.Created[0], cf.prog.Fset, programslicer.ComputeForwardSlice)
+		dcl := findFunction(recvStmt, program.source[0].source.Decls)
+		logger.Println("receive function") //BUG These dual print statements seemt to be totally corrupting the output
+		logger.Println(dcl)
+		firstFunc := program.source[0].source.Decls[dcl].(*ast.FuncDecl)
+		program.source[0].cfgs[0].cfg = cfg.FromFunc(firstFunc)
+		vars := programslicer.GetAffectedVariables(recvStmt, program.source[0].cfgs[0].cfg, program.prog.Created[0], program.fset, computer)
 		affectedVars = append(affectedVars, vars...)
 	}
-
-	for _, node := range sendNodes {
-		sendStmt := (*node).(ast.Stmt)
-
-		dcl := findFunction(sendStmt, cf)
-		fmt.Println("send function")
-		fmt.Println(dcl)
-		firstFunc := cf.f.Decls[dcl].(*ast.FuncDecl)
-		cf.cfg = cfg.FromFunc(firstFunc)
-		vars := programslicer.GetAffectedVariables(sendStmt, cf.cfg, cf.prog.Created[0], cf.prog.Fset, programslicer.ComputeBackwardSlice)
-
-		affectedVars = append(affectedVars, vars...)
-	}
-	var affectedVarName []string
-	for _, variable := range affectedVars {
-		affectedVarName = append(affectedVarName, variable.Name())
-	}
-	return affectedVarName
+	return affectedVars
 }
 
-//initializeInstrumenter builds cfg's based on the source location,
-//it must be run before other functions, it also returns the source of
-//the program
-//TODO is a really bad function and requires way too many globals,
-//lets turf it at some point
-func initializeInstrumenter() string {
-	extra_code = template_code
-	extra_code = fmt.Sprintf(extra_code, src_location)
-	// Create the AST by parsing src.
-	fset = token.NewFileSet() // positions are relative to fset
-	astFile, _ = parser.ParseFile(fset, src_location, nil, parser.ParseComments)
-	wrappers := getWrappers(nil, src_location)
-	c = wrappers[0] //TODO this is an artifact from only one function being analyized delete this eventually
-
-	addImports(astFile)
-
-	var buf bytes.Buffer
-	printer.Fprint(&buf, fset, astFile)
-
-	s := buf.String()
-	//print(s)
-	return s
-}
-
-//replacement for match send and receive
+//(replacement for match send and receive)
 //detectFunctionCalls searches an ast.File for instances of a varible
 //(varname) making a calls to a list of functions. Nodes in the ast
 //where such calls are made are returned
-//ex. conn.Write, and conn.WriteTo are searchable
+//ex. conn.Write, and conn.WriteTo are searchable as sending functions
 func detectFunctionCalls(f *ast.File, varName string, funcNames []string) []*ast.Node {
 	var results []*ast.Node
 	ast.Inspect(f, func(n ast.Node) bool {
@@ -221,123 +236,46 @@ func matchCallExpression(n *ast.CallExpr, varName string, funcNames []string) bo
 	return false
 }
 
-/*
-func GetAccessedVarsInScope(dumpNode *ast.Comment, f *ast.File, cf *CFGWrapper) []string {
-	var results []string
-	path, _ := astutil.PathEnclosingInterval(f, dumpNode.Pos(), dumpNode.End())
-
-	var stmts []ast.Stmt
-	var unwantedVars []string
-
-	//print("inspecting")
-	for _, astnode := range path {
-		//print("node")
-		funcDecl, ok := astnode.(*ast.FuncDecl)
-		if ok { // skip import decl if exists
-
-			ast.Inspect(funcDecl, func(n ast.Node) bool {
-				switch x := n.(type) {
-				case ast.Stmt:
-					switch x.(type) {
-					case *ast.BlockStmt:
-						return true
-
-					//begin assignment checking
-					case *ast.AssignStmt:
-						astmnt := x.(*ast.AssignStmt)
-
-						if astmnt.Tok.String() == ":=" {
-							var localStmts []ast.Stmt
-							ast.Inspect(x, func(r ast.Node) bool {
-								print("s")
-								switch s := r.(type) {
-								case ast.Stmt:
-									if (s.(ast.Stmt)).Pos() < dumpNode.Pos() {
-										localStmts = append(localStmts, s)
-									}
-								}
-								return true
-							})
-								defs, _ := dataflow.ReferencedVars(localStmts, cf.prog.Created[0])
-								for d, _ := range defs {
-									scope := d.Parent
-									names := scope.Names()
-									for _, name := range names {
-										fmt.Print(name)
-									}
-									fmt.Println()
-									unwantedVars = append(unwantedVars, d.Name())
-								}
-						}
-						return true
-
-						//end assignment checking
-					}
-					if x.Pos() < dumpNode.Pos() {
-						stmts = append(stmts, x)
-					}
-				case *ast.FuncLit:
-					// skip statements in anonymous functions
-					return false
-				}
-				return true
-			})
-		}
-
-	}
-	_, uses := dataflow.ReferencedVars(stmts, cf.prog.Created[0])
-
-	//actualUse := make(map[*types.Var]struct{})
-	for u, _ := range uses {
-		results = append(results, u.Name())
-	}
-
-	//test
-	print("unwanted\n")
-	for _, name := range unwantedVars {
-		fmt.Println(name)
-	}
-	//for _, result := range results {
-	//	fmt.Printf("%s\n", result)
-	//}
-
-	return results
-
-}
-*/
-
+//GetAccessibleVarsInScope returns the variables names of all
+//varialbes in scope at the point start.
+//TODO rename start to dump line of code
 func GetAccessibleVarsInScope(start int, file *ast.File, fset *token.FileSet) []string {
-	fmt.Println("GETTING VARS!!!")
+	logger.Println("GETTING VARS!!!") //TODO refactor and put into logger
 	var results []string
+	//TODO refactor global collection into own function
 	global_objs := file.Scope.Objects
 	for identifier, _ := range global_objs {
 		if global_objs[identifier].Kind == ast.Var || global_objs[identifier].Kind == ast.Con { //|| global_objs[identifier].Kind == ast.Typ { //can be used for diving into structs
-			fmt.Printf("Global Found :%s\n", fmt.Sprintf("%v", identifier))
-			fmt.Printf("Checking for struct Type")
-			structure, ok := global_objs[identifier].Decl.(*ast.StructType)
-			if ok {
-				for _, fields := range structure.Fields.List {
-					fmt.Println("found Field Name", fields.Names[0].Name)
-				}
-			}
+			logger.Printf("Global Found :%s\n", fmt.Sprintf("%v", identifier))
 			results = append(results, fmt.Sprintf("%v", identifier))
 		}
 	}
+
 	filePos := fset.File(file.Package)
-	path, _ := astutil.PathEnclosingInterval(file, filePos.Pos(start), filePos.Pos(start+2))
+	if filePos == nil {
+		logger.Println("unable to locate dump statement")
+	}
+	logger.Printf("packagename : %s\n searching Pos start %d\n", file.Name.String(), start)
+	//TODO rename path and write comments
+	//TODO make the dump location relative to
+	path, _ := astutil.PathEnclosingInterval(file, filePos.Pos(start), filePos.Pos(start+2)) // why +2
+	for _, node := range path {
+		logger.Printf("node at position :%d\n", int(node.Pos()))
+	}
 
 	for _, astnode := range path {
-		//fmt.Println("%v", astutil.NodeDescription(astnode))
+		//logger.Println("%v", astutil.NodeDescription(astnode))
 		switch t := astnode.(type) {
 		case *ast.BlockStmt:
-
+			//BUG variables which have yet to be declared are
+			//appearing and causing compile time errors
 			stmts := t.List
 			for _, stmtnode := range stmts {
 				switch t := stmtnode.(type) {
 				case *ast.DeclStmt:
 					idents := t.Decl.(*ast.GenDecl).Specs[0].(*ast.ValueSpec).Names
 					for _, identifier := range idents {
-						fmt.Printf("Local Found :%s\n", fmt.Sprintf("%v", identifier))
+						logger.Printf("Local Found :%s\n", fmt.Sprintf("%v", identifier))
 						results = append(results, fmt.Sprintf("%v", identifier.Name))
 					}
 				}
@@ -348,6 +286,8 @@ func GetAccessibleVarsInScope(start int, file *ast.File, fset *token.FileSet) []
 	return results
 }
 
+//GetDumpNodes traverses a file and returns all ast.Node's
+//representing comments of the form //@dump
 func GetDumpNodes(file *ast.File) []*ast.Comment {
 	var dumpNodes []*ast.Comment
 	for _, commentGroup := range file.Comments {
@@ -360,48 +300,118 @@ func GetDumpNodes(file *ast.File) []*ast.Comment {
 	return dumpNodes
 }
 
-// returns dump code that should replace that specific line number
-func GenerateDumpCode(vars []string, lineNumber int) string {
+//GenerateDumpCode constructs code to be injected at dump points, the
+//code includes a call to initialize the insturmenter, the packaging
+//of all variables and their values, and the encoding of a
+//corresponding vector clock
+//TODO Removde Dump dependency on global variable "Logger"
+func GenerateDumpCode(vars []string, lineNumber int, path, packagename string) string {
 	if len(vars) == 0 {
 		return ""
 	}
+	_, nameWithExt := filepath.Split(path)
+	ext := filepath.Ext(path)
+	filename := strings.Replace(nameWithExt, ext, "", 1)
 	var buffer bytes.Buffer
 	// write vars' values
-	buffer.WriteString(fmt.Sprintf("InstrumenterInit()\n"))
-	buffer.WriteString(fmt.Sprintf("vars%d := []interface{}{", lineNumber))
+	id := packagename + "_" + filename + "_" + strconv.Itoa(lineNumber)
+	buffer.WriteString(fmt.Sprintf("\nInstrumenterInit()\n"))
+	buffer.WriteString(fmt.Sprintf("%s_vars := []interface{}{", id))
 	for i := 0; i < len(vars)-1; i++ {
 		buffer.WriteString(fmt.Sprintf("%s,", vars[i]))
 	}
 	buffer.WriteString(fmt.Sprintf("%s}\n", vars[len(vars)-1]))
 	// write vars' names
-	buffer.WriteString(fmt.Sprintf("varsName%d := []string{", lineNumber))
+	buffer.WriteString(fmt.Sprintf("%s_varname := []string{", id))
 	for i := 0; i < len(vars)-1; i++ {
 		buffer.WriteString(fmt.Sprintf("\"%s\",", vars[i]))
 	}
 	buffer.WriteString(fmt.Sprintf("\"%s\"}\n", vars[len(vars)-1]))
-	buffer.WriteString(fmt.Sprintf("point%d := createPoint(vars%d, varsName%d, %d)\n", lineNumber, lineNumber, lineNumber, lineNumber))
-	buffer.WriteString(fmt.Sprintf("encoder.Encode(point%d)", lineNumber))
+	buffer.WriteString(fmt.Sprintf("p%s := CreatePoint(%s_vars, %s_varname, \"%s\")\n", id, id, id, id))
+	buffer.WriteString(fmt.Sprintf("Encoder.Encode(p%s)\n", id))
+	//write out human readable log
+	buffer.WriteString(fmt.Sprintf("ReadableLog.WriteString(p%s.String())", id))
 	return buffer.String()
 }
 
-var extra_code string
-var template_code string = `
-
-var encoder *gob.Encoder
-
-func InstrumenterInit() {
-	if encoder == nil {
-		fileW, _ := os.Create("%s.txt")
-		encoder = gob.NewEncoder(fileW)
+//prints given AST
+func (p *ProgramWrapper) printAST() {
+	for _, source := range p.source {
+		ast.Print(p.fset, source.source)
 	}
 }
 
-func createPoint(vars []interface{}, varNames []string, lineNumber int) Point {
+//writeInstrumentedFile writes a file with the contents source, with
+//the filename "prefixfilename"
+func writeInstrumentedFile(source string, prefix string, filename string) {
+	pwd, _ := filepath.Abs(filepath.Dir(os.Args[0]))
+	_, name := filepath.Split(filename)
+	modFilename := fmt.Sprintf("%s/%s%s", pwd, prefix, name)
+	file, _ := os.Create(modFilename)
+	logger.Printf("Writing file %s\n", modFilename)
+	file.WriteString(source)
+	file.Close()
+}
 
-	length := len(varNames)
+//TODO move to its own file
+//writeInjectionFile builds a library file that generated code calls.
+//The injected file must belong to the same package as the
+//insturmented files, specified by packageName the resulting file will
+//be created in PWD "mod_inject.go"
+func writeInjectionFile(packageName string) {
+	header := header_code
+	header = fmt.Sprintf(header, packageName, packageName)
+	fileString := header + "\n" + body_code
+	writeInstrumentedFile(fileString, "mod_", "inject.go")
+}
+
+/* Injection Code */
+//injection code is used to dynamicly write an injection file,
+//containing methods called by dump statements
+
+//header_code contains all the needed imports for the injection code,
+//and is designed to have the package name written at runtime
+var header_code string = `
+
+package %s
+
+import (
+	"encoding/gob"
+	"os"
+	"reflect"
+	"time"
+	"fmt"
+	"bitbucket.org/bestchai/dinv/govec/vclock"	//attempt to remove dependency
+)
+
+var Encoder *gob.Encoder //global
+var ReadableLog *os.File
+var packageName = "%s"
+`
+
+//body code contains utility functions called by the code injected at
+//dump statements
+//TODO add comments to the inject code
+//TODO build array of acceptable types for encoding
+//TODO make the logger an argument to CreatePoint
+var body_code string = `
+
+func InstrumenterInit() {
+	if Encoder == nil {
+		stamp := time.Now()
+		encodedLogname := fmt.Sprintf("%s-%dEncoded.txt",packageName,stamp.Nanosecond())
+		encodedLog, _ := os.Create(encodedLogname)
+		Encoder = gob.NewEncoder(encodedLog)
+		
+		humanReadableLogname := fmt.Sprintf("%s-%dReadable.txt",packageName,stamp.Nanosecond())
+		ReadableLog, _ = os.Create(humanReadableLogname)
+	}
+}
+
+func CreatePoint(vars []interface{}, varNames []string, id string) Point {
+	numVars := len(varNames)
 	dumps := make([]NameValuePair, 0)
-	for i := 0; i < length; i++ {
-
+	for i := 0; i < numVars; i++ {
 		if vars[i] != nil && ((reflect.TypeOf(vars[i]).Kind() == reflect.String) || (reflect.TypeOf(vars[i]).Kind() == reflect.Int)) {
 			var dump NameValuePair
 			dump.VarName = varNames[i]
@@ -411,13 +421,13 @@ func createPoint(vars []interface{}, varNames []string, lineNumber int) Point {
 		}
 	}
 	
-	point := Point{dumps, strconv.Itoa(lineNumber), Logger.GetCurrentVC()}
+	point := Point{dumps, id,Logger.GetCurrentVC()}
 	return point
 }
 
 type Point struct {
 	Dump        []NameValuePair
-	LineNumber  string
+	Id			string
 	VectorClock []byte
 }
 
@@ -427,196 +437,13 @@ type NameValuePair struct {
 	Type    string
 }
 
-//func (nvp NameValuePair) String() string {
-//	return fmt.Sprintf("(%s,%s,%s)", nvp.VarName, nvp.Value, nvp.Type)
-//}
-
-//func (p Point) String() string {
-//	return fmt.Sprintf("%s : %s", p.LineNumber, p.Dump)
-//}
-`
-
-func addImports(file *ast.File) {
-	packagesToImport := []string{"\"encoding/gob\"", "\"os\"", "\"reflect\"", "\"strconv\""}
-	im := ImportAdder{packagesToImport}
-	ast.Walk(im, file)
+func (nvp NameValuePair) String() string {
+	return fmt.Sprintf("(%s,%s,%s)", nvp.VarName, nvp.Value, nvp.Type)
 }
 
-type ImportAdder struct {
-	PackagesToImport []string
-}
+func (p Point) String() string {
+	clock, _ := vclock.FromBytes(p.VectorClock)
+	return fmt.Sprintf("%s\n%s %s\nVClock : %s\n\n", p.Id, clock.ReturnVCString())
+}`
 
-func (im ImportAdder) Visit(node ast.Node) (w ast.Visitor) {
-	switch t := node.(type) {
-	case *ast.GenDecl:
-		if t.Tok == token.IMPORT {
-			//remove duplicate imports
-			releventImports := nonDuplicateImports(im.PackagesToImport, t.Specs)
-			newSpecs := make([]ast.Spec, len(t.Specs)+len(releventImports))
-			for i, spec := range t.Specs {
-				newSpecs[i] = spec
-			}
-			for i, spec := range releventImports {
-				newPackage := &ast.BasicLit{token.NoPos, token.STRING, spec}
-				newSpecs[len(t.Specs)+i] = &ast.ImportSpec{nil, nil, newPackage, nil, token.NoPos}
-			}
-
-			t.Specs = newSpecs
-			return nil
-		}
-	}
-	return im
-}
-
-func nonDuplicateImports(packagesToImport []string, specs []ast.Spec) []string {
-	var releventImports []string
-	for _, potential := range packagesToImport {
-		var duplicate bool = false
-		for _, existing := range specs {
-			enode := existing.(ast.Node)
-			switch e := enode.(type) {
-			case *ast.ImportSpec:
-				if potential == e.Path.Value { //not sure this compairison works
-					duplicate = true
-					break
-				}
-			}
-		}
-		if !duplicate {
-			releventImports = append(releventImports, potential)
-		}
-	}
-	return releventImports
-}
-
-type CFGWrapper struct {
-	cfg      *cfg.CFG
-	prog     *loader.Program
-	exp      map[int]ast.Stmt
-	stmts    map[ast.Stmt]int
-	objs     map[string]*types.Var
-	objNames map[*types.Var]string
-	fset     *token.FileSet
-	f        *ast.File
-}
-
-func getWrappers(t *testing.T, filename string) []*CFGWrapper {
-	var config loader.Config
-	//fmt.Println("\n\n" + filename + "\n\n")
-	f, err := config.ParseFile(filename, nil)
-	files := make([]*ast.File, 0)
-	files = append(files, f)
-	dir, _ := filepath.Split(filename)
-	fmt.Println(dir, filename)
-	err = filepath.Walk(dir, func(path string, info os.FileInfo, err error) error {
-		ext := filepath.Ext(path)
-		sdir, _ := filepath.Split(path)
-		//add all other files in the same directory
-		if ext != ".go" || path == filename || sdir != dir {
-			return nil
-		}
-		fmt.Println(path)
-		g, err := config.ParseFile(path, nil)
-		if err != nil {
-			return nil
-		}
-		files = append(files, g)
-		return nil
-	})
-	if err != nil {
-		fmt.Println("CannotLoad")
-		t.Error(err.Error())
-		t.FailNow()
-		return nil
-	}
-
-	config.CreateFromFiles("testing", files...)
-	prog, err := config.Load()
-	if err != nil {
-		fmt.Println("CannotLoad")
-		t.Error(err.Error())
-		t.FailNow()
-		return nil
-	}
-
-	cfgs := make([]*CFGWrapper, 0)
-	for i := 0; i < len(f.Decls); i++ {
-		functionDec, ok := f.Decls[i].(*ast.FuncDecl)
-		if ok {
-			print("FuncFound\n")
-			wrap := getWrapper(t, f, functionDec, prog)
-			cfgs = append(cfgs, wrap)
-		}
-	}
-	return cfgs
-}
-
-// uses first function in given string to produce CFG
-// w/ some other convenient fields for printing in test
-// cases when need be...
-func getWrapper(t *testing.T, f *ast.File, functionDec *ast.FuncDecl, prog *loader.Program) *CFGWrapper {
-	cfg := cfg.FromFunc(functionDec)
-	v := make(map[int]ast.Stmt)
-	stmts := make(map[ast.Stmt]int)
-	objs := make(map[string]*types.Var)
-	objNames := make(map[*types.Var]string)
-	i := 1
-	//fmt.Println("GETTING WRAPPER")
-	ast.Inspect(functionDec, func(n ast.Node) bool {
-		switch x := n.(type) {
-		case *ast.Ident:
-			if obj, ok := prog.Created[0].ObjectOf(x).(*types.Var); ok {
-				objs[obj.Name()] = obj
-				objNames[obj] = obj.Name()
-			}
-		case ast.Stmt:
-			switch x.(type) {
-			case *ast.BlockStmt:
-				return true
-			}
-			v[i] = x
-			stmts[x] = i
-			i++
-		case *ast.FuncLit:
-			// skip statements in anonymous functions
-			return false
-		}
-		return true
-	})
-	v[END] = cfg.Exit
-	v[START] = cfg.Entry
-	stmts[cfg.Entry] = START
-	stmts[cfg.Exit] = END
-	//if len(v) != len(cfg.GetBlocks()) {
-	//	t.Logf("expected %d vertices, got %d --construction error", len(v), len(cfg.GetBlocks()))
-	//}
-	//fmt.Printf("-----func start print---------------\n")
-	//ast.Print(prog.Fset, f)
-	//fmt.Printf("-----func end print-----------------\n")
-
-	return &CFGWrapper{
-		cfg:      cfg,
-		prog:     prog,
-		exp:      v,
-		stmts:    stmts,
-		objs:     objs,
-		objNames: objNames,
-		fset:     prog.Fset,
-		f:        f,
-	}
-}
-
-//prints given AST
-func (c *CFGWrapper) printAST() {
-	ast.Print(c.fset, c.f)
-}
-
-func writeInstrumentedFile(source string, filename string) {
-	pwd, _ := filepath.Abs(filepath.Dir(os.Args[0]))
-	_, name := filepath.Split(filename)
-	modFilename := fmt.Sprintf("%s/mod_%s", pwd, name)
-	file, _ := os.Create(modFilename)
-	fmt.Printf("Writing file %s\n", modFilename)
-	file.WriteString(source)
-	file.Close()
-}
+//TODO move structs to seperate file remove duplication in log merger

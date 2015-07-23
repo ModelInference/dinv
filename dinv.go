@@ -3,8 +3,10 @@
 package main
 
 import (
+	"bytes"
 	"flag"
 	"fmt"
+	"log"
 	"os"
 
 	"bitbucket.org/bestchai/dinv/instrumenter"
@@ -12,56 +14,76 @@ import (
 )
 
 var (
-	inst    bool
-	lm      bool
-	verbose = true
+	inst, i    bool
+	logmer, l  bool
+	verbose, v bool
+
+	logger *log.Logger
 )
 
-func main() {
-	flag.BoolVar(&inst, "instrumenter", false, "go run dinv -instrumenter file1 file2 ...")
-	flag.BoolVar(&lm, "logmerger", false, "go run dinv -logmerger file1 file2 ...")
+func setFlags() {
+	flag.BoolVar(&inst, "instrumenter", false, "go run dinv -instrumenter directory packagename")
+	flag.BoolVar(&i, "i", false, "go run dinv -i directory packagename")
+	flag.BoolVar(&logmer, "logmerger", false, "go run dinv -logmerger file1 file2 ...")
+	flag.BoolVar(&l, "l", false, "go run dinv -l file1 file2 ...")
+	flag.BoolVar(&verbose, "verbose", false, "-verbose logs extensive output")
+	flag.BoolVar(&v, "v", false, "-verbose logs extensive output")
 	flag.Parse()
-	files := flag.Args()
+}
 
-	if lm {
-		for i := 0; i < len(files); i++ {
-			exists, err := fileExists(files[i])
+func main() {
+	setFlags()
+
+	if verbose || v {
+		logger = log.New(os.Stdout, "logger: ", log.Lshortfile)
+	} else {
+		var buf bytes.Buffer
+		logger = log.New(&buf, "logger: ", log.Lshortfile)
+	}
+
+	args := flag.Args()
+	if logmer || l {
+		for i := 0; i < len(args); i++ {
+			exists, err := fileExists(args[i])
 			if !exists {
-				err := fmt.Errorf("the file %s, does not exist\n%s\n", files[i], err)
+				err := fmt.Errorf("the file %s, does not exist\n%s\n", args[i], err)
 				panic(err)
 			}
 		}
+		//TODO add vervose argument and build printing function
 		if verbose {
 			fmt.Printf("Merging Files...")
 		}
-		logmerger.Merge(files)
+		logmerger.Merge(args, logger)
 		if verbose {
 			fmt.Printf("Complete\n")
 		}
 	}
 
-	if inst {
-		valid, err := validinstrumentationFiles(files[1:])
+	if inst || i {
+		dir := args[0]
+		packageName := args[1]
+		valid, err := validinstrumentationDir(args[1:])
 		if !valid {
 			panic(err)
 		}
 		if verbose {
-			//fmt.Printf("Insturmenting %s...", files[0])
+			fmt.Printf("Insturmenting %s...", args[0])
 		}
-		instrumenter.Instrument(files)
+
+		instrumenter.Instrument(dir, packageName, logger)
 		if verbose {
 			//fmt.Printf("Complete\n")
 		}
 	}
 }
 
-func validinstrumentationFiles(files []string) (bool, error) {
-	for _, file := range files {
-		exists, err := fileExists(file)
-		if !exists {
-			return false, fmt.Errorf("the file %s, does not exist\n%s\n", file, err)
-		}
-	}
+func validinstrumentationDir(args []string) (bool, error) {
+	//TODO check that dir exists
+	//TODO check for existing go args
+	/*if len(args) != 3 {
+		return false, fmt.Errorf("Directory or package non existant\n")
+	}*/
 	return true, nil
 }
 

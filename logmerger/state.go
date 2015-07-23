@@ -1,4 +1,6 @@
 /*
+
+	//TODO refactor to global states
 	The state of a distributed program can be represented as the set
 	of all variable values across all hosts a moment in time. The
 	moment in time is denoted by the Cut, the set of all variable
