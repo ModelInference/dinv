@@ -8,7 +8,6 @@ Edited: July 6 2015
 package logmerger
 
 import (
-	"fmt"
 	"regexp"
 
 	"bitbucket.org/bestchai/dinv/govec/vclock"
@@ -30,9 +29,7 @@ func VectorClockArraysFromLogs(logs [][]Point) ([][]vclock.VClock, error) {
 			} else {
 				clocks[i] = append(clocks[i], *vc)
 			}
-			if debug {
-				fmt.Println(vc.ReturnVCString())
-			}
+			logger.Println(vc.ReturnVCString())
 		}
 	}
 	return clocks, nil
