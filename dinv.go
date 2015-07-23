@@ -14,7 +14,7 @@ import (
 var (
 	inst    bool
 	lm      bool
-	verbose = true
+	verbose = true //TODO replace with go loger
 )
 
 func main() {
@@ -31,6 +31,7 @@ func main() {
 				panic(err)
 			}
 		}
+		//TODO add vervose argument and build printing function
 		if verbose {
 			fmt.Printf("Merging Files...")
 		}
@@ -41,14 +42,17 @@ func main() {
 	}
 
 	if inst {
+		dir := files[0]
+		packageName := files[1]
 		valid, err := validinstrumentationDir(files[1:])
 		if !valid {
 			panic(err)
 		}
 		if verbose {
-			//fmt.Printf("Insturmenting %s...", files[0])
+			fmt.Printf("Insturmenting %s...", files[0])
 		}
-		instrumenter.Instrument(files[0], files[1])
+
+		instrumenter.Instrument(dir, packageName)
 		if verbose {
 			//fmt.Printf("Complete\n")
 		}
@@ -56,6 +60,8 @@ func main() {
 }
 
 func validinstrumentationDir(args []string) (bool, error) {
+	//TODO check that dir exists
+	//TODO check for existing go files
 	/*if len(args) != 3 {
 		return false, fmt.Errorf("Directory or package non existant\n")
 	}*/

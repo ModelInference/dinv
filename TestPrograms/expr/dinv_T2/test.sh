@@ -1,4 +1,4 @@
-#!/bin/bash
+#G!/bin/bash
 #this test creates the instrurmented version of the test programs
 #and runs them through the entire process from start to finnish
 #clean up directory
@@ -6,6 +6,7 @@
 P1="server"
 P2="client"
 TEST="t2"
+
 
 function installDinv {
     echo "Install dinv"
@@ -65,7 +66,7 @@ function runTestPrograms {
 
 function runLogMerger {
     cd $DINV
-    dinv -logmerger client-*.txt server-*.txt
+    dinv -logmerger client-*Encoded.txt server-*Encoded.txt
     mv ./*.dtrace $DINV/TestPrograms/expr/dinv_T2/
 }
 
@@ -106,11 +107,19 @@ function shivizMerge {
     
 }
 
-
+if [ "$1" == "-c" ];
+then
+    cleanUp
+    exit
+fi
 installDinv
 runInstrumenter
 runTestPrograms
 runLogMerger
 shivizMerge
 runDaikon
+if [ "$1" == "-d" ];
+then
+    exit
+fi
 cleanUp

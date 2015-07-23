@@ -4,7 +4,7 @@
 //injection, along with the line number and vector clock corresponding
 //to the time of the logging.
 
-//modified : july 90 2015 - Stewart Grant
+//modified : july 9 2015 - Stewart Grant
 
 package instrumenter
 
@@ -37,6 +37,7 @@ type Settings struct {
 }
 
 //defineSettings allows the
+//TODO put settings into dinv.go
 func defineSettings() *Settings {
 	return &Settings{
 		dataflow: false,
@@ -52,11 +53,29 @@ func Instrument(dir, packageName string) {
 	settings := defineSettings()
 	program := initializeInstrumenter(dir, packageName)
 	writeInjectionFile(program.packageName)
-	for i := range program.source {
-		genCode := generateCode(program, i, settings)
-		instrumented := injectCode(program, i, genCode)
-		writeInstrumentedFile(instrumented, "mod_", program.source[i].filename)
+	//TODO rename i to source
+	for sourceFile := range program.source {
+		genCode := generateCode(program, sourceFile, settings)
+		instrumented := injectCode(program, sourceFile, genCode)
+		writeInstrumentedFile(instrumented, "mod_", program.source[sourceFile].filename)
 	}
+}
+
+//initializeInstrumenter builds cfg's based on the source location,
+//it must be run before other functions, it also returns the source of
+//the program
+func initializeInstrumenter(dir, packageName string) *ProgramWrapper {
+	// Create the AST by parsing src.
+	program := getWrappers(dir, packageName)
+
+	for i := range program.source {
+		buf := new(bytes.Buffer)
+		printer.Fprint(buf, program.fset, program.source[i].comments)
+
+		program.source[i].text = buf.String()
+	}
+	//print(s)
+	return program
 }
 
 //generateCode constructs code for dump statements for the source code
@@ -64,16 +83,19 @@ func Instrument(dir, packageName string) {
 func generateCode(program *ProgramWrapper, sourceIndex int, settings *Settings) []string {
 	var generated_code []string
 	var collectedVariables []string
-	dumpNodes := GetDumpNodes(program.source[sourceIndex].comments)
+	dumpNodes := GetDumpNodes(program.source[sourceIndex].comments) //test
 	for _, dump := range dumpNodes {
-		line := program.fset.Position(dump.Pos()).Line
-
+		//get line of dump statement
+		//TODO refactor dump.Pos() into its own variable
+		//file relitive dump position (dump abs - file abs = dump rel)
+		fileRelitiveDumpPosition := int(dump.Pos() - program.source[sourceIndex].comments.Pos() + 1)
+		lineNumber := program.fset.Position(dump.Pos()).Line
 		if settings.dataflow {
 			collectedVariables = getAccessedAffectedVars(dump, program)
 		} else {
-			collectedVariables = GetAccessibleVarsInScope(int(dump.Pos()), program.source[sourceIndex].comments, program.fset)
+			collectedVariables = GetAccessibleVarsInScope(fileRelitiveDumpPosition, program.source[sourceIndex].comments, program.fset)
 		}
-		dumpcode := GenerateDumpCode(collectedVariables, line, program.source[sourceIndex].filename)
+		dumpcode := GenerateDumpCode(collectedVariables, lineNumber, program.source[sourceIndex].filename)
 
 		if settings.debug {
 			fmt.Println(dumpcode)
@@ -164,22 +186,6 @@ func sliceComputedVariables(program *ProgramWrapper, nodes []*ast.Node, computer
 	return affectedVars
 }
 
-//initializeInstrumenter builds cfg's based on the source location,
-//it must be run before other functions, it also returns the source of
-//the program
-func initializeInstrumenter(dir, packageName string) *ProgramWrapper {
-	// Create the AST by parsing src.
-	program := getWrappers(dir, packageName)
-
-	for i := range program.source {
-		var buf bytes.Buffer
-		printer.Fprint(&buf, program.fset, program.source[i].comments)
-		program.source[i].text = buf.String()
-	}
-	//print(s)
-	return program
-}
-
 //(replacement for match send and receive)
 //detectFunctionCalls searches an ast.File for instances of a varible
 //(varname) making a calls to a list of functions. Nodes in the ast
@@ -229,9 +235,11 @@ func matchCallExpression(n *ast.CallExpr, varName string, funcNames []string) bo
 
 //GetAccessibleVarsInScope returns the variables names of all
 //varialbes in scope at the point start.
+//TODO rename start to dump line of code
 func GetAccessibleVarsInScope(start int, file *ast.File, fset *token.FileSet) []string {
-	fmt.Println("GETTING VARS!!!")
+	fmt.Println("GETTING VARS!!!") //TODO refactor and put into logger
 	var results []string
+	//TODO refactor global collection into own function
 	global_objs := file.Scope.Objects
 	for identifier, _ := range global_objs {
 		if global_objs[identifier].Kind == ast.Var || global_objs[identifier].Kind == ast.Con { //|| global_objs[identifier].Kind == ast.Typ { //can be used for diving into structs
@@ -239,8 +247,18 @@ func GetAccessibleVarsInScope(start int, file *ast.File, fset *token.FileSet) []
 			results = append(results, fmt.Sprintf("%v", identifier))
 		}
 	}
+
 	filePos := fset.File(file.Package)
+	if filePos == nil {
+		fmt.Println("unable to locate dump statement")
+	}
+	fmt.Printf("packagename : %s\n searching Pos start %d\n", file.Name.String(), start)
+	//TODO rename path and write comments
+	//TODO make the dump location relative to
 	path, _ := astutil.PathEnclosingInterval(file, filePos.Pos(start), filePos.Pos(start+2)) // why +2
+	for _, node := range path {
+		fmt.Printf("node at position :%d\n", int(node.Pos()))
+	}
 
 	for _, astnode := range path {
 		//fmt.Println("%v", astutil.NodeDescription(astnode))
@@ -265,8 +283,8 @@ func GetAccessibleVarsInScope(start int, file *ast.File, fset *token.FileSet) []
 	return results
 }
 
-//GetDumpNodes traverses a file and returns all comments matching the
-//form @dump
+//GetDumpNodes traverses a file and returns all ast.Node's
+//representing comments of the form //@dump
 func GetDumpNodes(file *ast.File) []*ast.Comment {
 	var dumpNodes []*ast.Comment
 	for _, commentGroup := range file.Comments {
@@ -306,7 +324,9 @@ func GenerateDumpCode(vars []string, lineNumber int, path string) string {
 	}
 	buffer.WriteString(fmt.Sprintf("\"%s\"}\n", vars[len(vars)-1]))
 	buffer.WriteString(fmt.Sprintf("%spoint%d := CreatePoint(%svars%d, %svarsName%d, %d, \"%s\")\n", filename, lineNumber, filename, lineNumber, filename, lineNumber, lineNumber, filename))
-	buffer.WriteString(fmt.Sprintf("Encoder.Encode(%spoint%d)", filename, lineNumber))
+	buffer.WriteString(fmt.Sprintf("Encoder.Encode(%spoint%d)\n", filename, lineNumber))
+	//write out human readable log
+	buffer.WriteString(fmt.Sprintf("ReadableLog.WriteString(%spoint%d.String())", filename, lineNumber))
 	return buffer.String()
 }
 
@@ -329,6 +349,7 @@ func writeInstrumentedFile(source string, prefix string, filename string) {
 	file.Close()
 }
 
+//TODO move to its own file
 //writeInjectionFile builds a library file that generated code calls.
 //The injected file must belong to the same package as the
 //insturmented files, specified by packageName the resulting file will
@@ -357,31 +378,37 @@ import (
 	"strconv"
 	"time"
 	"fmt"
+	"bitbucket.org/bestchai/dinv/govec/vclock"	//attempt to remove dependency
 )
 
-var Encoder *gob.Encoder
+var Encoder *gob.Encoder //global
+var ReadableLog *os.File
 var packageName = "%s"
 `
 
 //body code contains utility functions called by the code injected at
 //dump statements
+//TODO add comments to the inject code
+//TODO build array of acceptable types for encoding
+//TODO make the logger an argument to CreatePoint
 var body_code string = `
 
 func InstrumenterInit() {
 	if Encoder == nil {
 		stamp := time.Now()
-		filename := fmt.Sprintf("%s-%d.txt",packageName,stamp.Nanosecond())
-		fileW, _ := os.Create(filename)
-		Encoder = gob.NewEncoder(fileW)
+		encodedLogname := fmt.Sprintf("%s-%dEncoded.txt",packageName,stamp.Nanosecond())
+		encodedLog, _ := os.Create(encodedLogname)
+		Encoder = gob.NewEncoder(encodedLog)
+		
+		humanReadableLogname := fmt.Sprintf("%s-%dReadable.txt",packageName,stamp.Nanosecond())
+		ReadableLog, _ = os.Create(humanReadableLogname)
 	}
 }
 
 func CreatePoint(vars []interface{}, varNames []string, lineNumber int, filename string) Point {
-
-	length := len(varNames)
+	numVars := len(varNames)
 	dumps := make([]NameValuePair, 0)
-	for i := 0; i < length; i++ {
-
+	for i := 0; i < numVars; i++ {
 		if vars[i] != nil && ((reflect.TypeOf(vars[i]).Kind() == reflect.String) || (reflect.TypeOf(vars[i]).Kind() == reflect.Int)) {
 			var dump NameValuePair
 			dump.VarName = varNames[i]
@@ -406,4 +433,15 @@ type NameValuePair struct {
 	VarName string
 	Value   interface{}
 	Type    string
+}
+
+func (nvp NameValuePair) String() string {
+	return fmt.Sprintf("(%s,%s,%s)", nvp.VarName, nvp.Value, nvp.Type)
+}
+
+func (p Point) String() string {
+	clock, _ := vclock.FromBytes(p.VectorClock)
+	return fmt.Sprintf("%s : %s : %s", p.LineNumber, p.Dump, clock.ReturnVCString())
 }`
+
+//TODO move structs to seperate file remove duplication in log merger
