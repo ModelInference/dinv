@@ -15,7 +15,7 @@ function installDinv {
 
 function runInstrumenter {
     cd $DINV/TestPrograms/$TEST/$P2/breakup/
-    dinv -instrumenter $DINV/TestPrograms/$TEST/$P2/breakup $P2
+    dinv -v -instrumenter $DINV/TestPrograms/$TEST/$P2/breakup $P2
     mkdir ../temp
     mv mod* ../temp
     mkdir ../temp2
@@ -24,7 +24,7 @@ function runInstrumenter {
     rmdir ../temp
     
     cd $DINV/TestPrograms/$TEST/$P1/breakup/
-    dinv -instrumenter $DINV/TestPrograms/$TEST/$P1/breakup $P1
+    dinv -v -instrumenter $DINV/TestPrograms/$TEST/$P1/breakup $P1
     mkdir ../temp
     mv mod* ../temp
     mkdir ../temp2
@@ -63,7 +63,7 @@ function runTestPrograms {
 
 function runLogMerger {
     cd $DINV
-    dinv -logmerger client-*Encoded.txt server-*Encoded.txt
+    dinv -v -logmerger client-*Encoded.txt server-*Encoded.txt
     mv ./*.dtrace $DINV/TestPrograms/expr/dinv_T2/
 }
 
@@ -84,7 +84,7 @@ function cleanUp {
     rm $DINV/$P2.go.txt
     rm $DINV/testclient.log-Log.txt
     rm $DINV/slog.log-Log.txt
-    $DINV/TestPrograms/expr/dinv_T2/*.dtrace
+    rm $DINV/TestPrograms/expr/dinv_T2/*.dtrace
     rm $DINV/TestPrograms/expr/dinv_T2/*.gz
     rm $DINV/TestPrograms/expr/dinv_T2/output.txt
     

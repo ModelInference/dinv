@@ -17,6 +17,7 @@ import (
 	"log"
 	"os"
 	"path/filepath"
+	"strconv"
 
 	"regexp"
 	"strings"
@@ -313,26 +314,23 @@ func GenerateDumpCode(vars []string, lineNumber int, path, packagename string) s
 	filename := strings.Replace(nameWithExt, ext, "", 1)
 	var buffer bytes.Buffer
 	// write vars' values
+	id := packagename + "_" + filename + "_" + strconv.Itoa(lineNumber)
 	buffer.WriteString(fmt.Sprintf("\nInstrumenterInit()\n"))
-	buffer.WriteString(fmt.Sprintf("%s_%s_%d_vars := []interface{}{", packagename, filename, lineNumber))
+	buffer.WriteString(fmt.Sprintf("%s_vars := []interface{}{", id))
 	for i := 0; i < len(vars)-1; i++ {
 		buffer.WriteString(fmt.Sprintf("%s,", vars[i]))
 	}
 	buffer.WriteString(fmt.Sprintf("%s}\n", vars[len(vars)-1]))
 	// write vars' names
-	buffer.WriteString(fmt.Sprintf("%s_%s_%d_varname := []string{", packagename, filename, lineNumber))
+	buffer.WriteString(fmt.Sprintf("%s_varname := []string{", id))
 	for i := 0; i < len(vars)-1; i++ {
 		buffer.WriteString(fmt.Sprintf("\"%s\",", vars[i]))
 	}
 	buffer.WriteString(fmt.Sprintf("\"%s\"}\n", vars[len(vars)-1]))
-	buffer.WriteString(fmt.Sprintf("p%s_%s_%d := CreatePoint(%s_%s_%d_vars, %s_%s_%d_varname, \"%s\",\"%s\",%d)\n",
-		packagename, filename, lineNumber,
-		packagename, filename, lineNumber,
-		packagename, filename, lineNumber,
-		packagename, filename, lineNumber))
-	buffer.WriteString(fmt.Sprintf("Encoder.Encode(p%s_%s_%d)\n", packagename, filename, lineNumber))
+	buffer.WriteString(fmt.Sprintf("p%s := CreatePoint(%s_vars, %s_varname, \"%s\")\n", id, id, id, id))
+	buffer.WriteString(fmt.Sprintf("Encoder.Encode(p%s)\n", id))
 	//write out human readable log
-	buffer.WriteString(fmt.Sprintf("ReadableLog.WriteString(p%s_%s_%d.String())", packagename, filename, lineNumber))
+	buffer.WriteString(fmt.Sprintf("ReadableLog.WriteString(p%s.String())", id))
 	return buffer.String()
 }
 
@@ -381,7 +379,6 @@ import (
 	"encoding/gob"
 	"os"
 	"reflect"
-	"strconv"
 	"time"
 	"fmt"
 	"bitbucket.org/bestchai/dinv/govec/vclock"	//attempt to remove dependency
@@ -411,7 +408,7 @@ func InstrumenterInit() {
 	}
 }
 
-func CreatePoint(vars []interface{}, varNames []string, packagename string, file string, line int) Point {
+func CreatePoint(vars []interface{}, varNames []string, id string) Point {
 	numVars := len(varNames)
 	dumps := make([]NameValuePair, 0)
 	for i := 0; i < numVars; i++ {
@@ -424,15 +421,13 @@ func CreatePoint(vars []interface{}, varNames []string, packagename string, file
 		}
 	}
 	
-	point := Point{dumps, strconv.Itoa(line), file, packagename,Logger.GetCurrentVC()}
+	point := Point{dumps, id,Logger.GetCurrentVC()}
 	return point
 }
 
 type Point struct {
 	Dump        []NameValuePair
-	Line	string
-	File	string
-	Package string
+	Id			string
 	VectorClock []byte
 }
 
@@ -448,7 +443,7 @@ func (nvp NameValuePair) String() string {
 
 func (p Point) String() string {
 	clock, _ := vclock.FromBytes(p.VectorClock)
-	return fmt.Sprintf("%s-%s-%s\n%s %s\nVClock : %s\n\n", p.Package,p.File, p.Line, p.Dump, clock.ReturnVCString())
+	return fmt.Sprintf("%s\n%s %s\nVClock : %s\n\n", p.Id, clock.ReturnVCString())
 }`
 
 //TODO move structs to seperate file remove duplication in log merger

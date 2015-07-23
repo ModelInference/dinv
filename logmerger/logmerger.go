@@ -103,7 +103,7 @@ func writeLogToFile(log []Point, filename string) {
 func createMapOfLogsForEachPoint(log []Point) map[string][]Point {
 	mapOfPoints := make(map[string][]Point, 0)
 	for i := 0; i < len(log); i++ {
-		mapOfPoints[log[i].Package+log[i].File+log[i].Line] = append(mapOfPoints[log[i].Package+log[i].File+log[i].Line], log[i])
+		mapOfPoints[log[i].Id] = append(mapOfPoints[log[i].Id], log[i])
 	}
 	return mapOfPoints
 }
@@ -117,7 +117,7 @@ func writeDeclaration(file *os.File, mapOfPoints map[string][]Point) {
 	file.WriteString("\n")
 	for _, v := range mapOfPoints {
 		point := v[0]
-		file.WriteString(fmt.Sprintf("ppt p-%s%s%s:::%s%s%s\n", point.Package, point.File, point.Line, point.Package, point.File, point.Line))
+		file.WriteString(fmt.Sprintf("ppt p-%s:::%s\n", point.Id, point.Id))
 		file.WriteString(fmt.Sprintf("ppt-type point\n"))
 		for i := 0; i < len(point.Dump); i++ {
 			file.WriteString(fmt.Sprintf("variable %s\n", point.Dump[i].VarName))
@@ -136,7 +136,7 @@ func writeDeclaration(file *os.File, mapOfPoints map[string][]Point) {
 func writeValues(file *os.File, log []Point) {
 	for i := range log {
 		point := log[i]
-		file.WriteString(fmt.Sprintf("p-%s%s%s:::%s%s%s\n", point.Package, point.File, point.Line, point.Package, point.File, point.Line))
+		file.WriteString(fmt.Sprintf("p-%s:::%s\n", point.Id, point.Id))
 		file.WriteString(fmt.Sprintf("this_invocation_nonce\n"))
 		file.WriteString(fmt.Sprintf("%d\n", i))
 		for i := range point.Dump {
@@ -215,11 +215,11 @@ func writeTraceFiles(states []State, spec *MergeSpec) {
 			for j := range mergedPoints[i] {
 				if !written[i][j] {
 					if !newFile {
-						logger.Printf("New file :%s\n", mergedPoints[i][j].Package+mergedPoints[i][j].File+mergedPoints[i][j].Line)
-						filename = mergedPoints[i][j].Package + mergedPoints[i][j].File + mergedPoints[i][j].Line
+						logger.Printf("New file :%s\n", mergedPoints[i][j].Id)
+						filename = mergedPoints[i][j].Id
 						newFile = true
 					}
-					if filename == mergedPoints[i][j].Package+mergedPoints[i][j].File+mergedPoints[i][j].Line {
+					if filename == mergedPoints[i][j].Id {
 						//sample rate
 						if (rand.Int() % 100) < spec.sampleRate {
 							pointLog = append(pointLog, mergedPoints[i][j])
@@ -265,7 +265,7 @@ func totalOrderLineNumberMerge(states []State) [][]Point {
 				points = append(points, state.Points[state.TotalOrdering[j][k]])
 			}
 			mergedPoints[i][j] = mergePoints(points)
-			logger.Println("%s\n", mergedPoints[i][j].Package+mergedPoints[i][j].File, mergedPoints[i][j].Line)
+			logger.Println("%s\n", mergedPoints[i][j].Id)
 		}
 	}
 	return mergedPoints
@@ -305,9 +305,8 @@ func mergePoints(points []Point) Point {
 	var mergedPoint Point
 	for _, point := range points {
 		mergedPoint.Dump = append(mergedPoint.Dump, point.Dump...) //...
-		mergedPoint.Line = mergedPoint.Line + "_" + point.Line
-		mergedPoint.File = mergedPoint.File + "_" + point.File
-		mergedPoint.Package = mergedPoint.Package + "_" + point.Package
+		logger.Printf("id:%s\n", point.Id)
+		mergedPoint.Id = mergedPoint.Id + "_" + point.Id
 		pVClock1, _ := vclock.FromBytes(mergedPoint.VectorClock)
 		pVClock2, _ := vclock.FromBytes(point.VectorClock)
 		temp := pVClock1.Copy()
@@ -332,7 +331,7 @@ func readLog(filePath string) []Point {
 		var decodedPoint Point
 		e = decoder.Decode(&decodedPoint)
 		if e == nil {
-			//fmt.Println(decodedPoint.String())
+			logger.Printf(decodedPoint.String())
 			pointArray = append(pointArray, decodedPoint)
 		}
 	}
@@ -361,10 +360,10 @@ type MergeSpec struct {
 //variables were gathered on. VectorClock is byte valued vector clock
 //at that the time the program point was logged
 type Point struct {
-	Dump                []NameValuePair
-	Line, File, Package string
-	VectorClock         []byte
-	CommunicationDelta  int
+	Dump               []NameValuePair
+	Id                 string
+	VectorClock        []byte
+	CommunicationDelta int
 }
 
 //Name value pair matches variable names to their values, along with
@@ -382,7 +381,7 @@ func (nvp NameValuePair) String() string {
 
 //String representation of a program point
 func (p Point) String() string {
-	return fmt.Sprintf("%s-%s-%s : %s", p.Package, p.File, p.Line, p.Dump)
+	return fmt.Sprintf("%s : %s", p.Id)
 }
 
 //fileExists returns true if the file specified by path exists. If not
