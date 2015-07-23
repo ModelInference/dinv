@@ -134,6 +134,7 @@ func idClockMapper(clocks [][]vclock.VClock) []string {
 
 //getLogId returns the first entry in the vector clock assuming that to be the owner
 //TODO this is not that robust and takes advantage of the fact the logs have not been sorted
+//TODO document the expected format & place documentation on webpage
 func getClockId(clocks []vclock.VClock) string {
 	//fmt.Printf("Searching Host ...")
 	if len(clocks) < 1 {

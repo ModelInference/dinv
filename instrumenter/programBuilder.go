@@ -19,6 +19,7 @@ import (
 
 //Program wrapper is a wrapper for an entire package, the source code
 //of every file in the package is found in source.
+//TODO make source -> sources
 type ProgramWrapper struct {
 	prog        *loader.Program
 	fset        *token.FileSet
@@ -67,12 +68,7 @@ func LoadPackage(sourceFiles []*ast.File, config loader.Config) *loader.Program 
 //package (packageName) ast's of each of the source files are built, a
 //corresponding ast of the comments is also built for dump statement
 //analysis
-func getSourceAndCommentFiles(dir, packageName string, config loader.Config) (sources, comments []*ast.File, filenames []string) {
-	astPackages, err := parser.ParseDir(token.NewFileSet(), dir, nil, parser.ParseComments)
-	if err != nil {
-		return nil, nil, nil
-	}
-	astPackage := astPackages[packageName]
+func getSourceAndCommentFiles(astPackage *ast.Package, config loader.Config) (sources, comments []*ast.File, filenames []string) {
 
 	sources = make([]*ast.File, 0)
 	comments = make([]*ast.File, 0)
@@ -94,7 +90,13 @@ func getSourceAndCommentFiles(dir, packageName string, config loader.Config) (so
 //specified by packageName
 func getWrappers(dir, packageName string) *ProgramWrapper {
 	var config loader.Config
-	sourceFiles, commentFiles, filenames := getSourceAndCommentFiles(dir, packageName, config)
+	fset := token.NewFileSet()
+	astPackages, err := parser.ParseDir(fset, dir, nil, parser.ParseComments)
+	if err != nil {
+		return nil
+	}
+
+	sourceFiles, commentFiles, filenames := getSourceAndCommentFiles(astPackages[packageName], config)
 	prog := LoadPackage(sourceFiles, config)
 	pName := commentFiles[0].Name.String()
 
@@ -122,11 +124,10 @@ func getWrappers(dir, packageName string) *ProgramWrapper {
 	fmt.Println("Wrappers Built")
 	return &ProgramWrapper{
 		prog:        prog,
-		fset:        prog.Fset,
+		fset:        fset,
 		packageName: pName,
 		source:      sources,
 	}
-	return nil
 }
 
 const (
