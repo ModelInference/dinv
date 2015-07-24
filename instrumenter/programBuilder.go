@@ -52,14 +52,14 @@ type CFGWrapper struct {
 //files in sourceFiles. All source files must compile and be in the
 //same package in order to be loaded.
 func LoadPackage(sourceFiles []*ast.File, config loader.Config) *loader.Program {
-	logger.Println("Loading Packages")
+	//logger.Println("Loading Packages")
 	config.CreateFromFiles("testing", sourceFiles...)
 	prog, err := config.Load()
 	if err != nil {
-		logger.Println("CannotLoad")
+		//logger.Println("CannotLoad")
 		return nil
 	}
-	logger.Println("Files Loaded")
+	//logger.Println("Files Loaded")
 	return prog
 }
 
@@ -85,9 +85,30 @@ func getSourceAndCommentFiles(astPackage *ast.Package, config loader.Config) (so
 	return sources, comments, filenames
 }
 
+func getWrapperFromString(sourceString string) *ProgramWrapper {
+	var config loader.Config
+	fset := token.NewFileSet()
+	comments, err := parser.ParseFile(fset, "single", sourceString, parser.ParseComments)
+	if err != nil {
+		return nil
+	}
+	source, err := config.ParseFile("single", sourceString)
+	if err != nil {
+		return nil
+	}
+	filename := comments.Name.String()
+	//make the single files the head of a list
+	return genPackageWrapper(
+		append(make([]*ast.File, 0), source),
+		append(make([]*ast.File, 0), comments),
+		append(make([]string, 0), filename),
+		fset,
+		config)
+}
+
 //getWrappers Constructs a program wrapper from a package in dir,
 //specified by packageName
-func getWrappers(dir, packageName string) *ProgramWrapper {
+func getPackageWrapper(dir, packageName string) *ProgramWrapper {
 	var config loader.Config
 	fset := token.NewFileSet()
 	astPackages, err := parser.ParseDir(fset, dir, nil, parser.ParseComments)
@@ -96,6 +117,10 @@ func getWrappers(dir, packageName string) *ProgramWrapper {
 	}
 
 	sourceFiles, commentFiles, filenames := getSourceAndCommentFiles(astPackages[packageName], config)
+	return genPackageWrapper(sourceFiles, commentFiles, filenames, fset, config)
+}
+
+func genPackageWrapper(sourceFiles []*ast.File, commentFiles []*ast.File, filenames []string, fset *token.FileSet, config loader.Config) *ProgramWrapper {
 	prog := LoadPackage(sourceFiles, config)
 	pName := commentFiles[0].Name.String()
 

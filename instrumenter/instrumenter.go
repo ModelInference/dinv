@@ -44,7 +44,7 @@ type Settings struct {
 
 //defineSettings allows the
 //TODO put settings into dinv.go
-func defineSettings() *Settings {
+func defaultSettings() *Settings {
 	return &Settings{
 		dataflow: false,
 		debug:    true,
@@ -57,10 +57,10 @@ func defineSettings() *Settings {
 func Instrument(dir, packageName string, inlogger *log.Logger) {
 	logger = inlogger
 	logger.Printf("INSTRUMENTING FILES %s for package %s", dir, packageName)
-	settings := defineSettings()
-	program := initializeInstrumenter(dir, packageName)
+	settings := initializeInstrumenter()
+	program := getPackageWrapper(dir, packageName)
+	program = generateSourceText(program)
 	writeInjectionFile(program.packageName)
-	//TODO rename i to source
 	for sourceFile := range program.source {
 		genCode := generateCode(program, sourceFile, settings)
 		instrumented := injectCode(program, sourceFile, genCode)
@@ -68,13 +68,16 @@ func Instrument(dir, packageName string, inlogger *log.Logger) {
 	}
 }
 
-//initializeInstrumenter builds cfg's based on the source location,
-//it must be run before other functions, it also returns the source of
-//the program
-func initializeInstrumenter(dir, packageName string) *ProgramWrapper {
-	// Create the AST by parsing src.
-	program := getWrappers(dir, packageName)
+//initalizeInstrumenter generates a logger if none exists, and returns
+//the default settings
+func initializeInstrumenter() *Settings {
+	if logger == nil {
+		logger = log.New(os.Stdout, "instrumenter:", log.Lshortfile)
+	}
+	return defaultSettings()
+}
 
+func generateSourceText(program *ProgramWrapper) *ProgramWrapper {
 	for i := range program.source {
 		buf := new(bytes.Buffer)
 		printer.Fprint(buf, program.fset, program.source[i].comments)
@@ -89,7 +92,7 @@ func initializeInstrumenter(dir, packageName string) *ProgramWrapper {
 func generateCode(program *ProgramWrapper, sourceIndex int, settings *Settings) []string {
 	var generated_code []string
 	var collectedVariables []string
-	dumpNodes := GetDumpNodes(program.source[sourceIndex].comments) //test
+	dumpNodes := GetDumpNodes(program.source[sourceIndex].comments)
 	for _, dump := range dumpNodes {
 		dumpPos := dump.Pos()
 		//file relitive dump position (dump abs - file abs = dump rel)
@@ -236,47 +239,69 @@ func matchCallExpression(n *ast.CallExpr, varName string, funcNames []string) bo
 	return false
 }
 
-//GetAccessibleVarsInScope returns the variables names of all
-//varialbes in scope at the point start.
-//TODO rename start to dump line of code
-func GetAccessibleVarsInScope(start int, file *ast.File, fset *token.FileSet) []string {
-	logger.Println("GETTING VARS!!!") //TODO refactor and put into logger
+func getGlobalVariables(file *ast.File, fset *token.FileSet) []string {
 	var results []string
-	//TODO refactor global collection into own function
 	global_objs := file.Scope.Objects
 	for identifier, _ := range global_objs {
+		//get variables of type constant and Var
 		if global_objs[identifier].Kind == ast.Var || global_objs[identifier].Kind == ast.Con { //|| global_objs[identifier].Kind == ast.Typ { //can be used for diving into structs
 			logger.Printf("Global Found :%s\n", fmt.Sprintf("%v", identifier))
 			results = append(results, fmt.Sprintf("%v", identifier))
 		}
 	}
+	return results
+}
 
+//GetAccessibleVarsInScope returns the variables names of all
+//varialbes in scope at the point start.
+//TODO rename start to dump line of code
+func GetAccessibleVarsInScope(dumpPosition int, file *ast.File, fset *token.FileSet) []string {
+	logger.Println("Collecting Scope Variables")
+	globals := getGlobalVariables(file, fset)
+	locals := getLocalVariables(dumpPosition, file, fset)
+	return append(globals, locals...)
+}
+
+func getLocalVariables(dumpPosition int, file *ast.File, fset *token.FileSet) []string {
+	var results []string
 	filePos := fset.File(file.Package)
-	if filePos == nil {
-		logger.Println("unable to locate dump statement")
-	}
-	logger.Printf("packagename : %s\n searching Pos start %d\n", file.Name.String(), start)
+	logger.Printf("packagename : %s\n searching Pos dumpPosition %d\n", file.Name.String(), dumpPosition)
 	//TODO rename path and write comments
-	//TODO make the dump location relative to
-	path, _ := astutil.PathEnclosingInterval(file, filePos.Pos(start), filePos.Pos(start+2)) // why +2
-	for _, node := range path {
-		logger.Printf("node at position :%d\n", int(node.Pos()))
-	}
-
+	//the +2 is probably to grab a send or receive after the dump??
+	path, _ := astutil.PathEnclosingInterval(file, filePos.Pos(dumpPosition), filePos.Pos(dumpPosition+2)) // why +2
 	for _, astnode := range path {
-		//logger.Println("%v", astutil.NodeDescription(astnode))
+		logger.Println("%v", astutil.NodeDescription(astnode))
 		switch t := astnode.(type) {
 		case *ast.BlockStmt:
-			//BUG variables which have yet to be declared are
-			//appearing and causing compile time errors
 			stmts := t.List
+			logger.Printf("Block found at position :%d of size %d\n", int(t.Pos()), len(stmts))
 			for _, stmtnode := range stmts {
+				//logger.Printf("Statement type:%s", stmtnode.)
 				switch t := stmtnode.(type) {
 				case *ast.DeclStmt:
 					idents := t.Decl.(*ast.GenDecl).Specs[0].(*ast.ValueSpec).Names
 					for _, identifier := range idents {
-						logger.Printf("Local Found :%s\n", fmt.Sprintf("%v", identifier))
-						results = append(results, fmt.Sprintf("%v", identifier.Name))
+						//collect node if in scope at the dump statement
+						if int(identifier.Pos()) < dumpPosition {
+							logger.Printf("Local Found :%s\n", fmt.Sprintf("%v", identifier))
+							results = append(results, fmt.Sprintf("%v", identifier.Name))
+						}
+					}
+				//collect variables from definition assignments
+				case *ast.AssignStmt:
+					if t.Tok == token.DEFINE {
+						for _, exp := range t.Lhs {
+							ast.Inspect(exp, func(n ast.Node) bool {
+								switch resolvedNode := n.(type) {
+								case *ast.Ident:
+									if int(resolvedNode.Pos()) < dumpPosition {
+										logger.Printf("Local Found :%s\n", resolvedNode.Name)
+										results = append(results, resolvedNode.Name)
+									}
+								}
+								return true
+							})
+						}
 					}
 				}
 			}
