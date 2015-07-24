@@ -13,11 +13,13 @@
 package logmerger
 
 import (
+	"bufio"
 	"encoding/gob"
 	"fmt"
 	"log"
 	"math/rand"
 	"os"
+	"regexp"
 	"strings"
 
 	"bitbucket.org/bestchai/dinv/govec/vclock"
@@ -395,4 +397,64 @@ func fileExists(path string) (bool, error) {
 		return false, nil
 	}
 	return false, err
+}
+
+/* reading govec logs */
+
+func ClocksFromGologFile(filename string) ([]vclock.VClock, error) {
+	file, err := os.Open(filename)
+	if err != nil {
+		return nil, err
+	}
+	var text string
+	scanner := bufio.NewScanner(file)
+	for scanner.Scan() {
+		text += scanner.Text()
+	}
+	//clocks1, err := ClocksFromString(text, "([A-Za-z0-9_]+){([A-Za-z0-9\":,]+})\n(.+)\n")
+	//clocks2, err := ClocksFromString(text, "(?<host>\\S*) (?<vclock>{.*})\n(?<message>.*)")
+
+	return nil, nil
+}
+
+func LogsFromString(clockLog, regex string) ([]vclock.VClock, error) {
+	rex := regexp.MustCompile(regex)
+	matches := rex.FindAllStringSubmatch(clockLog, -1)
+	host := matches[0][1]
+	clocks := make([]string, 0)
+	logs := make([]string, 0)
+	for i := range matches {
+		fmt.Println(host)
+		clocks = append(clocks, matches[i][2])
+		logs = append(logs, matches[i][3])
+		fmt.Printf("{\t")
+		for j := 1; j < len(matches[i]); j++ {
+			fmt.Printf("-%s-", matches[i][j])
+		}
+		fmt.Printf("\t}\n")
+	}
+
+	vclocks := make([]*vclock.VClock, 0)
+	for i := range clocks {
+		clock, err := ClockFromString(clocks[i], "\"([A-Za-z0-9]+)\":([0-9]+)")
+		if clock == nil || err != nil {
+			return nil, err
+		}
+		vclocks = append(vclocks, clock)
+	}
+
+	return nil, nil
+}
+
+func ClockFromString(clock, regex string) (*vclock.VClock, error) {
+	re := regexp.MustCompile(regex)
+	matches := re.FindAllStringSubmatch(clock, -1)
+	for i := range matches {
+		fmt.Printf("{\t")
+		for j := 1; j < len(matches[i]); j++ {
+			fmt.Printf("-%s-", matches[i][j])
+		}
+		fmt.Printf("\t}\n")
+	}
+	return vclock.New(), nil
 }
