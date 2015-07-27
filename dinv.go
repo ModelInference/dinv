@@ -24,7 +24,7 @@ var (
 func setFlags() {
 	flag.BoolVar(&inst, "instrumenter", false, "go run dinv -instrumenter directory packagename")
 	flag.BoolVar(&i, "i", false, "go run dinv -i directory packagename")
-	flag.BoolVar(&logmer, "logmerger", false, "go run dinv -logmerger file1 file2 ...")
+	flag.BoolVar(&logmer, "logmerger", false, "go run dinv -logmerger pointLogs... goVecLogs...")
 	flag.BoolVar(&l, "l", false, "go run dinv -l file1 file2 ...")
 	flag.BoolVar(&verbose, "verbose", false, "-verbose logs extensive output")
 	flag.BoolVar(&v, "v", false, "-verbose logs extensive output")
@@ -50,11 +50,18 @@ func main() {
 				panic(err)
 			}
 		}
-		//TODO add vervose argument and build printing function
-		if verbose {
-			fmt.Printf("Merging Files...")
+		if len(args)%2 != 0 {
+			err := fmt.Errorf("please supply a govec log for each point log\n")
+			panic(err)
 		}
-		logmerger.Merge(args, logger)
+		logger.Printf("Merging Files...")
+		pointLogs := make([]string, 0)
+		govecLogs := make([]string, 0)
+		for i := 0; i < len(args)/2; i++ {
+			pointLogs = append(pointLogs, args[i])
+			govecLogs = append(govecLogs, args[len(args)/2+i])
+		}
+		logmerger.Merge(pointLogs, govecLogs, logger)
 		if verbose {
 			fmt.Printf("Complete\n")
 		}

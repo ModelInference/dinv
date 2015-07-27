@@ -15,11 +15,13 @@ package logmerger
 import (
 	"bufio"
 	"encoding/gob"
+	"errors"
 	"fmt"
 	"log"
 	"math/rand"
 	"os"
 	"regexp"
+	"strconv"
 	"strings"
 
 	"bitbucket.org/bestchai/dinv/govec/vclock"
@@ -29,12 +31,25 @@ var (
 	logger *log.Logger
 )
 
+func Init() {
+	if logger == nil {
+		logger = log.New(os.Stdout, "logger: ", log.Lshortfile)
+	}
+}
+
 //Merge is the control fuction for log merging. The input is an array
 //of strings corresponding to the log files which will be merged. The
 //output is a set of Daikon files
-func Merge(logfiles []string, inlogger *log.Logger) {
+func Merge(logfiles []string, gologfiles []string, inlogger *log.Logger) {
+	Init()
 	logger = inlogger
-	logs := buildLogs(logfiles)
+	for _, log := range logfiles {
+		logger.Println(log)
+	}
+	for _, log := range gologfiles {
+		logger.Println(log)
+	}
+	logs := buildLogs(logfiles, gologfiles)
 	states := mineStates(logs)
 	spec := &MergeSpec{totalOrderLineNumberMerge, 100, false}
 	writeTraceFiles(states, spec)
@@ -44,20 +59,51 @@ func Merge(logfiles []string, inlogger *log.Logger) {
 //one array per file. The logs are preprocesses, by appending their
 //id's to their variable names, and injecting a zeroed vector clock at
 //the begining of each log, to act as a base case during computation
-func buildLogs(logFiles []string) [][]Point {
+func buildLogs(logFiles []string, gologFiles []string) [][]Point {
 	logs := make([][]Point, 0)
+	goLogs := make([]*golog, 0)
 	for i := 0; i < len(logFiles); i++ {
 		log := readLog(logFiles[i])
 		logs = append(logs, log)
+	}
+	for i := 0; i < len(gologFiles); i++ {
+		goLog, err := ParseGologFile(gologFiles[i])
+		if err != nil {
+			panic(err)
+		}
+		goLogs = append(goLogs, goLog)
 	}
 	clocks, _ := VectorClockArraysFromLogs(logs)
 	logger.Printf("Found %d seperate clocks\n", len(clocks))
 	ids := idClockMapper(clocks)
 	for i, log := range logs {
-		log = addBaseLog(ids[i], log)
 		addNodeName(ids[i], log)
+		for _, goLog := range goLogs {
+			if goLog.id == ids[i] { //match the ids of the logs
+				log = injectMissingPoints(log, goLog)
+			}
+		}
 	}
 	return logs
+}
+
+func injectMissingPoints(points []Point, log *golog) []Point {
+	pointIndex, gologIndex := 0, 0
+	injectedPoints := make([]Point, 0)
+	for gologIndex < len(log.clocks) {
+		pointClock, _ := vclock.FromBytes(points[pointIndex].VectorClock)
+		ticks, _ := pointClock.FindTicks(log.id)
+		if int(ticks) == gologIndex {
+			injectedPoints = append(injectedPoints, points[pointIndex])
+			pointIndex += 2
+		} else {
+			newPoint := new(Point)
+			newPoint.VectorClock = log.clocks[gologIndex].Bytes()
+			injectedPoints = append(injectedPoints, *newPoint)
+		}
+		gologIndex++
+	}
+	return injectedPoints
 }
 
 //addBaseLog Injects a single valued vector clock as the base entry of
@@ -333,7 +379,7 @@ func readLog(filePath string) []Point {
 		var decodedPoint Point
 		e = decoder.Decode(&decodedPoint)
 		if e == nil {
-			logger.Printf(decodedPoint.String())
+			//logger.Printf(decodedPoint.String())
 			pointArray = append(pointArray, decodedPoint)
 		}
 	}
@@ -399,9 +445,23 @@ func fileExists(path string) (bool, error) {
 	return false, err
 }
 
-/* reading govec logs */
+type golog struct {
+	id       string
+	clocks   []*vclock.VClock
+	messages []string
+}
 
-func ClocksFromGologFile(filename string) ([]vclock.VClock, error) {
+func (g *golog) String() string {
+	var text string
+	for i := range g.clocks {
+		text += fmt.Sprintf("id: %s\t clock: %s\n %s\n", g.id, g.clocks[i].ReturnVCString(), g.messages[i])
+	}
+	return text
+}
+
+/* reading govec logs */
+func ParseGologFile(filename string) (*golog, error) {
+	var govecRegex string = "(\\S*) ({.*})\n(.*)"
 	file, err := os.Open(filename)
 	if err != nil {
 		return nil, err
@@ -409,52 +469,61 @@ func ClocksFromGologFile(filename string) ([]vclock.VClock, error) {
 	var text string
 	scanner := bufio.NewScanner(file)
 	for scanner.Scan() {
-		text += scanner.Text()
+		text += "\n" + scanner.Text()
 	}
-	//clocks1, err := ClocksFromString(text, "([A-Za-z0-9_]+){([A-Za-z0-9\":,]+})\n(.+)\n")
-	//clocks2, err := ClocksFromString(text, "(?<host>\\S*) (?<vclock>{.*})\n(?<message>.*)")
+	logger.Print(text)
+	log, err := LogsFromString(text, govecRegex)
+	if err != nil {
+		defer file.Close()
+		return nil, err
+	}
+	logger.Print(log.String())
 
-	return nil, nil
+	return log, nil
 }
 
-func LogsFromString(clockLog, regex string) ([]vclock.VClock, error) {
+func LogsFromString(clockLog, regex string) (*golog, error) {
 	rex := regexp.MustCompile(regex)
 	matches := rex.FindAllStringSubmatch(clockLog, -1)
-	host := matches[0][1]
-	clocks := make([]string, 0)
-	logs := make([]string, 0)
+	if len(matches) <= 0 {
+		return nil, fmt.Errorf("No matches found")
+	}
+	id := matches[0][1]
+	messages := make([]string, 0)
+	rawClocks := make([]string, 0)
 	for i := range matches {
-		fmt.Println(host)
-		clocks = append(clocks, matches[i][2])
-		logs = append(logs, matches[i][3])
-		fmt.Printf("{\t")
-		for j := 1; j < len(matches[i]); j++ {
-			fmt.Printf("-%s-", matches[i][j])
-		}
-		fmt.Printf("\t}\n")
+		rawClocks = append(rawClocks, matches[i][2])
+		messages = append(messages, matches[i][3])
 	}
 
 	vclocks := make([]*vclock.VClock, 0)
-	for i := range clocks {
-		clock, err := ClockFromString(clocks[i], "\"([A-Za-z0-9]+)\":([0-9]+)")
+	for i := range rawClocks {
+		clock, err := ClockFromString(rawClocks[i], "\"([A-Za-z0-9]+)\":([0-9]+)")
 		if clock == nil || err != nil {
 			return nil, err
 		}
 		vclocks = append(vclocks, clock)
 	}
-
-	return nil, nil
+	log := &golog{id, vclocks, messages}
+	return log, nil
 }
 
 func ClockFromString(clock, regex string) (*vclock.VClock, error) {
 	re := regexp.MustCompile(regex)
 	matches := re.FindAllStringSubmatch(clock, -1)
+	ids := make([]string, 0)
+	ticks := make([]int, 0)
 	for i := range matches {
-		fmt.Printf("{\t")
-		for j := 1; j < len(matches[i]); j++ {
-			fmt.Printf("-%s-", matches[i][j])
+		ids = append(ids, matches[i][1])
+		time, err := strconv.Atoi(matches[i][2])
+		ticks = append(ticks, time)
+		if err != nil {
+			return nil, err
 		}
-		fmt.Printf("\t}\n")
 	}
-	return vclock.New(), nil
+	extractedClock := vclock.Construct(ids, ticks)
+	if extractedClock == nil {
+		return nil, errors.New("unable to extract clock\n")
+	}
+	return extractedClock, nil
 }
