@@ -54,49 +54,6 @@ func (vc *VClock) HappenedBefore(other *VClock) bool {
 	return true
 }
 
-/*
-//Some additional methods used to create consistant cuts
-func (vc *VClock) Matches(other *VClock) bool {
-	lenVC := (float64)(len(vc.items))
-	lenOther := (float64)(len(other.items))
-
-	difference := math.Abs(lenVC - lenOther)
-
-	if difference > 1 {
-		return false
-	}
-	numDiff := 0
-	for oi := 0; oi != len(other.items); oi++ {
-		if vci, found := vc.findItem(other.items[oi].id); found {
-			otherTicks := (float64)(other.items[oi].ticks)
-			vcTicks := (float64)(vc.items[vci].ticks)
-			if math.Abs(otherTicks-vcTicks) > 1 {
-				return false
-			} else if math.Abs(otherTicks-vcTicks) == 1 {
-				numDiff++
-			}
-		} else {
-			numDiff++
-		}
-	}
-
-	for oi := 0; oi != len(vc.items); oi++ {
-		if vci, found := other.findItem(vc.items[oi].id); found {
-			otherTicks := (float64)(vc.items[oi].ticks)
-			vcTicks := (float64)(other.items[vci].ticks)
-			if math.Abs(otherTicks-vcTicks) > 1 {
-				return false
-			} else if math.Abs(otherTicks-vcTicks) == 1 {
-				numDiff++
-			}
-		} else {
-			numDiff++
-		}
-	}
-
-	return numDiff == 1 || numDiff == 2 || numDiff == 3
-}*/
-
 //difference calculates the positive difference in tick values between two clocks,
 //diff is the absolute positive differnce between the two nodes
 //nodes is the number of nodes that contributed to the difference
