@@ -23,7 +23,7 @@ var (
 
 func Client() {
 	//dump
-	Logger = govec.Initialize("Client", "testclient.log")
+	Logger = govec.Initialize("Client", "clog.log")
 	rAddr, errR := net.ResolveUDPAddr("udp4", ":8080")
 	printErr(errR)
 	lAddr, errL := net.ResolveUDPAddr("udp4", ":18585")
@@ -36,7 +36,7 @@ func Client() {
 
 		msg := MarshallInts([]int{term1, term2})
 		// sending UDP packet to specified address and port
-		_, errWrite := conn.Write(Logger.PrepareSend("", msg))
+		_, errWrite := conn.Write(Logger.PrepareSend("sending", msg))
 
 		//@dump
 		printErr(errWrite)

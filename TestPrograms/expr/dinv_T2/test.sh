@@ -63,7 +63,7 @@ function runTestPrograms {
 
 function runLogMerger {
     cd $DINV
-    dinv -v -logmerger client-*Encoded.txt server-*Encoded.txt
+    dinv -v -logmerger *Encoded.txt *Log.txt
     mv ./*.dtrace $DINV/TestPrograms/expr/dinv_T2/
 }
 
@@ -82,7 +82,7 @@ function runDaikon {
 function cleanUp {
     rm $DINV/$P1.go.txt
     rm $DINV/$P2.go.txt
-    rm $DINV/testclient.log-Log.txt
+    rm $DINV/clog.log-Log.txt
     rm $DINV/slog.log-Log.txt
     rm $DINV/TestPrograms/expr/dinv_T2/*.dtrace
     rm $DINV/TestPrograms/expr/dinv_T2/*.gz

@@ -184,6 +184,20 @@ func (vc *VClock) ReturnVCString() string {
 	return buffer.String()
 }
 
+func Construct(ids []string, ticks []int) *VClock {
+	if len(ids) != len(ticks) {
+		return nil
+	}
+	clock := New()
+	for i := range ids {
+		if ticks[i] < 0 {
+			return nil
+		}
+		clock.updateItem(ids[i], uint64(ticks[i]), 0)
+	}
+	return clock
+}
+
 // updateItem changes or appends the given id with ticks and when.
 func (vc *VClock) updateItem(id string, ticks, when uint64) {
 	if when > 0 {
