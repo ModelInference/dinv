@@ -90,7 +90,8 @@ func buildLogs(logFiles []string, gologFiles []string) [][]Point {
 func injectMissingPoints(points []Point, log *golog) []Point {
 	pointIndex, gologIndex := 0, 0
 	injectedPoints := make([]Point, 0)
-	for gologIndex < len(log.clocks) {
+	for pointIndex < len(points) {
+		logger.Printf("point index :%d maxp :%d maxc: %d\n", pointIndex, len(points), len(log.clocks))
 		pointClock, _ := vclock.FromBytes(points[pointIndex].VectorClock)
 		ticks, _ := pointClock.FindTicks(log.id)
 		if int(ticks) == gologIndex {
@@ -101,6 +102,13 @@ func injectMissingPoints(points []Point, log *golog) []Point {
 			newPoint.VectorClock = log.clocks[gologIndex].Bytes()
 			injectedPoints = append(injectedPoints, *newPoint)
 		}
+		gologIndex++
+	}
+	//fill in all unlogged clocks
+	for gologIndex < len(log.clocks) {
+		newPoint := new(Point)
+		newPoint.VectorClock = log.clocks[gologIndex].Bytes()
+		injectedPoints = append(injectedPoints, *newPoint)
 		gologIndex++
 	}
 	return injectedPoints
