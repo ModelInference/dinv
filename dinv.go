@@ -14,27 +14,27 @@ import (
 )
 
 var (
-	inst, i    bool
-	logmer, l  bool
-	verbose, v bool
+	inst    bool
+	logmer  bool
+	verbose bool
 
 	logger *log.Logger
 )
 
 func setFlags() {
 	flag.BoolVar(&inst, "instrumenter", false, "go run dinv -instrumenter directory packagename")
-	flag.BoolVar(&i, "i", false, "go run dinv -i directory packagename")
-	flag.BoolVar(&logmer, "logmerger", false, "go run dinv -logmerger pointLogs... goVecLogs...")
-	flag.BoolVar(&l, "l", false, "go run dinv -l file1 file2 ...")
+	flag.BoolVar(&inst, "i", false, "go run dinv -i directory packagename")
+	flag.BoolVar(&logmer, "logmerger", false, "go run dinv -logmerger file1 file2 ...")
+	flag.BoolVar(&logmer, "l", false, "go run dinv -l file1 file2 ...")
 	flag.BoolVar(&verbose, "verbose", false, "-verbose logs extensive output")
-	flag.BoolVar(&v, "v", false, "-verbose logs extensive output")
+	flag.BoolVar(&verbose, "v", false, "-verbose logs extensive output")
 	flag.Parse()
 }
 
 func main() {
 	setFlags()
 
-	if verbose || v {
+	if verbose {
 		logger = log.New(os.Stdout, "logger: ", log.Lshortfile)
 	} else {
 		var buf bytes.Buffer
@@ -42,7 +42,7 @@ func main() {
 	}
 
 	args := flag.Args()
-	if logmer || l {
+	if logmer {
 		for i := 0; i < len(args); i++ {
 			exists, err := fileExists(args[i])
 			if !exists {
@@ -62,12 +62,10 @@ func main() {
 			govecLogs = append(govecLogs, args[len(args)/2+i])
 		}
 		logmerger.Merge(pointLogs, govecLogs, logger)
-		if verbose {
-			fmt.Printf("Complete\n")
-		}
+		logger.Printf("Complete\n")
 	}
 
-	if inst || i {
+	if inst {
 		dir := args[0]
 		packageName := args[1]
 		valid, err := validinstrumentationDir(args[1:])
