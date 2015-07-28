@@ -67,7 +67,6 @@ func main() {
 
 	if inst {
 		dir := args[0]
-		packageName := args[1]
 		valid, err := validinstrumentationDir(args[1:])
 		if !valid {
 			panic(err)
@@ -76,7 +75,7 @@ func main() {
 			fmt.Printf("Insturmenting %s...", args[0])
 		}
 
-		instrumenter.Instrument(dir, packageName, logger)
+		instrumenter.Instrument(dir, logger)
 		if verbose {
 			//fmt.Printf("Complete\n")
 		}

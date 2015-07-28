@@ -15,7 +15,7 @@ function installDinv {
 
 function runInstrumenter {
     cd $DINV/TestPrograms/$TEST/$P2/breakup/
-    dinv -v -instrumenter $DINV/TestPrograms/$TEST/$P2/breakup $P2
+    dinv -v -instrumenter $DINV/TestPrograms/$TEST/$P2/breakup
     mkdir ../temp
     mv mod* ../temp
     mkdir ../temp2
@@ -24,7 +24,7 @@ function runInstrumenter {
     rmdir ../temp
     
     cd $DINV/TestPrograms/$TEST/$P1/breakup/
-    dinv -v -instrumenter $DINV/TestPrograms/$TEST/$P1/breakup $P1
+    dinv -v -instrumenter $DINV/TestPrograms/$TEST/$P1/breakup
     mkdir ../temp
     mv mod* ../temp
     mkdir ../temp2

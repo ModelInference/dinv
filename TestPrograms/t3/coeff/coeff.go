@@ -58,13 +58,13 @@ func handleConn(conn net.PacketConn, conn2 *net.UDPConn) {
 	//	fmt.Printf("Coeff: T1:%d\tT2:%d\tCoeff:%d\n", term1, term2, coeff)
 	//}
 	msg := comm.MarshallInts([]int{term1, term2, coeff})
-	_, errWrite := conn2.Write(Logger.PrepareSend("Sending terms", msg))
+	_, errWrite := conn2.Write(Logger.PrepareSend("Sending terms to linn", msg))
 	comm.PrintErr(errWrite)
 	//@dump
 
 	//read response from linn server
 	_, errRead := conn2.Read(buf[0:])
-	ret := Logger.UnpackReceive("Received", buf[0:])
+	ret := Logger.UnpackReceive("Received coeff from linn", buf[0:])
 	//@dump
 	comm.PrintErr(errRead)
 	//unmarshall response from linn server
@@ -74,7 +74,7 @@ func handleConn(conn net.PacketConn, conn2 *net.UDPConn) {
 	//marshall response and send back to client
 	msg2 := comm.MarshallInts([]int{lin})
 
-	conn.WriteTo(Logger.PrepareSend("Sending", msg2), addr)
+	conn.WriteTo(Logger.PrepareSend("Sending to client", msg2), addr)
 	//@dump
 }
 

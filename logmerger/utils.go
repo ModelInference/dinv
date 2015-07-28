@@ -29,7 +29,7 @@ func VectorClockArraysFromLogs(logs [][]Point) ([][]vclock.VClock, error) {
 			} else {
 				clocks[i] = append(clocks[i], *vc)
 			}
-			logger.Println(vc.ReturnVCString())
+			//logger.Println(vc.ReturnVCString())
 		}
 	}
 	return clocks, nil
