@@ -6,7 +6,7 @@ import (
 	"os"
 
 	"bitbucket.org/bestchai/dinv/TestPrograms/t3/comm"
-	"bitbucket.org/bestchai/dinv/govec"
+	"github.com/wantonsolutions/GoVector/govec"
 )
 
 //var debug = false

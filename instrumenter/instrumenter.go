@@ -54,17 +54,18 @@ func defaultSettings() *Settings {
 //Instrument oversees the instrumentation of an entire package
 //for each file provided
 //TODO take a package name rather then a single file
-func Instrument(dir, packageName string, inlogger *log.Logger) {
+func Instrument(dir string, inlogger *log.Logger) {
 	logger = inlogger
-	logger.Printf("INSTRUMENTING FILES %s for package %s", dir, packageName)
+	logger.Printf("INSTRUMENTING FILES %s", dir)
 	settings := initializeInstrumenter()
-	program := getPackageWrapper(dir, packageName)
+	program := getProgramWrapper(dir)
 	program = generateSourceText(program)
-	writeInjectionFile(program.packageName)
-	for sourceFile := range program.source {
-		genCode := generateCode(program, sourceFile, settings)
-		instrumented := injectCode(program, sourceFile, genCode)
-		writeInstrumentedFile(instrumented, "mod_", program.source[sourceFile].filename)
+	for packageIndex, pack := range program.packages {
+		for sourceIndex := range pack.sources {
+			genCode := generateCode(program, packageIndex, sourceIndex, settings)
+			instrumented := injectCode(program, packageIndex, sourceIndex, genCode)
+			writeInstrumentedFile(instrumented, "mod_", program.packages[packageIndex].sources[sourceIndex].filename)
+		}
 	}
 }
 
@@ -78,32 +79,34 @@ func initializeInstrumenter() *Settings {
 }
 
 func generateSourceText(program *ProgramWrapper) *ProgramWrapper {
-	for i := range program.source {
-		buf := new(bytes.Buffer)
-		printer.Fprint(buf, program.fset, program.source[i].comments)
-
-		program.source[i].text = buf.String()
+	for _, pack := range program.packages {
+		for _, source := range pack.sources {
+			addImports(source.comments)
+			buf := new(bytes.Buffer)
+			printer.Fprint(buf, program.fset, source.comments)
+			source.text = buf.String()
+		}
 	}
 	return program
 }
 
 //generateCode constructs code for dump statements for the source code
 //located at program.source[sourceIndex].
-func generateCode(program *ProgramWrapper, sourceIndex int, settings *Settings) []string {
+func generateCode(program *ProgramWrapper, packageIndex, sourceIndex int, settings *Settings) []string {
 	var generated_code []string
 	var collectedVariables []string
-	dumpNodes := GetDumpNodes(program.source[sourceIndex].comments)
+	dumpNodes := GetDumpNodes(program.packages[packageIndex].sources[sourceIndex].comments)
 	for _, dump := range dumpNodes {
 		dumpPos := dump.Pos()
 		//file relitive dump position (dump abs - file abs = dump rel)
-		fileRelitiveDumpPosition := int(dumpPos - program.source[sourceIndex].comments.Pos() + 1)
+		fileRelitiveDumpPosition := int(dumpPos - program.packages[packageIndex].sources[sourceIndex].comments.Pos() + 1)
 		lineNumber := program.fset.Position(dumpPos).Line
 		if settings.dataflow {
 			collectedVariables = getAccessedAffectedVars(dump, program)
 		} else {
-			collectedVariables = GetAccessibleVarsInScope(fileRelitiveDumpPosition, program.source[sourceIndex].comments, program.fset)
+			collectedVariables = GetAccessibleVarsInScope(fileRelitiveDumpPosition, program.packages[packageIndex].sources[sourceIndex].comments, program.fset)
 		}
-		dumpcode := GenerateDumpCode(collectedVariables, lineNumber, program.source[sourceIndex].filename, program.packageName)
+		dumpcode := GenerateDumpCode(collectedVariables, lineNumber, program.packages[packageIndex].sources[sourceIndex].filename, program.packages[packageIndex].packageName)
 
 		logger.Println(dumpcode)
 		generated_code = append(generated_code, dumpcode)
@@ -114,14 +117,15 @@ func generateCode(program *ProgramWrapper, sourceIndex int, settings *Settings) 
 //injectCode replaces dump statements in the source code of
 //program.source[sourceIndex] with lines of code defined in
 //injectionCode
-func injectCode(program *ProgramWrapper, sourceIndex int, injectionCode []string) string {
+func injectCode(program *ProgramWrapper, packageIndex, sourceIndex int, injectionCode []string) string {
 	count := 0
 	rp := regexp.MustCompile("\\/\\/@dump")
-	instrumented := rp.ReplaceAllStringFunc(program.source[sourceIndex].text, func(s string) string {
+	instrumented := rp.ReplaceAllStringFunc(program.packages[packageIndex].sources[sourceIndex].text, func(s string) string {
 		replacement := injectionCode[count]
 		count++
 		return replacement
 	})
+	addImports(program.packages[packageIndex].sources[sourceIndex].comments)
 	return instrumented
 }
 
@@ -130,7 +134,7 @@ func injectCode(program *ProgramWrapper, sourceIndex int, injectionCode []string
 func getAccessedAffectedVars(dump *ast.Comment, program *ProgramWrapper) []string {
 
 	var affectedInScope []string
-	inScope := GetAccessibleVarsInScope(int(dump.Pos()), program.source[0].comments, program.fset)
+	inScope := GetAccessibleVarsInScope(int(dump.Pos()), program.packages[0].sources[0].comments, program.fset)
 	affected := getAffectedVars(program)
 
 	for _, inScopeVar := range inScope {
@@ -164,8 +168,8 @@ func findFunction(stmt ast.Stmt, decls []ast.Decl) int {
 //restructured. The variables returned should be thoses affected by
 //IPC around a particular dump statement, not the entire program
 func getAffectedVars(program *ProgramWrapper) []string {
-	recvNodes := detectFunctionCalls(program.source[0].source, "conn", []string{"Read", "ReadFrom"})
-	sendNodes := detectFunctionCalls(program.source[0].source, "conn", []string{"Write", "WriteTo"})
+	recvNodes := detectFunctionCalls(program.packages[0].sources[0].source, "conn", []string{"Read", "ReadFrom"})
+	sendNodes := detectFunctionCalls(program.packages[0].sources[0].source, "conn", []string{"Write", "WriteTo"})
 	vars := sliceComputedVariables(program, recvNodes, programslicer.ComputeForwardSlice)
 	vars = append(vars, sliceComputedVariables(program, sendNodes, programslicer.ComputeBackwardSlice)...)
 	var varNames []string
@@ -181,12 +185,12 @@ func sliceComputedVariables(program *ProgramWrapper, nodes []*ast.Node, computer
 	var affectedVars []*types.Var
 	for _, node := range nodes {
 		recvStmt := (*node).(ast.Stmt)
-		dcl := findFunction(recvStmt, program.source[0].source.Decls)
+		dcl := findFunction(recvStmt, program.packages[0].sources[0].source.Decls)
 		logger.Println("receive function") //BUG These dual print statements seemt to be totally corrupting the output
 		logger.Println(dcl)
-		firstFunc := program.source[0].source.Decls[dcl].(*ast.FuncDecl)
-		program.source[0].cfgs[0].cfg = cfg.FromFunc(firstFunc)
-		vars := programslicer.GetAffectedVariables(recvStmt, program.source[0].cfgs[0].cfg, program.prog.Created[0], program.fset, computer)
+		firstFunc := program.packages[0].sources[0].source.Decls[dcl].(*ast.FuncDecl)
+		program.packages[0].sources[0].cfgs[0].cfg = cfg.FromFunc(firstFunc)
+		vars := programslicer.GetAffectedVariables(recvStmt, program.packages[0].sources[0].cfgs[0].cfg, program.prog.Created[0], program.fset, computer)
 		affectedVars = append(affectedVars, vars...)
 	}
 	return affectedVars
@@ -282,7 +286,7 @@ func getLocalVariables(dumpPosition int, file *ast.File, fset *token.FileSet) []
 					idents := t.Decl.(*ast.GenDecl).Specs[0].(*ast.ValueSpec).Names
 					for _, identifier := range idents {
 						//collect node if in scope at the dump statement
-						if int(identifier.Pos()) < dumpPosition {
+						if int(identifier.Pos()) < dumpPosition && identifier.Name != "_" {
 							logger.Printf("Local Found :%s\n", fmt.Sprintf("%v", identifier))
 							results = append(results, fmt.Sprintf("%v", identifier.Name))
 						}
@@ -294,7 +298,7 @@ func getLocalVariables(dumpPosition int, file *ast.File, fset *token.FileSet) []
 							ast.Inspect(exp, func(n ast.Node) bool {
 								switch resolvedNode := n.(type) {
 								case *ast.Ident:
-									if int(resolvedNode.Pos()) < dumpPosition {
+									if int(resolvedNode.Pos()) < dumpPosition && resolvedNode.Name != "_" {
 										logger.Printf("Local Found :%s\n", resolvedNode.Name)
 										results = append(results, resolvedNode.Name)
 									}
@@ -340,7 +344,7 @@ func GenerateDumpCode(vars []string, lineNumber int, path, packagename string) s
 	var buffer bytes.Buffer
 	// write vars' values
 	id := packagename + "_" + filename + "_" + strconv.Itoa(lineNumber)
-	buffer.WriteString(fmt.Sprintf("\nInstrumenterInit()\n"))
+	buffer.WriteString(fmt.Sprintf("\ninject.InstrumenterInit(\"%s\")\n", packagename))
 	buffer.WriteString(fmt.Sprintf("%s_vars := []interface{}{", id))
 	for i := 0; i < len(vars)-1; i++ {
 		buffer.WriteString(fmt.Sprintf("%s,", vars[i]))
@@ -352,17 +356,19 @@ func GenerateDumpCode(vars []string, lineNumber int, path, packagename string) s
 		buffer.WriteString(fmt.Sprintf("\"%s\",", vars[i]))
 	}
 	buffer.WriteString(fmt.Sprintf("\"%s\"}\n", vars[len(vars)-1]))
-	buffer.WriteString(fmt.Sprintf("p%s := CreatePoint(%s_vars, %s_varname, \"%s\")\n", id, id, id, id))
-	buffer.WriteString(fmt.Sprintf("Encoder.Encode(p%s)\n", id))
+	buffer.WriteString(fmt.Sprintf("p%s := inject.CreatePoint(%s_vars, %s_varname, \"%s\",Logger)\n", id, id, id, id))
+	buffer.WriteString(fmt.Sprintf("inject.Encoder.Encode(p%s)\n", id))
 	//write out human readable log
-	buffer.WriteString(fmt.Sprintf("ReadableLog.WriteString(p%s.String())", id))
+	buffer.WriteString(fmt.Sprintf("inject.ReadableLog.WriteString(p%s.String())", id))
 	return buffer.String()
 }
 
 //prints given AST
 func (p *ProgramWrapper) printAST() {
-	for _, source := range p.source {
-		ast.Print(p.fset, source.source)
+	for _, pack := range p.packages {
+		for _, source := range pack.sources {
+			ast.Print(p.fset, source.source)
+		}
 	}
 }
 
@@ -376,4 +382,57 @@ func writeInstrumentedFile(source string, prefix string, filename string) {
 	logger.Printf("Writing file %s\n", modFilename)
 	file.WriteString(source)
 	file.Close()
+}
+
+func addImports(file *ast.File) {
+	packagesToImport := []string{"\"bitbucket.org/bestchai/dinv/instrumenter/inject\""}
+	im := ImportAdder{packagesToImport}
+	ast.Walk(im, file)
+}
+
+type ImportAdder struct {
+	PackagesToImport []string
+}
+
+func (im ImportAdder) Visit(node ast.Node) (w ast.Visitor) {
+	switch t := node.(type) {
+	case *ast.GenDecl:
+		if t.Tok == token.IMPORT {
+			//remove duplicate imports
+			releventImports := nonDuplicateImports(im.PackagesToImport, t.Specs)
+			newSpecs := make([]ast.Spec, len(t.Specs)+len(releventImports))
+			for i, spec := range t.Specs {
+				newSpecs[i] = spec
+			}
+			for i, spec := range releventImports {
+				newPackage := &ast.BasicLit{token.NoPos, token.STRING, spec}
+				newSpecs[len(t.Specs)+i] = &ast.ImportSpec{nil, nil, newPackage, nil, token.NoPos}
+			}
+
+			t.Specs = newSpecs
+			return nil
+		}
+	}
+	return im
+}
+
+func nonDuplicateImports(packagesToImport []string, specs []ast.Spec) []string {
+	var releventImports []string
+	for _, potential := range packagesToImport {
+		var duplicate bool = false
+		for _, existing := range specs {
+			enode := existing.(ast.Node)
+			switch e := enode.(type) {
+			case *ast.ImportSpec:
+				if potential == e.Path.Value { //not sure this compairison works
+					duplicate = true
+					break
+				}
+			}
+		}
+		if !duplicate {
+			releventImports = append(releventImports, potential)
+		}
+	}
+	return releventImports
 }

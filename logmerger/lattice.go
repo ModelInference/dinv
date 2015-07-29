@@ -18,7 +18,7 @@ package logmerger
 import (
 	"fmt"
 
-	"bitbucket.org/bestchai/dinv/govec/vclock"
+	"github.com/wantonsolutions/GoVector/govec/vclock"
 	"gopkg.in/eapache/queue.v1"
 )
 
@@ -73,19 +73,31 @@ func queueContainsClock(q *queue.Queue, v *vclock.VClock) bool {
 //host specificed by id. The proposed clock is a set of clock values
 //which could have potentially happened with respect to the host. If
 //the set is possible return true, otherwise false.
-func correctLatticePoint(clocks []vclock.VClock, proposedClock *vclock.VClock, id string) bool {
-	found, index := searchClockById(clocks, proposedClock, id)
+func correctLatticePoint(loggedClocks []vclock.VClock, latticePoint *vclock.VClock, id string) bool {
+	found, index := searchClockById(loggedClocks, latticePoint, id)
 	//if the exact value was not found, then it was a non logged local
 	//event, in this case the vector clock previous to the recieve is
 	//used
 	if !found {
-		index, found = nearestPrecedingClock(clocks, proposedClock, index, id)
+		index, found = nearestPrecedingClock(loggedClocks, latticePoint, index, id)
 	}
-	foundClock := clocks[index]
-	if foundClock.HappenedBefore(proposedClock) && found {
+	hostClock := loggedClocks[index]
+	if LatticeValidWithLog(latticePoint, &hostClock) && found {
 		return true
 	}
 	return false
+}
+
+func LatticeValidWithLog(latticePoint, loggedClock *vclock.VClock) bool {
+	latticeIds := getClockIds(latticePoint)
+	for _, id := range latticeIds {
+		loggedTicks, _ := loggedClock.FindTicks(id)
+		latticeTicks, _ := latticePoint.FindTicks(id)
+		if loggedTicks > latticeTicks {
+			return false
+		}
+	}
+	return true
 }
 
 //nearestPrecedingClocks returns the closest preceding clock to

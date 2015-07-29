@@ -14,7 +14,7 @@ package logmerger
 import (
 	"fmt"
 
-	"bitbucket.org/bestchai/dinv/govec/vclock"
+	"github.com/wantonsolutions/GoVector/govec/vclock"
 )
 
 //mineConsistentCuts determines every consistent cut occuring in a log
