@@ -20,7 +20,7 @@ import (
 	"net"
 	"os"
 
-	"bitbucket.org/bestchai/dinv/govec"
+	"github.com/wantonsolutions/GoVector/govec"
 )
 
 const (

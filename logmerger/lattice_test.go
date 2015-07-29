@@ -3,7 +3,7 @@ package logmerger
 import (
 	"testing"
 
-	"bitbucket.org/bestchai/dinv/govec/vclock"
+	"github.com/wantonsolutions/GoVector/govec/vclock"
 )
 
 func Test2DLattice(t *testing.T) {
@@ -13,68 +13,68 @@ func Test2DLattice(t *testing.T) {
 		{
 			[][]vclock.VClock{
 				[]vclock.VClock{
-					*vclock.Construct([]string{"h1"}, []int{1}),
-					*vclock.Construct([]string{"h1", "h2"}, []int{3, 2}),
-					*vclock.Construct([]string{"h1", "h2"}, []int{4, 2}),
-					*vclock.Construct([]string{"h1", "h2"}, []int{6, 4}),
+					*ConstructVclock([]string{"h1"}, []int{1}),
+					*ConstructVclock([]string{"h1", "h2"}, []int{3, 2}),
+					*ConstructVclock([]string{"h1", "h2"}, []int{4, 2}),
+					*ConstructVclock([]string{"h1", "h2"}, []int{6, 4}),
 				},
 				[]vclock.VClock{
-					*vclock.Construct([]string{"h2"}, []int{1}),
-					*vclock.Construct([]string{"h2"}, []int{2}),
-					*vclock.Construct([]string{"h2"}, []int{4}),
-					*vclock.Construct([]string{"h1", "h2"}, []int{4, 6}),
+					*ConstructVclock([]string{"h2"}, []int{1}),
+					*ConstructVclock([]string{"h2"}, []int{2}),
+					*ConstructVclock([]string{"h2"}, []int{4}),
+					*ConstructVclock([]string{"h1", "h2"}, []int{4, 6}),
 				},
 			},
 			[][]vclock.VClock{
 				[]vclock.VClock{
-					*vclock.Construct([]string{"h1", "h2"}, []int{1, 1}),
+					*ConstructVclock([]string{"h1", "h2"}, []int{1, 1}),
 				},
 				[]vclock.VClock{
-					*vclock.Construct([]string{"h1", "h2"}, []int{2, 1}),
-					*vclock.Construct([]string{"h1", "h2"}, []int{1, 2}),
+					*ConstructVclock([]string{"h1", "h2"}, []int{2, 1}),
+					*ConstructVclock([]string{"h1", "h2"}, []int{1, 2}),
 				},
 				[]vclock.VClock{
-					*vclock.Construct([]string{"h1", "h2"}, []int{2, 2}),
-					*vclock.Construct([]string{"h1", "h2"}, []int{1, 3}),
+					*ConstructVclock([]string{"h1", "h2"}, []int{2, 2}),
+					*ConstructVclock([]string{"h1", "h2"}, []int{1, 3}),
 				},
 				[]vclock.VClock{
-					*vclock.Construct([]string{"h1", "h2"}, []int{3, 2}),
-					*vclock.Construct([]string{"h1", "h2"}, []int{2, 3}),
-					*vclock.Construct([]string{"h1", "h2"}, []int{1, 4}),
+					*ConstructVclock([]string{"h1", "h2"}, []int{3, 2}),
+					*ConstructVclock([]string{"h1", "h2"}, []int{2, 3}),
+					*ConstructVclock([]string{"h1", "h2"}, []int{1, 4}),
 				},
 				[]vclock.VClock{
-					*vclock.Construct([]string{"h1", "h2"}, []int{4, 2}),
-					*vclock.Construct([]string{"h1", "h2"}, []int{3, 3}),
-					*vclock.Construct([]string{"h1", "h2"}, []int{2, 4}),
-					*vclock.Construct([]string{"h1", "h2"}, []int{1, 5}),
+					*ConstructVclock([]string{"h1", "h2"}, []int{4, 2}),
+					*ConstructVclock([]string{"h1", "h2"}, []int{3, 3}),
+					*ConstructVclock([]string{"h1", "h2"}, []int{2, 4}),
+					*ConstructVclock([]string{"h1", "h2"}, []int{1, 5}),
 				},
 				[]vclock.VClock{
-					*vclock.Construct([]string{"h1", "h2"}, []int{5, 2}),
-					*vclock.Construct([]string{"h1", "h2"}, []int{4, 3}),
-					*vclock.Construct([]string{"h1", "h2"}, []int{3, 4}),
-					*vclock.Construct([]string{"h1", "h2"}, []int{2, 5}),
-					*vclock.Construct([]string{"h1", "h2"}, []int{1, 6}),
+					*ConstructVclock([]string{"h1", "h2"}, []int{5, 2}),
+					*ConstructVclock([]string{"h1", "h2"}, []int{4, 3}),
+					*ConstructVclock([]string{"h1", "h2"}, []int{3, 4}),
+					*ConstructVclock([]string{"h1", "h2"}, []int{2, 5}),
+					*ConstructVclock([]string{"h1", "h2"}, []int{1, 6}),
 				},
 				[]vclock.VClock{
-					*vclock.Construct([]string{"h1", "h2"}, []int{5, 3}),
-					*vclock.Construct([]string{"h1", "h2"}, []int{4, 4}),
-					*vclock.Construct([]string{"h1", "h2"}, []int{3, 5}),
+					*ConstructVclock([]string{"h1", "h2"}, []int{5, 3}),
+					*ConstructVclock([]string{"h1", "h2"}, []int{4, 4}),
+					*ConstructVclock([]string{"h1", "h2"}, []int{3, 5}),
 				},
 				[]vclock.VClock{
-					*vclock.Construct([]string{"h1", "h2"}, []int{5, 4}),
-					*vclock.Construct([]string{"h1", "h2"}, []int{4, 5}),
+					*ConstructVclock([]string{"h1", "h2"}, []int{5, 4}),
+					*ConstructVclock([]string{"h1", "h2"}, []int{4, 5}),
 				},
 				[]vclock.VClock{
-					*vclock.Construct([]string{"h1", "h2"}, []int{6, 4}),
-					*vclock.Construct([]string{"h1", "h2"}, []int{5, 5}),
-					*vclock.Construct([]string{"h1", "h2"}, []int{4, 6}),
+					*ConstructVclock([]string{"h1", "h2"}, []int{6, 4}),
+					*ConstructVclock([]string{"h1", "h2"}, []int{5, 5}),
+					*ConstructVclock([]string{"h1", "h2"}, []int{4, 6}),
 				},
 				[]vclock.VClock{
-					*vclock.Construct([]string{"h1", "h2"}, []int{6, 5}),
-					*vclock.Construct([]string{"h1", "h2"}, []int{5, 6}),
+					*ConstructVclock([]string{"h1", "h2"}, []int{6, 5}),
+					*ConstructVclock([]string{"h1", "h2"}, []int{5, 6}),
 				},
 				[]vclock.VClock{
-					*vclock.Construct([]string{"h1", "h2"}, []int{6, 6}),
+					*ConstructVclock([]string{"h1", "h2"}, []int{6, 6}),
 				},
 			},
 		},

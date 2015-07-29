@@ -10,7 +10,7 @@ package logmerger
 import (
 	"regexp"
 
-	"bitbucket.org/bestchai/dinv/govec/vclock"
+	"github.com/wantonsolutions/GoVector/govec/vclock"
 )
 
 //VectorClockArraysFromLogs extracts the set of vector clocks
@@ -29,7 +29,7 @@ func VectorClockArraysFromLogs(logs [][]Point) ([][]vclock.VClock, error) {
 			} else {
 				clocks[i] = append(clocks[i], *vc)
 			}
-			logger.Println(vc.ReturnVCString())
+			//logger.Println(vc.ReturnVCString())
 		}
 	}
 	return clocks, nil
@@ -143,4 +143,31 @@ func getClockId(clocks []vclock.VClock) string {
 	match := re.FindStringSubmatch(vString)
 	//fmt.Printf(" Found %s\n", match[1])
 	return match[1]
+}
+
+func ConstructVclock(ids []string, ticks []int) *vclock.VClock {
+	if len(ids) != len(ticks) {
+		return nil
+	}
+	clock := vclock.New()
+	for i := range ids {
+		if ticks[i] < 0 {
+			return nil
+		}
+		for j := 0; j < ticks[i]; j++ {
+			clock.Update(ids[i], 0)
+		}
+	}
+	return clock
+}
+
+func getClockIds(clock *vclock.VClock) []string {
+	re := regexp.MustCompile("\"([A-Za-z0-9]+)\"")
+	vString := clock.ReturnVCString()
+	matches := re.FindAllStringSubmatch(vString, -1)
+	ids := make([]string, 0)
+	for _, match := range matches {
+		ids = append(ids, match[1])
+	}
+	return ids
 }

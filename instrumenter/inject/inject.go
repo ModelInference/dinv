@@ -1,17 +1,15 @@
-package instrumenter
+package inject
 
-import "fmt"
+import (
+	"encoding/gob"
+	"fmt"
+	"os"
+	"reflect"
+	"time"
 
-//writeInjectionFile builds a library file that generated code calls.
-//The injected file must belong to the same package as the
-//insturmented files, specified by packageName the resulting file will
-//be created in PWD "mod_inject.go"
-func writeInjectionFile(packageName string) {
-	header := header_code
-	header = fmt.Sprintf(header, packageName, packageName)
-	fileString := header + "\n" + body_code
-	writeInstrumentedFile(fileString, "mod_", "inject.go")
-}
+	"github.com/wantonsolutions/GoVector/govec"
+	"github.com/wantonsolutions/GoVector/govec/vclock"
+)
 
 //TODO move structs to seperate file remove duplication in log merger
 
@@ -21,44 +19,30 @@ func writeInjectionFile(packageName string) {
 
 //header_code contains all the needed imports for the injection code,
 //and is designed to have the package name written at runtime
-var header_code string = `
-
-package %s
-
-import (
-	"encoding/gob"
-	"os"
-	"reflect"
-	"time"
-	"fmt"
-	"bitbucket.org/bestchai/dinv/govec/vclock"	//attempt to remove dependency
-)
 
 var Encoder *gob.Encoder //global
 var ReadableLog *os.File
-var packageName = "%s"
-`
+var packageName string
 
 //body code contains utility functions called by the code injected at
 //dump statements
 //TODO add comments to the inject code
 //TODO build array of acceptable types for encoding
 //TODO make the logger an argument to CreatePoint
-var body_code string = `
 
-func InstrumenterInit() {
+func InstrumenterInit(pname string) {
 	if Encoder == nil {
+		packageName = pname
 		stamp := time.Now()
-		encodedLogname := fmt.Sprintf("%s-%dEncoded.txt",packageName,stamp.Nanosecond())
+		encodedLogname := fmt.Sprintf("%s-%dEncoded.txt", packageName, stamp.Nanosecond())
 		encodedLog, _ := os.Create(encodedLogname)
 		Encoder = gob.NewEncoder(encodedLog)
-		
-		humanReadableLogname := fmt.Sprintf("%s-%dReadable.txt",packageName,stamp.Nanosecond())
+		humanReadableLogname := fmt.Sprintf("%s-%dReadable.txt", packageName, stamp.Nanosecond())
 		ReadableLog, _ = os.Create(humanReadableLogname)
 	}
 }
 
-func CreatePoint(vars []interface{}, varNames []string, id string) Point {
+func CreatePoint(vars []interface{}, varNames []string, id string, logger *govec.GoLog) Point {
 	numVars := len(varNames)
 	dumps := make([]NameValuePair, 0)
 	for i := 0; i < numVars; i++ {
@@ -73,14 +57,13 @@ func CreatePoint(vars []interface{}, varNames []string, id string) Point {
 			}
 		}
 	}
-	
-	point := Point{dumps, id,Logger.GetCurrentVC()}
+	point := Point{dumps, id, logger.GetCurrentVC()}
 	return point
 }
 
 type Point struct {
 	Dump        []NameValuePair
-	Id			string
+	Id          string
 	VectorClock []byte
 }
 
@@ -97,4 +80,4 @@ func (nvp NameValuePair) String() string {
 func (p Point) String() string {
 	clock, _ := vclock.FromBytes(p.VectorClock)
 	return fmt.Sprintf("%s\n%s %s\nVClock : %s\n\n", p.Id, clock.ReturnVCString())
-}`
+}

@@ -67,8 +67,7 @@ func main() {
 
 	if inst {
 		dir := args[0]
-		packageName := args[1]
-		valid, err := validinstrumentationDir(args[1:])
+		valid, err := validinstrumentationDir(args[0])
 		if !valid {
 			panic(err)
 		}
@@ -76,14 +75,14 @@ func main() {
 			fmt.Printf("Insturmenting %s...", args[0])
 		}
 
-		instrumenter.Instrument(dir, packageName, logger)
+		instrumenter.Instrument(dir, logger)
 		if verbose {
 			//fmt.Printf("Complete\n")
 		}
 	}
 }
 
-func validinstrumentationDir(args []string) (bool, error) {
+func validinstrumentationDir(dir string) (bool, error) {
 	//TODO check that dir exists
 	//TODO check for existing go args
 	/*if len(args) != 3 {

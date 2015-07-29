@@ -20,10 +20,14 @@ import (
 //of every file in the package is found in source.
 //TODO make source -> sources
 type ProgramWrapper struct {
-	prog        *loader.Program
-	fset        *token.FileSet
+	prog     *loader.Program
+	fset     *token.FileSet
+	packages []*PackageWrapper
+}
+
+type PackageWrapper struct {
 	packageName string
-	source      []*SourceWrapper
+	sources     []*SourceWrapper
 }
 
 //SourceWrapper abstracts a single source file. Text is the string
@@ -48,10 +52,7 @@ type CFGWrapper struct {
 	objNames map[*types.Var]string
 }
 
-//LoadPackage creates a loader program by loading all of the source
-//files in sourceFiles. All source files must compile and be in the
-//same package in order to be loaded.
-func LoadPackage(sourceFiles []*ast.File, config loader.Config) *loader.Program {
+func LoadProgram(sourceFiles []*ast.File, config loader.Config) *loader.Program {
 	//logger.Println("Loading Packages")
 	config.CreateFromFiles("testing", sourceFiles...)
 	prog, err := config.Load()
@@ -61,6 +62,60 @@ func LoadPackage(sourceFiles []*ast.File, config loader.Config) *loader.Program 
 	}
 	//logger.Println("Files Loaded")
 	return prog
+}
+
+func getWrapperFromString(sourceString string) *ProgramWrapper {
+	var config loader.Config
+	fset := token.NewFileSet()
+	comments, err := parser.ParseFile(fset, "single", sourceString, parser.ParseComments)
+	if err != nil {
+		return nil
+	}
+	source, err := config.ParseFile("single", sourceString)
+	if err != nil {
+		return nil
+	}
+	filename := comments.Name.String()
+	//make the single files the head of a list
+	sources := append(make([]*ast.File, 0), source)
+	prog := LoadProgram(sources, config)
+	pack := genPackageWrapper(
+		append(make([]*ast.File, 0), source),
+		append(make([]*ast.File, 0), comments),
+		append(make([]string, 0), filename),
+		fset,
+		prog)
+	return &ProgramWrapper{prog, fset, append(make([]*PackageWrapper, 0), pack)}
+}
+
+func getProgramWrapper(dir string) *ProgramWrapper {
+	var config loader.Config
+	fset := token.NewFileSet()
+	astPackages, err := parser.ParseDir(fset, dir, nil, parser.ParseComments)
+	if err != nil {
+		return nil
+	}
+	packageWrappers := make([]*PackageWrapper, 0)
+	sourceFiles := make(map[string][]*ast.File, len(astPackages))
+	commentFiles := make(map[string][]*ast.File, len(astPackages))
+	filenames := make(map[string][]string, len(astPackages))
+	for i, Package := range astPackages {
+		sourceFiles[i], commentFiles[i], filenames[i] = getSourceAndCommentFiles(Package, config)
+	}
+	aggergateSources := make([]*ast.File, 0)
+	for i := range sourceFiles {
+		aggergateSources = append(aggergateSources, sourceFiles[i]...)
+	}
+	prog := LoadProgram(aggergateSources, config)
+	for packageIndex := range sourceFiles {
+		packageWrappers = append(packageWrappers,
+			genPackageWrapper(sourceFiles[packageIndex],
+				commentFiles[packageIndex],
+				filenames[packageIndex],
+				fset,
+				prog))
+	}
+	return &ProgramWrapper{prog, fset, packageWrappers}
 }
 
 //getSourceAndCommentFiles scrapes all of the source files in the
@@ -85,45 +140,8 @@ func getSourceAndCommentFiles(astPackage *ast.Package, config loader.Config) (so
 	return sources, comments, filenames
 }
 
-func getWrapperFromString(sourceString string) *ProgramWrapper {
-	var config loader.Config
-	fset := token.NewFileSet()
-	comments, err := parser.ParseFile(fset, "single", sourceString, parser.ParseComments)
-	if err != nil {
-		return nil
-	}
-	source, err := config.ParseFile("single", sourceString)
-	if err != nil {
-		return nil
-	}
-	filename := comments.Name.String()
-	//make the single files the head of a list
-	return genPackageWrapper(
-		append(make([]*ast.File, 0), source),
-		append(make([]*ast.File, 0), comments),
-		append(make([]string, 0), filename),
-		fset,
-		config)
-}
-
-//getWrappers Constructs a program wrapper from a package in dir,
-//specified by packageName
-func getPackageWrapper(dir, packageName string) *ProgramWrapper {
-	var config loader.Config
-	fset := token.NewFileSet()
-	astPackages, err := parser.ParseDir(fset, dir, nil, parser.ParseComments)
-	if err != nil {
-		return nil
-	}
-
-	sourceFiles, commentFiles, filenames := getSourceAndCommentFiles(astPackages[packageName], config)
-	return genPackageWrapper(sourceFiles, commentFiles, filenames, fset, config)
-}
-
-func genPackageWrapper(sourceFiles []*ast.File, commentFiles []*ast.File, filenames []string, fset *token.FileSet, config loader.Config) *ProgramWrapper {
-	prog := LoadPackage(sourceFiles, config)
+func genPackageWrapper(sourceFiles []*ast.File, commentFiles []*ast.File, filenames []string, fset *token.FileSet, prog *loader.Program) *PackageWrapper {
 	pName := commentFiles[0].Name.String()
-
 	sources := make([]*SourceWrapper, 0)
 	logger.Println(len(filenames), len(sourceFiles))
 	for i, file := range sourceFiles {
@@ -146,11 +164,9 @@ func genPackageWrapper(sourceFiles []*ast.File, commentFiles []*ast.File, filena
 			cfgs:     cfgs})
 	}
 	logger.Println("Wrappers Built")
-	return &ProgramWrapper{
-		prog:        prog,
-		fset:        fset,
+	return &PackageWrapper{
 		packageName: pName,
-		source:      sources,
+		sources:     sources,
 	}
 }
 

@@ -3,7 +3,7 @@ package logmerger
 import (
 	"testing"
 
-	"bitbucket.org/bestchai/dinv/govec/vclock"
+	"github.com/wantonsolutions/GoVector/govec/vclock"
 )
 
 type want struct {
@@ -25,8 +25,8 @@ var govecRegex string = "(\\S*) ({.*})\n(.*)"
 
 func TestParse(t *testing.T) {
 	Init()
-	case1index1clock := vclock.Construct([]string{"Server"}, []int{1})
-	case1index2clock := vclock.Construct([]string{"Server", "Client"}, []int{2, 2})
+	case1index1clock := ConstructVclock([]string{"Server"}, []int{1})
+	case1index2clock := ConstructVclock([]string{"Server", "Client"}, []int{2, 2})
 	cases := []testFramework{
 		{in: `Server {"Server":1}
 Initialization Complete

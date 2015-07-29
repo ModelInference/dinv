@@ -38,11 +38,11 @@ func TestScopeFor(t *testing.T) {
 	if program == nil {
 		t.Fatalf("Unable to genenerate wrapper from source string\n")
 	}
-	dumpNodes := GetDumpNodes(program.source[0].comments)
+	dumpNodes := GetDumpNodes(program.packages[0].sources[0].comments)
 	//ast.Print(program.fset, program.source[0].comments)
 	for i := range dumpNodes {
-		fileRelitiveDumpPosition := int(dumpNodes[i].Pos() - program.source[0].comments.Pos() + 1)
-		collectedVariables := GetAccessibleVarsInScope(fileRelitiveDumpPosition, program.source[0].comments, program.fset)
+		fileRelitiveDumpPosition := int(dumpNodes[i].Pos() - program.packages[0].sources[0].comments.Pos() + 1)
+		collectedVariables := GetAccessibleVarsInScope(fileRelitiveDumpPosition, program.packages[0].sources[0].comments, program.fset)
 		if !matchSet(want[i], collectedVariables) {
 			t.Errorf("failed collection {want:%s | collected:%s}\n", want[i], collectedVariables)
 		}

@@ -5,7 +5,7 @@ import (
 	"net"
 	"time"
 
-	"bitbucket.org/bestchai/dinv/govec"
+	"github.com/wantonsolutions/GoVector/govec"
 )
 
 //@dump
