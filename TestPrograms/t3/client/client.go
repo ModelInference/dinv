@@ -6,8 +6,10 @@ import (
 	"net"
 	"os"
 
+	"github.com/arcaneiceman/GoVector/govec"
+
 	"bitbucket.org/bestchai/dinv/TestPrograms/t3/comm"
-	"github.com/wantonsolutions/GoVector/govec"
+	"bitbucket.org/bestchai/dinv/instrumenter"
 )
 
 const (
@@ -19,7 +21,6 @@ const (
 var debug = false
 
 func main() {
-	Logger = govec.Initialize("client", "client.log")
 	rAddr, errR := net.ResolveUDPAddr("udp4", ":8080")
 	comm.PrintErr(errR)
 	lAddr, errL := net.ResolveUDPAddr("udp4", ":7071")
@@ -38,14 +39,14 @@ func main() {
 
 		msg := comm.MarshallInts([]int{term1, term2})
 		// sending UDP packet to specified address and port
-		_, errWrite := conn.Write(Logger.PrepareSend("sending", msg))
+		_, errWrite := conn.Write(instrumenter.Pack(msg))
 		//@dump
 		comm.PrintErr(errWrite)
 
 		// Reading the response message
 
 		_, errRead := conn.Read(buf[0:])
-		ret := Logger.UnpackReceive("Received", buf[0:])
+		ret := instrumenter.Unpack(buf[0:])
 		//@dump
 		comm.PrintErr(errRead)
 

@@ -43,9 +43,9 @@ function runTestPrograms {
     CLIENT_PID=$!
     sleep 1
     kill $SERVER_PID
-    #kill $CLIENT_PID
+    kill $CLIENT_PID
     kill `ps | pgrep serverEntry | awk '{print $1}'`
-    #kill `ps | pgrep clientEntry | awk '{print $1}'`
+    kill `ps | pgrep clientEntry | awk '{print $1}'`
     
     cd $DINV/TestPrograms/$TEST/$P2/temp2
     mv *.go ../breakup

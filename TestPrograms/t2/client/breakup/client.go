@@ -6,7 +6,7 @@ import (
 	"net"
 	"os"
 
-	"github.com/wantonsolutions/GoVector/govec"
+	"bitbucket.org/bestchai/dinv/instrumenter"
 )
 
 const (
@@ -23,7 +23,6 @@ var (
 
 func Client() {
 	//dump
-	Logger = govec.Initialize("Client", "clog.log")
 	rAddr, errR := net.ResolveUDPAddr("udp4", ":8080")
 	printErr(errR)
 	lAddr, errL := net.ResolveUDPAddr("udp4", ":18585")
@@ -36,7 +35,7 @@ func Client() {
 
 		msg := MarshallInts([]int{term1, term2})
 		// sending UDP packet to specified address and port
-		_, errWrite := conn.Write(Logger.PrepareSend("sending", msg))
+		_, errWrite := conn.Write(instrumenter.Pack(msg))
 
 		//@dump
 		printErr(errWrite)
@@ -47,7 +46,7 @@ func Client() {
 		// Reading the response message
 
 		_, errRead := conn.Read(buf[0:])
-		ret := Logger.UnpackReceive("Received", buf[0:])
+		ret := instrumenter.Unpack(buf[0:])
 		printErr(errRead)
 
 		uret := UnmarshallInts(ret)
@@ -58,5 +57,3 @@ func Client() {
 	}
 	os.Exit(0)
 }
-
-var Logger *govec.GoLog

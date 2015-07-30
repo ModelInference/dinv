@@ -5,13 +5,12 @@ import (
 	"net"
 	"os"
 
-	"github.com/wantonsolutions/GoVector/govec"
+	"bitbucket.org/bestchai/dinv/instrumenter"
 )
 
 const SIZEOFINT = 4
 
 func Server() {
-	Logger = govec.Initialize("Server", "slog.log")
 	conn, err := net.ListenPacket("udp", ":8080")
 	if err != nil {
 		fmt.Println(err)
@@ -36,7 +35,7 @@ func handleConn(conn net.PacketConn) {
 	var term1, term2, sum int
 
 	_, addr, err := conn.ReadFrom(buf[0:])
-	args := Logger.UnpackReceive("Received", buf[0:])
+	args := instrumenter.Unpack(buf[0:])
 	printErr(err)
 	//@dump
 	//fmt.Printf("recieved: %s of size %d, with args %d", buf, n, args)
@@ -50,8 +49,6 @@ func handleConn(conn net.PacketConn) {
 	sum = term1 + term2
 	fmt.Printf("S: %d + %d = %d\n", term1, term2, sum)
 	msg := MarshallInts([]int{sum})
-	conn.WriteTo(Logger.PrepareSend("Sending", msg), addr)
+	conn.WriteTo(instrumenter.Pack(msg), addr)
 	//@dump
 }
-
-var Logger *govec.GoLog
