@@ -5,7 +5,8 @@ import (
 	"fmt"
 	"os"
 	"reflect"
-	"time"
+
+	"bitbucket.org/bestchai/dinv/instrumenter"
 
 	"github.com/wantonsolutions/GoVector/govec"
 	"github.com/wantonsolutions/GoVector/govec/vclock"
@@ -33,18 +34,19 @@ var packageName string
 func InstrumenterInit(pname string) {
 	if Encoder == nil {
 		packageName = pname
-		stamp := time.Now()
-		encodedLogname := fmt.Sprintf("%s-%dEncoded.txt", packageName, stamp.Nanosecond())
+		stamp := instrumenter.GetStamp()
+		encodedLogname := fmt.Sprintf("%s-%dEncoded.txt", packageName, stamp)
 		encodedLog, _ := os.Create(encodedLogname)
 		Encoder = gob.NewEncoder(encodedLog)
-		humanReadableLogname := fmt.Sprintf("%s-%dReadable.txt", packageName, stamp.Nanosecond())
+		humanReadableLogname := fmt.Sprintf("%s-%dReadable.txt", packageName, stamp)
 		ReadableLog, _ = os.Create(humanReadableLogname)
 	}
 }
 
-func CreatePoint(vars []interface{}, varNames []string, id string, logger *govec.GoLog) Point {
+func CreatePoint(vars []interface{}, varNames []string, id string, logger *govec.GoLog, hash int) Point {
 	numVars := len(varNames)
 	dumps := make([]NameValuePair, 0)
+	hashedId := fmt.Sprintf("%d", hash) + "_" + id
 	for i := 0; i < numVars; i++ {
 		if vars[i] != nil {
 			switch reflect.TypeOf(vars[i]).Kind() {
@@ -57,7 +59,7 @@ func CreatePoint(vars []interface{}, varNames []string, id string, logger *govec
 			}
 		}
 	}
-	point := Point{dumps, id, logger.GetCurrentVC()}
+	point := Point{dumps, hashedId, logger.GetCurrentVC()}
 	return point
 }
 

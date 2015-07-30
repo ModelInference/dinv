@@ -6,6 +6,7 @@ import (
 	"os"
 
 	"bitbucket.org/bestchai/dinv/TestPrograms/t3/comm"
+	"bitbucket.org/bestchai/dinv/instrumenter"
 	"github.com/wantonsolutions/GoVector/govec"
 )
 
@@ -13,7 +14,6 @@ import (
 
 //dump
 func main() {
-	Logger = govec.Initialize("linn", "linn.log")
 	conn, err := net.ListenPacket("udp", ":9090")
 	if err != nil {
 		fmt.Println(err)
@@ -40,7 +40,7 @@ func handleConn(conn net.PacketConn) {
 	_, addr, err := conn.ReadFrom(buf[0:])
 
 	//@dump
-	args := Logger.UnpackReceive("Received", buf[0:])
+	args := instrumenter.Unpack(buf[0:])
 	comm.PrintErr(err)
 
 	uArgs := comm.UnmarshallInts(args)
@@ -52,7 +52,7 @@ func handleConn(conn net.PacketConn) {
 	msg := comm.MarshallInts([]int{lin})
 
 	//@dump
-	conn.WriteTo(Logger.PrepareSend("Sending", msg), addr)
+	conn.WriteTo(instrumenter.Pack(msg), addr)
 }
 
 var Logger *govec.GoLog

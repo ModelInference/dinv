@@ -356,7 +356,7 @@ func GenerateDumpCode(vars []string, lineNumber int, path, packagename string) s
 		buffer.WriteString(fmt.Sprintf("\"%s\",", vars[i]))
 	}
 	buffer.WriteString(fmt.Sprintf("\"%s\"}\n", vars[len(vars)-1]))
-	buffer.WriteString(fmt.Sprintf("p%s := inject.CreatePoint(%s_vars, %s_varname, \"%s\",Logger)\n", id, id, id, id))
+	buffer.WriteString(fmt.Sprintf("p%s := inject.CreatePoint(%s_vars, %s_varname,\"%s\",instrumenter.GetLogger(),instrumenter.GetStamp())\n", id, id, id, id))
 	buffer.WriteString(fmt.Sprintf("inject.Encoder.Encode(p%s)\n", id))
 	//write out human readable log
 	buffer.WriteString(fmt.Sprintf("inject.ReadableLog.WriteString(p%s.String())", id))
@@ -385,7 +385,7 @@ func writeInstrumentedFile(source string, prefix string, filename string) {
 }
 
 func addImports(file *ast.File) {
-	packagesToImport := []string{"\"bitbucket.org/bestchai/dinv/instrumenter/inject\""}
+	packagesToImport := []string{"\"bitbucket.org/bestchai/dinv/instrumenter/inject\"", "\"bitbucket.org/bestchai/dinv/instrumenter\""}
 	im := ImportAdder{packagesToImport}
 	ast.Walk(im, file)
 }
