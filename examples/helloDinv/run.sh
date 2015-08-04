@@ -26,47 +26,35 @@ function installDinv {
 }
 
 function instrument {
-    cd $testDir/$1
-    dinv -i ./
-    swapMods $1
-}
-
-function swapMods {
-    mkdir ../temp$1
-    mv mod* ../temp$1
-    mkdir ../temp2$1
-    mv *.go ../temp2$1
-    mv ../temp$1/*.go ./
-    rmdir ../temp$1
+    dinv -i $testDir/$1
 }
 
 function fixModDir {
-    cd $testDir/temp2$1
-    mv *.go ../$1
-    cd ..
-    rmdir temp2$1
+    rm -r $testDir/$1
+    mv $testDir/$1_orig $testDir/$1
 }
 
 function runTestProgram {
     cd $testDir/$1
-    go run mod_$1.go &
+    go run $1.go &
     sleep 1
 }
 
 function cleanup {
     rmCreated client
     rmCreated server
-    kill `ps | pgrep mod_ | awk '{print $1}'`
+    kill `ps | pgrep server | awk '{print $1}'`
     cd $testDir
     rm *.txt
     rm *.inv.gz
     rm *.dtrace
+    fixModDir client
+    fixModDir server
 }
 
 function rmCreated {
  cd $testDir/$1
  rm *.txt
- rm mod*
 }
 
 function runLogMerger {
@@ -98,8 +86,6 @@ instrument client
 instrument server
 runTestProgram server
 runTestProgram client
-fixModDir client
-fixModDir server
 runLogMerger client server
 runDaikon
 if [ "$1" == "-d" ];

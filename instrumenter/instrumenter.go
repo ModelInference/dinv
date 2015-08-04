@@ -58,15 +58,35 @@ func Instrument(dir string, inlogger *log.Logger) {
 	logger = inlogger
 	logger.Printf("INSTRUMENTING FILES %s", dir)
 	settings := initializeInstrumenter()
-	program := getProgramWrapper(dir)
+	program, err := getProgramWrapper(dir)
+	if err != nil {
+		panic(err)
+	}
+	err = InplaceDirectorySwap(dir)
+	if err != nil {
+		panic(err)
+	}
 	program = generateSourceText(program)
 	for packageIndex, pack := range program.packages {
 		for sourceIndex := range pack.sources {
 			genCode := generateCode(program, packageIndex, sourceIndex, settings)
 			instrumented := injectCode(program, packageIndex, sourceIndex, genCode)
-			writeInstrumentedFile(instrumented, "mod_", program.packages[packageIndex].sources[sourceIndex].filename)
+			writeInstrumentedFile(instrumented, program.packages[packageIndex].sources[sourceIndex].filename)
 		}
 	}
+}
+
+func InplaceDirectorySwap(dir string) error {
+	newDir := dir + "_orig"
+	return filepath.Walk(dir, func(path string, info os.FileInfo, err error) error {
+		newPath := strings.Replace(path, dir, newDir, -1)
+		fmt.Printf("moving %s to %s\n", path, newPath)
+		if info.IsDir() {
+			return os.Mkdir(newPath, 0775)
+		} else {
+			return os.Rename(path, newPath)
+		}
+	})
 }
 
 //initalizeInstrumenter generates a logger if none exists, and returns
@@ -374,12 +394,9 @@ func (p *ProgramWrapper) printAST() {
 
 //writeInstrumentedFile writes a file with the contents source, with
 //the filename "prefixfilename"
-func writeInstrumentedFile(source string, prefix string, filename string) {
-	pwd, _ := filepath.Abs(filepath.Dir(os.Args[0]))
-	_, name := filepath.Split(filename)
-	modFilename := fmt.Sprintf("%s/%s%s", pwd, prefix, name)
-	file, _ := os.Create(modFilename)
-	logger.Printf("Writing file %s\n", modFilename)
+func writeInstrumentedFile(source string, filename string) {
+	file, _ := os.Create(filename)
+	logger.Printf("Writing file %s\n", filename)
 	file.WriteString(source)
 	file.Close()
 }
