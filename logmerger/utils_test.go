@@ -1,6 +1,7 @@
 package logmerger
 
 import (
+	"fmt"
 	"testing"
 )
 
@@ -22,4 +23,15 @@ func TestGetClockIds(t *testing.T) {
 			t.Errorf("Clock Id extraction error\n want:%s\n got%s\n", want, got)
 		}
 	}
+}
+
+func Example_getClockIds() {
+	exampleClock := ConstructVclock([]string{"Houston", "Apollo"}, []int{6, 4})
+	clockIds := getClockIds(exampleClock)
+	for _, host := range clockIds {
+		fmt.Printf("id: %s, ", host)
+	}
+	// Output:
+	// id: Houston, id: Apollo
+
 }
