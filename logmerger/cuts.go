@@ -147,13 +147,19 @@ func enumerateCommunication(clocks [][]vclock.VClock) [][]int {
 		commDelta[i] = make([]int, len(clocks[i]))
 	}
 	for i := range clocks {
+		var lastSend *vclock.VClock
 		for j := range clocks[i] {
 			receiver, receiverEvent, matched := matchSendAndReceive(clocks[i][j], clocks, ids[i])
 			if matched {
+				if lastSend == nil || clocks[i][j].Compare(lastSend, vclock.Equal) { //dont enumerate if the time has not changed since the last send
+					logger.Printf("Ignoring duplicate clock %s\n", clocks[i][j].ReturnVCString())
+					continue
+				}
 				commDelta[i][j]++
 				commDelta[receiver][receiverEvent]--
 				logger.Printf("SR pair found %s, %s\n", clocks[i][j].ReturnVCString(), clocks[receiver][receiverEvent].ReturnVCString())
 				logger.Printf("Sender %s:%d ----> Receiver %s:%d\n", ids[i], commDelta[i][j], ids[receiver], commDelta[receiver][receiverEvent])
+				lastSend = clocks[i][j].Copy()
 			}
 		}
 	}

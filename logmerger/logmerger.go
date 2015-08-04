@@ -88,28 +88,29 @@ func buildLogs(logFiles []string, gologFiles []string) [][]Point {
 }
 
 func injectMissingPoints(points []Point, log *golog) []Point {
-	pointIndex, gologIndex := 0, 0
+	pointIndex, incrementalIndex := 0, 0
 	injectedPoints := make([]Point, 0)
 	for pointIndex < len(points) {
 		logger.Printf("point index :%d maxp :%d maxc: %d\n", pointIndex, len(points), len(log.clocks))
 		pointClock, _ := vclock.FromBytes(points[pointIndex].VectorClock)
 		ticks, _ := pointClock.FindTicks(log.id)
-		if int(ticks) == gologIndex {
+		if int(ticks)-1 == incrementalIndex {
 			injectedPoints = append(injectedPoints, points[pointIndex])
 			pointIndex += 2
 		} else {
+			logger.Printf("Injecting Clock %s into log %s\n", log.clocks[incrementalIndex].ReturnVCString(), log.id)
 			newPoint := new(Point)
-			newPoint.VectorClock = log.clocks[gologIndex].Bytes()
+			newPoint.VectorClock = log.clocks[incrementalIndex].Bytes()
 			injectedPoints = append(injectedPoints, *newPoint)
 		}
-		gologIndex++
+		incrementalIndex++
 	}
 	//fill in all unlogged clocks
-	for gologIndex < len(log.clocks) {
+	for incrementalIndex < len(log.clocks) {
 		newPoint := new(Point)
-		newPoint.VectorClock = log.clocks[gologIndex].Bytes()
+		newPoint.VectorClock = log.clocks[incrementalIndex].Bytes()
 		injectedPoints = append(injectedPoints, *newPoint)
-		gologIndex++
+		incrementalIndex++
 	}
 	return injectedPoints
 }
@@ -254,6 +255,7 @@ func statesFromCuts(cuts []Cut, clocks [][]vclock.VClock, logs [][]Point) []Stat
 //writeTraceFiles constructs a set unique trace file based on several
 //specifiations in the MergeSpec.
 func writeTraceFiles(states []State, spec *MergeSpec) {
+	logger.Printf("Writing Traces\n")
 	if spec.totallyOrderedCuts {
 		states = filterTotalOrder(states)
 	}
@@ -286,6 +288,7 @@ func writeTraceFiles(states []State, spec *MergeSpec) {
 			}
 		}
 		if newFile {
+			logger.Printf("New trace file %s\n", filename)
 			writeLogToFile(pointLog, filename)
 		}
 	}
