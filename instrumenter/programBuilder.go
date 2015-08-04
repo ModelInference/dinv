@@ -52,48 +52,49 @@ type CFGWrapper struct {
 	objNames map[*types.Var]string
 }
 
-func LoadProgram(sourceFiles []*ast.File, config loader.Config) *loader.Program {
+func LoadProgram(sourceFiles []*ast.File, config loader.Config) (*loader.Program, error) {
 	//logger.Println("Loading Packages")
 	config.CreateFromFiles("testing", sourceFiles...)
 	prog, err := config.Load()
 	if err != nil {
-		//logger.Println("CannotLoad")
-		return nil
+		return nil, err
 	}
-	//logger.Println("Files Loaded")
-	return prog
+	return prog, nil
 }
 
-func getWrapperFromString(sourceString string) *ProgramWrapper {
+func getWrapperFromString(sourceString string) (*ProgramWrapper, error) {
 	var config loader.Config
 	fset := token.NewFileSet()
 	comments, err := parser.ParseFile(fset, "single", sourceString, parser.ParseComments)
 	if err != nil {
-		return nil
+		return nil, err
 	}
 	source, err := config.ParseFile("single", sourceString)
 	if err != nil {
-		return nil
+		return nil, err
 	}
 	filename := comments.Name.String()
 	//make the single files the head of a list
 	sources := append(make([]*ast.File, 0), source)
-	prog := LoadProgram(sources, config)
+	prog, err := LoadProgram(sources, config)
+	if err != nil {
+		return nil, err
+	}
 	pack := genPackageWrapper(
 		append(make([]*ast.File, 0), source),
 		append(make([]*ast.File, 0), comments),
 		append(make([]string, 0), filename),
 		fset,
 		prog)
-	return &ProgramWrapper{prog, fset, append(make([]*PackageWrapper, 0), pack)}
+	return &ProgramWrapper{prog, fset, append(make([]*PackageWrapper, 0), pack)}, nil
 }
 
-func getProgramWrapper(dir string) *ProgramWrapper {
+func getProgramWrapper(dir string) (*ProgramWrapper, error) {
 	var config loader.Config
 	fset := token.NewFileSet()
 	astPackages, err := parser.ParseDir(fset, dir, nil, parser.ParseComments)
 	if err != nil {
-		return nil
+		return nil, err
 	}
 	packageWrappers := make([]*PackageWrapper, 0)
 	sourceFiles := make(map[string][]*ast.File, len(astPackages))
@@ -106,7 +107,10 @@ func getProgramWrapper(dir string) *ProgramWrapper {
 	for i := range sourceFiles {
 		aggergateSources = append(aggergateSources, sourceFiles[i]...)
 	}
-	prog := LoadProgram(aggergateSources, config)
+	prog, err := LoadProgram(aggergateSources, config)
+	if err != nil {
+		return nil, err
+	}
 	for packageIndex := range sourceFiles {
 		packageWrappers = append(packageWrappers,
 			genPackageWrapper(sourceFiles[packageIndex],
@@ -115,7 +119,7 @@ func getProgramWrapper(dir string) *ProgramWrapper {
 				fset,
 				prog))
 	}
-	return &ProgramWrapper{prog, fset, packageWrappers}
+	return &ProgramWrapper{prog, fset, packageWrappers}, nil
 }
 
 //getSourceAndCommentFiles scrapes all of the source files in the

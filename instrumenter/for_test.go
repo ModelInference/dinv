@@ -34,9 +34,9 @@ var want [][]string = [][]string{
 
 func TestScopeFor(t *testing.T) {
 	initializeInstrumenter()
-	program := getWrapperFromString(source)
-	if program == nil {
-		t.Fatalf("Unable to genenerate wrapper from source string\n")
+	program, err := getWrapperFromString(source)
+	if err != nil {
+		t.Fatal(err)
 	}
 	dumpNodes := GetDumpNodes(program.packages[0].sources[0].comments)
 	//ast.Print(program.fset, program.source[0].comments)
