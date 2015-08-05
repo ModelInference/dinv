@@ -1,6 +1,6 @@
 package main
 
-import "bitbucket.org/bestchai/dinv/TestPrograms/t2/server/breakup"
+import "bitbucket.org/bestchai/dinv/examples/sum/server/lib"
 
 func main() {
 	server.Server()

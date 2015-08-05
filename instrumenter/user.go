@@ -63,7 +63,7 @@ func getCallingFunctionID() string {
 		} else if ownFilename.MatchString(match) {
 			passedFrontOnStack = true
 		}
-		fmt.Printf("found %s\n", match)
+		//fmt.Printf("found %s\n", match)
 	}
 	fmt.Printf("%s\n", buf)
 	return ""
