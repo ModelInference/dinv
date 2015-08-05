@@ -29,7 +29,7 @@ script `run.sh`. The script oversees the execution of each stage, and
 pipes each steps output into its successor. The scripts have a
 standard interface
 
-    * `.\run.sh` : Standard execution, results printed to standard out,
+    * `./run.sh` : Standard execution, results printed to standard out,
       all generated files removed after execution.
     
     + Options :
