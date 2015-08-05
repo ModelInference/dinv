@@ -8,7 +8,7 @@ import (
 
 	"github.com/arcaneiceman/GoVector/govec"
 
-	"bitbucket.org/bestchai/dinv/TestPrograms/t3/comm"
+	"bitbucket.org/bestchai/dinv/examples/linear/comm"
 	"bitbucket.org/bestchai/dinv/instrumenter"
 )
 

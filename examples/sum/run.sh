@@ -1,7 +1,16 @@
-#G!/bin/bash
-#this test creates the instrurmented version of the test programs
-#and runs them through the entire process from start to finnish
-#clean up directory
+#!/bin/bash
+# sum/run.sh controls the execution of the sum client server program.
+# client sends two random integers to server, and server responds with
+# the sum.
+
+#This script mannages the instrumentation and execution of these programs, as well as the merging of their generated logs, and execution of daikon on their generated trace files.
+
+#The detected data invarients should include term1 + term2 = sum
+
+#Options 
+#   -d : dirty run, all generated files are left after execution for
+#   inspection
+#   -c : cleanup, removes generated files created during the run
 
 P1="server"
 P2="client"
@@ -21,14 +30,17 @@ function instrument {
 
 
 function fixModDir {
-    rm -r $testDir/$1
-    mv $testDir/$1_orig $testDir/$1
+    rm -r $testDir/$1/lib
+    mv $testDir/$1/lib_orig $testDir/$1/lib
 }
 
-function runTestProgram {
-    cd $testDir/$1
-    go run $1Entry.go &
-    sleep 1
+function runTestPrograms {
+    cd $testDir/server
+    go run serverEntry.go &
+    cd $testDir/client
+    go run clientEntry.go &
+    ClientPID=$!
+    wait $ClientPID
 }
 
 
@@ -62,6 +74,10 @@ function cleanUp {
     kill `ps | pgrep Entry | awk '{print $1}'`
     fixModDir client
     fixModDir server
+    cd $testDir
+    rm *.dtrace
+    rm *.inv.gz
+    rm *.txt
 }
 
 
@@ -78,8 +94,7 @@ fi
 installDinv
 instrument client
 instrument server
-runTestProgram client
-runTestProgram server
+runTestPrograms
 runLogMerger client server
 runDaikon
 if [ "$1" == "-d" ];

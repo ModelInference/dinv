@@ -5,7 +5,7 @@ import (
 	"net"
 	"os"
 
-	"bitbucket.org/bestchai/dinv/TestPrograms/t3/comm"
+	"bitbucket.org/bestchai/dinv/examples/linear/comm"
 	"bitbucket.org/bestchai/dinv/instrumenter"
 	"github.com/wantonsolutions/GoVector/govec"
 )
