@@ -15,6 +15,7 @@
 P1="server"
 P2="client"
 TEST=""
+DINV=$GOPATH/src/bitbucket.org/bestchai/dinv
 testDir=$DINV/examples/sum
 
 

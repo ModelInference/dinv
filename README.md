@@ -56,9 +56,24 @@ install dinv
 
 `go install bitbucket.org/bestchai/dinv`
 
+this process is scripted in dependencies.sh
 
+#### Daikon In order to infer invarients on the trace files produced
+by DInv complete installation of
+[Daikon](http://plse.cs.washington.edu/daikon/) is needed. The
+[complete installation
+instructions](http://plse.cs.washington.edu/daikon/download/doc/daikon/Installing-Daikon.html#Complete-installation)
+are avialable online.
 
+The installation of Daikon requires that a number of enviornment
+variables be set. The example programs require these enviorment
+variables in order to run their scripted exection of Daikon.
 
+In order to test if your installation is complete run 
+
+`$GOPATH/src/bitbucket.org/bestchai/dinv/examples/helloDinv/run.sh` If
+no errors are displayed the installation is complete ( see example
+section for expected output ).
 
 ## Usage
 DInv has many stages to its execution

@@ -24,6 +24,7 @@
 P1="client"
 P2="coeff"
 P3="linn"
+DINV=$GOPATH/src/bitbucket.org/bestchai/dinv
 testDir=$DINV/examples/linear
 
 function installDinv {
