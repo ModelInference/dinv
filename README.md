@@ -10,15 +10,53 @@ More concretely DInv analyzes Go programs and can:
   * Identify data relationships between these variables (e.g., server.counter >= client.counter)
 
 
+## Installation
+
+Installing DInv is a multi step procedure, due to dependencies on [
+Daikon ](http://plse.cs.washington.edu/daikon/) and a standardly
+configured [ go tool ](http://golang.org/doc/code.html#Organization) 
+
+
 ## Usage
 
- * Use `instrumenter.go` to replace dump annotations in your program with statements to dump state at those points as follows: ` go run instrumenter.go > ../TestPrograms/assignment1_modified.go`
+DInv's API consists of two interfaces. A runtime library housed in
+`instrumenter/api` provides a set of functions for analizing network
+traffic. The second interface is a set of commented annotations used
+to trigger source code analysis.
 
- * Run the instrumented program in the usual way to generate logs (e.g., `go run assignment1_modified.go`)
+### Runtime API
 
- * Run the log merger to concatenate logs from 2 nodes into the format expected by Daikon: `go run LogMerger.go`
+For DInv to analyize network traffic, it must be made privy
+to all communication. Two methods `Pack( buffer )` and `Unpack( buffer )` must be used
+on transmitted data. The `Pack()` function must be used on buffer
+prior to sending. It adds tracking information to the buffer and logs
+the sending event. `Unpack()` must be used on all received data. It
+removes the tracking information added by `Pack()` and logs the
+receving event.
 
- * A file named `daikonLog.txt` will be generated in the base directory which is in the format expected by Daikon. Use this log to infer invariant with Daikon.
+As an coursary example consider the following code snippet involving two hosts
+sending a message to one another. For more complete examples see the
+examples library
+
+`client.go`
+    message := "Hello World!"
+    connection.Write( instrumenter.Pack( message )
+
+`server.go`
+    connection.Read( buffer )
+    message := instrumenter.Unpack ( buffer )
+
+For more information on the runtime api checkout `/instrumenter/api`
+
+### Static Analysis API
+
+Variable extraction for invarient detection
+is semi-automated task. Rather than attempt analyze every varible on every line of code. it is left to
+the user to specifiy areas in the source code where invarients should
+be detected. In order analyze the values of variables at a specific
+line of code, insert the annotation `//@dump` to that line. The
+`\\@dump` annotation is a trigger for the instrumenter to collect
+variables.
 
 ## Examples
 
@@ -35,7 +73,7 @@ standard interface
     + Options :
         * -d : dirty run, the generated files at each stage are
       not remove after execution
-        *   -c : cleanup generated files
+        * -c : cleanup generated files
 
 ### Hello DInv
 Hello DInv is our introductory example program, in which a client
@@ -52,9 +90,9 @@ Sum is a client server system. The client randomly generates values
 for two variables `term1` and `term2` over a constant range. The terms are sent to the
 server which adds them, and sends back the results as the variable
 `sum`. Inferred invariant for this example include
-    * `server-sum = client-term1 + client-term2`
-    * `server-sum >= client-term2`
-    * `server-sum >= client-term1`
+   * `server-sum = client-term1 + client-term2`
+   * `server-sum >= client-term2`
+   * `server-sum >= client-term1`
 
 ### Linear
 Linear is a three host system. The hosts are `client`, `coeff`, and
