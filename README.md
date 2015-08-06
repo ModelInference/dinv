@@ -12,8 +12,8 @@ More concretely DInv analyzes Go programs and can:
 
 ## Installation
 
-Installing DInv is a multi step procedure, due to dependencies on [
-Daikon ](http://plse.cs.washington.edu/daikon/) and a standardly
+Installing DInv is a mulit step procedure, due to dependencies on [
+Daikon ](http://plse.cs.washington.edu/daikon/) and a standards
 configured [ go tool ](http://golang.org/doc/code.html#Organization) 
 
 
@@ -25,21 +25,21 @@ DInv has many stages to its execution
 it must first be modified to track communication, and annotated in
 areas where analysis should be preformed. DInv's instrumentation API
 consists of two interfaces. A runtime library housed in
-`instrumenter/api` provides a set of functions for analizing network
+`instrumenter/api` provides a set of functions for analyzing network
 traffic. The second interface is a set of commented annotations used
 to trigger source code analysis.
 
 #### Runtime API
 
-For DInv to analyize network traffic, it must be made privy
+For DInv to analyze network traffic, it must be made privy
 to all communication. Two methods `Pack( buffer )` and `Unpack( buffer )` must be used
 on transmitted data. The `Pack()` function must be used on buffer
 prior to sending. It adds tracking information to the buffer and logs
 the sending event. `Unpack()` must be used on all received data. It
 removes the tracking information added by `Pack()` and logs the
-receving event.
+receiving event.
 
-As an coursary example consider the following code snippet involving two hosts
+As an cursory example consider the following code snippet involving two hosts
 sending a message to one another. For more complete examples see the
 examples library
 
@@ -55,9 +55,9 @@ For more information on the runtime api checkout `/instrumenter/api`
 
 #### Static Analysis API
 
-Variable extraction for invarient detection
-is semi-automated task. Rather than attempt analyze every varible on every line of code. it is left to
-the user to specifiy areas in the source code where invarients should
+Variable extraction for invariant detection
+is semi-automated task. Rather than attempt analyze every variable on every line of code. it is left to
+the user to specify areas in the source code where invariant should
 be detected. In order analyze the values of variables at a specific
 line of code, insert the annotation `//@dump` to that line. The
 `\\@dump` annotation is a trigger for the instrumenter to collect
@@ -65,9 +65,9 @@ variables.
 
 #### Running the Instrumenter
 
-After capturing your network traffic, and annotating insteresting
+After capturing your network traffic, and annotating interesting
 areas of your code your project will be ready for instrumentation.
-Instrumentation runs at the directory level. Running Dinvs
+Instrumentation runs at the directory level. Running DInv's
 instrumenter on a directory will trigger the duplication of that
 directory. The result is two directories, for example running
 `dinv -i someDir` will insturment all files within `someDir` and copy
@@ -81,14 +81,14 @@ running:
 `dinv -i someDir`
 
 produces:
-`someDir` insturmented directory
+`someDir` instrumented directory
 `someDir_orig` directory prior to instrumentation
 
 ### Execution
 
 Instrumented code can be executed exactly the same as uninstrumented
-code. The differnce is the generation of a number of logging files in
-the directories of the running code. There are three diffent styles of
+code. The difference is the generation of a number of logging files in
+the directories of the running code. There are three different styles of
 logs and it is important to know the difference.
 
 ####GoVector logs
@@ -118,6 +118,46 @@ Two logs are generated for each host of the form
 The Readable log is a debugging tool and is not used again by Dinv.
 The encoded log used by the log merger in the next step.
 
+### Merging Logs
+
+Merging logs is hands off when compared with instrumenting. In order
+to merge the logs accurately all of the encoded program point logs, and
+GoVector logs generated during the execution of the instrumented code
+must be given to the LogMerger.
+
+The LogMerger expects two equal length lists of log files as
+arguments. The first list being the encoded program points, and the
+second the GoVec log files. The lists should be ordered so that the
+i'th point log and the i'th GoVec log correspond to the same host.
+
+as an example consider the merging of logs collected from two host
+client and server
+
+`dinv -logmerger client-clientidEncoded.txt server-serveridEncoded.txt
+clientid.log-Log.txt serverid.log-Log.txt`
+
+This example is verbose, for the sake of explanation.
+
+The simplest way to execute the logmerger, is to move all generated
+logs to a single directory and run
+
+`dinv -l *Encoded.txt *Log.txt`
+
+#### Merging output
+
+The output of the logmerger is a set of dtrace files. The dtrace files
+have names corresponding to where the values they track have been
+extracted from. An individual point has a name of the form
+
+`point` = `_hostid_packageName_FileName_lineNumber` 
+
+These points identify `//@dump` statements along with the host id.
+Trace files are named after sets of points across multiple hosts which
+data has flowed through. Trace files have the naming convention
+
+point_point_...point.dtrace
+
+dtrace files can be fed into daikon to detect invariant.
 
 
 ## Examples
