@@ -10,7 +10,7 @@ package logmerger
 import (
 	"regexp"
 
-	"github.com/wantonsolutions/GoVector/govec/vclock"
+	"github.com/arcaneiceman/GoVector/govec/vclock"
 )
 
 //VectorClockArraysFromLogs extracts the set of vector clocks

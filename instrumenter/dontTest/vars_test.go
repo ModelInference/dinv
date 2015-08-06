@@ -69,7 +69,7 @@ import (
 	"net"
 	"os"
 
-	"github.com/wantonsolutions/GoVector/govec"
+	"github.com/arcaneiceman/GoVector/govec"
 )
 
 const (

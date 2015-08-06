@@ -16,7 +16,7 @@
 #   inspection
 #   -c : cleanup, removes generated files created during the run
 
-
+DINV=$GOPATH/src/bitbucket.org/bestchai/dinv
 testDir=$DINV/examples/helloDinv
 
 function installDinv {

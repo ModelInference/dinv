@@ -18,7 +18,7 @@ package logmerger
 import (
 	"fmt"
 
-	"github.com/wantonsolutions/GoVector/govec/vclock"
+	"github.com/arcaneiceman/GoVector/govec/vclock"
 	"gopkg.in/eapache/queue.v1"
 )
 

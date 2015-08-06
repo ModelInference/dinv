@@ -3,7 +3,7 @@ package logmerger
 import (
 	"testing"
 
-	"github.com/wantonsolutions/GoVector/govec/vclock"
+	"github.com/arcaneiceman/GoVector/govec/vclock"
 )
 
 func Test2DLattice(t *testing.T) {

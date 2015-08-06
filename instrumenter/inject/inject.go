@@ -8,8 +8,8 @@ import (
 
 	"bitbucket.org/bestchai/dinv/instrumenter"
 
-	"github.com/wantonsolutions/GoVector/govec"
-	"github.com/wantonsolutions/GoVector/govec/vclock"
+	"github.com/arcaneiceman/GoVector/govec"
+	"github.com/arcaneiceman/GoVector/govec/vclock"
 )
 
 //TODO move structs to seperate file remove duplication in log merger
