@@ -16,6 +16,49 @@ Installing DInv is a mulit step procedure, due to dependencies on [
 Daikon ](http://plse.cs.washington.edu/daikon/) and a standards
 configured [ go tool ](http://golang.org/doc/code.html#Organization) 
 
+### Installing Go Tool
+
+#### Ubuntu
+
+DInv is written in [ go ](http://golang.org/) and is structured around
+the standard go-tool workspace structure. For a fresh install of go
+checkout the [go installation guide]()
+
+for a fresh install run
+`sudo apt-get install golang`
+
+if you do not have a go workspace set yours up according to the go
+standards [ how to write go code ](http://golang.org/doc/code.html#Organization)
+
+make sure to export the `GoPath` enviornment variable
+
+Dinv is uses mercurial as version control, if it is uninstalled run
+`sudo apt-get install mercurial`
+
+to clone the repository run the following commands
+`mkdir -p $GOPATH/src/bitbucket.org/bestchai`
+`cd $GOPATH/src/bitbucket.org/bestchai`
+`hg clone https://bitbucket.org/bestchai/dinv`
+
+##### Dependencies
+DInv is dependent on a number of repository they can be installed as
+follows
+
+`go get github.com/godoctor/godoctor/analysis/cfg`
+`go get github.com/arcaneiceman/GoVector/govec/vclock`
+`go get github.com/willf/bitset`
+`go get golang.org/x/tools/go/loader`
+`go get golang.org/x/tools/go/types`
+`go get gopkg.in/eapache/queue.v1`
+
+
+install dinv
+
+`go install bitbucket.org/bestchai/dinv`
+
+
+
+
 
 ## Usage
 DInv has many stages to its execution

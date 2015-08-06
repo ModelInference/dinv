@@ -24,7 +24,7 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/wantonsolutions/GoVector/govec/vclock"
+	"github.com/arcaneiceman/GoVector/govec/vclock"
 )
 
 var (
