@@ -19,27 +19,34 @@
 DINV=$GOPATH/src/bitbucket.org/bestchai/dinv
 testDir=$DINV/examples/helloDinv
 
+#Install Dinv to ensure any devloper modifications are up to date
 function installDinv {
     echo "Install dinv"
     cd $DINV
     go install
 }
 
+# instrument files based on directory
 function instrument {
     dinv -i $testDir/$1
 }
 
+# after the instrumenter runs, the original contents of the directory
+# will be moved to a folder *originalDirectory*_org. This function
+# resets the 
 function fixModDir {
     rm -r $testDir/$1
     mv $testDir/$1_orig $testDir/$1
 }
 
+# used to run the instrumented test files
 function runTestProgram {
     cd $testDir/$1
     go run $1.go &
     sleep 1
 }
 
+#cleanup removes the generated log files, and tracke files. Furthermore, it kills the server process to free the port for future executions.
 function cleanup {
     rmCreated client
     rmCreated server
@@ -52,11 +59,15 @@ function cleanup {
     fixModDir server
 }
 
+#rm Created removes the generated text files in a specified directory. This is used to clean up the logging files
 function rmCreated {
  cd $testDir/$1
- rm *.txt
+ rm *Encoded.txt
+ rm *Readable.txt
+ rm *Log.txt
 }
 
+#the log merger is run by passing it the encoded point files and the govector log files generated during the run.
 function runLogMerger {
  cd $testDir
  mv $1/*.txt ./
@@ -64,6 +75,7 @@ function runLogMerger {
  dinv -v -logmerger *Encoded.txt *Log.txt
 }
 
+#runDaikon first preforms work on the trace files, then prints out the invareints detected.
 function runDaikon {
  cd $testDir
  for file in ./*.dtrace; do
