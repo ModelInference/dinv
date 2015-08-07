@@ -21,7 +21,7 @@ receiving points
 sending and receiving functions.
 
 
-#Invariant
+#Invariants
 The variables of interest in this system are the messages being
 passes ed around. The only invariant that should be detected is the
 equality of messages on both the client and server.
