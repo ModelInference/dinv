@@ -4,7 +4,7 @@
 client sends two random integers to server, and server responds with
 the sum.
 
-This script mannages the instrumentation and execution of these
+This script manages the instrumentation and execution of these
 programs, as well as the merging of their generated logs, and
 execution of daikon on their generated trace files.
 
@@ -24,7 +24,8 @@ execution of daikon on their generated trace files.
     * run.sh    _(scripted execution of client and server
       **instrumented**)
 
-The detected data invarients should include 
+#Invariant
+The detected data invariants should include 
 `term1 + term2 = sum`
 `term1 <= sum`
 `term2 <= sum`
