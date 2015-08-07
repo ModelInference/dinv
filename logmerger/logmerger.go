@@ -43,12 +43,6 @@ func Init() {
 func Merge(logfiles []string, gologfiles []string, inlogger *log.Logger) {
 	Init()
 	logger = inlogger
-	for _, log := range logfiles {
-		logger.Println(log)
-	}
-	for _, log := range gologfiles {
-		logger.Println(log)
-	}
 	logs := buildLogs(logfiles, gologfiles)
 	states := mineStates(logs)
 	spec := &MergeSpec{totalOrderLineNumberMerge, 100, false}
@@ -64,20 +58,18 @@ func buildLogs(logFiles []string, gologFiles []string) [][]Point {
 	goLogs := make([]*golog, 0)
 	for i := 0; i < len(logFiles); i++ {
 		log := readLog(logFiles[i])
-		logs = append(logs, log)
-	}
-	for i := 0; i < len(gologFiles); i++ {
 		goLog, err := ParseGologFile(gologFiles[i])
 		if err != nil {
 			panic(err)
 		}
+		logs = append(logs, log)
 		goLogs = append(goLogs, goLog)
 	}
+	replaceIds(logs, goLogs, "fruits") //renames using the fruits naming scheme
 	clocks, _ := VectorClockArraysFromLogs(logs)
 	logger.Printf("Found %d seperate clocks\n", len(clocks))
 	ids := idClockMapper(clocks)
 	for i, log := range logs {
-		addNodeName(ids[i], log)
 		for _, goLog := range goLogs {
 			if goLog.id == ids[i] { //match the ids of the logs
 				log = injectMissingPoints(log, goLog)
@@ -130,18 +122,6 @@ func addBaseLog(name string, log []Point) []Point {
 	}
 	return baseLog
 
-}
-
-//addNodeName appends the name of the log file to the beginning of
-//each variable in the log.
-//TODO extend this naming scheme to classifiy variable names on a cut
-//and interaction basis.
-func addNodeName(name string, logs []Point) {
-	for i := range logs {
-		for j := range logs[i].Dump {
-			logs[i].Dump[j].VarName = name + "-" + logs[i].Dump[j].VarName
-		}
-	}
 }
 
 //writeLogToFile produces a daikon dtrace file based on a log
@@ -537,4 +517,29 @@ func ClockFromString(clock, regex string) (*vclock.VClock, error) {
 		return nil, errors.New("unable to extract clock\n")
 	}
 	return extractedClock, nil
+}
+
+//Host Renaming structures
+func replaceIds(pointLog [][]Point, goLogs []*golog, scheme string) {
+	for i := range pointLog {
+		newID := namingSchemes[scheme][i]
+		replace := regexp.MustCompile(goLogs[i].id)
+		fmt.Println(goLogs[i].id)
+		goLogs[i].id = newID
+		for j := range pointLog[i] {
+			pointLog[i][j].Id = replace.ReplaceAllString(pointLog[i][j].Id, newID)
+			for k := range pointLog[i][j].Dump {
+				pointLog[i][j].Dump[k].VarName = newID + "-" + pointLog[i][j].Dump[k].VarName
+			}
+			logger.Printf("%s\n", pointLog[i][j].Id)
+		}
+	}
+
+}
+
+var namingSchemes = map[string][]string{
+	"colors": []string{
+		"blue", "red", "green", "purple", "black", "orange", "yellow", "gold", "white", "pink", "azure", "brown", "cobalt", "cyan", "grey", "indigo", "jade"},
+	"fruits":       []string{"Apple", "Banana", "Apricot", "Strawberry", "Orange", "Grape", "Raspberry", "Blackberry", "Blueberry", "WaterMelon", "Rambutan", "Lanzones", "Pears", "Plums", "Peaches", "Pineapple", "Cantaloupe", "Papaya", "Jackfruit", "Durian"},
+	"philosophers": []string{"Abelard", "Adorno", "Aquinas", "Arendt", "Aristotle", "Augustine", "Bacon", "Barthes", "Bataille", "Baudrillard", "Beauvoir", "Benjamin", "Berkeley", "Butler", "Camus", "Chomsky", "Cixous", "Deleuze", "Derrida", "Descartes", "Dewey", "Foucault", "Gadamer", "Habermas", "Haraway", "Hegel", "Heidegger", "Hobbes", "Hume", "Husserl", "Irigaray", "James", "Immanuel", "Kristeva", "Tzu", "Levinas", "Locke", "Lyotard", "Merleau-Ponty", "Mill", "Moore", "Nietzsche", "Plato", "Quine", "Rand", "Rousseau", "Sartre", "Schopenhauer", "Spinoza", "Wittgenstein"},
 }

@@ -24,8 +24,11 @@ DInv is written in [ go ](http://golang.org/) and is structured around
 the standard go-tool workspace structure. For a fresh install of go
 checkout the [go installation guide]()
 
-for a fresh install run
+The latest version of go can be installed by running.
 `sudo apt-get install golang`
+
+**Important** DInv is built around the go compiler built into the go
+tool, not gccgo. Running DInv with gccgo will cause spurious errors.
 
 if you do not have a go workspace set yours up according to the go
 standards [ how to write go code ](http://golang.org/doc/code.html#Organization)
@@ -58,22 +61,11 @@ install dinv
 
 this process is scripted in dependencies.sh
 
-#### Daikon In order to infer invarients on the trace files produced
-by DInv complete installation of
-[Daikon](http://plse.cs.washington.edu/daikon/) is needed. The
-[complete installation
-instructions](http://plse.cs.washington.edu/daikon/download/doc/daikon/Installing-Daikon.html#Complete-installation)
-are avialable online.
+#### Daikon
+In order to infer invarients on the trace files produced by DInv
+complete installation of [Daikon](http://plse.cs.washington.edu/daikon/) is needed. The [complete installation instructions](http://plse.cs.washington.edu/daikon/download/doc/daikon/Installing-Daikon.html#Complete-installation) are avialable online.
 
-The installation of Daikon requires that a number of enviornment
-variables be set. The example programs require these enviorment
-variables in order to run their scripted exection of Daikon.
 
-In order to test if your installation is complete run 
-
-`$GOPATH/src/bitbucket.org/bestchai/dinv/examples/helloDinv/run.sh` If
-no errors are displayed the installation is complete ( see example
-section for expected output ).
 
 ## Usage
 DInv has many stages to its execution
