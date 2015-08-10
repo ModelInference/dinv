@@ -18,46 +18,46 @@ configured [ go tool ](http://golang.org/doc/code.html#Organization)
 
 ### Installing Go Tool
 
+DInv is written in [ go ](http://golang.org/) and is structured around
+the standard go-tool workspace structure. For general installation instructions of go
+checkout the [go installation guide](https://golang.org/doc/install)
+
 #### Ubuntu
 
-DInv is written in [ go ](http://golang.org/) and is structured around
-the standard go-tool workspace structure. For a fresh install of go
-checkout the [go installation guide]()
-
-The latest version of go can be installed by running.
+The latest version of go is available through the apt package manager
 `sudo apt-get install golang`
 
 **Important** DInv is built around the go compiler built into the go
-tool, not gccgo. Running DInv with gccgo will cause spurious errors.
+tool, not the C compiler gccgo. Running DInv with gccgo will cause spurious errors.
 
-if you do not have a go workspace set yours up according to the go
-standards [ how to write go code ](http://golang.org/doc/code.html#Organization)
+DInv is built to run within a standard go workspace environment. Go workspaces provide a mechanism for importing, and running the source code of bitbucket and github repositories. This interface is used throughout the installation, and is necessary for the instrumentation process. For detailed instructions on how to configure a go workspace  see [ how to write go code ](http://golang.org/doc/code.html#Organization)
 
-make sure to export the `GoPath` enviornment variable
+The `GoPath` environment variable is a reference to the root of your go workspace. This variable must be set to use both the `go get` instruction, as well as our example programs.
 
 Dinv is uses mercurial as version control, if it is uninstalled run
 `sudo apt-get install mercurial`
 
 to clone the repository run the following commands
-`mkdir -p $GOPATH/src/bitbucket.org/bestchai`
-`cd $GOPATH/src/bitbucket.org/bestchai`
-`hg clone https://bitbucket.org/bestchai/dinv`
+
+     mkdir -p $GOPATH/src/bitbucket.org/bestchai
+     cd $GOPATH/src/bitbucket.org/bestchai
+     hg clone https://bitbucket.org/bestchai/dinv
 
 ##### Dependencies
 DInv is dependent on a number of repository they can be installed as
 follows
 
-`go get github.com/godoctor/godoctor/analysis/cfg`
-`go get github.com/arcaneiceman/GoVector/govec/vclock`
-`go get github.com/willf/bitset`
-`go get golang.org/x/tools/go/loader`
-`go get golang.org/x/tools/go/types`
-`go get gopkg.in/eapache/queue.v1`
+   go get github.com/godoctor/godoctor/analysis/cfg`
+   go get github.com/arcaneiceman/GoVector/govec/vclock`
+   go get github.com/willf/bitset`
+   go get golang.org/x/tools/go/loader`
+   go get golang.org/x/tools/go/types`
+   go get gopkg.in/eapache/queue.v1`
 
 
 install dinv
 
-`go install bitbucket.org/bestchai/dinv`
+   go install bitbucket.org/bestchai/dinv
 
 this process is scripted in dependencies.sh
 
@@ -93,13 +93,15 @@ As an cursory example consider the following code snippet involving two hosts
 sending a message to one another. For more complete examples see the
 examples library
 
-`client.go`
-    message := "Hello World!"
-    connection.Write( instrumenter.Pack( message )
+client.go
 
-`server.go`
-    connection.Read( buffer )
-    message := instrumenter.Unpack ( buffer )
+       message := "Hello World!"
+       connection.Write( instrumenter.Pack( message )
+
+server.go
+
+       connection.Read( buffer )
+       message := instrumenter.Unpack ( buffer )
 
 For more information on the runtime api checkout `/instrumenter/api`
 
@@ -258,9 +260,8 @@ with the first two terms and sends to `linn`. `linn` calculates the
 linear equation `linn = coeff * term1 + term2`. The variables `sum` is
 propagaed back through `coeff` to the `client` host.
 
-detected invariant include
- * `linn > coeff`
- * `linn > term1`
- * `linn > term2`
- 
+detected invariant include'
 
+    linn > coeff
+    linn > term1
+    linn > term2
