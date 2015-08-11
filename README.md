@@ -4,8 +4,10 @@ Distributed system state is not easily accessible and must be pieced together fr
 
 More concretely, DInv analyzes Go programs and can:
 
-  * Identify variables at processes that influence messaging behavior or data sent to other processes:
-    * **TODO: give example**
+  * Identify variables at processes that influence messaging behaviour or data sent to other processes, including thoughts which:
+    * denote group leadership
+    * define state transitions
+    * indicate communication error
   * Identify data relationships between these variables:
     * server.counter >= client.counter
 
@@ -15,7 +17,7 @@ More concretely, DInv analyzes Go programs and can:
 
 DInv is written in [ go lang ](http://golang.org/) and requires a working installation of [Daikon ](http://plse.cs.washington.edu/daikon/).
 
-The following instructions work on Ubuntu **TODO: what version?**
+The following instructions work on Ubuntu 14.04
 
 The latest version of go is available through the apt package manager
 `sudo apt-get install golang`
@@ -34,22 +36,21 @@ To clone the repository run the following commands
 
 ##### Dependencies
 
-DInv is dependent on a number of repository they can be installed as
-follows:
+DInv is dependent on a number of remote repositories, their retrieval and installation has
+been scripted in `dependencies.sh` found in the root directory. The
+list of dependencies is listed below.
 
-   go get github.com/godoctor/godoctor/analysis/cfg`
-   go get github.com/arcaneiceman/GoVector/govec/vclock`
-   go get github.com/willf/bitset`
-   go get golang.org/x/tools/go/loader`
-   go get golang.org/x/tools/go/types`
-   go get gopkg.in/eapache/queue.v1`
+   github.com/godoctor/godoctor/analysis/cfg
+   github.com/arcaneiceman/GoVector/govec/vclock
+   github.com/willf/bitset
+   golang.org/x/tools/go/loader
+   golang.org/x/tools/go/types
+   gopkg.in/eapache/queue.v1
 
-
-Install DInv:
+After installing the dependent software, dinv itself can be installed
+by running
 
    go install bitbucket.org/bestchai/dinv
-
-This process is scripted in dependencies.sh **TODO: are you saying that dependencies.sh can be run instead of all of the above? If yes, say that first. I would list the dependencies, but not say how to install them here, since the dependencies.sh script should do that.**
 
 #### Daikon
 
@@ -60,25 +61,72 @@ To infer invariants on the trace files produced by DInv
 # Usage
 -----------------------
 
-DInv has **TODO: how many?** stages to its execution
+DInv has 5 stages to its execution. 3 stages are dedicated to the
+instrumentation of source code, and the final 2 involve mining
+invariants from logs.
 
 ### Instrumentation
 
-**TODO: First give an overview of what the purpose of instrumentation is, and what are the high-level necessary steps. Then, list the details for those steps below.**
+Variables in go code are not readily available for analysis at
+runtime. In order to track variables during execution their values
+must be logged. DInv users must annotate their code with `//@dump`
+comments on lines of code near variables they wish to analyze.
+`//@dump` statements trigger the injection of code which logs
+variables in its vicinity.
 
-**TODO: what is 'it'?**
-it must first be modified to track communication, and annotated in
-areas where analysis should be preformed. DInv's instrumentation API
-consists of two interfaces. A runtime library housed in
-`instrumenter/api` provides a set of functions for analyzing network
-traffic. The second interface is a set of commented annotations used
-to trigger source code analysis.
+Concurrency in distributed systems makes ordering events from different
+hosts difficult. To keep track of time DInv piggybacks on messages and
+logs when they are sent or received. Users have to instrument their messages
+with the `Pack()` and `Unpack()` instructions to wrap them with
+logging information.
 
-**TODO: The above paragraph does not tell me how to instrument my code. Provide an example.**
+After source code has be annotated, and communication is captured, the
+code can be processed by the instrumenter. Instrumentation occurs at
+the directory level. All source files within the directory will be
+analyzed for annotations. The result of instrumentation is two
+directories. If `foo` was the directory given to the instrumenter, the
+result would be `foo` and `foo_orig`. `foo_orig` Contains the original
+files, and `foo` contains instrumented code.
 
-#### Runtime API
+Running instrumented code produces the logs dinv uses to detect
+invariants. Instrumented directories retain the name of the original,
+preserving external dependencies. You should be able to run
+instrumented code, using identical methods for uninstrumented code.
 
-**TODO: Runtime API does not convey what must be done to instrument code. Re-title to be actionable.**
+#### //@dump annotations (Step 1)
+
+Variable extraction is a semi-automated task. Rather than attempt to analyze the value of each variable on every line of code, 
+the user must specify lines in the source code where they want to
+detect invariants. To analyze the values of variables at a specific
+line of code, insert the annotation `//@dump` to that line. The
+`\\@dump` annotation is a trigger for the instrumenter to collect
+variables. The dump statements are then replaced with code that logs
+the variables, their values and the time.
+
+example: In
+
+    0   func doit( foo int) {
+    1       bar := 2 * foo
+    2       \\@dump
+    3       return bar - foo
+    4   }
+
+Post Instrumentation
+    
+    0   func doit( foo int) {
+    1       bar := 2 * foo
+    2       inject.InstrumenterInit()
+    3       2_vars :=interface{}{foo,bar}
+    4       2_varname := []string{"foo","bar"}
+    5       p_2 := inject.CreatePoint(2_vars,2_varname,"2",instrumenter.GetLogger(),instrumenter.GetStamp())
+    6       inject.Encode.Encdoe(p_2)
+    7       inject.ReadableLog.WriteString(p_2.String())
+    8       return bar - foo
+    9   }
+
+
+
+#### Packing and Unpacking (Step 2)
 
 To use DInv, the library must be aware of network messages in your system.
 Two methods `Pack( buffer )` and `Unpack( buffer )` must be used
@@ -88,44 +136,83 @@ the sending event. `Unpack()` must be used on all received data. It
 removes the tracking information added by `Pack()` and logs the
 received message.
 
+##### Usage
+
+Add a reference to the dinv/instrumenter repository in your source
+code
+
+`import "bitbucket.org/bestchai/dinv/instrumenter"`
+
+__func Pack__
+
+` func Pack(outgoingMessage []byte) []byte `
+The Pack() function prepares a network message for transit by appending
+logging information to the message. Pack() also logs a local event
+when it is called.
+    __arguments__
+    * outgoingMessage ([]bytes) a message prior to sending
+    __return value__
+    * an array of bytes containing the original message, and logging
+      information
+    __postConditions__
+      a local event has been logged, and the logical time on the
+      calling host has been incremented.
+    
+__func Unpack__
+
+` func Pack(incommingMessage []byte) []byte `
+The Unpack() function removes the logging information appended by the
+pack function, and logs the event locally. The return value is the
+message passed to Pack()
+    __arguments__
+    * incommingMessage ([]bytes) an inbound message passed over a
+      network
+    __return value__
+    * The byte array passed to Pack()
+    __preconditions__
+    * The buffer passed to Unpack() must have been packed prior to
+      sending. If no logging information is present in the message, an
+      error will be thrown.
+    __postConditions__
+      a local event has been logged, and the logical time on the
+      calling host has been incremented.
+
 As an example consider the following code snippet involving two hosts
 that send a message to one another:
 
 client.go
 
-       message := "Hello World!"
-       connection.Write( instrumenter.Pack( message )
+       0 message := "Hello World!"
+       1 connection.Write( instrumenter.Pack( message )
 
 server.go
 
-       connection.Read( buffer )
-       message := instrumenter.Unpack ( buffer )
+       0 connection.Read( buffer )
+       1 message := instrumenter.Unpack ( buffer )
+
+This will produce a log for both the client and server
+
+client.log-Log.txt
+
+    client {"client":1}
+    Initialization Complete
+    client {"client":2}
+    Sending from client.go:1
+
+server.log-Log.txt
+    
+    server {"server":1}
+    Initialization Complete
+    server {"server":2, "client":2}
+    Received on server.go:1
+    
 
 For more information on the runtime api checkout `/instrumenter/api`
 
-**TODO: Include details of the API here, just as GoVector does on its main page.**
+#### Running the Instrumenter (Step 3)
 
-#### Static Analysis API
-
-**TODO: Static Analysis API does not convey what must be done to instrument code. Re-title to be actionable.**
-
-Variable extraction for invariant detection
-is semi-automated task. Rather than attempt to analyze every variable on every line of code. it is left to
-the user to specify areas in the source code where invariant should
-be detected. To analyze the values of variables at a specific
-line of code, insert the annotation `//@dump` to that line. The
-`\\@dump` annotation is a trigger for the instrumenter to collect
-variables.
-
-**TODO: Need example -- why isn't this in the instrumentation section above? I'm confused by this structure.**
-
-
-#### Running the Instrumenter
-
-**TODO: Some description of this needs to go at the top where you introduce instrumentation.**
-
-After capturing your network traffic **TODO: this sounds like the system already ran, but we are still in the instrumentation section!**, and annotating interesting
-areas of your code your project will be ready for instrumentation.
+After source code has be annotated, and communication has been
+instrumented to produce logs your project will be ready for instrumentation.
 Instrumentation runs at the directory level. Running DInv's
 instrumenter on a directory will trigger the duplication of that
 directory. The result is two directories, for example running
@@ -142,16 +229,20 @@ produces:
  * `someDir` instrumented directory
  * `someDir_orig` directory prior to instrumentation
 
-### Execution 
+### Execution of instrumented code
 
-**TODO: execution of what? What step in the process is this?**
 
 Instrumented code can be executed exactly the same as un-instrumented
 code. The difference is the generation of a number of logging files in
 the directories of the running code. There are three different styles of
 logs and it is important to know the difference.
 
-**TODO: List the three types here as bullets and briefly explain them (one sentence each). I would also number these, so that the numbers match the sections below.**
+ * GoVector Logs - Are generated by `Pack()` & `Unpack()`. They contain a
+   history of vector timestamps.
+ * Program Point Log ( Encoded ) - Generated by `//@dump` annotations. They
+   contain encoded variables, and vector timestamps
+ * Program Point Log ( Readable ) - Generated by `//@dump`
+   annotations. They contain human readable variables, and vector timestamps
 
 ####GoVector logs
 
@@ -180,9 +271,19 @@ Two logs are generated for each host of the form
 The Readable log is a debugging tool and is not used again by Dinv.
 The encoded log used by the log merger in the next step.
 
-### Merging Logs
+### Merging Logs ( Step 4 )
 
-**TODO: What step is this? When is this done? I'm confused about when this occurs. Also, you just talked about n different kinds of logs, which ones are being merged here?**
+Post execution independent logging files have generated by each
+instrumented host. In order to detect data invariants on the logged
+variables, all the logs must be analyzed together. The log merging
+process analyzes the vector clocks logged along with variables. The
+vector clocks are used to build a unified history of the execution.
+The flow of variables between hosts is detected, and points of
+consistency are determined based on communication patterns. These
+constant distributed points have their variables aggregated together
+for invariant detection. The output of the logmerger is a set of
+trace files uniquely identified by the consistent distributed point
+they represent.
 
 Merging logs is hands off when compared with instrumenting. In order
 to merge the logs accurately all of the encoded program point logs, and
@@ -207,12 +308,9 @@ logs to a single directory and run
 
 `dinv -l *Encoded.txt *Log.txt`
 
-#### Merging output
-
-**TODO: What's the difference between merging logs and merging output?? This section name is too vague.**
-
+#### Detecting Invariant ( Step 5 )
 The output of the logmerger is a set of dtrace files. The dtrace files
-have names corresponding to where the values they track have been
+have names corresponding to the program points where the values they track have been
 extracted from. An individual point has a name of the form
 
 `point` = `_hostid_packageName_FileName_lineNumber` 
@@ -223,10 +321,25 @@ data has flowed through. Trace files have the naming convention
 
 point_point_...point.dtrace
 
-dtrace files can be fed into daikon to detect invariant.
+daikon detects data invariants on the variables written into trace
+files. To detect and print out the invariants on a trace file
+`points.dtrace` run the following.
 
-**TODO: Fed into Daikon? How do I do that??*
+    java daikon.Daikon points.dtrace
 
+this produces a .inv.gz file which can be printed by running
+
+    java daikon.PrintInvariants points.inv.gz
+
+The following bash script prints the invariant for all trace files in
+a directory.
+
+    for file in ./*.dtrace; do
+            java daikon.Daikon $file
+    done
+    for trace in ./*.gz; do
+        java daikon.PrintInvariants $trace >> output.txt
+    done
 
 # Examples
 -----------------------
@@ -258,7 +371,11 @@ passed between client and server.
 
 ### Sum
 
-**TODO: Where does this live in the repo?**
+Sum is located in the examples/sum directory. A script `run.sh`
+mannges every stage of execution. In order to run the script, use the
+following command.
+
+    DinvDirectory/examples/sum/run.sh
 
 Sum is a client server system. The client randomly generates values
 for two variables `term1` and `term2` over a constant range. The terms are sent to the
@@ -270,14 +387,18 @@ server which adds them, and sends back the results as the variable
 
 ### Linear
 
-**TODO: Where does this live in the repo?**
+The linear example program is located in `exampels/linear`. The
+execution of the program is scripted in `run.sh`. In order to run the
+script, use the following command.
+
+    DinvDirectory/examples/linear/run.sh
 
 Linear is a three host system. The hosts are `client`, `coeff`, and
-`linn`. The hosts only pass messages with their neighbors ie `client
+`linn`. The hosts only pass messages with their neighbours IE `client
 <--> coeff <--> linn`.
 
 Similar to the sum system the `client` randomly generates two terms,
-packages them, and sends them to its neighbor `coeff`. `coeff`
+packages them, and sends them to its neighbour `coeff`. `coeff`
 generates a coefficient for the first term, then packages it along
 with the first two terms and sends to `linn`. `linn` calculates the
 linear equation `linn = coeff * term1 + term2`. The variables `sum` is
