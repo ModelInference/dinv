@@ -99,7 +99,7 @@ Variable extraction is a semi-automated task. Rather than attempt to analyze the
 the user must specify lines in the source code where they want to
 detect invariants. To analyze the values of variables at a specific
 line of code, insert the annotation `//@dump` to that line. The
-`\\@dump` annotation is a trigger for the instrumenter to collect
+`//@dump` annotation is a trigger for the instrumenter to collect
 variables. The dump statements are then replaced with code that logs
 the variables, their values and the time.
 
@@ -107,7 +107,7 @@ example: In
 
     0   func doit( foo int) {
     1       bar := 2 * foo
-    2       \\@dump
+    2       //@dump
     3       return bar - foo
     4   }
 
@@ -143,39 +143,43 @@ code
 
 `import "bitbucket.org/bestchai/dinv/instrumenter"`
 
-__func Pack__
+__func Pack(outgoingMessage []byte) []byte__
 
-` func Pack(outgoingMessage []byte) []byte `
 The Pack() function prepares a network message for transit by appending
 logging information to the message. Pack() also logs a local event
 when it is called.
-    __arguments__
-    * outgoingMessage ([]bytes) a message prior to sending
-    __return value__
-    * an array of bytes containing the original message, and logging
+
+      arguments:
+      outgoingMessage ([]bytes) a message prior to sending
+
+      return value:
+      an array of bytes containing the original message, and logging
       information
-    __postConditions__
+
+      postConditions:
       a local event has been logged, and the logical time on the
       calling host has been incremented.
     
-__func Unpack__
+__func Unpack(incommingMessage []byte) []byte__
 
-` func Pack(incommingMessage []byte) []byte `
 The Unpack() function removes the logging information appended by the
 pack function, and logs the event locally. The return value is the
 message passed to Pack()
-    __arguments__
-    * incommingMessage ([]bytes) an inbound message passed over a
-      network
-    __return value__
-    * The byte array passed to Pack()
-    __preconditions__
-    * The buffer passed to Unpack() must have been packed prior to
-      sending. If no logging information is present in the message, an
-      error will be thrown.
-    __postConditions__
-      a local event has been logged, and the logical time on the
-      calling host has been incremented.
+
+    arguments:
+    incommingMessage ([]bytes) an inbound message passed over a network
+
+    return value:
+    The byte array passed to Pack()
+    
+    preconditions:
+    The buffer passed to Unpack() must have been packed prior to
+    sending. If no logging information is present in the message, an
+    error will be thrown.
+
+    postConditions:
+    a local event has been logged, and the logical time on the
+    calling host has been incremented.
 
 As an example consider the following code snippet involving two hosts
 that send a message to one another:
