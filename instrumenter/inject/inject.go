@@ -38,8 +38,6 @@ func InstrumenterInit(pname string) {
 		encodedLogname := fmt.Sprintf("%s-%dEncoded.txt", packageName, stamp)
 		encodedLog, _ := os.Create(encodedLogname)
 		Encoder = gob.NewEncoder(encodedLog)
-		humanReadableLogname := fmt.Sprintf("%s-%dReadable.txt", packageName, stamp)
-		ReadableLog, _ = os.Create(humanReadableLogname)
 	}
 }
 
