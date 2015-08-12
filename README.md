@@ -111,46 +111,35 @@ instrumented code, using identical methods for uninstrumented code.
 ### Add state recording annotations (Step 1)
 ---------------------------------
 
-** TODO: explain below (briefly) what variables will be included when a dump statement is added to a line of code. **
-
 Variable extraction is a semi-automated task. Rather than attempt to analyze the value of each variable on every line of code, 
 the user must specify lines in the source code where they want to
-detect invariants. To analyze the values of variables at a specific
+detect invariants. To analyse the values of variables at a specific
 line of code, insert the annotation `//@dump` to that line. The
 `//@dump` annotation is a trigger for the instrumenter to collect
 variables. The dump statements are then replaced with code that logs
 the variables, their values and the time.
 
+#### Collected Variables
+
+The variables logged by dump code are only those which are in scope, and have their values affected by IPC. Data flow analysis is preformed by the instrument to determine which variables have their values affected by either sending or receiving functions. 
 
 #### Example
-
 ```
 #!go
-    0   func doit( foo int) {
-    1       bar := 2 * foo
-    2       //@dump
-    3       return bar - foo
-    4   }
+    0 func work( foo string ){
+    1    buf := recvMsg()
+    2    msg := Unpack(buf)
+    3    var response string
+    4    //@dump
+    5    if msg == foo {
+    6        response = "Houston"
+    7    } else {
+    8        response = "We have a problem"
+    9    }
+    10   sendMsg(Pack(response))
 ```
 
-** TODO: move the post instrumentation bit to the Wiki (include code above on wiki, too!). This is a usage manual, not a technical report :-) **
-
-Post Instrumentation
-
-```
-#!go    
-    0   func doit( foo int) {
-    1       bar := 2 * foo
-    2       inject.InstrumenterInit()
-    3       2_vars :=interface{}{foo,bar}
-    4       2_varname := []string{"foo","bar"}
-    5       p_2 := inject.CreatePoint(2_vars,2_varname,"2",instrumenter.GetLogger(),instrumenter.GetStamp())
-    6       inject.Encode.Encdoe(p_2)
-    7       inject.ReadableLog.WriteString(p_2.String())
-    8       return bar - foo
-    9   }
-```
-
+In this example the variables collected by the dump annotation include {`buf`,`msg`,`response`}. The variable `foo` is not collected because it's value is not affected by the sending function, and its value does not directly affect the value of `response`. For more information checkout the [dump wiki entry](https://bitbucket.org/bestchai/dinv/wiki/Dump%20Annotations).
 
 
 ### Wrap messages with vector timestamps (Step 2)
