@@ -78,6 +78,8 @@ You must follow 6 steps to use DInv. The first 3 are dedicated to code instrumen
     2. Merge logs
     3. Detect invariants
 
+**TODO: mention that all steps are triggered by running go run dinv.go or similar; add link to the usage screen at bottom of page.**
+
 ## Instrument system source code (Part 1)
 
 Variables in go code are not readily available for analysis at
@@ -445,3 +447,5 @@ Detected invariant include:
     linn > coeff
     linn > term1
     linn > term2
+
+**TODO: add a new section with command line usage information for the dinv.go executable. **
