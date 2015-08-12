@@ -1,6 +1,8 @@
 # DInv is a distributed system data invariant detector
 
-Distributed system state is not easily accessible and must be pieced together from the state at the individual hosts. Developers have few tools to help them extract, check, and reason about distributed state. DInv is a suite of tools that can (1) semi-automatically detect distributed state, and (2) infer data invariants over distributed state.
+Distributed system state is not easily accessible and must be pieced together from the state at the individual hosts. Developers have few tools to help them extract, check, and reason about distributed state.
+
+DInv is a suite of tools that can (1) semi-automatically detect distributed state, and (2) infer data invariants over distributed state.
 
 More concretely, DInv analyzes Go programs and can:
 
@@ -15,9 +17,7 @@ More concretely, DInv analyzes Go programs and can:
 # Installation
 -----------------------
 
-DInv is written in [ go lang ](http://golang.org/) and requires a working installation of [Daikon ](http://plse.cs.washington.edu/daikon/).
-
-The following instructions are for Ubuntu 14.04
+DInv is written in [ go lang ](http://golang.org/) and requires a working installation of [Daikon ](http://plse.cs.washington.edu/daikon/). The following instructions are for Ubuntu 14.04
 
 The latest version of go is available through the apt package manager
     sudo apt-get install golang
@@ -38,13 +38,7 @@ To clone the repository run the following commands
 
 ## Dependencies
 
-Dinv depends on a number of remote repositories. To install them run `dependencies.sh`.
-After installing the dependent software, dinv itself can be installed
-by running
-
-`go install bitbucket.org/bestchai/dinv`
-
-**remote dependencies**
+Dinv depends on a number of remote repositories, you can install these by running `dependencies.sh`:
 
  * github.com/godoctor/godoctor/analysis/cfg
  * github.com/arcaneiceman/GoVector/govec/vclock
@@ -53,12 +47,14 @@ by running
  * golang.org/x/tools/go/types
  * gopkg.in/eapache/queue.v1
 
-
-
-## Daikon
-
 To infer invariants on the trace files produced by DInv
 [install](http://plse.cs.washington.edu/daikon/download/doc/daikon/Installing-Daikon.html#Complete-installation)  [Daikon](http://plse.cs.washington.edu/daikon/).
+
+## Installing DInv
+
+After you install the above dependencies, install DInv by running
+
+`go install bitbucket.org/bestchai/dinv`
 
 
 # Usage
