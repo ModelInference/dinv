@@ -7,11 +7,10 @@ DInv is a suite of tools that can (1) semi-automatically detect distributed stat
 More concretely, DInv analyzes Go programs and can:
 
   * Identify variables at processes that influence messaging behaviour or data sent to other processes:
-    * host.groupLeader = self
-    * node.state = election
-    * client.connectionStatus = down
-  * Identify data relationships between these variables:
-    * server.counter >= client.counter
+    * The variable containing the number of unsuccessful heartbeats at the client influences whether or not the node sends a messages starting a new leader election round
+  * Identify data relationships between local and remote variables:
+    * server.counter >= client.counter (the server's counter is at least the value of the client's counter)
+    * host.groupLeader == self (the local host is the group leader)
 
 
 ## Table of contents
