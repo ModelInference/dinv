@@ -14,6 +14,14 @@ More concretely, DInv analyzes Go programs and can:
     * server.counter >= client.counter
 
 
+## Table of contents
+
+ * [Installation](#markdown-header-installation)
+ * [Usage](#markdown-header-usage)
+   * [Instrument system source code ](#markdown-header-instrument-system-source-code)
+ * **TODO: add the rest**
+
+
 # Installation
 -----------------------
 
