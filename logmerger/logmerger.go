@@ -28,7 +28,10 @@ import (
 )
 
 var (
-	logger *log.Logger
+	logger          *log.Logger
+	outputShivizLog = true
+	swapIds         = true
+	idSwapGenre     = "fruits"
 )
 
 func Init() {
@@ -65,16 +68,17 @@ func buildLogs(logFiles []string, gologFiles []string) [][]Point {
 		logs = append(logs, log)
 		goLogs = append(goLogs, goLog)
 	}
-	replaceIds(logs, goLogs, "fruits") //renames using the fruits naming scheme
-	clocks, _ := VectorClockArraysFromLogs(logs)
-	logger.Printf("Found %d seperate clocks\n", len(clocks))
-	ids := idClockMapper(clocks)
-	for i, log := range logs {
-		for _, goLog := range goLogs {
-			if goLog.id == ids[i] { //match the ids of the logs
-				log = injectMissingPoints(log, goLog)
-			}
-		}
+
+	for i := range logs {
+		logs[i] = injectMissingPoints(logs[i], goLogs[i])
+	}
+
+	//log pre processing work
+	if swapIds {
+		replaceIds(logs, goLogs, idSwapGenre)
+	}
+	if outputShivizLog {
+		writeShiVizLog(logs, goLogs)
 	}
 	return logs
 }
@@ -85,7 +89,11 @@ func injectMissingPoints(points []Point, log *golog) []Point {
 	for pointIndex < len(points) {
 		logger.Printf("point index :%d maxp :%d maxc: %d\n", pointIndex, len(points), len(log.clocks))
 		pointClock, _ := vclock.FromBytes(points[pointIndex].VectorClock)
-		ticks, _ := pointClock.FindTicks(log.id)
+		logger.Printf("id>%s - vclock>%s", log.id, pointClock)
+		ticks, found := pointClock.FindTicks(log.id)
+		if !found {
+			panic(log.id)
+		}
 		if int(ticks)-1 == incrementalIndex {
 			injectedPoints = append(injectedPoints, points[pointIndex])
 			pointIndex += 2
@@ -462,14 +470,11 @@ func ParseGologFile(filename string) (*golog, error) {
 	for scanner.Scan() {
 		text += "\n" + scanner.Text()
 	}
-	logger.Print(text)
 	log, err := LogsFromString(text, govecRegex)
 	if err != nil {
 		defer file.Close()
 		return nil, err
 	}
-	logger.Print(log.String())
-
 	return log, nil
 }
 
@@ -519,22 +524,61 @@ func ClockFromString(clock, regex string) (*vclock.VClock, error) {
 	return extractedClock, nil
 }
 
-//Host Renaming structures
-func replaceIds(pointLog [][]Point, goLogs []*golog, scheme string) {
-	for i := range pointLog {
-		newID := namingSchemes[scheme][i]
-		replace := regexp.MustCompile(goLogs[i].id)
-		fmt.Println(goLogs[i].id)
-		goLogs[i].id = newID
-		for j := range pointLog[i] {
-			pointLog[i][j].Id = replace.ReplaceAllString(pointLog[i][j].Id, newID)
-			for k := range pointLog[i][j].Dump {
-				pointLog[i][j].Dump[k].VarName = newID + "-" + pointLog[i][j].Dump[k].VarName
-			}
-			logger.Printf("%s\n", pointLog[i][j].Id)
+func writeShiVizLog(pointLog [][]Point, goLogs []*golog) {
+	file, _ := os.Create("Shiviz.log")
+	shivizRegex := "(?<host>\\S*) (?<clock>{.*})\\n(?<event>.*)"
+	file.WriteString(shivizRegex)
+	file.WriteString("\n\n")
+	for _, goLog := range goLogs {
+		for i := range goLog.clocks {
+			log := fmt.Sprintf("%s %s\n%s\n", goLog.id, goLog.clocks[i].ReturnVCString(), goLog.messages[i])
+			file.WriteString(log)
 		}
 	}
+}
 
+//Host Renaming structures
+func replaceIds(pointLog [][]Point, goLogs []*golog, scheme string) {
+	_, ok := namingSchemes[scheme]
+	if !ok {
+		logger.Printf("Warning: unknown id naming scheme \"%s\", id's unchanged\n")
+		return
+	}
+	idMap := make(map[string]string)
+	for i := range goLogs {
+		idMap[goLogs[i].id] = namingSchemes[scheme][i]
+	}
+	for i := range pointLog {
+		replace := regexp.MustCompile(goLogs[i].id)
+		for j := range pointLog[i] {
+			pointLog[i][j].Id = replace.ReplaceAllString(pointLog[i][j].Id, idMap[goLogs[i].id])
+			for k := range pointLog[i][j].Dump {
+				pointLog[i][j].Dump[k].VarName = idMap[goLogs[i].id] + "-" + pointLog[i][j].Dump[k].VarName
+			}
+			oldClock, _ := vclock.FromBytes(pointLog[i][j].VectorClock)
+			newClock := swapClockIds(oldClock, idMap)
+			pointLog[i][j].VectorClock = newClock.Bytes()
+		}
+		for j := range goLogs[i].clocks {
+			goLogs[i].clocks[j] = swapClockIds(goLogs[i].clocks[j], idMap)
+			goLogs[i].messages[j] = replace.ReplaceAllString(goLogs[i].messages[j], idMap[goLogs[i].id])
+		}
+		goLogs[i].id = idMap[goLogs[i].id]
+	}
+
+}
+
+func swapClockIds(oldClock *vclock.VClock, idMap map[string]string) *vclock.VClock {
+	ids := make([]string, 0)
+	ticks := make([]int, 0)
+	for id := range idMap {
+		tick, _ := oldClock.FindTicks(id)
+		if tick > 0 {
+			ids = append(ids, idMap[id])
+			ticks = append(ticks, int(tick))
+		}
+	}
+	return ConstructVclock(ids, ticks)
 }
 
 var namingSchemes = map[string][]string{
