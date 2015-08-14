@@ -60,6 +60,22 @@ func searchLogForClock(log []Point, keyClock *vclock.VClock, id string) (bool, i
 	return false, mid
 }
 
+func getEventsWithIdenticalHostTime(points []Point, hostId string, time int) []Point {
+	matchingPoints := make([]Point, 0)
+	foundPoint := false
+	for i := range points {
+		pointClock, _ := vclock.FromBytes(points[i].VectorClock)
+		ticks, found := pointClock.FindTicks(hostId)
+		if found && int(ticks) == time {
+			matchingPoints = append(matchingPoints, points[i])
+			foundPoint = true
+		} else if foundPoint {
+			return matchingPoints
+		}
+	}
+	return matchingPoints
+}
+
 //matchSendAndRecieve find a corresponding recieve event based on a
 //proposed sending vectorclock, if no such recive event can be found
 //in the corresponding clocks, then matched is returned false,
