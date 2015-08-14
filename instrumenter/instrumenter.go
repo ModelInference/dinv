@@ -33,47 +33,79 @@ import (
 )
 
 var (
-	logger *log.Logger
+	logger           *log.Logger
+	dataflow         = false
+	debug            = false
+	dumpsLocalEvents = false
+	instDirectory    = ""
+	instFile         = ""
 )
 
-//Settings houses all of the instrumenters configiguable options
-type Settings struct {
-	dataflow bool
-	debug    bool
-}
-
-//defineSettings allows the
-//TODO put settings into dinv.go
-func defaultSettings() *Settings {
-	return &Settings{
-		dataflow: false,
-		debug:    true,
+//initalizeInstrumenter generates a logger if none exists, and returns
+//the default settings
+func initializeInstrumenter(options map[string]string, inlogger *log.Logger) {
+	if inlogger == nil {
+		logger = log.New(os.Stdout, "instrumenter:", log.Lshortfile)
+	} else {
+		logger = inlogger
+	}
+	for setting := range options {
+		switch setting {
+		case "debug":
+			debug = true
+		case "dataflow":
+			dataflow = true
+		case "directory":
+			instDirectory = options[setting]
+			logger.Printf("Insturmenting Directory :%s", instDirectory)
+		case "file":
+			instFile = options[setting]
+			logger.Printf("Insturmenting File :%s", instFile)
+		default:
+			continue
+		}
 	}
 }
 
 //Instrument oversees the instrumentation of an entire package
 //for each file provided
-//TODO take a package name rather then a single file
-func Instrument(dir string, inlogger *log.Logger) {
-	logger = inlogger
-	logger.Printf("INSTRUMENTING FILES %s", dir)
-	settings := initializeInstrumenter()
-	program, err := getProgramWrapper(dir)
+func Instrument(options map[string]string, inlogger *log.Logger) {
+	initializeInstrumenter(options, inlogger)
+	program, err := getProgramWrapper()
 	if err != nil {
-		panic(err)
-	}
-	err = InplaceDirectorySwap(dir)
-	if err != nil {
-		panic(err)
+		logger.Fatalf("Error: %s", err.Error())
 	}
 	program = generateSourceText(program)
 	for packageIndex, pack := range program.packages {
 		for sourceIndex := range pack.sources {
-			genCode := generateCode(program, packageIndex, sourceIndex, settings)
+			genCode := generateCode(program, packageIndex, sourceIndex)
 			instrumented := injectCode(program, packageIndex, sourceIndex, genCode)
 			writeInstrumentedFile(instrumented, program.packages[packageIndex].sources[sourceIndex].filename)
 		}
 	}
+}
+
+func getProgramWrapper() (*ProgramWrapper, error) {
+	var (
+		program *ProgramWrapper
+		err     error
+	)
+	if instDirectory != "" {
+		program, err = getProgramWrapperDirectory(instDirectory)
+		if err != nil {
+			return program, err
+		}
+		err = InplaceDirectorySwap(instDirectory)
+		if err != nil {
+			return program, err
+		}
+	} else if instFile != "" {
+		//TODO write functionality for insturmenting a single file //
+		//look to getProgramWrapperFromSource in programBuilder
+		//program = getProgramWrapperFile(instFile)
+		//err = InplaceFileSwap(instFile)
+	}
+	return program, nil
 }
 
 func InplaceDirectorySwap(dir string) error {
@@ -87,15 +119,6 @@ func InplaceDirectorySwap(dir string) error {
 			return os.Rename(path, newPath)
 		}
 	})
-}
-
-//initalizeInstrumenter generates a logger if none exists, and returns
-//the default settings
-func initializeInstrumenter() *Settings {
-	if logger == nil {
-		logger = log.New(os.Stdout, "instrumenter:", log.Lshortfile)
-	}
-	return defaultSettings()
 }
 
 func generateSourceText(program *ProgramWrapper) *ProgramWrapper {
@@ -112,7 +135,7 @@ func generateSourceText(program *ProgramWrapper) *ProgramWrapper {
 
 //generateCode constructs code for dump statements for the source code
 //located at program.source[sourceIndex].
-func generateCode(program *ProgramWrapper, packageIndex, sourceIndex int, settings *Settings) []string {
+func generateCode(program *ProgramWrapper, packageIndex, sourceIndex int) []string {
 	var generated_code []string
 	var collectedVariables []string
 	dumpNodes := GetDumpNodes(program.packages[packageIndex].sources[sourceIndex].comments)
@@ -121,7 +144,7 @@ func generateCode(program *ProgramWrapper, packageIndex, sourceIndex int, settin
 		//file relitive dump position (dump abs - file abs = dump rel)
 		fileRelitiveDumpPosition := int(dumpPos - program.packages[packageIndex].sources[sourceIndex].comments.Pos() + 1)
 		lineNumber := program.fset.Position(dumpPos).Line
-		if settings.dataflow {
+		if dataflow {
 			collectedVariables = getAccessedAffectedVars(dump, program)
 		} else {
 			collectedVariables = GetAccessibleVarsInScope(fileRelitiveDumpPosition, program.packages[packageIndex].sources[sourceIndex].comments, program.fset)
@@ -362,6 +385,7 @@ func GenerateDumpCode(vars []string, lineNumber int, path, packagename string) s
 	ext := filepath.Ext(path)
 	filename := strings.Replace(nameWithExt, ext, "", 1)
 	var buffer bytes.Buffer
+
 	// write vars' values
 	id := packagename + "_" + filename + "_" + strconv.Itoa(lineNumber)
 	buffer.WriteString(fmt.Sprintf("\ninject.InstrumenterInit(\"%s\")\n", packagename))
@@ -370,11 +394,14 @@ func GenerateDumpCode(vars []string, lineNumber int, path, packagename string) s
 		buffer.WriteString(fmt.Sprintf("%s,", vars[i]))
 	}
 	buffer.WriteString(fmt.Sprintf("%s}\n", vars[len(vars)-1]))
+
 	// write vars' names
 	buffer.WriteString(fmt.Sprintf("%s_varname := []string{", id))
 	for i := 0; i < len(vars)-1; i++ {
 		buffer.WriteString(fmt.Sprintf("\"%s\",", vars[i]))
 	}
+
+	//injectPoint
 	buffer.WriteString(fmt.Sprintf("\"%s\"}\n", vars[len(vars)-1]))
 	buffer.WriteString(fmt.Sprintf("p%s := inject.CreatePoint(%s_vars, %s_varname,\"%s\",instrumenter.GetLogger(),instrumenter.GetStamp())\n", id, id, id, id))
 	buffer.WriteString(fmt.Sprintf("inject.Encoder.Encode(p%s)\n", id))

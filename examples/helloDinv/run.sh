@@ -28,7 +28,7 @@ function installDinv {
 
 # instrument files based on directory
 function instrument {
-    dinv -i $testDir/$1
+    dinv -i -v -dir=$testDir/$1
 }
 
 # after the instrumenter runs, the original contents of the directory
@@ -72,7 +72,7 @@ function runLogMerger {
  cd $testDir
  mv $1/*.txt ./
  mv $2/*.txt ./
- dinv -v -logmerger *Encoded.txt *Log.txt
+ dinv -v -l -shiviz *Encoded.txt *Log.txt
 }
 
 #runDaikon first preforms work on the trace files, then prints out the invareints detected.

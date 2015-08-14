@@ -26,7 +26,7 @@ function installDinv {
 }
 
 function instrument {
-    dinv -i $testDir/$1/lib
+    dinv -i -dir=$testDir/$1/lib
 }
 
 
@@ -49,7 +49,7 @@ function runLogMerger {
  cd $testDir
  mv $1/*.txt ./
  mv $2/*.txt ./
- dinv -v -logmerger *Encoded.txt *Log.txt
+ dinv -v -logmerger -shiviz *Encoded.txt *Log.txt
 }
 
 

@@ -89,7 +89,7 @@ func getWrapperFromString(sourceString string) (*ProgramWrapper, error) {
 	return &ProgramWrapper{prog, fset, append(make([]*PackageWrapper, 0), pack)}, nil
 }
 
-func getProgramWrapper(dir string) (*ProgramWrapper, error) {
+func getProgramWrapperDirectory(dir string) (*ProgramWrapper, error) {
 	var config loader.Config
 	fset := token.NewFileSet()
 	astPackages, err := parser.ParseDir(fset, dir, nil, parser.ParseComments)

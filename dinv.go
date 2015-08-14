@@ -14,27 +14,72 @@ import (
 	"bitbucket.org/bestchai/dinv/logmerger"
 )
 
+const (
+	//instrumenter defaults
+	defaultFilename  = ""
+	defaultDirectory = ""
+
+	//logmerger defaults
+	defaultMergePlan  = "TOLN" //total order line number merge
+	defaultSampleRate = 100    //take 100 percent of all mined cuts
+
+	defaultRenameingScheme = "fruits" //rename hosts as fruit
+
+)
+
 var (
-	inst    bool
-	logmer  bool
+	inst   bool
+	logmer bool
+
+	//options for instrumenting
+	dataflowAnalysis bool
+	dumpsLocalEvents bool
+	directory        string
+	file             string
+
+	//log merger options
+	shivizLog          bool
+	mergePlan          string
+	sampleRate         int
+	totallyOrderedCuts bool
+	renamingScheme     string
+
+	//options for both
 	verbose bool
+	debug   bool
 
 	logger *log.Logger
 )
 
 func setFlags() {
-	flag.BoolVar(&inst, "instrumenter", false, "go run dinv -instrumenter directory packagename")
-	flag.BoolVar(&inst, "i", false, "go run dinv -i directory packagename")
+	flag.BoolVar(&inst, "instrumenter", false, "go run dinv -instrumenter -dir=directory")
+	flag.BoolVar(&inst, "i", false, "go run dinv -i -dir=directory")
+
+	flag.BoolVar(&dataflowAnalysis, "df", false, "-df=true triggers dataflow analysis at dumpstatements")
+	flag.BoolVar(&dumpsLocalEvents, "local", false, "-local=true logs //@dump annotations as local events")
+	flag.StringVar(&directory, "dir", defaultDirectory, "-dir=directoryName recursivly instruments a directory inplace, original directory is duplicated for safty")
+	flag.StringVar(&file, "file", defaultFilename, "-file=filename insturments a file")
+
+	flag.BoolVar(&shivizLog, "shiviz", false, "-shiviz adds shiviz log to output")
+	flag.StringVar(&mergePlan, "plan", defaultMergePlan, "-plan=TOLN merges based on total order, and line number")
+	flag.IntVar(&sampleRate, "sample", defaultSampleRate, "-sample=50 % sample of consistant cuts to be analysed")
+	flag.BoolVar(&totallyOrderedCuts, "toc", false, "-toc overlapping cuts are not analysed")
+	flag.StringVar(&renamingScheme, "name", defaultRenameingScheme, "-name=color names hosts after colors includes color/fruit/philosopher")
+
 	flag.BoolVar(&logmer, "logmerger", false, "go run dinv -logmerger file1 file2 ...")
 	flag.BoolVar(&logmer, "l", false, "go run dinv -l file1 file2 ...")
+
 	flag.BoolVar(&verbose, "verbose", false, "-verbose logs extensive output")
-	flag.BoolVar(&verbose, "v", false, "-verbose logs extensive output")
+	flag.BoolVar(&verbose, "v", false, "-v logs extensive output")
+	flag.BoolVar(&debug, "debug", false, "-debug adds pedantic level of logging")
 	flag.Parse()
 }
 
 func main() {
 	setFlags()
 
+	options := make(map[string]string)
+	//set options relevent to all programs
 	if verbose {
 		logger = log.New(os.Stdout, "logger: ", log.Lshortfile)
 	} else {
@@ -42,38 +87,104 @@ func main() {
 		logger = log.New(&buf, "logger: ", log.Lshortfile)
 	}
 
+	if debug {
+		options["debug"] = "on"
+	}
+
+	// Insturmenter option setting
+	if inst {
+		//TODO complain about arguments not ment for the instrumenter
+
+		//filechecking //exclusive or with filename and directory
+		if file == defaultFilename && directory == defaultDirectory {
+			logger.Fatalf("No directory or filename supplied for insturmentation, use either -file or -dir\n")
+		} else if file != defaultFilename && directory != defaultDirectory {
+			logger.Fatalf("Speficied filename =%s and directory = %s, use either -file or -dir\n", file, directory)
+		}
+
+		//test if file exists, if so add file option
+		if file != defaultFilename {
+			exists, err := fileExists(file)
+			if !exists {
+				logger.Fatalf("Error: : %s\n", err.Error())
+			}
+			logger.Fatalf(" -file Option under construction sorry\n")
+
+			options["file"] = file
+		}
+
+		// test if the directory is valid. If so add to options, else
+		// error
+		if directory != defaultDirectory {
+			valid, err := validinstrumentationDir(directory)
+			if !valid {
+				logger.Fatalf("Invalid Directory Error: %s\n", err.Error())
+			}
+			logger.Printf("Insturmenting Directory :%s\n", directory)
+			options["directory"] = directory
+		}
+
+		//set dataflow flag
+		if dataflowAnalysis {
+			options["dataflow"] = "on"
+		}
+		//set dump statements to log local events
+		if dumpsLocalEvents {
+			options["local"] = "on"
+		}
+
+		instrumenter.Instrument(options, logger)
+
+		logger.Printf("Instrumentation Complete\n")
+	}
+
 	args := flag.Args()
 	if logmer {
+		//TODO complain about flags that should not be passed to the
+		//log merger
+		//check that all of the log files passed in exist
 		for i := 0; i < len(args); i++ {
 			exists, err := fileExists(args[i])
 			if !exists {
-				err := fmt.Errorf("the file %s, does not exist\n%s\n", args[i], err)
-				panic(err)
+				logger.Fatalf("the file %s, does not exist\n%s\n", args[i], err)
 			}
 		}
+		//sort the logs into list of encoded point logs and govector
+		//logs
 		pointLogs, govecLogs, err := sortLogs(args)
 		if err != nil {
-			panic(err)
+			//report missing or corruped files
+			logger.Fatalf("Log Sorting Error: %s", err.Error())
 		}
-		logmerger.Merge(pointLogs, govecLogs, logger)
+
+		//set the merge plan
+		options["mergePlan"] = mergePlan
+		//set host id renaming scheme
+
+		//set the sample rate and restrict to range (0 - 100)
+		if sampleRate != defaultSampleRate {
+			if sampleRate < 0 || sampleRate > 100 {
+				logger.Printf("Waring sample rate %d out of range defaulting to %d", sampleRate, defaultSampleRate)
+				sampleRate = defaultSampleRate
+			}
+		}
+		options["sampleRate"] = fmt.Sprintf("%d", sampleRate)
+
+		// flag to prevent the analysis of overlapping cuts
+		if totallyOrderedCuts {
+			options["totallyOrderedCuts"] = "on"
+		}
+
+		options["renamingScheme"] = renamingScheme
+
+		if shivizLog {
+			options["shiviz"] = "on"
+		}
+
+		logmerger.Merge(pointLogs, govecLogs, options, logger)
 		logger.Printf("Complete\n")
 	}
 
-	if inst {
-		dir := args[0]
-		valid, err := validinstrumentationDir(args[0])
-		if !valid {
-			panic(err)
-		}
-		if verbose {
-			fmt.Printf("Insturmenting %s...", args[0])
-		}
-
-		instrumenter.Instrument(dir, logger)
-		if verbose {
-			//fmt.Printf("Complete\n")
-		}
-	}
 }
 
 //sortLogs checks an array of filenames to ensure that they contain a
