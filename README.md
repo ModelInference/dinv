@@ -26,6 +26,7 @@ More concretely, DInv analyzes Go programs and can:
         * [Merge logs](#markdown-header-merge-logs-step-5)
         * [Detect invariants](#markdown-header-detect-invariants-step-6)
  * [Examples](#markdown-header-examples)
+ * [Command line usage](#markdown-header-command-line-usage)
 
 
 # Installation
@@ -85,7 +86,7 @@ You must follow 6 steps to use DInv. The first 3 are dedicated to code instrumen
     2. Merge logs
     3. Detect invariants
 
-**TODO: mention that all steps are triggered by running go run dinv.go or similar; add link to the usage screen at bottom of page.**
+The instrumentation and log merging stages are triggered by running the `dinv` command line tool. The [usage](#markdown-header-command-line-usage) of which can be found below.
 
 ## Instrument system source code (Part 1)
 
@@ -219,25 +220,6 @@ server.go
        0 connection.Read( buffer )
        1 message := instrumenter.Unpack ( buffer )
 ```
-
-** TODO: move log stuff below to wiki. This is interesting, but is in the way of usage.**
-
-This will produce a log for both the client and server
-
-client.log-Log.txt
-
-    client {"client":1}
-    Initialization Complete
-    client {"client":2}
-    Sending from client.go:1
-
-server.log-Log.txt
-    
-    server {"server":1}
-    Initialization Complete
-    server {"server":2, "client":2}
-    Received on server.go:1
-    
 
 For more information on the runtime api checkout `/instrumenter/api`
 
@@ -474,7 +456,3 @@ The `-l` argument specifies the log merger, the following arguments should be fo
  
  * `-verbose` print output to console
  * `-debug` adds extensive and pedantic output
-
-
-
-**TODO: add a new section with command line usage information for the dinv.go executable. **
