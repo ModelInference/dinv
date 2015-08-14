@@ -2,3 +2,95 @@
 
 Apple {"Apple":1}
 Initialization Complete
+Apple {"Apple":2}
+Dump @ id client_marshall_27 : 
+Apple {"Apple":3}
+Sending from client.go:39 AppleApple_client_marshall_27 : (Apple-l,%!s(int=6),int)(Apple-k,%!s(int=2),int)
+Apple {"Apple":4}
+Dump @ id client_client_40 : 
+Apple {"Apple":5, "Banana":4}
+Received on client.go:57 AppleApple_client_client_40 : (Apple-ADDITION_ARGS,%!s(int=2),int)(Apple-RUNS,%!s(int=5),int)(Apple-term2,%!s(int=51),int)(Apple-sum,%!s(int=0),int)(Apple-SIZEOFINT,%!s(int=4),int)(Apple-LARGEST_TERM,%!s(int=100),int)(Apple-term1,%!s(int=10),int)
+Apple {"Banana":4, "Apple":6}
+Dump @ id client_client_54 : 
+Apple {"Apple":7, "Banana":4}
+Dump @ id client_marshall_27Apple_client_client_54 : (Apple-ADDITION_ARGS,%!s(int=2),int)(Apple-RUNS,%!s(int=5),int)(Apple-term2,%!s(int=51),int)(Apple-SIZEOFINT,%!s(int=4),int)(Apple-LARGEST_TERM,%!s(int=100),int)(Apple-term1,%!s(int=10),int)(Apple-sum,%!s(int=61),int)
+Apple {"Apple":8, "Banana":4}
+Sending from client.go:39 AppleApple_client_marshall_27 : (Apple-l,%!s(int=6),int)(Apple-k,%!s(int=2),int)
+Apple {"Apple":9, "Banana":4}
+Dump @ id client_client_40 : 
+Apple {"Apple":10, "Banana":8}
+Received on client.go:57 AppleApple_client_client_40 : (Apple-ADDITION_ARGS,%!s(int=2),int)(Apple-RUNS,%!s(int=5),int)(Apple-term2,%!s(int=51),int)(Apple-sum,%!s(int=0),int)(Apple-SIZEOFINT,%!s(int=4),int)(Apple-LARGEST_TERM,%!s(int=100),int)(Apple-term1,%!s(int=21),int)
+Apple {"Banana":8, "Apple":11}
+Dump @ id client_client_54 : 
+Apple {"Apple":12, "Banana":8}
+Dump @ id client_marshall_27Apple_client_client_54 : (Apple-ADDITION_ARGS,%!s(int=2),int)(Apple-RUNS,%!s(int=5),int)(Apple-term2,%!s(int=51),int)(Apple-SIZEOFINT,%!s(int=4),int)(Apple-LARGEST_TERM,%!s(int=100),int)(Apple-term1,%!s(int=21),int)(Apple-sum,%!s(int=72),int)
+Apple {"Apple":13, "Banana":8}
+Sending from client.go:39 AppleApple_client_marshall_27 : (Apple-l,%!s(int=6),int)(Apple-k,%!s(int=2),int)
+Apple {"Banana":8, "Apple":14}
+Dump @ id client_client_40 : 
+Apple {"Apple":15, "Banana":12}
+Received on client.go:57 AppleApple_client_client_40 : (Apple-ADDITION_ARGS,%!s(int=2),int)(Apple-RUNS,%!s(int=5),int)(Apple-term2,%!s(int=20),int)(Apple-sum,%!s(int=0),int)(Apple-SIZEOFINT,%!s(int=4),int)(Apple-LARGEST_TERM,%!s(int=100),int)(Apple-term1,%!s(int=37),int)
+Apple {"Apple":16, "Banana":12}
+Dump @ id client_client_54 : 
+Apple {"Apple":17, "Banana":12}
+Dump @ id client_marshall_27Apple_client_client_54 : (Apple-ADDITION_ARGS,%!s(int=2),int)(Apple-RUNS,%!s(int=5),int)(Apple-term2,%!s(int=20),int)(Apple-SIZEOFINT,%!s(int=4),int)(Apple-LARGEST_TERM,%!s(int=100),int)(Apple-term1,%!s(int=37),int)(Apple-sum,%!s(int=57),int)
+Apple {"Apple":18, "Banana":12}
+Sending from client.go:39 AppleApple_client_marshall_27 : (Apple-l,%!s(int=6),int)(Apple-k,%!s(int=2),int)
+Apple {"Apple":19, "Banana":12}
+Dump @ id client_client_40 : 
+Apple {"Apple":20, "Banana":16}
+Received on client.go:57 AppleApple_client_client_40 : (Apple-ADDITION_ARGS,%!s(int=2),int)(Apple-RUNS,%!s(int=5),int)(Apple-term2,%!s(int=48),int)(Apple-sum,%!s(int=0),int)(Apple-SIZEOFINT,%!s(int=4),int)(Apple-LARGEST_TERM,%!s(int=100),int)(Apple-term1,%!s(int=58),int)
+Apple {"Apple":21, "Banana":16}
+Dump @ id client_client_54 : 
+Apple {"Apple":22, "Banana":16}
+Dump @ id client_marshall_27Apple_client_client_54 : (Apple-ADDITION_ARGS,%!s(int=2),int)(Apple-RUNS,%!s(int=5),int)(Apple-term2,%!s(int=48),int)(Apple-SIZEOFINT,%!s(int=4),int)(Apple-LARGEST_TERM,%!s(int=100),int)(Apple-term1,%!s(int=58),int)(Apple-sum,%!s(int=106),int)
+Apple {"Apple":23, "Banana":16}
+Sending from client.go:39 AppleApple_client_marshall_27 : (Apple-l,%!s(int=6),int)(Apple-k,%!s(int=2),int)
+Apple {"Apple":24, "Banana":16}
+Dump @ id client_client_40 : 
+Apple {"Apple":25, "Banana":20}
+Received on client.go:57 AppleApple_client_client_40 : (Apple-ADDITION_ARGS,%!s(int=2),int)(Apple-RUNS,%!s(int=5),int)(Apple-term2,%!s(int=49),int)(Apple-sum,%!s(int=0),int)(Apple-SIZEOFINT,%!s(int=4),int)(Apple-LARGEST_TERM,%!s(int=100),int)(Apple-term1,%!s(int=16),int)
+Apple {"Apple":26, "Banana":20}
+Dump @ id client_client_54 : 
+Banana {"Banana":1}
+Initialization Complete
+Banana {"Banana":2, "Apple":3}
+Received on server.go:39 Banana : 
+Banana {"Apple":3, "Banana":3}
+Dump @ id server_server_40 : 
+Banana {"Apple":3, "Banana":4}
+Sending from server.go:60 BananaBanana_server_server_40 : (Banana-SIZEOFINT,%!s(int=4),int)
+Banana {"Apple":3, "Banana":5}
+Dump @ id server_server_53 : 
+Banana {"Apple":8, "Banana":6}
+Received on server.go:39 BananaBanana_server_server_53 : (Banana-SIZEOFINT,%!s(int=4),int)
+Banana {"Apple":8, "Banana":7}
+Dump @ id server_server_40 : 
+Banana {"Apple":8, "Banana":8}
+Sending from server.go:60 BananaBanana_server_server_40 : (Banana-SIZEOFINT,%!s(int=4),int)
+Banana {"Apple":8, "Banana":9}
+Dump @ id server_server_53 : 
+Banana {"Apple":13, "Banana":10}
+Received on server.go:39 BananaBanana_server_server_53 : (Banana-SIZEOFINT,%!s(int=4),int)
+Banana {"Banana":11, "Apple":13}
+Dump @ id server_server_40 : 
+Banana {"Apple":13, "Banana":12}
+Sending from server.go:60 BananaBanana_server_server_40 : (Banana-SIZEOFINT,%!s(int=4),int)
+Banana {"Apple":13, "Banana":13}
+Dump @ id server_server_53 : 
+Banana {"Apple":18, "Banana":14}
+Received on server.go:39 BananaBanana_server_server_53 : (Banana-SIZEOFINT,%!s(int=4),int)
+Banana {"Apple":18, "Banana":15}
+Dump @ id server_server_40 : 
+Banana {"Apple":18, "Banana":16}
+Sending from server.go:60 BananaBanana_server_server_40 : (Banana-SIZEOFINT,%!s(int=4),int)
+Banana {"Apple":18, "Banana":17}
+Dump @ id server_server_53 : 
+Banana {"Apple":23, "Banana":18}
+Received on server.go:39 BananaBanana_server_server_53 : (Banana-SIZEOFINT,%!s(int=4),int)
+Banana {"Apple":23, "Banana":19}
+Dump @ id server_server_40 : 
+Banana {"Apple":23, "Banana":20}
+Sending from server.go:60 BananaBanana_server_server_40 : (Banana-SIZEOFINT,%!s(int=4),int)
+Banana {"Banana":21, "Apple":23}
+Dump @ id server_server_53 : 

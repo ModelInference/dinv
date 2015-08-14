@@ -61,6 +61,8 @@ func initializeInstrumenter(options map[string]string, inlogger *log.Logger) {
 		case "file":
 			instFile = options[setting]
 			logger.Printf("Insturmenting File :%s", instFile)
+		case "local":
+			dumpsLocalEvents = true
 		default:
 			continue
 		}
@@ -389,6 +391,11 @@ func GenerateDumpCode(vars []string, lineNumber int, path, packagename string) s
 	// write vars' values
 	id := packagename + "_" + filename + "_" + strconv.Itoa(lineNumber)
 	buffer.WriteString(fmt.Sprintf("\ninject.InstrumenterInit(\"%s\")\n", packagename))
+	//potentially log as a local event
+	if dumpsLocalEvents {
+		buffer.WriteString(fmt.Sprintf("inject.Local(instrumenter.GetLogger(),\"%s\")\n", id))
+	}
+
 	buffer.WriteString(fmt.Sprintf("%s_vars := []interface{}{", id))
 	for i := 0; i < len(vars)-1; i++ {
 		buffer.WriteString(fmt.Sprintf("%s,", vars[i]))

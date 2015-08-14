@@ -288,6 +288,7 @@ func statesFromCuts(cuts []Cut, clocks [][]vclock.VClock, logs [][]Point) []Stat
 		state.Cut = cut
 		for i, clock := range state.Cut.Clocks {
 			found, index := searchClockById(clocks[i], &clock, ids[i])
+			//TODO deal with local events, empty and local events are
 			if found {
 				state.Points = append(state.Points, logs[i][index])
 			} else {
@@ -380,7 +381,7 @@ func totalOrderLineNumberMerge(states []State) [][]Point {
 				points = append(points, state.Points[state.TotalOrdering[j][k]])
 			}
 			mergedPoints[i][j] = mergePoints(points)
-			logger.Printf("Merged points id :%s\n", mergedPoints[i][j].Id)
+			logger.Printf("Merged points id :%s\n\n===========\n", mergedPoints[i][j].Id)
 		}
 	}
 	return mergedPoints

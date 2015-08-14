@@ -8,6 +8,7 @@ Edited: July 6 2015
 package logmerger
 
 import (
+	"fmt"
 	"regexp"
 
 	"github.com/arcaneiceman/GoVector/govec/vclock"
@@ -60,6 +61,8 @@ func searchLogForClock(log []Point, keyClock *vclock.VClock, id string) (bool, i
 	return false, mid
 }
 
+//getEventsWithIndenticalHostTime, collects logged program points
+//which have the same hostID and returns them
 func getEventsWithIdenticalHostTime(points []Point, hostId string, time int) []Point {
 	matchingPoints := make([]Point, 0)
 	foundPoint := false
@@ -86,6 +89,7 @@ func matchSendAndReceive(sender vclock.VClock, clocks [][]vclock.VClock, senderI
 	var receiveClock = vclock.New()
 	for i := range clocks {
 		if getClockId(clocks[i]) != senderId {
+			fmt.Printf(" Clock ID : %s -> sender Id %s\n", getClockId(clocks[i]), senderId)
 			found, event := searchClockById(clocks[i], &sender, senderId)
 			if found {
 				//backtrack for earliest clock
