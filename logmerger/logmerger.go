@@ -127,34 +127,46 @@ func buildLogs(logFiles []string, gologFiles []string) [][]Point {
 	return logs
 }
 
+//Inject missing points ensures that the log of points contains
+//incremental vector clocks.
 func injectMissingPoints(points []Point, log *golog) []Point {
-	pointIndex, incrementalIndex := 0, 0
+	pointIndex, goLogIndex := 0, 0
 	injectedPoints := make([]Point, 0)
+	//itterate over all the point logs
+	indexFound := false
 	for pointIndex < len(points) {
-		logger.Printf("point index :%d maxp :%d maxc: %d\n", pointIndex, len(points), len(log.clocks))
+		//setup for a do while loop
 		pointClock, _ := vclock.FromBytes(points[pointIndex].VectorClock)
-		logger.Printf("id>%s - vclock>%s", log.id, pointClock.ReturnVCString())
 		ticks, found := pointClock.FindTicks(log.id)
-		if !found {
-			panic(log.id)
-		}
-		if int(ticks)-1 == incrementalIndex {
+		//The point log contains the incremental index, append the
+		//point to the log
+		if found && int(ticks) == (goLogIndex+1) {
 			injectedPoints = append(injectedPoints, points[pointIndex])
 			pointIndex++
+			indexFound = true
+			//The point log contained the index and has advanced to the
+			//next
+		} else if int(ticks) != (goLogIndex+1) && indexFound {
+			goLogIndex++
+			indexFound = false
+			//The point log did not contain the index, inject a
+			//supplementary one
 		} else {
-			logger.Printf("Injecting Clock %s into log %s\n", log.clocks[incrementalIndex].ReturnVCString(), log.id)
+			logger.Printf("Injecting Clock %s into log %s\n", log.clocks[goLogIndex].ReturnVCString(), log.id)
 			newPoint := new(Point)
-			newPoint.VectorClock = log.clocks[incrementalIndex].Bytes()
+			newPoint.VectorClock = log.clocks[goLogIndex].Bytes()
 			injectedPoints = append(injectedPoints, *newPoint)
+			goLogIndex++
+			indexFound = false
 		}
-		incrementalIndex++
 	}
-	//fill in all unlogged clocks
-	for incrementalIndex < len(log.clocks) {
+	//The golog may contain a set of points never loged by the the
+	//points, inject all of them
+	for goLogIndex < len(log.clocks) {
 		newPoint := new(Point)
-		newPoint.VectorClock = log.clocks[incrementalIndex].Bytes()
+		newPoint.VectorClock = log.clocks[goLogIndex].Bytes()
 		injectedPoints = append(injectedPoints, *newPoint)
-		incrementalIndex++
+		goLogIndex++
 	}
 	return injectedPoints
 }
@@ -578,9 +590,17 @@ func writeShiVizLog(pointLog [][]Point, goLogs []*golog) {
 	shivizRegex := "(?<host>\\S*) (?<clock>{.*})\\n(?<event>.*)"
 	file.WriteString(shivizRegex)
 	file.WriteString("\n\n")
-	for _, goLog := range goLogs {
-		for i := range goLog.clocks {
-			log := fmt.Sprintf("%s %s\n%s\n", goLog.id, goLog.clocks[i].ReturnVCString(), goLog.messages[i])
+	//TODO add in information about dump statements to logs will look
+	//something like the (matchSendAndReceive) function in utils,
+	//involving the backtracking through duplicate clock valued events
+	for i, goLog := range goLogs {
+		for j := range goLog.clocks {
+			var dumpString string
+			dumps := getEventsWithIdenticalHostTime(pointLog[i], goLog.id, j)
+			for _, dump := range dumps {
+				dumpString += dump.String()
+			}
+			log := fmt.Sprintf("%s %s\n%s\n", goLog.id, goLog.clocks[j].ReturnVCString(), goLog.messages[j]+dumpString)
 			file.WriteString(log)
 		}
 	}
