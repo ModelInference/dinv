@@ -17,8 +17,15 @@ More concretely, DInv analyzes Go programs and can:
 
  * [Installation](#markdown-header-installation)
  * [Usage](#markdown-header-usage)
-   * [Instrument system source code ](#markdown-header-instrument-system-source-code)
- * **TODO: add the rest**
+    + [Instrument system source code ](#markdown-header-instrument-system-source-code-part-1)
+        * [Add state recording annotation](#markdown-header-add-state-recording-annotations-step-1)
+        * [Wrap messages with vector timestamps](#markdown-header-wrap-messages-with-vector-timestamps-step-2)
+        * [Run the instrumenter](#markdown-header-run-the-instrumenter-step-3)
+    + [Run system and analyze its logs](#markdown-header-run-system-and-analyze-its-logs-part-2)
+        * [Run instrumented code](#markdown-header-run-instrumented-code-step-4)
+        * [Merge logs](#markdown-header-merge-logs-step-5)
+        * [Detect invariants](#markdown-header-detect-invariants-step-6)
+ * [Examples](#markdown-header-examples)
 
 
 # Installation
@@ -244,7 +251,6 @@ Instrumentation runs at the directory level. Running `dinv -i foo` produces:
  * `foo_orig` a copy of the original directory foo, prior to instrumentation
  * `foo` directory with instrumented source code
 
-
 ## Run system and analyze its logs ( Part 2 )
 ---------------
 
@@ -368,6 +374,7 @@ a directory.
         java daikon.PrintInvariants $trace >> output.txt
     done
 ```
+
 # Examples
 -----------------------
 
