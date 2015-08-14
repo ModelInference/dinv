@@ -444,4 +444,37 @@ Detected invariant include:
     linn > term1
     linn > term2
 
+#Command Line Usage
+
+Dinv has a set of command line arguments that can be broken into 3 categories
+ * instrumenter arguments
+ * logmerger arguments
+ * arguments for both
+
+## Instrumenter dinv - i
+
+The `-i` argument specifies the instrumenter, valid proceding arguments are as follows
+
+ * `-file` specifies a file for insturmentation `dinv -i -file=example.go`
+ * `-dir` specifies a directory for instrumentation `dinv -i -dir=exampleDir`
+ * `-local` causes dump annotations to be logged as local events at runtume
+ * `-df` toggles dataflow analysis at dump statements
+
+## LogMerger dinv -l
+
+The `-l` argument specifies the log merger, the following arguments should be followed with a complete list of shiviz, and encoded log files from an execution.
+
+ * `-plan` speficies the plan to use while merging logs (default is totally ordered cuts) `dinv -l -plan="TOLN" files`
+ * `-sample` the sample rate of consistat cuts to be analyzed (default 100%) `dinv -l -sample=50 files`
+ * `-toc` only analyze cuts that can be totally ordered with one another (default off) `dinv -l -toc files`
+ * `-shiviz` produce a shiviz log of the execution
+ * `-name` renames 9 digit host identifier to more readable format fruits/colors/philosophers (default colors) `-dinv -l -name=fruits files` 
+
+## General arguments
+ 
+ * `-verbose` print output to console
+ * `-debug` adds extensive and pedantic output
+
+
+
 **TODO: add a new section with command line usage information for the dinv.go executable. **
