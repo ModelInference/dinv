@@ -61,6 +61,10 @@ func CreatePoint(vars []interface{}, varNames []string, id string, logger *govec
 	return point
 }
 
+func Local(logger *govec.GoLog, id string) {
+	logger.LogLocalEvent(fmt.Sprintf("Dump @ id %s", id))
+}
+
 type Point struct {
 	Dump        []NameValuePair
 	Id          string

@@ -26,7 +26,7 @@ function installDinv {
 }
 
 function instrument {
-    dinv -i -dir=$testDir/$1/lib
+    dinv -i  -dir=$testDir/$1/lib
 }
 
 
