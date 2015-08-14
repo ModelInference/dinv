@@ -34,7 +34,7 @@ function installDinv {
 }
 
 function instrument {
-    dinv -i -v $testDir/$1
+    dinv -i -v -dir=$testDir/$1
 }
 
 
@@ -64,7 +64,7 @@ function runTestPrograms {
 
 function runLogMerger {
     cd $testDir
-    dinv -v -logmerger *Encoded.txt *Log.txt
+    dinv -v -l -shiviz *Encoded.txt *Log.txt
 }
 
 function runDaikon {

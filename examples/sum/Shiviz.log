@@ -12,13 +12,13 @@ Apple {"Apple":5, "Banana":5}
 Received on client.go:56 Apple
 Apple {"Apple":6, "Banana":5}
 Sending from client.go:39 Apple
-Apple {"Apple":7, "Banana":7}
+Apple {"Banana":7, "Apple":7}
 Received on client.go:56 Apple
 Apple {"Apple":8, "Banana":7}
 Sending from client.go:39 Apple
 Apple {"Apple":9, "Banana":9}
 Received on client.go:56 Apple
-Apple {"Banana":9, "Apple":10}
+Apple {"Apple":10, "Banana":9}
 Sending from client.go:39 Apple
 Apple {"Apple":11, "Banana":11}
 Received on client.go:56 Apple
@@ -28,7 +28,7 @@ Banana {"Apple":2, "Banana":2}
 Received on server.go:39 Banana
 Banana {"Apple":2, "Banana":3}
 Sending from server.go:59 Banana
-Banana {"Banana":4, "Apple":4}
+Banana {"Apple":4, "Banana":4}
 Received on server.go:39 Banana
 Banana {"Apple":4, "Banana":5}
 Sending from server.go:59 Banana

@@ -29,7 +29,7 @@ type State struct {
 func (state State) String() string {
 	catString := fmt.Sprintf("%s\n[", state.Cut.String())
 	for i := range state.Points {
-		catString = fmt.Sprintf("%s [%s]", catString, state.Points[i].String)
+		catString = fmt.Sprintf("%s [%s]", catString, state.Points[i].String())
 	}
 	catString = fmt.Sprintf("%s]\n", catString)
 	for i := range state.TotalOrdering {

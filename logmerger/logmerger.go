@@ -27,29 +27,72 @@ import (
 	"github.com/arcaneiceman/GoVector/govec/vclock"
 )
 
+//specifies how the program points should be merged. The merger
+//function translates the set of states into a 2D array of program
+//points. sampleRate is an integer 0-100 that specifies the % of
+//states which should be analized. totallyOrdedCuts is a flag
+//specifing if concurrent states should be analized
 var (
-	logger          *log.Logger
-	outputShivizLog = true
-	swapIds         = true
-	idSwapGenre     = "fruits"
+	logger *log.Logger
+	debug  = false
+	//produce a shiviz readable log
+	shiviz = false
+	//specifies how program points should be merged. The merging plan
+	//translates the set of states into a 2D array of program points.
+	mergePlan = func(states []State) [][]Point { return nil }
+	//totally orderd cuts specifices that if a set of cuts are
+	//concurrent with eachother, only one should be used for invariant
+	//detection
+	totallyOrderedCuts = false
+	//sampleRate is an iteger 0-100 specifing the % of states which
+	//should be analysed.
+	sampleRate     = 0
+	renamingScheme = ""
 )
 
-func Init() {
-	if logger == nil {
-		logger = log.New(os.Stdout, "logger: ", log.Lshortfile)
+func initalizeLogMerger(options map[string]string, inlogger *log.Logger) {
+	if inlogger == nil {
+		logger = log.New(os.Stdout, "instrumenter:", log.Lshortfile)
+	} else {
+		logger = inlogger
+	}
+	for setting := range options {
+		switch setting {
+		case "debug":
+			debug = true
+		case "mergePlan":
+			switch options[setting] {
+			case "TOLN":
+				mergePlan = totalOrderLineNumberMerge
+			case "ETM":
+				mergePlan = entireCutMerge
+			case "SRM":
+				mergePlan = sendReceiveMerge
+			default:
+				mergePlan = func([]State) [][]Point { logger.Fatalf("Error Invalid Merge Plan"); return nil }
+			}
+		case "sampleRate":
+			sampleRate, _ = strconv.Atoi(options[setting])
+		case "totallyOrderedCuts":
+			totallyOrderedCuts = true
+		case "renamingScheme":
+			renamingScheme = options[setting]
+		case "shiviz":
+			shiviz = true
+		default:
+			continue
+		}
 	}
 }
 
 //Merge is the control fuction for log merging. The input is an array
 //of strings corresponding to the log files which will be merged. The
 //output is a set of Daikon files
-func Merge(logfiles []string, gologfiles []string, inlogger *log.Logger) {
-	Init()
-	logger = inlogger
+func Merge(logfiles []string, gologfiles []string, options map[string]string, inlogger *log.Logger) {
+	initalizeLogMerger(options, inlogger)
 	logs := buildLogs(logfiles, gologfiles)
 	states := mineStates(logs)
-	spec := &MergeSpec{totalOrderLineNumberMerge, 100, false}
-	writeTraceFiles(states, spec)
+	writeTraceFiles(states)
 }
 
 //buildLogs parses the log files into a 2D array of program points,
@@ -74,10 +117,11 @@ func buildLogs(logFiles []string, gologFiles []string) [][]Point {
 	}
 
 	//log pre processing work
-	if swapIds {
-		replaceIds(logs, goLogs, idSwapGenre)
+	if renamingScheme != "" {
+		logger.Printf("Renaming Hosts")
+		replaceIds(logs, goLogs, renamingScheme)
 	}
-	if outputShivizLog {
+	if shiviz {
 		writeShiVizLog(logs, goLogs)
 	}
 	return logs
@@ -89,14 +133,14 @@ func injectMissingPoints(points []Point, log *golog) []Point {
 	for pointIndex < len(points) {
 		logger.Printf("point index :%d maxp :%d maxc: %d\n", pointIndex, len(points), len(log.clocks))
 		pointClock, _ := vclock.FromBytes(points[pointIndex].VectorClock)
-		logger.Printf("id>%s - vclock>%s", log.id, pointClock)
+		logger.Printf("id>%s - vclock>%s", log.id, pointClock.ReturnVCString())
 		ticks, found := pointClock.FindTicks(log.id)
 		if !found {
 			panic(log.id)
 		}
 		if int(ticks)-1 == incrementalIndex {
 			injectedPoints = append(injectedPoints, points[pointIndex])
-			pointIndex += 2
+			pointIndex++
 		} else {
 			logger.Printf("Injecting Clock %s into log %s\n", log.clocks[incrementalIndex].ReturnVCString(), log.id)
 			newPoint := new(Point)
@@ -224,6 +268,9 @@ func mineStates(logs [][]Point) []State {
 func statesFromCuts(cuts []Cut, clocks [][]vclock.VClock, logs [][]Point) []State {
 	states := make([]State, 0)
 	ids := idClockMapper(clocks)
+	for _, id := range ids {
+		logger.Println(id)
+	}
 	for _, cut := range cuts {
 		state := &State{}
 		state.Cut = cut
@@ -231,6 +278,8 @@ func statesFromCuts(cuts []Cut, clocks [][]vclock.VClock, logs [][]Point) []Stat
 			found, index := searchClockById(clocks[i], &clock, ids[i])
 			if found {
 				state.Points = append(state.Points, logs[i][index])
+			} else {
+				logger.Fatalf("UNABLE TO LOCATE LOG %s entry %d\n", ids[i], index)
 			}
 		}
 		state.TotalOrdering = totalOrderFromCut(cut, clocks)
@@ -242,12 +291,16 @@ func statesFromCuts(cuts []Cut, clocks [][]vclock.VClock, logs [][]Point) []Stat
 
 //writeTraceFiles constructs a set unique trace file based on several
 //specifiations in the MergeSpec.
-func writeTraceFiles(states []State, spec *MergeSpec) {
+func writeTraceFiles(states []State) {
+	totallyOrderedCuts = false
+	mergePlan = totalOrderLineNumberMerge
+	sampleRate = 100
+
 	logger.Printf("Writing Traces\n")
-	if spec.totallyOrderedCuts {
+	if totallyOrderedCuts {
 		states = filterTotalOrder(states)
 	}
-	mergedPoints := spec.merger(states)
+	mergedPoints := mergePlan(states)
 	written := make([][]bool, len(mergedPoints))
 	for i := range mergedPoints {
 		written[i] = make([]bool, len(mergedPoints[i]))
@@ -267,7 +320,7 @@ func writeTraceFiles(states []State, spec *MergeSpec) {
 					}
 					if filename == mergedPoints[i][j].Id {
 						//sample rate
-						if (rand.Int() % 100) < spec.sampleRate {
+						if (rand.Int() % 100) < sampleRate {
 							pointLog = append(pointLog, mergedPoints[i][j])
 						}
 						written[i][j] = true
@@ -286,6 +339,7 @@ func writeTraceFiles(states []State, spec *MergeSpec) {
 //out conncurent states, such that the output states can be totaly
 //ordered with respect to one another.
 func filterTotalOrder(states []State) []State {
+	logger.Println("Filtering states by total order\n")
 	filteredStates := make([]State, 0)
 	filteredStates = append(filteredStates, states[0])
 	for i := 1; i < len(states); i++ {
@@ -303,8 +357,10 @@ func filterTotalOrder(states []State) []State {
 //the i'th state in states, and the j'th index corresponds to the j'th
 //total ordering on that state.
 func totalOrderLineNumberMerge(states []State) [][]Point {
+	logger.Println("Merging points by line number and total order")
 	mergedPoints := make([][]Point, len(states))
 	for i, state := range states {
+		logger.Printf("Merging State %s\n", state.String())
 		mergedPoints[i] = make([]Point, len(state.TotalOrdering))
 		for j := range state.TotalOrdering {
 			points := make([]Point, 0)
@@ -312,7 +368,7 @@ func totalOrderLineNumberMerge(states []State) [][]Point {
 				points = append(points, state.Points[state.TotalOrdering[j][k]])
 			}
 			mergedPoints[i][j] = mergePoints(points)
-			logger.Println("%s\n", mergedPoints[i][j].Id)
+			logger.Printf("Merged points id :%s\n", mergedPoints[i][j].Id)
 		}
 	}
 	return mergedPoints
@@ -391,17 +447,6 @@ func printErr(err error) {
 	}
 }
 
-//specifies how the program points should be merged. The merger
-//function translates the set of states into a 2D array of program
-//points. sampleRate is an integer 0-100 that specifies the % of
-//states which should be analized. totallyOrdedCuts is a flag
-//specifing if concurrent states should be analized
-type MergeSpec struct {
-	merger             func(state []State) [][]Point
-	sampleRate         int
-	totallyOrderedCuts bool
-}
-
 //Point is a representation of a program point. Name value pair is the
 //variable values at that program point. LineNumber is the line the
 //variables were gathered on. VectorClock is byte valued vector clock
@@ -428,7 +473,11 @@ func (nvp NameValuePair) String() string {
 
 //String representation of a program point
 func (p Point) String() string {
-	return fmt.Sprintf("%s : %s", p.Id)
+	dumpstring := ""
+	for _, dump := range p.Dump {
+		dumpstring = dumpstring + dump.String()
+	}
+	return fmt.Sprintf("%s : %s", p.Id, dumpstring)
 }
 
 //fileExists returns true if the file specified by path exists. If not
