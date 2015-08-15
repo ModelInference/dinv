@@ -13,6 +13,8 @@ More concretely, DInv analyzes Go programs and can:
     * The variable indicating quorum in decision making protocols
     * Variables used to track distributed wait for graphs, whose values determine deadlocks, and trigger the pre-emption of resources
     * Variable for a hosts resource priority, determining if a resource is pre-empted or retained.
+    * Variable defining hosts to share with in gossip protocols
+    * Variable representing the amount of entropy of messages in eventual consistency protocols
  * Identify data relationships between local and remote variables:
     * server.counter >= client.counter (the server's counter is at least the value of the client's counter)
     * host.groupLeader == self (the local host is the group leader)
