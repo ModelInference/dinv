@@ -45,7 +45,7 @@ func handleConn(conn net.PacketConn, conn2 *net.UDPConn) {
 
 	//read from client
 	_, addr, err := conn.ReadFrom(buf[0:])
-	args := instrumenter.Unpack(buf[0:])
+	args := instrumenter.Unpack(buf[0:]).([]byte)
 	//@dump
 	comm.PrintErr(err)
 	//unmarshall client arguments
@@ -63,7 +63,7 @@ func handleConn(conn net.PacketConn, conn2 *net.UDPConn) {
 
 	//read response from linn server
 	_, errRead := conn2.Read(buf[0:])
-	ret := instrumenter.Unpack(buf[0:])
+	ret := instrumenter.Unpack(buf[0:]).([]byte)
 	//@dump
 	comm.PrintErr(errRead)
 	//unmarshall response from linn server
