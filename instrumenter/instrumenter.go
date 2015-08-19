@@ -77,7 +77,6 @@ func Instrument(options map[string]string, inlogger *log.Logger) {
 	if err != nil {
 		logger.Fatalf("Error: %s", err.Error())
 	}
-	program = generateSourceText(program)
 	for packageIndex, pack := range program.packages {
 		for sourceIndex := range pack.sources {
 			genCode := generateCode(program, packageIndex, sourceIndex)
@@ -123,24 +122,17 @@ func InplaceDirectorySwap(dir string) error {
 	})
 }
 
-func generateSourceText(program *ProgramWrapper) *ProgramWrapper {
-	for _, pack := range program.packages {
-		for _, source := range pack.sources {
-			addImports(source.comments)
-			buf := new(bytes.Buffer)
-			printer.Fprint(buf, program.fset, source.comments)
-			source.text = buf.String()
-		}
-	}
-	return program
-}
-
 //generateCode constructs code for dump statements for the source code
 //located at program.source[sourceIndex].
 func generateCode(program *ProgramWrapper, packageIndex, sourceIndex int) []string {
 	var generated_code []string
 	var collectedVariables []string
 	dumpNodes := GetDumpNodes(program.packages[packageIndex].sources[sourceIndex].comments)
+
+	//check for dumps and write imports here
+	if len(dumpNodes) > 0 {
+		addImports(program.packages[packageIndex].sources[sourceIndex].comments)
+	}
 	for _, dump := range dumpNodes {
 		dumpPos := dump.Pos()
 		//file relitive dump position (dump abs - file abs = dump rel)
@@ -156,6 +148,11 @@ func generateCode(program *ProgramWrapper, packageIndex, sourceIndex int) []stri
 		logger.Println(dumpcode)
 		generated_code = append(generated_code, dumpcode)
 	}
+	//write the text of the source code out
+	buf := new(bytes.Buffer)
+	printer.Fprint(buf, program.fset, program.packages[packageIndex].sources[sourceIndex].comments)
+	program.packages[packageIndex].sources[sourceIndex].text = buf.String()
+
 	return generated_code
 }
 

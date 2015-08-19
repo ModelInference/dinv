@@ -10,6 +10,11 @@ import (
 
 const SIZEOFINT = 4
 
+var (
+	buf               [1024]byte
+	term1, term2, sum int
+)
+
 func Server() {
 	conn, err := net.ListenPacket("udp", ":8080")
 	if err != nil {
@@ -31,11 +36,9 @@ func Server() {
 }
 
 func handleConn(conn net.PacketConn) {
-	var buf [1024]byte
-	var term1, term2, sum int
 
 	_, addr, err := conn.ReadFrom(buf[0:])
-	args := instrumenter.Unpack(buf[0:])
+	args := instrumenter.Unpack(buf[0:]).([]byte)
 	printErr(err)
 	//@dump
 	//fmt.Printf("recieved: %s of size %d, with args %d", buf, n, args)

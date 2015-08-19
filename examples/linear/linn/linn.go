@@ -40,7 +40,7 @@ func handleConn(conn net.PacketConn) {
 	_, addr, err := conn.ReadFrom(buf[0:])
 
 	//@dump
-	args := instrumenter.Unpack(buf[0:])
+	args := instrumenter.Unpack(buf[0:]).([]byte)
 	comm.PrintErr(err)
 
 	uArgs := comm.UnmarshallInts(args)

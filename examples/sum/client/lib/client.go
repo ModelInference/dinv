@@ -13,7 +13,7 @@ const (
 	SIZEOFINT     = 4
 	ADDITION_ARGS = 2
 	LARGEST_TERM  = 100
-	RUNS          = 5
+	RUNS          = 500
 )
 
 var (
@@ -46,7 +46,7 @@ func Client() {
 		// Reading the response message
 
 		_, errRead := conn.Read(buf[0:])
-		ret := instrumenter.Unpack(buf[0:])
+		ret := instrumenter.Unpack(buf[0:]).([]byte)
 		printErr(errRead)
 
 		uret := UnmarshallInts(ret)

@@ -13,7 +13,7 @@ func main() {
 	// sending UDP packet to specified address and port
 	conn := setupConnection(8080, 18585)
 	msg := "Hello DInv!"
-	instrumentedMessage := instrumenter.Pack([]byte(msg))
+	instrumentedMessage := instrumenter.Pack(msg)
 	_, errWrite := conn.Write(instrumentedMessage)
 	printErr(errWrite)
 
@@ -22,7 +22,8 @@ func main() {
 	n, errRead := conn.Read(buf[0:])
 	printErr(errRead)
 	unpackedMessage := instrumenter.Unpack(buf[:n])
-	fmt.Println(">>>" + string(unpackedMessage))
+	typeAssertedMessage := unpackedMessage.(string)
+	fmt.Println(">>>" + typeAssertedMessage)
 	//@dump
 
 	os.Exit(0)
