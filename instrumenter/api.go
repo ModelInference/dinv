@@ -26,7 +26,7 @@ var (
 //This method is to be used on all data prior to communcition
 //PostCondition the byte array contains all current logging
 //information
-func Pack(msg []byte) []byte {
+func Pack(msg interface{}) []byte {
 	initDinv()
 	id := getCallingFunctionID()
 	return goVecLogger.PrepareSend("Sending from "+id+" "+fmt.Sprintf("%d", stamp), msg)
@@ -37,7 +37,7 @@ func Pack(msg []byte) []byte {
 //are returned with the logging info removed.
 //This method is to be used on all data upon receving it
 //Precondition, the array of bytes was packed before sending
-func Unpack(msg []byte) []byte {
+func Unpack(msg []byte) interface{} {
 	initDinv()
 	id := getCallingFunctionID()
 	return goVecLogger.UnpackReceive("Received on "+id+" "+fmt.Sprintf("%d", stamp), msg)

@@ -46,7 +46,7 @@ func main() {
 		// Reading the response message
 
 		_, errRead := conn.Read(buf[0:])
-		ret := instrumenter.Unpack(buf[0:])
+		ret := instrumenter.Unpack(buf[0:]).([]byte)
 		//@dump
 		comm.PrintErr(errRead)
 

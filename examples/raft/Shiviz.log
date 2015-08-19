@@ -1,0 +1,582 @@
+(?<host>\S*) (?<clock>{.*})\n(?<event>.*)
+
+Apple {"Apple":1}
+Initialization Complete
+Apple {"Apple":2}
+Sending from encode.go:702 AppleApple_raft_raft_433 :  : 
+Apple {"Apple":3}
+Sending from encode.go:702 Apple : 
+Apple {"Apple":4, "Banana":2}
+Received on decode.go:642 Apple : 
+Apple {"Banana":2, "Apple":5}
+Sending from encode.go:702 Apple : 
+Apple {"Apple":6, "Banana":2}
+Sending from encode.go:702 Apple : 
+Apple {"Apple":7, "Banana":2}
+Sending from encode.go:702 Apple : 
+Apple {"Apple":8, "Banana":2, "Apricot":5, "Strawberry":3, "Orange":9}
+Received on decode.go:642 Apple : 
+Apple {"Banana":2, "Apricot":5, "Strawberry":3, "Orange":10, "Apple":9}
+Received on decode.go:642 Apple : 
+Apple {"Apple":10, "Banana":2, "Apricot":5, "Strawberry":3, "Orange":10}
+Received on decode.go:642 Apple : 
+Apple {"Apricot":13, "Strawberry":3, "Orange":10, "Apple":11, "Banana":3}
+Received on decode.go:642 Apple : 
+Apple {"Orange":10, "Apple":12, "Banana":3, "Apricot":14, "Strawberry":3}
+Received on decode.go:642 Apple : 
+Apple {"Apple":13, "Banana":3, "Apricot":14, "Strawberry":3, "Orange":10}
+Received on decode.go:642 Apple : 
+Apple {"Banana":3, "Apricot":14, "Strawberry":3, "Orange":10, "Apple":14}
+Sending from encode.go:702 Apple : 
+Apple {"Apricot":14, "Strawberry":3, "Orange":10, "Apple":15, "Banana":3}
+Sending from encode.go:702 Apple : 
+Apple {"Orange":10, "Apple":16, "Banana":11, "Apricot":19, "Strawberry":7}
+Received on decode.go:642 Apple : 
+Apple {"Apple":17, "Banana":11, "Apricot":19, "Strawberry":7, "Orange":10}
+Sending from encode.go:702 Apple : 
+Apple {"Apple":18, "Banana":11, "Apricot":19, "Strawberry":7, "Orange":10}
+Sending from encode.go:702 Apple : 
+Apple {"Apple":19, "Banana":11, "Apricot":19, "Strawberry":7, "Orange":10}
+Sending from encode.go:702 Apple : 
+Apple {"Apple":20, "Banana":11, "Apricot":29, "Strawberry":15, "Orange":28}
+Received on decode.go:642 Apple : 
+Apple {"Strawberry":15, "Orange":29, "Apple":21, "Banana":11, "Apricot":29}
+Received on decode.go:642 Apple : 
+Apple {"Apple":22, "Banana":11, "Apricot":29, "Strawberry":15, "Orange":29}
+Received on decode.go:642 Apple : 
+Apple {"Strawberry":15, "Orange":29, "Apple":23, "Banana":11, "Apricot":36}
+Received on decode.go:642 Apple : 
+Apple {"Banana":11, "Apricot":37, "Strawberry":15, "Orange":29, "Apple":24}
+Received on decode.go:642 Apple : 
+Apple {"Apple":25, "Banana":11, "Apricot":37, "Strawberry":15, "Orange":29}
+Received on decode.go:642 Apple : 
+Apple {"Apple":26, "Banana":11, "Apricot":37, "Strawberry":15, "Orange":29}
+Sending from encode.go:702 Apple : 
+Apple {"Apple":27, "Banana":11, "Apricot":37, "Strawberry":15, "Orange":29}
+Sending from encode.go:702 Apple : 
+Apple {"Apricot":42, "Strawberry":15, "Orange":29, "Apple":28, "Banana":19}
+Received on decode.go:642 Apple : 
+Apple {"Orange":29, "Apple":29, "Banana":19, "Apricot":42, "Strawberry":15}
+Sending from encode.go:702 Apple : 
+Apple {"Apple":30, "Banana":19, "Apricot":42, "Strawberry":15, "Orange":29}
+Sending from encode.go:702 Apple : 
+Apple {"Apple":31, "Banana":19, "Apricot":42, "Strawberry":15, "Orange":29}
+Sending from encode.go:702 Apple : 
+Apple {"Banana":19, "Apricot":50, "Strawberry":27, "Orange":43, "Apple":32}
+Received on decode.go:642 Apple : 
+Apple {"Apricot":50, "Strawberry":27, "Orange":44, "Apple":33, "Banana":19}
+Received on decode.go:642 Apple : 
+Apple {"Orange":44, "Apple":34, "Banana":19, "Apricot":50, "Strawberry":27}
+Received on decode.go:642 Apple : 
+Apple {"Apple":35, "Banana":19, "Apricot":65, "Strawberry":27, "Orange":44}
+Received on decode.go:642 Apple : 
+Apple {"Apple":36, "Banana":19, "Apricot":66, "Strawberry":27, "Orange":44}
+Received on decode.go:642 Apple : 
+Apple {"Apple":37, "Banana":19, "Apricot":66, "Strawberry":27, "Orange":44}
+Received on decode.go:642 Apple : 
+Apple {"Apple":38, "Banana":19, "Apricot":66, "Strawberry":27, "Orange":44}
+Sending from encode.go:702 Apple : 
+Apple {"Strawberry":27, "Orange":44, "Apple":39, "Banana":19, "Apricot":66}
+Sending from encode.go:702 Apple : 
+Apple {"Apple":40, "Banana":27, "Apricot":68, "Strawberry":27, "Orange":44}
+Received on decode.go:642 Apple : 
+Apple {"Orange":55, "Apple":41, "Banana":27, "Apricot":70, "Strawberry":39}
+Received on decode.go:642 Apple : 
+Apple {"Apple":42, "Banana":27, "Apricot":70, "Strawberry":39, "Orange":56}
+Received on decode.go:642 Apple : 
+Apple {"Apple":43, "Banana":27, "Apricot":70, "Strawberry":39, "Orange":56}
+Sending from encode.go:702 Apple : 
+Apple {"Apple":44, "Banana":27, "Apricot":70, "Strawberry":39, "Orange":56}
+Sending from encode.go:702 Apple : 
+Apple {"Apple":45, "Banana":27, "Apricot":70, "Strawberry":39, "Orange":56}
+Sending from encode.go:702 Apple : 
+Apple {"Apple":46, "Banana":27, "Apricot":70, "Strawberry":39, "Orange":56}
+Received on decode.go:642 Apple : 
+Apple {"Orange":56, "Apple":47, "Banana":27, "Apricot":84, "Strawberry":39}
+Received on decode.go:642 Apple : 
+Apple {"Apple":48, "Banana":27, "Apricot":85, "Strawberry":39, "Orange":56}
+Received on decode.go:642 Apple : 
+Apple {"Apple":49, "Banana":27, "Apricot":85, "Strawberry":39, "Orange":56}
+Received on decode.go:642 Apple : 
+Apple {"Apple":50, "Banana":37, "Apricot":85, "Strawberry":39, "Orange":56}
+Received on decode.go:642 Apple : 
+Apple {"Banana":37, "Apricot":85, "Strawberry":39, "Orange":56, "Apple":51}
+Sending from encode.go:702 Apple : 
+Banana {"Banana":1}
+Initialization Complete
+Banana {"Banana":2}
+Sending from encode.go:702 BananaBanana_raft_raft_433 :  : 
+Banana {"Banana":3}
+Sending from encode.go:702 Banana : 
+Banana {"Apple":6, "Banana":4}
+Received on decode.go:642 Banana : 
+Banana {"Banana":5, "Apple":7}
+Received on decode.go:642 Banana : 
+Banana {"Apple":7, "Banana":6}
+Received on decode.go:642 Banana : 
+Banana {"Apple":7, "Banana":7, "Apricot":18, "Strawberry":7, "Orange":2}
+Received on decode.go:642 Banana : 
+Banana {"Apple":7, "Banana":8, "Apricot":19, "Strawberry":7, "Orange":2}
+Received on decode.go:642 Banana : 
+Banana {"Apricot":19, "Strawberry":7, "Orange":2, "Apple":7, "Banana":9}
+Received on decode.go:642 Banana : 
+Banana {"Strawberry":7, "Orange":2, "Apple":7, "Banana":10, "Apricot":19}
+Sending from encode.go:702 Banana : 
+Banana {"Apple":7, "Banana":11, "Apricot":19, "Strawberry":7, "Orange":2}
+Sending from encode.go:702 Banana : 
+Banana {"Orange":10, "Apple":18, "Banana":12, "Apricot":19, "Strawberry":7}
+Received on decode.go:642 Banana : 
+Banana {"Apple":19, "Banana":13, "Apricot":19, "Strawberry":7, "Orange":10}
+Received on decode.go:642 Banana : 
+Banana {"Apple":19, "Banana":14, "Apricot":19, "Strawberry":7, "Orange":10}
+Received on decode.go:642 Banana : 
+Banana {"Strawberry":14, "Orange":18, "Apple":19, "Banana":15, "Apricot":35}
+Received on decode.go:642 Banana : 
+Banana {"Banana":16, "Apricot":42, "Strawberry":15, "Orange":29, "Apple":19}
+Received on decode.go:642 Banana : 
+Banana {"Apricot":42, "Strawberry":15, "Orange":29, "Apple":19, "Banana":17}
+Received on decode.go:642 Banana : 
+Banana {"Orange":29, "Apple":19, "Banana":18, "Apricot":42, "Strawberry":15}
+Sending from encode.go:702 Banana : 
+Banana {"Apple":19, "Banana":19, "Apricot":42, "Strawberry":15, "Orange":29}
+Sending from encode.go:702 Banana : 
+Banana {"Apple":30, "Banana":20, "Apricot":42, "Strawberry":15, "Orange":29}
+Received on decode.go:642 Banana : 
+Banana {"Apple":31, "Banana":21, "Apricot":42, "Strawberry":15, "Orange":29}
+Received on decode.go:642 Banana : 
+Banana {"Apple":31, "Banana":22, "Apricot":42, "Strawberry":15, "Orange":29}
+Received on decode.go:642 Banana : 
+Banana {"Apple":31, "Banana":23, "Apricot":67, "Strawberry":27, "Orange":42}
+Received on decode.go:642 Banana : 
+Banana {"Apple":31, "Banana":24, "Apricot":68, "Strawberry":27, "Orange":42}
+Received on decode.go:642 Banana : 
+Banana {"Apple":31, "Banana":25, "Apricot":68, "Strawberry":27, "Orange":42}
+Received on decode.go:642 Banana : 
+Banana {"Apple":31, "Banana":26, "Apricot":68, "Strawberry":27, "Orange":42}
+Sending from encode.go:702 Banana : 
+Banana {"Orange":42, "Apple":31, "Banana":27, "Apricot":68, "Strawberry":27}
+Sending from encode.go:702 Banana : 
+Banana {"Apple":44, "Banana":28, "Apricot":70, "Strawberry":39, "Orange":56}
+Received on decode.go:642 Banana : 
+Banana {"Apple":45, "Banana":29, "Apricot":70, "Strawberry":39, "Orange":56}
+Received on decode.go:642 Banana : 
+Banana {"Orange":56, "Apple":45, "Banana":30, "Apricot":70, "Strawberry":39}
+Received on decode.go:642 Banana : 
+Banana {"Apple":45, "Banana":31, "Apricot":82, "Strawberry":39, "Orange":56}
+Received on decode.go:642 Banana : 
+Banana {"Apple":45, "Banana":32, "Apricot":83, "Strawberry":39, "Orange":56}
+Received on decode.go:642 Banana : 
+Banana {"Banana":33, "Apricot":83, "Strawberry":39, "Orange":56, "Apple":45}
+Received on decode.go:642 Banana : 
+Banana {"Apricot":83, "Strawberry":39, "Orange":56, "Apple":45, "Banana":34}
+Sending from encode.go:702 Banana : 
+Banana {"Strawberry":39, "Orange":56, "Apple":45, "Banana":35, "Apricot":83}
+Sending from encode.go:702 Banana : 
+Banana {"Banana":36, "Apricot":83, "Strawberry":39, "Orange":56, "Apple":45}
+Sending from encode.go:702 Banana : 
+Banana {"Apricot":83, "Strawberry":39, "Orange":56, "Apple":45, "Banana":37}
+Sending from encode.go:702 Banana : 
+Banana {"Strawberry":39, "Orange":56, "Apple":45, "Banana":38, "Apricot":92}
+Received on decode.go:642 Banana : 
+Banana {"Banana":39, "Apricot":93, "Strawberry":39, "Orange":56, "Apple":45}
+Received on decode.go:642 Banana : 
+Banana {"Apricot":93, "Strawberry":39, "Orange":56, "Apple":45, "Banana":40}
+Received on decode.go:642 Banana : 
+Apricot {"Apricot":1}
+Initialization Complete
+Apricot {"Apricot":2, "Orange":2}
+Received on decode.go:642 ApricotApricot_raft_raft_433 : 
+Apricot {"Orange":2, "Apple":2, "Apricot":3}
+Received on decode.go:642 Apricot : 
+Apricot {"Apple":2, "Apricot":4, "Orange":2}
+Sending from encode.go:702 Apricot : 
+Apricot {"Orange":2, "Apple":2, "Apricot":5}
+Sending from encode.go:702 Apricot : 
+Apricot {"Apple":2, "Banana":3, "Apricot":6, "Orange":2}
+Received on decode.go:642 Apricot : 
+Apricot {"Apple":2, "Banana":3, "Apricot":7, "Strawberry":2, "Orange":2}
+Received on decode.go:642 Apricot : 
+Apricot {"Banana":3, "Apricot":8, "Strawberry":2, "Orange":2, "Apple":2}
+Sending from encode.go:702 Apricot : 
+Apricot {"Apricot":9, "Strawberry":2, "Orange":2, "Apple":2, "Banana":3}
+Sending from encode.go:702 Apricot : 
+Apricot {"Strawberry":2, "Orange":2, "Apple":2, "Banana":3, "Apricot":11}
+Sending from encode.go:702 Apricot : 
+Apricot {"Banana":3, "Apricot":12, "Strawberry":2, "Orange":2, "Apple":2}
+Sending from encode.go:702 Apricot : 
+Apricot {"Apple":2, "Banana":3, "Apricot":13, "Strawberry":2, "Orange":2}
+Sending from encode.go:702 Apricot : 
+Apricot {"Apricot":14, "Strawberry":2, "Orange":2, "Apple":2, "Banana":3}
+Sending from encode.go:702 Apricot : 
+Apricot {"Strawberry":6, "Orange":2, "Apple":2, "Banana":3, "Apricot":15}
+Received on decode.go:642 Apricot : 
+Apricot {"Apple":2, "Banana":3, "Apricot":16, "Strawberry":7, "Orange":2}
+Received on decode.go:642 Apricot : 
+Apricot {"Strawberry":7, "Orange":2, "Apple":2, "Banana":3, "Apricot":17}
+Received on decode.go:642 Apricot : 
+Apricot {"Banana":3, "Apricot":18, "Strawberry":7, "Orange":2, "Apple":2}
+Sending from encode.go:702 Apricot : 
+Apricot {"Apple":2, "Banana":3, "Apricot":19, "Strawberry":7, "Orange":2}
+Sending from encode.go:702 Apricot : 
+Apricot {"Apricot":10, "Strawberry":2, "Orange":2, "Apple":2, "Banana":3}
+Sending from encode.go:702 Apricot : 
+Apricot {"Strawberry":7, "Orange":2, "Apple":2, "Banana":3, "Apricot":20}
+Sending from encode.go:702 Apricot : 
+Apricot {"Banana":3, "Apricot":21, "Strawberry":7, "Orange":13, "Apple":3}
+Received on decode.go:642 Apricot : 
+Apricot {"Apple":3, "Banana":3, "Apricot":22, "Strawberry":7, "Orange":14}
+Received on decode.go:642 Apricot : 
+Apricot {"Apricot":23, "Strawberry":7, "Orange":14, "Apple":3, "Banana":3}
+Received on decode.go:642 Apricot : 
+Apricot {"Strawberry":7, "Orange":14, "Apple":3, "Banana":3, "Apricot":24}
+Sending from encode.go:702 Apricot : 
+Apricot {"Apple":3, "Banana":3, "Apricot":25, "Strawberry":7, "Orange":14}
+Sending from encode.go:702 Apricot : 
+Apricot {"Strawberry":7, "Orange":14, "Apple":7, "Banana":10, "Apricot":26}
+Received on decode.go:642 Apricot : 
+Apricot {"Banana":10, "Apricot":27, "Strawberry":7, "Orange":14, "Apple":14}
+Received on decode.go:642 Apricot : 
+Apricot {"Apricot":28, "Strawberry":7, "Orange":18, "Apple":14, "Banana":10}
+Received on decode.go:642 Apricot : 
+Apricot {"Strawberry":7, "Orange":18, "Apple":14, "Banana":10, "Apricot":29}
+Sending from encode.go:702 Apricot : 
+Apricot {"Banana":10, "Apricot":30, "Strawberry":7, "Orange":18, "Apple":14}
+Sending from encode.go:702 Apricot : 
+Apricot {"Apricot":31, "Strawberry":14, "Orange":18, "Apple":14, "Banana":10}
+Received on decode.go:642 Apricot : 
+Apricot {"Orange":18, "Apple":14, "Banana":10, "Apricot":32, "Strawberry":14}
+Sending from encode.go:702 Apricot : 
+Apricot {"Apple":14, "Banana":10, "Apricot":33, "Strawberry":14, "Orange":18}
+Sending from encode.go:702 Apricot : 
+Apricot {"Apple":14, "Banana":10, "Apricot":34, "Strawberry":14, "Orange":18}
+Sending from encode.go:702 Apricot : 
+Apricot {"Banana":10, "Apricot":35, "Strawberry":14, "Orange":18, "Apple":14}
+Sending from encode.go:702 Apricot : 
+Apricot {"Apple":14, "Banana":10, "Apricot":36, "Strawberry":14, "Orange":18}
+Sending from encode.go:702 Apricot : 
+Apricot {"Apricot":37, "Strawberry":14, "Orange":18, "Apple":14, "Banana":10}
+Sending from encode.go:702 Apricot : 
+Apricot {"Orange":18, "Apple":14, "Banana":10, "Apricot":38, "Strawberry":14}
+Sending from encode.go:702 Apricot : 
+Apricot {"Apple":14, "Banana":10, "Apricot":39, "Strawberry":14, "Orange":18}
+Sending from encode.go:702 Apricot : 
+Apricot {"Apple":14, "Banana":10, "Apricot":40, "Strawberry":14, "Orange":18}
+Sending from encode.go:702 Apricot : 
+Apricot {"Apple":15, "Banana":10, "Apricot":41, "Strawberry":15, "Orange":29}
+Received on decode.go:642 Apricot : 
+Apricot {"Orange":29, "Apple":15, "Banana":10, "Apricot":42, "Strawberry":15}
+Sending from encode.go:702 Apricot : 
+Apricot {"Apple":15, "Banana":10, "Apricot":43, "Strawberry":15, "Orange":29}
+Sending from encode.go:702 Apricot : 
+Apricot {"Apple":15, "Banana":10, "Apricot":44, "Strawberry":15, "Orange":29}
+Sending from encode.go:702 Apricot : 
+Apricot {"Apple":15, "Banana":10, "Apricot":45, "Strawberry":21, "Orange":29}
+Received on decode.go:642 Apricot : 
+Apricot {"Apple":15, "Banana":10, "Apricot":46, "Strawberry":22, "Orange":29}
+Received on decode.go:642 Apricot : 
+Apricot {"Orange":29, "Apple":15, "Banana":10, "Apricot":47, "Strawberry":22}
+Received on decode.go:642 Apricot : 
+Apricot {"Apple":15, "Banana":10, "Apricot":48, "Strawberry":22, "Orange":30}
+Received on decode.go:642 Apricot : 
+Apricot {"Banana":10, "Apricot":49, "Strawberry":22, "Orange":30, "Apple":15}
+Received on decode.go:642 Apricot : 
+Apricot {"Apricot":50, "Strawberry":22, "Orange":30, "Apple":15, "Banana":10}
+Sending from encode.go:702 Apricot : 
+Apricot {"Orange":30, "Apple":15, "Banana":10, "Apricot":51, "Strawberry":22}
+Sending from encode.go:702 Apricot : 
+Apricot {"Apple":15, "Banana":10, "Apricot":52, "Strawberry":22, "Orange":34}
+Received on decode.go:642 Apricot : 
+Apricot {"Apple":26, "Banana":11, "Apricot":53, "Strawberry":22, "Orange":34}
+Received on decode.go:642 Apricot : 
+Apricot {"Strawberry":22, "Orange":34, "Apple":26, "Banana":18, "Apricot":54}
+Received on decode.go:642 Apricot : 
+Apricot {"Banana":18, "Apricot":55, "Strawberry":26, "Orange":34, "Apple":26}
+Received on decode.go:642 Apricot : 
+Apricot {"Apple":27, "Banana":18, "Apricot":56, "Strawberry":27, "Orange":41}
+Received on decode.go:642 Apricot : 
+Apricot {"Apple":27, "Banana":18, "Apricot":57, "Strawberry":27, "Orange":42}
+Received on decode.go:642 Apricot : 
+Apricot {"Apricot":58, "Strawberry":27, "Orange":42, "Apple":27, "Banana":18}
+Received on decode.go:642 Apricot : 
+Apricot {"Strawberry":27, "Orange":42, "Apple":27, "Banana":18, "Apricot":59}
+Sending from encode.go:702 Apricot : 
+Apricot {"Banana":18, "Apricot":60, "Strawberry":27, "Orange":42, "Apple":27}
+Sending from encode.go:702 Apricot : 
+Apricot {"Apple":27, "Banana":18, "Apricot":61, "Strawberry":27, "Orange":42}
+Sending from encode.go:702 Apricot : 
+Apricot {"Apricot":62, "Strawberry":27, "Orange":42, "Apple":27, "Banana":18}
+Sending from encode.go:702 Apricot : 
+Apricot {"Orange":42, "Apple":27, "Banana":18, "Apricot":63, "Strawberry":27}
+Sending from encode.go:702 Apricot : 
+Apricot {"Apple":27, "Banana":18, "Apricot":64, "Strawberry":27, "Orange":42}
+Sending from encode.go:702 Apricot : 
+Apricot {"Apple":27, "Banana":18, "Apricot":65, "Strawberry":27, "Orange":42}
+Sending from encode.go:702 Apricot : 
+Apricot {"Apple":27, "Banana":18, "Apricot":66, "Strawberry":27, "Orange":42}
+Sending from encode.go:702 Apricot : 
+Apricot {"Apple":27, "Banana":18, "Apricot":67, "Strawberry":27, "Orange":42}
+Sending from encode.go:702 Apricot : 
+Apricot {"Strawberry":27, "Orange":42, "Apple":27, "Banana":18, "Apricot":68}
+Sending from encode.go:702 Apricot : 
+Apricot {"Apple":27, "Banana":18, "Apricot":69, "Strawberry":27, "Orange":42}
+Sending from encode.go:702 Apricot : 
+Apricot {"Orange":42, "Apple":27, "Banana":18, "Apricot":70, "Strawberry":27}
+Sending from encode.go:702 Apricot : 
+Apricot {"Apple":27, "Banana":18, "Apricot":71, "Strawberry":33, "Orange":46}
+Received on decode.go:642 Apricot : 
+Apricot {"Banana":18, "Apricot":72, "Strawberry":34, "Orange":46, "Apple":27}
+Received on decode.go:642 Apricot : 
+Apricot {"Apricot":73, "Strawberry":34, "Orange":46, "Apple":27, "Banana":18}
+Received on decode.go:642 Apricot : 
+Apricot {"Orange":46, "Apple":31, "Banana":26, "Apricot":74, "Strawberry":34}
+Received on decode.go:642 Apricot : 
+Apricot {"Apple":31, "Banana":26, "Apricot":75, "Strawberry":34, "Orange":46}
+Sending from encode.go:702 Apricot : 
+Apricot {"Apple":38, "Banana":26, "Apricot":76, "Strawberry":34, "Orange":46}
+Received on decode.go:642 Apricot : 
+Apricot {"Banana":26, "Apricot":77, "Strawberry":34, "Orange":50, "Apple":38}
+Received on decode.go:642 Apricot : 
+Apricot {"Apple":38, "Banana":26, "Apricot":78, "Strawberry":38, "Orange":50}
+Received on decode.go:642 Apricot : 
+Apricot {"Apple":38, "Banana":26, "Apricot":79, "Strawberry":38, "Orange":50}
+Sending from encode.go:702 Apricot : 
+Apricot {"Apricot":80, "Strawberry":38, "Orange":50, "Apple":38, "Banana":26}
+Sending from encode.go:702 Apricot : 
+Apricot {"Orange":50, "Apple":38, "Banana":26, "Apricot":81, "Strawberry":38}
+Sending from encode.go:702 Apricot : 
+Apricot {"Apple":38, "Banana":26, "Apricot":82, "Strawberry":38, "Orange":50}
+Sending from encode.go:702 Apricot : 
+Apricot {"Apple":38, "Banana":26, "Apricot":83, "Strawberry":38, "Orange":50}
+Sending from encode.go:702 Apricot : 
+Apricot {"Apple":38, "Banana":26, "Apricot":84, "Strawberry":38, "Orange":50}
+Sending from encode.go:702 Apricot : 
+Apricot {"Apple":38, "Banana":26, "Apricot":85, "Strawberry":38, "Orange":50}
+Sending from encode.go:702 Apricot : 
+Apricot {"Apple":38, "Banana":26, "Apricot":86, "Strawberry":38, "Orange":50}
+Sending from encode.go:702 Apricot : 
+Apricot {"Banana":26, "Apricot":87, "Strawberry":38, "Orange":50, "Apple":38}
+Sending from encode.go:702 Apricot : 
+Apricot {"Apple":38, "Banana":26, "Apricot":88, "Strawberry":38, "Orange":50}
+Sending from encode.go:702 Apricot : 
+Apricot {"Apple":38, "Banana":26, "Apricot":89, "Strawberry":38, "Orange":50}
+Sending from encode.go:702 Apricot : 
+Apricot {"Apple":45, "Banana":36, "Apricot":90, "Strawberry":39, "Orange":56}
+Received on decode.go:642 Apricot : 
+Apricot {"Apricot":91, "Strawberry":39, "Orange":56, "Apple":45, "Banana":36}
+Sending from encode.go:702 Apricot : 
+Apricot {"Strawberry":39, "Orange":56, "Apple":45, "Banana":36, "Apricot":92}
+Sending from encode.go:702 ApricotApricot_raft_raft_1307 :  : 
+Apricot {"Banana":36, "Apricot":93, "Strawberry":39, "Orange":56, "Apple":45}
+Sending from encode.go:702 Apricot : 
+Strawberry {"Strawberry":1}
+Initialization Complete
+Strawberry {"Strawberry":2}
+Sending from encode.go:702 StrawberryStrawberry_raft_raft_433 :  : 
+Strawberry {"Strawberry":3}
+Sending from encode.go:702 Strawberry : 
+Strawberry {"Apple":2, "Apricot":4, "Strawberry":4, "Orange":2}
+Received on decode.go:642 Strawberry : 
+Strawberry {"Orange":2, "Apple":2, "Apricot":4, "Strawberry":5}
+Sending from encode.go:702 Strawberry : 
+Strawberry {"Apple":2, "Apricot":4, "Strawberry":6, "Orange":2}
+Sending from encode.go:702 Strawberry : 
+Strawberry {"Apple":2, "Apricot":4, "Strawberry":7, "Orange":2}
+Sending from encode.go:702 Strawberry : 
+Strawberry {"Apple":3, "Apricot":5, "Strawberry":8, "Orange":11}
+Received on decode.go:642 Strawberry : 
+Strawberry {"Strawberry":9, "Orange":12, "Apple":3, "Apricot":5}
+Received on decode.go:642 Strawberry : 
+Strawberry {"Apple":3, "Apricot":5, "Strawberry":10, "Orange":12}
+Received on decode.go:642 Strawberry : 
+Strawberry {"Orange":14, "Apple":3, "Banana":3, "Apricot":24, "Strawberry":11}
+Received on decode.go:642 Strawberry : 
+Strawberry {"Apple":3, "Banana":3, "Apricot":25, "Strawberry":12, "Orange":14}
+Received on decode.go:642 Strawberry : 
+Strawberry {"Banana":3, "Apricot":25, "Strawberry":13, "Orange":14, "Apple":3}
+Received on decode.go:642 Strawberry : 
+Strawberry {"Apricot":25, "Strawberry":14, "Orange":14, "Apple":3, "Banana":3}
+Sending from encode.go:702 Strawberry : 
+Strawberry {"Orange":14, "Apple":3, "Banana":3, "Apricot":25, "Strawberry":15}
+Sending from encode.go:702 Strawberry : 
+Strawberry {"Apple":14, "Banana":10, "Apricot":30, "Strawberry":16, "Orange":18}
+Received on decode.go:642 Strawberry : 
+Strawberry {"Banana":10, "Apricot":30, "Strawberry":17, "Orange":27, "Apple":15}
+Received on decode.go:642 Strawberry : 
+Strawberry {"Apple":15, "Banana":10, "Apricot":30, "Strawberry":18, "Orange":28}
+Received on decode.go:642 Strawberry : 
+Strawberry {"Apple":15, "Banana":10, "Apricot":30, "Strawberry":19, "Orange":28}
+Received on decode.go:642 Strawberry : 
+Strawberry {"Apple":15, "Banana":10, "Apricot":30, "Strawberry":20, "Orange":28}
+Sending from encode.go:702 Strawberry : 
+Strawberry {"Apple":15, "Banana":10, "Apricot":30, "Strawberry":21, "Orange":28}
+Sending from encode.go:702 Strawberry : 
+Strawberry {"Apple":15, "Banana":10, "Apricot":30, "Strawberry":22, "Orange":28}
+Sending from encode.go:702 Strawberry : 
+Strawberry {"Apple":15, "Banana":10, "Apricot":43, "Strawberry":23, "Orange":29}
+Received on decode.go:642 Strawberry : 
+Strawberry {"Apricot":44, "Strawberry":24, "Orange":29, "Apple":15, "Banana":10}
+Received on decode.go:642 Strawberry : 
+Strawberry {"Orange":29, "Apple":15, "Banana":10, "Apricot":44, "Strawberry":25}
+Received on decode.go:642 Strawberry : 
+Strawberry {"Apple":15, "Banana":10, "Apricot":44, "Strawberry":26, "Orange":29}
+Sending from encode.go:702 Strawberry : 
+Strawberry {"Apple":15, "Banana":10, "Apricot":44, "Strawberry":27, "Orange":29}
+Sending from encode.go:702 Strawberry : 
+Strawberry {"Apple":15, "Banana":10, "Apricot":51, "Strawberry":28, "Orange":30}
+Received on decode.go:642 Strawberry : 
+Strawberry {"Orange":45, "Apple":27, "Banana":11, "Apricot":51, "Strawberry":29}
+Received on decode.go:642 Strawberry : 
+Strawberry {"Apple":27, "Banana":11, "Apricot":51, "Strawberry":30, "Orange":46}
+Received on decode.go:642 Strawberry : 
+Strawberry {"Apple":27, "Banana":11, "Apricot":51, "Strawberry":31, "Orange":46}
+Received on decode.go:642 Strawberry : 
+Strawberry {"Orange":46, "Apple":27, "Banana":11, "Apricot":51, "Strawberry":32}
+Sending from encode.go:702 Strawberry : 
+Strawberry {"Apple":27, "Banana":11, "Apricot":51, "Strawberry":33, "Orange":46}
+Sending from encode.go:702 Strawberry : 
+Strawberry {"Banana":11, "Apricot":51, "Strawberry":34, "Orange":46, "Apple":27}
+Sending from encode.go:702 Strawberry : 
+Strawberry {"Apricot":69, "Strawberry":35, "Orange":46, "Apple":27, "Banana":18}
+Received on decode.go:642 Strawberry : 
+Strawberry {"Orange":46, "Apple":27, "Banana":18, "Apricot":70, "Strawberry":36}
+Received on decode.go:642 Strawberry : 
+Strawberry {"Apple":27, "Banana":18, "Apricot":70, "Strawberry":37, "Orange":46}
+Received on decode.go:642 Strawberry : 
+Strawberry {"Apple":27, "Banana":18, "Apricot":70, "Strawberry":38, "Orange":46}
+Sending from encode.go:702 Strawberry : 
+Strawberry {"Apple":27, "Banana":18, "Apricot":70, "Strawberry":39, "Orange":46}
+Sending from encode.go:702 Strawberry : 
+Strawberry {"Apple":39, "Banana":19, "Apricot":70, "Strawberry":40, "Orange":57}
+Received on decode.go:642 Strawberry : 
+Strawberry {"Orange":58, "Apple":39, "Banana":19, "Apricot":70, "Strawberry":41}
+Received on decode.go:642 Strawberry : 
+Strawberry {"Apple":39, "Banana":19, "Apricot":70, "Strawberry":42, "Orange":58}
+Received on decode.go:642 Strawberry : 
+Strawberry {"Apple":39, "Banana":26, "Apricot":88, "Strawberry":43, "Orange":58}
+Received on decode.go:642 Strawberry : 
+Strawberry {"Apple":39, "Banana":26, "Apricot":89, "Strawberry":44, "Orange":58}
+Received on decode.go:642 Strawberry : 
+Strawberry {"Banana":26, "Apricot":89, "Strawberry":45, "Orange":58, "Apple":39}
+Received on decode.go:642 Strawberry : 
+Orange {"Orange":1}
+Initialization Complete
+Orange {"Orange":2}
+Sending from encode.go:702 OrangeOrange_raft_raft_433 :  : 
+Orange {"Orange":3, "Apple":3}
+Received on decode.go:642 Orange : 
+Orange {"Apple":3, "Strawberry":3, "Orange":4}
+Received on decode.go:642 Orange : 
+Orange {"Apricot":5, "Strawberry":3, "Orange":5, "Apple":3}
+Received on decode.go:642 Orange : 
+Orange {"Apple":3, "Apricot":5, "Strawberry":3, "Orange":6}
+Sending from encode.go:702 Orange : 
+Orange {"Apple":3, "Apricot":5, "Strawberry":3, "Orange":7}
+Sending from encode.go:702 Orange : 
+Orange {"Apple":3, "Apricot":5, "Strawberry":3, "Orange":8}
+Sending from encode.go:702 Orange : 
+Orange {"Apple":3, "Apricot":5, "Strawberry":3, "Orange":9}
+Sending from encode.go:702 Orange : 
+Orange {"Apple":3, "Apricot":5, "Strawberry":3, "Orange":10}
+Sending from encode.go:702 Orange : 
+Orange {"Apricot":5, "Strawberry":3, "Orange":11, "Apple":3}
+Sending from encode.go:702 Orange : 
+Orange {"Strawberry":3, "Orange":12, "Apple":3, "Apricot":5}
+Sending from encode.go:702 Orange : 
+Orange {"Apricot":5, "Strawberry":3, "Orange":13, "Apple":3}
+Sending from encode.go:702 Orange : 
+Orange {"Apple":3, "Apricot":5, "Strawberry":3, "Orange":14}
+Sending from encode.go:702 Orange : 
+Orange {"Apricot":19, "Strawberry":7, "Orange":15, "Apple":3, "Banana":3}
+Received on decode.go:642 Orange : 
+Orange {"Orange":16, "Apple":3, "Banana":3, "Apricot":20, "Strawberry":7}
+Received on decode.go:642 Orange : 
+Orange {"Apple":3, "Banana":3, "Apricot":20, "Strawberry":7, "Orange":17}
+Received on decode.go:642 Orange : 
+Orange {"Apple":3, "Banana":3, "Apricot":20, "Strawberry":7, "Orange":18}
+Sending from encode.go:702 Orange : 
+Orange {"Orange":19, "Apple":15, "Banana":3, "Apricot":20, "Strawberry":7}
+Received on decode.go:642 Orange : 
+Orange {"Apple":15, "Banana":10, "Apricot":29, "Strawberry":7, "Orange":20}
+Received on decode.go:642 Orange : 
+Orange {"Apple":15, "Banana":10, "Apricot":29, "Strawberry":15, "Orange":21}
+Received on decode.go:642 Orange : 
+Orange {"Banana":10, "Apricot":29, "Strawberry":15, "Orange":22, "Apple":15}
+Sending from encode.go:702 Orange : 
+Orange {"Apricot":29, "Strawberry":15, "Orange":23, "Apple":15, "Banana":10}
+Sending from encode.go:702 Orange : 
+Orange {"Orange":24, "Apple":15, "Banana":10, "Apricot":29, "Strawberry":15}
+Sending from encode.go:702 Orange : 
+Orange {"Apple":15, "Banana":10, "Apricot":29, "Strawberry":15, "Orange":25}
+Sending from encode.go:702 Orange : 
+Orange {"Apple":15, "Banana":10, "Apricot":29, "Strawberry":15, "Orange":27}
+Sending from encode.go:702 Orange : 
+Orange {"Banana":10, "Apricot":29, "Strawberry":15, "Orange":28, "Apple":15}
+Sending from encode.go:702 Orange : 
+Orange {"Apple":15, "Banana":10, "Apricot":29, "Strawberry":15, "Orange":26}
+Sending from encode.go:702 Orange : 
+Orange {"Apricot":29, "Strawberry":15, "Orange":29, "Apple":15, "Banana":10}
+Sending from encode.go:702 Orange : 
+Orange {"Orange":30, "Apple":15, "Banana":10, "Apricot":29, "Strawberry":15}
+Sending from encode.go:702 Orange : 
+Orange {"Apple":15, "Banana":10, "Apricot":38, "Strawberry":15, "Orange":31}
+Received on decode.go:642 Orange : 
+Orange {"Apple":15, "Banana":10, "Apricot":39, "Strawberry":15, "Orange":32}
+Received on decode.go:642 Orange : 
+Orange {"Apple":15, "Banana":10, "Apricot":39, "Strawberry":15, "Orange":33}
+Received on decode.go:642 Orange : 
+Orange {"Banana":10, "Apricot":39, "Strawberry":15, "Orange":34, "Apple":15}
+Sending from encode.go:702 Orange : 
+Orange {"Apple":15, "Banana":10, "Apricot":50, "Strawberry":22, "Orange":35}
+Received on decode.go:642 Orange : 
+Orange {"Apricot":50, "Strawberry":22, "Orange":36, "Apple":27, "Banana":11}
+Received on decode.go:642 Orange : 
+Orange {"Strawberry":27, "Orange":37, "Apple":27, "Banana":11, "Apricot":50}
+Received on decode.go:642 Orange : 
+Orange {"Banana":11, "Apricot":50, "Strawberry":27, "Orange":38, "Apple":27}
+Sending from encode.go:702 Orange : 
+Orange {"Apricot":50, "Strawberry":27, "Orange":39, "Apple":27, "Banana":11}
+Sending from encode.go:702 Orange : 
+Orange {"Strawberry":27, "Orange":40, "Apple":27, "Banana":11, "Apricot":50}
+Sending from encode.go:702 Orange : 
+Orange {"Banana":11, "Apricot":50, "Strawberry":27, "Orange":41, "Apple":27}
+Sending from encode.go:702 Orange : 
+Orange {"Apple":27, "Banana":11, "Apricot":50, "Strawberry":27, "Orange":42}
+Sending from encode.go:702 Orange : 
+Orange {"Apricot":50, "Strawberry":27, "Orange":43, "Apple":27, "Banana":11}
+Sending from encode.go:702 Orange : 
+Orange {"Strawberry":27, "Orange":44, "Apple":27, "Banana":11, "Apricot":50}
+Sending from encode.go:702 Orange : 
+Orange {"Apple":27, "Banana":11, "Apricot":50, "Strawberry":27, "Orange":45}
+Sending from encode.go:702 Orange : 
+Orange {"Strawberry":27, "Orange":46, "Apple":27, "Banana":11, "Apricot":50}
+Sending from encode.go:702 Orange : 
+Orange {"Apple":27, "Banana":18, "Apricot":63, "Strawberry":27, "Orange":47}
+Received on decode.go:642 Orange : 
+Orange {"Strawberry":27, "Orange":48, "Apple":27, "Banana":18, "Apricot":64}
+Received on decode.go:642 Orange : 
+Orange {"Apple":27, "Banana":18, "Apricot":64, "Strawberry":27, "Orange":49}
+Received on decode.go:642 Orange : 
+Orange {"Orange":50, "Apple":27, "Banana":18, "Apricot":64, "Strawberry":27}
+Sending from encode.go:702 Orange : 
+Orange {"Apple":39, "Banana":19, "Apricot":66, "Strawberry":27, "Orange":51}
+Received on decode.go:642 Orange : 
+Orange {"Apple":39, "Banana":19, "Apricot":70, "Strawberry":39, "Orange":52}
+Received on decode.go:642 Orange : 
+Orange {"Orange":53, "Apple":39, "Banana":19, "Apricot":70, "Strawberry":39}
+Sending from encode.go:702 Orange : 
+Orange {"Apple":39, "Banana":19, "Apricot":70, "Strawberry":39, "Orange":54}
+Sending from encode.go:702 Orange : 
+Orange {"Apple":39, "Banana":19, "Apricot":70, "Strawberry":39, "Orange":55}
+Sending from encode.go:702 Orange : 
+Orange {"Orange":56, "Apple":39, "Banana":19, "Apricot":70, "Strawberry":39}
+Sending from encode.go:702 Orange : 
+Orange {"Apple":39, "Banana":19, "Apricot":70, "Strawberry":39, "Orange":57}
+Sending from encode.go:702 Orange : 
+Orange {"Banana":19, "Apricot":70, "Strawberry":39, "Orange":58, "Apple":39}
+Sending from encode.go:702 Orange : 
+Orange {"Apple":39, "Banana":26, "Apricot":86, "Strawberry":39, "Orange":59}
+Received on decode.go:642 Orange : 
+Orange {"Apricot":87, "Strawberry":39, "Orange":60, "Apple":39, "Banana":26}
+Received on decode.go:642 Orange : 
+Orange {"Orange":61, "Apple":39, "Banana":26, "Apricot":87, "Strawberry":39}
+Received on decode.go:642 Orange : 
