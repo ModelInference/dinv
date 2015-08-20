@@ -20,6 +20,7 @@ import (
 	"log"
 	"math/rand"
 	"os"
+	"reflect"
 	"regexp"
 	"strconv"
 	"strings"
@@ -481,7 +482,27 @@ type NameValuePair struct {
 
 //String representation of a name value pair
 func (nvp NameValuePair) String() string {
-	return fmt.Sprintf("(%s,%s,%s)", nvp.VarName, nvp.Value, nvp.Type)
+	return fmt.Sprintf("%s=%s , ", nvp.VarName, nvp.value())
+}
+
+//returns the value of the Name value pair as a string
+//TODO catch and print all possible reflected types
+func (nvp NameValuePair) value() string {
+	v := reflect.ValueOf(nvp.Value)
+	switch v.Kind() {
+	case reflect.Bool:
+		return fmt.Sprintf("%s", v.Bool())
+	case reflect.Int, reflect.Int8, reflect.Int16, reflect.Int32, reflect.Int64:
+		return fmt.Sprintf("%d", v.Int())
+	case reflect.Float32, reflect.Float64:
+		return fmt.Sprintf("%b", v.Float())
+	case reflect.Uint, reflect.Uint8, reflect.Uint16, reflect.Uint32, reflect.Uint64:
+		return fmt.Sprintf("%d", v.Uint())
+	case reflect.String:
+		return fmt.Sprintf("%s", v.String())
+	default:
+		return "Unknown Type"
+	}
 }
 
 //String representation of a program point
@@ -490,7 +511,7 @@ func (p Point) String() string {
 	for _, dump := range p.Dump {
 		dumpstring = dumpstring + dump.String()
 	}
-	return fmt.Sprintf("%s : %s", p.Id, dumpstring)
+	return fmt.Sprintf("%s { %s }", p.Id, dumpstring)
 }
 
 //fileExists returns true if the file specified by path exists. If not
@@ -588,7 +609,7 @@ func ClockFromString(clock, regex string) (*vclock.VClock, error) {
 
 func writeShiVizLog(pointLog [][]Point, goLogs []*golog) {
 	file, _ := os.Create("Shiviz.log")
-	shivizRegex := "(?<host>\\S*) (?<clock>{.*})\\n(?<event>.*)"
+	shivizRegex := "(?<host>\\S*) (?<clock>{.*})\\n(?<event>.*)\\n(?<dump>.*)"
 	file.WriteString(shivizRegex)
 	file.WriteString("\n\n")
 	//TODO add in information about dump statements to logs will look
@@ -597,11 +618,11 @@ func writeShiVizLog(pointLog [][]Point, goLogs []*golog) {
 	for i, goLog := range goLogs {
 		for j := range goLog.clocks {
 			var dumpString string
-			dumps := getEventsWithIdenticalHostTime(pointLog[i], goLog.id, j)
-			for _, dump := range dumps {
-				dumpString += dump.String()
+			points := getEventsWithIdenticalHostTime(pointLog[i], goLog.id, j)
+			for _, point := range points {
+				dumpString += point.String()
 			}
-			log := fmt.Sprintf("%s %s\n%s\n", goLog.id, goLog.clocks[j].ReturnVCString(), goLog.messages[j]+dumpString)
+			log := fmt.Sprintf("%s %s\n%s\n%s\n", goLog.id, goLog.clocks[j].ReturnVCString(), goLog.messages[j], dumpString)
 			file.WriteString(log)
 		}
 	}
