@@ -22,6 +22,7 @@ import (
 	"os"
 	"reflect"
 	"regexp"
+	"sort"
 	"strconv"
 	"strings"
 
@@ -114,17 +115,20 @@ func buildLogs(logFiles []string, gologFiles []string) [][]Point {
 	}
 
 	for i := range logs {
+		//sort the log as a pre processesing step
+		sort.Sort(goLogs[i])
 		logs[i] = injectMissingPoints(logs[i], goLogs[i])
 	}
 
 	//log pre processing work
 	if renamingScheme != "" {
-		logger.Printf("Renaming Hosts")
+		logger.Printf("Renaming Hosts as %s\n", renamingScheme)
 		replaceIds(logs, goLogs, renamingScheme)
 	}
 	if shiviz {
 		writeShiVizLog(logs, goLogs)
 	}
+
 	return logs
 }
 
@@ -143,17 +147,19 @@ func injectMissingPoints(points []Point, log *golog) []Point {
 		//point to the log
 		if found && int(ticks) == (goLogIndex+1) {
 			injectedPoints = append(injectedPoints, points[pointIndex])
+			//fmt.Printf("Appending clock %d aboslute %d\n", pointIndex, goLogIndex)
 			pointIndex++
 			indexFound = true
 			//The point log contained the index and has advanced to the
 			//next
-		} else if int(ticks) != (goLogIndex+1) && indexFound {
+		} else if found && int(ticks) != (goLogIndex+1) && indexFound {
 			goLogIndex++
+			//fmt.Printf("Advancing log by one step index %d\n", goLogIndex)
 			indexFound = false
 			//The point log did not contain the index, inject a
 			//supplementary one
 		} else {
-			logger.Printf("Injecting Clock %s into log %s\n", log.clocks[goLogIndex].ReturnVCString(), log.id)
+			//fmt.Printf("Injecting Clock %s into log %s\n", log.clocks[goLogIndex].ReturnVCString(), log.id)
 			newPoint := new(Point)
 			newPoint.VectorClock = log.clocks[goLogIndex].Bytes()
 			injectedPoints = append(injectedPoints, *newPoint)
@@ -164,6 +170,7 @@ func injectMissingPoints(points []Point, log *golog) []Point {
 	//The golog may contain a set of points never loged by the the
 	//points, inject all of them
 	for goLogIndex < len(log.clocks) {
+		//fmt.Printf("Injecting Clock %s into log %s\n", log.clocks[goLogIndex].ReturnVCString(), log.id)
 		newPoint := new(Point)
 		newPoint.VectorClock = log.clocks[goLogIndex].Bytes()
 		injectedPoints = append(injectedPoints, *newPoint)
@@ -284,7 +291,7 @@ func statesFromCuts(cuts []Cut, clocks [][]vclock.VClock, logs [][]Point) []Stat
 	for _, id := range ids {
 		logger.Println(id)
 	}
-	for _, cut := range cuts {
+	for cutIndex, cut := range cuts {
 		state := &State{}
 		state.Cut = cut
 		for i, clock := range state.Cut.Clocks {
@@ -298,8 +305,10 @@ func statesFromCuts(cuts []Cut, clocks [][]vclock.VClock, logs [][]Point) []Stat
 		}
 		state.TotalOrdering = totalOrderFromCut(cut, clocks)
 		logger.Printf("%s\n", state.String())
+		fmt.Printf("\rExtracting states %3.0f%% \t[%d] found", 100*float32(cutIndex)/float32(len(cuts)), len(states))
 		states = append(states, *state)
 	}
+	fmt.Println()
 	return states
 }
 
@@ -374,7 +383,7 @@ func totalOrderLineNumberMerge(states []State) [][]Point {
 	logger.Println("Merging points by line number and total order")
 	mergedPoints := make([][]Point, len(states))
 	for i, state := range states {
-		logger.Printf("Merging State %s\n", state.String())
+		fmt.Printf("\rMerging States %3.0f%%", float32(i)/float32(len(states))*100)
 		mergedPoints[i] = make([]Point, len(state.TotalOrdering))
 		for j := range state.TotalOrdering {
 			points := make([]Point, 0)
@@ -382,9 +391,10 @@ func totalOrderLineNumberMerge(states []State) [][]Point {
 				points = append(points, state.Points[state.TotalOrdering[j][k]])
 			}
 			mergedPoints[i][j] = mergePoints(points)
-			logger.Printf("Merged points id :%s\n\n===========\n", mergedPoints[i][j].Id)
+			//logger.Printf("Merged points id :%s\n\n===========\n", mergedPoints[i][j].Id)
 		}
 	}
+	fmt.Println()
 	return mergedPoints
 }
 
@@ -422,7 +432,7 @@ func mergePoints(points []Point) Point {
 	var mergedPoint Point
 	for _, point := range points {
 		mergedPoint.Dump = append(mergedPoint.Dump, point.Dump...) //...
-		logger.Printf("id:%s\n", point.Id)
+		//logger.Printf("id:%s\n", point.Id)
 		mergedPoint.Id = mergedPoint.Id + "_" + point.Id
 		pVClock1, _ := vclock.FromBytes(mergedPoint.VectorClock)
 		pVClock2, _ := vclock.FromBytes(point.VectorClock)
@@ -501,7 +511,7 @@ func (nvp NameValuePair) value() string {
 	case reflect.String:
 		return fmt.Sprintf("%s", v.String())
 	default:
-		return "Unknown Type"
+		return "Unknown type or value"
 	}
 }
 
@@ -511,7 +521,8 @@ func (p Point) String() string {
 	for _, dump := range p.Dump {
 		dumpstring = dumpstring + dump.String()
 	}
-	return fmt.Sprintf("%s { %s }", p.Id, dumpstring)
+	clock, _ := vclock.FromBytes(p.VectorClock)
+	return fmt.Sprintf("%s { %s } { %s }", p.Id, dumpstring, clock.ReturnVCString())
 }
 
 //fileExists returns true if the file specified by path exists. If not
@@ -539,6 +550,26 @@ func (g *golog) String() string {
 		text += fmt.Sprintf("id: %s\t clock: %s\n %s\n", g.id, g.clocks[i].ReturnVCString(), g.messages[i])
 	}
 	return text
+}
+
+func (g *golog) Len() int {
+	return len(g.clocks)
+}
+
+func (g *golog) Less(i, j int) bool {
+	iclock, jclock := g.clocks[i], g.clocks[j]
+	iticks, _ := iclock.FindTicks(g.id)
+	jticks, _ := jclock.FindTicks(g.id)
+	if iticks < jticks {
+		return true
+	}
+	return false
+}
+
+func (g *golog) Swap(i, j int) {
+	tmp := g.clocks[i]
+	g.clocks[i] = g.clocks[j]
+	g.clocks[j] = tmp
 }
 
 /* reading govec logs */

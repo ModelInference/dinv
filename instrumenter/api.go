@@ -62,6 +62,21 @@ func GetStamp() int {
 	return stamp
 }
 
+//CustomEncoderDecoder allows users to specify the functions that are
+//used to encode or decode their messages. In cases where message
+//types are not basic Go types this can be useful
+//encoder is a function taking an interface as an argument, and
+//returning that interface as an encoded array of bytes, return nil if
+//the interface is not encodeable
+//decoder is encoders counterpart, taking an encoded array of bytes
+//and returning the underlying go object as an interface. The returned
+//value must by type cast before it can be used
+func CustomEncoderDecoder(encoder func(interface{}) ([]byte, error), decoder func([]byte) (interface{}, error)) {
+	initDinv()
+	gvLogger := GetLogger()
+	gvLogger.SetEncoderDecoder(encoder, decoder)
+}
+
 //initDinv instatiates a logger for the running process, and generates
 //an id for it. This method is called only once per logger, and
 //writes the first log.

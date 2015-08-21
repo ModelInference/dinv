@@ -50,6 +50,7 @@ func searchLogForClock(log []Point, keyClock *vclock.VClock, id string) (bool, i
 		searchClock, _ := vclock.FromBytes(log[mid].VectorClock)
 		a, _ := searchClock.FindTicks(id)
 		b, _ := keyClock.FindTicks(id)
+		fmt.Printf("%d-%d", a, b)
 		if a == b {
 			return true, mid
 		} else if a < b {
@@ -89,7 +90,7 @@ func matchSendAndReceive(sender vclock.VClock, clocks [][]vclock.VClock, senderI
 	var receiveClock = vclock.New()
 	for i := range clocks {
 		if getClockId(clocks[i]) != senderId {
-			fmt.Printf(" Clock ID : %s -> sender Id %s\n", getClockId(clocks[i]), senderId)
+			//logger.Printf(" Clock ID : %s -> sender Id %s\n", getClockId(clocks[i]), senderId)
 			found, event := searchClockById(clocks[i], &sender, senderId)
 			if found {
 				//backtrack for earliest clock
@@ -134,6 +135,23 @@ func searchClockById(clocks []vclock.VClock, keyClock *vclock.VClock, id string)
 		}
 	}
 	return false, mid
+}
+
+func sumTime(clockSet [][]vclock.VClock) int {
+	max := 0
+	ids := idClockMapper(clockSet)
+	for _, clocks := range clockSet {
+		last := clocks[len(clocks)-1]
+		total := 0
+		for _, id := range ids {
+			ticks, _ := last.FindTicks(id)
+			total += int(ticks)
+		}
+		if total > max {
+			max = total
+		}
+	}
+	return max
 }
 
 //idCLockMapper returns a set of id strings corresponding to the

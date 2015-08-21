@@ -30,9 +30,11 @@ func BuildLattice(clocks [][]vclock.VClock) [][]vclock.VClock {
 	latticePoint := vclock.New()
 	//initalize lattice clock
 	ids := idClockMapper(clocks)
+	levels := sumTime(clocks)
 	for i := range clocks {
 		latticePoint.Update(ids[i], 0)
 	}
+	level, points := 0, 0
 	lattice := make([][]vclock.VClock, 0)
 	current, next := queue.New(), queue.New()
 	next.Add(latticePoint)
@@ -48,11 +50,15 @@ func BuildLattice(clocks [][]vclock.VClock) [][]vclock.VClock {
 				pu.Update(ids[i], 0)
 				if !queueContainsClock(next, pu) && correctLatticePoint(clocks[i], pu, ids[i]) {
 					next.Add(pu)
+					points++
 				}
 			}
+			fmt.Printf("\rComputing lattice  %3.0f%% \t point %d\t fanout %d", 100*float32(level)/float32(levels), points, len(lattice[level]))
 			lattice[len(lattice)-1] = append(lattice[len(lattice)-1], *p.Copy())
 		}
+		level++
 	}
+	fmt.Println()
 	return lattice
 }
 

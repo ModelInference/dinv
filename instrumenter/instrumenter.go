@@ -113,7 +113,7 @@ func InplaceDirectorySwap(dir string) error {
 	newDir := dir + "_orig"
 	return filepath.Walk(dir, func(path string, info os.FileInfo, err error) error {
 		newPath := strings.Replace(path, dir, newDir, -1)
-		fmt.Printf("moving %s to %s\n", path, newPath)
+		logger.Printf("moving %s to %s\n", path, newPath)
 		if info.IsDir() {
 			return os.Mkdir(newPath, 0775)
 		} else {
