@@ -15,7 +15,7 @@ function installDinv {
 }
 
 function instrument {
-    dinv -i -v -dir=$RAFT
+    dinv -i -dir=$RAFT
 }
 
 function fixModDir {
@@ -57,7 +57,7 @@ function runTestPrograms {
 
 function runLogMerger {
     cd $testDir
-    dinv -v -l -shiviz *Encoded.txt *Log.txt
+    dinv -l -shiviz *Encoded.txt *Log.txt
 }
 
 function runDaikon {

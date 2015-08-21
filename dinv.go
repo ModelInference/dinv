@@ -213,7 +213,7 @@ func sortLogs(logs []string) ([]string, []string, error) {
 		regexResults := goReg.FindStringSubmatch(log)
 		if len(regexResults) == 2 && regexResults[1] != "" {
 			id := regexResults[1]
-			fmt.Println(id)
+			logger.Printf("reading in log: %d\n", id)
 			_, ok := logPairs[id]
 			//if a corresponding log exists pair the two
 			if ok {
@@ -248,7 +248,7 @@ func sortLogs(logs []string) ([]string, []string, error) {
 		if logPairs[pair].golog == "" {
 			ErrorString = ErrorString + logPairs[pair].point + ": Has no corresponding govecLog\n"
 		}
-		fmt.Printf("Pair (%s,%s)\n", logPairs[pair].point, logPairs[pair].golog)
+		logger.Printf("Pair (%s,%s)\n", logPairs[pair].point, logPairs[pair].golog)
 		pointLogs = append(pointLogs, logPairs[pair].point)
 		govecLogs = append(govecLogs, logPairs[pair].golog)
 	}
