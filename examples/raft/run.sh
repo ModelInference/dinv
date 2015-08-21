@@ -31,33 +31,38 @@ function runTestPrograms {
     cd $testDir
     rm peers/peers.json
 
-    for (( i=0; i<=peers; i++))
+    peerList="["
+    for (( i=0; i<peers; i++))
     do
-        echo "[\"127.0.0.1:808$i\"]" >> peers/peers.json
+        peerList="$peerList \"127.0.0.1:808$i\""
+        plus=$(( $i + 1))
+        if [ $plus -lt $peers ]; then
+            peerList="$peerList,"
+        fi
     done
+    peerList="$peerList]"
+    echo $peerList > peers/peers.json
 
 
-    for (( i=0; i<=peers; i++))
+    for (( i=0; i<peers; i++))
     do
         rm data/raft808$i.db
         touch data/raft808$i.db
-        go run main.go 808$i &
     done
 
+    for (( i=0; i<peers; i++))
+    do
+        go run main.go 808$i &
+    done
     sleep $time
 
     kill -9 `ps -f| grep main | grep -v grep | awk '{print $2}'`
 
-    for (( i=0; i<=peers; i++))
-    do
-        rm data/raft808$i.db
-    done
-    rm peers/peers.json
 }
 
 function runLogMerger {
     cd $testDir
-    dinv -l -shiviz *Encoded.txt *Log.txt
+    dinv -l -v -shiviz *Encoded.txt *Log.txt
 }
 
 function runDaikon {
@@ -77,6 +82,12 @@ function cleanUp {
     rm ./*.txt
     rm ./*.dtrace
     rm ./*.gz
+    rm -r snapshots
+    cd $testDir
+    for (( i=0; i<=peers; i++))
+    do
+        rm data/raft808$i.db
+    done
 }
 
 if [ "$1" == "-c" ];

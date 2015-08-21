@@ -241,17 +241,21 @@ func sortLogs(logs []string) ([]string, []string, error) {
 	}
 	pointLogs := make([]string, 0)
 	govecLogs := make([]string, 0)
+	isolatedGovecLogs := make([]string, 0)
 	for pair := range logPairs {
-		if logPairs[pair].point == "" {
-			ErrorString = ErrorString + logPairs[pair].golog + ": Has no corresponding encoded point log\n"
+		if logPairs[pair].point != "" && logPairs[pair].golog != "" {
+			pointLogs = append(pointLogs, logPairs[pair].point)
+			govecLogs = append(govecLogs, logPairs[pair].golog)
 		}
 		if logPairs[pair].golog == "" {
 			ErrorString = ErrorString + logPairs[pair].point + ": Has no corresponding govecLog\n"
 		}
+		if logPairs[pair].point == "" {
+			isolatedGovecLogs = append(isolatedGovecLogs, logPairs[pair].golog)
+		}
 		logger.Printf("Pair (%s,%s)\n", logPairs[pair].point, logPairs[pair].golog)
-		pointLogs = append(pointLogs, logPairs[pair].point)
-		govecLogs = append(govecLogs, logPairs[pair].golog)
 	}
+	govecLogs = append(govecLogs, isolatedGovecLogs...)
 	if ErrorString == "" {
 		return pointLogs, govecLogs, nil
 	}

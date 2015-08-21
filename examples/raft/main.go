@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"io"
 	"log"
+	"math/rand"
 	"net"
 	"os"
 	"time"
@@ -86,12 +87,14 @@ func main() {
 		store.Close()
 		log.Fatal(err)
 	}
-	fmt.Println("Getting Peers")
+	fmt.Println("Getting Peers " + port)
 	// Setup the peer store
 	raftPeers := raft.NewJSONPeers("./peers", trans)
 
 	// Ensure local host is always included
 	peers, err := raftPeers.Peers()
+	fmt.Println(raftPeers)
+	fmt.Println(peers)
 	if err != nil {
 		store.Close()
 		trans.Close()
@@ -123,6 +126,12 @@ func monitorLeadership(r *raft.Raft) {
 				stopCh = make(chan struct{})
 				go leaderLoop(stopCh)
 				log.Printf("cluster leadership acquired")
+				//snapshot at random
+				chance := rand.Int() % 10
+				if chance == 0 {
+					r.Snapshot()
+				}
+
 			} else if stopCh != nil {
 				close(stopCh)
 				stopCh = nil

@@ -120,6 +120,12 @@ func buildLogs(logFiles []string, gologFiles []string) [][]Point {
 		logs[i] = injectMissingPoints(logs[i], goLogs[i])
 	}
 
+	//create pointLogs executions with only gologs
+	for i := len(logFiles); i < len(gologFiles); i++ {
+		sort.Sort(goLogs[i])
+		logs = append(logs, injectMissingPoints(make([]Point, 0), goLogs[i]))
+	}
+
 	//log pre processing work
 	if renamingScheme != "" {
 		logger.Printf("Renaming Hosts as %s\n", renamingScheme)
