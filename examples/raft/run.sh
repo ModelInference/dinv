@@ -62,7 +62,7 @@ function runTestPrograms {
 
 function runLogMerger {
     cd $testDir
-    dinv -l -v -shiviz *Encoded.txt *Log.txt
+    dinv -l -v -name="fruits" -shiviz *Encoded.txt *Log.txt
 }
 
 function runDaikon {
