@@ -20,10 +20,6 @@ func MarshallInts(args []int) []byte {
 			marshalled[(j*SIZEOFINT)+i] = byte(args[j] >> ((SIZEOFINT - 1 - i) * 8))
 		}
 	}
-	l := int(i)
-	k := int(j)
-	l = l + k
-	print(l)
 	//@dump
 	return marshalled
 }
@@ -36,9 +32,5 @@ func UnmarshallInts(args []byte) []int {
 			unmarshalled[j] += int(args[SIZEOFINT*(j+1)-1-i] << (i * 8))
 		}
 	}
-	l := int(i)
-	k := int(j)
-	l = l + k
-	print(l)
 	return unmarshalled
 }

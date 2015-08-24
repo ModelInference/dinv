@@ -28,7 +28,7 @@ func Client() {
 	printErr(errL)
 	conn, errDial := net.DialUDP("udp", lAddr, rAddr)
 	printErr(errDial)
-	instrumenter.Initalize("8080")
+	instrumenter.Initalize("The greatest client of them all")
 	//dump
 
 	for t := 0; t < RUNS; t++ {
@@ -53,8 +53,9 @@ func Client() {
 		uret := UnmarshallInts(ret)
 		sum = uret[0]
 		//@dump
-		fmt.Printf("C: %d + %d = %d\n", term1, term2, sum)
+		fmt.Printf("\rExecuting %3.0f%%", float32(t)/float32(RUNS)*100)
 		sum = 0
 	}
+	fmt.Println()
 	os.Exit(0)
 }

@@ -49,6 +49,9 @@ func Initalize(hostName string) error {
 	if initialized == true {
 		return fmt.Errorf("Dinv logger has allready been initalized. Initalize must be the first call to dinv's api, including dump statements")
 	} else {
+		//remove whitespace from host name, makes parsing later easier
+		whiteSpace := regexp.MustCompile("\\s")
+		hostName = whiteSpace.ReplaceAllString(hostName, "_")
 		initDinv(hostName)
 	}
 	return nil

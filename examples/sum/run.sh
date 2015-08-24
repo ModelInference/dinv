@@ -31,8 +31,10 @@ function instrument {
 
 
 function fixModDir {
-    rm -r $testDir/$1/lib
-    mv $testDir/$1/lib_orig $testDir/$1/lib
+    if [ -d "$testDir/$1/"lib_orig ]; then
+        rm -r $testDir/$1/lib
+        mv $testDir/$1/lib_orig $testDir/$1/lib
+    fi
 }
 
 function runTestPrograms {
@@ -49,7 +51,7 @@ function runLogMerger {
  cd $testDir
  mv $1/*.txt ./
  mv $2/*.txt ./
- dinv -v -logmerger -shiviz *Encoded.txt *Log.txt
+ dinv  -logmerger -shiviz *Encoded.txt *Log.txt
 }
 
 
