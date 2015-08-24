@@ -23,7 +23,7 @@ const (
 	defaultMergePlan  = "TOLN" //total order line number merge
 	defaultSampleRate = 100    //take 100 percent of all mined cuts
 
-	defaultRenameingScheme = "fruits" //rename hosts as fruit
+	defaultRenameingScheme = "" //rename hosts as fruit
 
 )
 
@@ -201,10 +201,10 @@ func sortLogs(logs []string) ([]string, []string, error) {
 	}
 	logPairs := make(map[string]logpair)
 	//regular expressions for parsing point and govec log filenames
-	//NOTE if the file names change these regexes will need to change
+	//NOTE if the file names change these regexes will need to .e
 	//also the rely on the nanosecond timestamp ID as an identifier
-	govecLogRegex := "([0-9]+).log-Log.txt"
-	pointLogRegex := ".+-([0-9]+)Encoded.txt"
+	govecLogRegex := "(.+).log-Log.txt"
+	pointLogRegex := ".+-(.+)Encoded.txt"
 	ErrorString := ""
 	goReg := regexp.MustCompile(govecLogRegex)
 	pointReg := regexp.MustCompile(pointLogRegex)
@@ -227,7 +227,7 @@ func sortLogs(logs []string) ([]string, []string, error) {
 		regexResults = pointReg.FindStringSubmatch(log)
 		if len(regexResults) == 2 && regexResults[1] != "" {
 			id := regexResults[1]
-			fmt.Println(id)
+			//fmt.Println(id)
 			_, ok := logPairs[id]
 			if ok {
 				logPairs[id] = logpair{log, logPairs[id].golog}

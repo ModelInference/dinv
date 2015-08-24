@@ -50,7 +50,6 @@ func handleConn(conn net.PacketConn) {
 	uArgs := UnmarshallInts(args)
 	term1, term2 = uArgs[0], uArgs[1]
 	sum = term1 + term2
-	fmt.Printf("S: %d + %d = %d\n", term1, term2, sum)
 	msg := MarshallInts([]int{sum})
 	conn.WriteTo(instrumenter.Pack(msg), addr)
 	//@dump

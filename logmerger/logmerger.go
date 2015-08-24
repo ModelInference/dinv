@@ -126,11 +126,8 @@ func buildLogs(logFiles []string, gologFiles []string) [][]Point {
 		logs = append(logs, injectMissingPoints(make([]Point, 0), goLogs[i]))
 	}
 
-	//log pre processing work
-	if renamingScheme != "" {
-		logger.Printf("Renaming Hosts as %s\n", renamingScheme)
-		replaceIds(logs, goLogs, renamingScheme)
-	}
+	replaceIds(logs, goLogs, renamingScheme)
+
 	if shiviz {
 		writeShiVizLog(logs, goLogs)
 	}
@@ -668,11 +665,18 @@ func writeShiVizLog(pointLog [][]Point, goLogs []*golog) {
 //Host Renaming structures
 func replaceIds(pointLog [][]Point, goLogs []*golog, scheme string) {
 	_, ok := namingSchemes[scheme]
-	if !ok {
-		logger.Printf("Warning: unknown id naming scheme \"%s\", id's unchanged\n")
-		return
-	}
 	idMap := make(map[string]string)
+	if !ok {
+		if scheme != "" {
+			fmt.Printf("Warning: unknown id naming scheme \"%s\", id's unchanged\n", scheme)
+		}
+		scheme = "default"
+		defaults := make([]string, 0)
+		for i := range goLogs {
+			defaults = append(defaults, goLogs[i].id)
+		}
+		namingSchemes[scheme] = defaults
+	}
 	for i := range goLogs {
 		idMap[goLogs[i].id] = namingSchemes[scheme][i]
 	}
