@@ -17,7 +17,7 @@ import (
 
 var (
 	initialized = false      //Boolean used to track the initalization of the logger
-	stamp       int          //Timestamp for identifiying loggers
+	id          string       //Timestamp for identifiying loggers
 	goVecLogger *govec.GoLog //GoVec logger, used to track vector timestamps
 )
 
@@ -27,9 +27,9 @@ var (
 //PostCondition the byte array contains all current logging
 //information
 func Pack(msg interface{}) []byte {
-	initDinv()
-	id := getCallingFunctionID()
-	return goVecLogger.PrepareSend("Sending from "+id+" "+fmt.Sprintf("%d", stamp), msg)
+	initDinv("")
+	callingFunction := getCallingFunctionID()
+	return goVecLogger.PrepareSend("Sending from "+callingFunction+" "+id, msg)
 
 }
 
@@ -38,9 +38,20 @@ func Pack(msg interface{}) []byte {
 //This method is to be used on all data upon receving it
 //Precondition, the array of bytes was packed before sending
 func Unpack(msg []byte) interface{} {
-	initDinv()
-	id := getCallingFunctionID()
-	return goVecLogger.UnpackReceive("Received on "+id+" "+fmt.Sprintf("%d", stamp), msg)
+	initDinv("")
+	callingFunction := getCallingFunctionID()
+	return goVecLogger.UnpackReceive("Received on "+callingFunction+" "+id, msg)
+}
+
+//Initalize is an optional call for naming hosts uniquely based on a
+//user specified string
+func Initalize(hostName string) error {
+	if initialized == true {
+		return fmt.Errorf("Dinv logger has allready been initalized. Initalize must be the first call to dinv's api, including dump statements")
+	} else {
+		initDinv(hostName)
+	}
+	return nil
 }
 
 //GetLogger is used to retreive the logger maintaining a vector
@@ -49,17 +60,17 @@ func Unpack(msg []byte) interface{} {
 //annotations and is not recomened for general use, but is available
 //for debugging.
 func GetLogger() *govec.GoLog {
-	initDinv()
+	initDinv("")
 	return goVecLogger
 }
 
-//GetStap returns the ID of the current logger
+//GetId returns the ID of the current logger
 //TODO this function is an artifact of the timestap identification
 //system July-2015 and should be removed when a more robust strategy
 //is implemented
-func GetStamp() int {
-	initDinv()
-	return stamp
+func GetId() string {
+	initDinv("")
+	return id
 }
 
 //CustomEncoderDecoder allows users to specify the functions that are
@@ -72,7 +83,7 @@ func GetStamp() int {
 //and returning the underlying go object as an interface. The returned
 //value must by type cast before it can be used
 func CustomEncoderDecoder(encoder func(interface{}) ([]byte, error), decoder func([]byte) (interface{}, error)) {
-	initDinv()
+	initDinv("")
 	gvLogger := GetLogger()
 	gvLogger.SetEncoderDecoder(encoder, decoder)
 }
@@ -80,11 +91,14 @@ func CustomEncoderDecoder(encoder func(interface{}) ([]byte, error), decoder fun
 //initDinv instatiates a logger for the running process, and generates
 //an id for it. This method is called only once per logger, and
 //writes the first log.
-func initDinv() {
+func initDinv(hostName string) {
 	if !initialized {
-		stamp = time.Now().Nanosecond()
-		stampString := fmt.Sprintf("%d", stamp)
-		goVecLogger = govec.Initialize(stampString, stampString+".log")
+		if hostName == "" {
+			id = fmt.Sprintf("%d", time.Now().Nanosecond())
+		} else {
+			id = hostName
+		}
+		goVecLogger = govec.Initialize(id, id+".log")
 		initialized = true
 	}
 }

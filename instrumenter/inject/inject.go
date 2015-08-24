@@ -22,7 +22,6 @@ import (
 //and is designed to have the package name written at runtime
 
 var Encoder *gob.Encoder //global
-var ReadableLog *os.File
 var packageName string
 
 //body code contains utility functions called by the code injected at
@@ -34,17 +33,17 @@ var packageName string
 func InstrumenterInit(pname string) {
 	if Encoder == nil {
 		packageName = pname
-		stamp := instrumenter.GetStamp()
-		encodedLogname := fmt.Sprintf("%s-%dEncoded.txt", packageName, stamp)
+		id := instrumenter.GetId()
+		encodedLogname := fmt.Sprintf("%s-%sEncoded.txt", packageName, id)
 		encodedLog, _ := os.Create(encodedLogname)
 		Encoder = gob.NewEncoder(encodedLog)
 	}
 }
 
-func CreatePoint(vars []interface{}, varNames []string, id string, logger *govec.GoLog, hash int) Point {
+func CreatePoint(vars []interface{}, varNames []string, id string, logger *govec.GoLog, hash string) Point {
 	numVars := len(varNames)
 	dumps := make([]NameValuePair, 0)
-	hashedId := fmt.Sprintf("%d", hash) + "_" + id
+	hashedId := hash + "_" + id
 	for i := 0; i < numVars; i++ {
 		if vars[i] != nil {
 			switch reflect.TypeOf(vars[i]).Kind() {
