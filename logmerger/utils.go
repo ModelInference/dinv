@@ -8,8 +8,11 @@ Edited: July 6 2015
 package logmerger
 
 import (
+	"errors"
 	"fmt"
+	"os"
 	"regexp"
+	"strconv"
 
 	"github.com/arcaneiceman/GoVector/govec/vclock"
 )
@@ -154,6 +157,26 @@ func sumTime(clockSet [][]vclock.VClock) int {
 	return max
 }
 
+func ClockFromString(clock, regex string) (*vclock.VClock, error) {
+	re := regexp.MustCompile(regex)
+	matches := re.FindAllStringSubmatch(clock, -1)
+	ids := make([]string, 0)
+	ticks := make([]int, 0)
+	for i := range matches {
+		ids = append(ids, matches[i][1])
+		time, err := strconv.Atoi(matches[i][2])
+		ticks = append(ticks, time)
+		if err != nil {
+			return nil, err
+		}
+	}
+	extractedClock := ConstructVclock(ids, ticks)
+	if extractedClock == nil {
+		return nil, errors.New("unable to extract clock\n")
+	}
+	return extractedClock, nil
+}
+
 //idCLockMapper returns a set of id strings corresponding to the
 //owners of each array of vector clocks. ie if clocks[i] had the host id
 //HOST, the returned [i]string = "HOST"
@@ -208,4 +231,17 @@ func getClockIds(clock *vclock.VClock) []string {
 		ids = append(ids, match[1])
 	}
 	return ids
+}
+
+//fileExists returns true if the file specified by path exists. If not
+//false is returned, along with an error.
+func fileExists(path string) (bool, error) {
+	_, err := os.Stat(path)
+	if err == nil {
+		return true, nil
+	}
+	if os.IsNotExist(err) {
+		return false, nil
+	}
+	return false, err
 }

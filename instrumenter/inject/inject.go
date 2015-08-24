@@ -7,9 +7,9 @@ import (
 	"reflect"
 
 	"bitbucket.org/bestchai/dinv/instrumenter"
+	"bitbucket.org/bestchai/dinv/logmerger"
 
 	"github.com/arcaneiceman/GoVector/govec"
-	"github.com/arcaneiceman/GoVector/govec/vclock"
 )
 
 //TODO move structs to seperate file remove duplication in log merger
@@ -40,15 +40,15 @@ func InstrumenterInit(pname string) {
 	}
 }
 
-func CreatePoint(vars []interface{}, varNames []string, id string, logger *govec.GoLog, hash string) Point {
+func CreatePoint(vars []interface{}, varNames []string, id string, logger *govec.GoLog, hash string) logmerger.Point {
 	numVars := len(varNames)
-	dumps := make([]NameValuePair, 0)
+	dumps := make([]logmerger.NameValuePair, 0)
 	hashedId := hash + "_" + id
 	for i := 0; i < numVars; i++ {
 		if vars[i] != nil {
 			switch reflect.TypeOf(vars[i]).Kind() {
 			case reflect.String, reflect.Int:
-				var dump NameValuePair
+				var dump logmerger.NameValuePair
 				dump.VarName = varNames[i]
 				dump.Value = vars[i]
 				dump.Type = reflect.TypeOf(vars[i]).String()
@@ -56,31 +56,10 @@ func CreatePoint(vars []interface{}, varNames []string, id string, logger *govec
 			}
 		}
 	}
-	point := Point{dumps, hashedId, logger.GetCurrentVC()}
+	point := logmerger.Point{dumps, hashedId, logger.GetCurrentVC(), 0}
 	return point
 }
 
 func Local(logger *govec.GoLog, id string) {
 	logger.LogLocalEvent(fmt.Sprintf("Dump @ id %s", id))
-}
-
-type Point struct {
-	Dump        []NameValuePair
-	Id          string
-	VectorClock []byte
-}
-
-type NameValuePair struct {
-	VarName string
-	Value   interface{}
-	Type    string
-}
-
-func (nvp NameValuePair) String() string {
-	return fmt.Sprintf("(%s,%s,%s)", nvp.VarName, nvp.Value, nvp.Type)
-}
-
-func (p Point) String() string {
-	clock, _ := vclock.FromBytes(p.VectorClock)
-	return fmt.Sprintf("%s\n%s %s\nVClock : %s\n\n", p.Id, clock.ReturnVCString())
 }
