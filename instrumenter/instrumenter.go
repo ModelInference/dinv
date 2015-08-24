@@ -407,7 +407,7 @@ func GenerateDumpCode(vars []string, lineNumber int, path, packagename string) s
 
 	//injectPoint
 	buffer.WriteString(fmt.Sprintf("\"%s\"}\n", vars[len(vars)-1]))
-	buffer.WriteString(fmt.Sprintf("p%s := inject.CreatePoint(%s_vars, %s_varname,\"%s\",instrumenter.GetLogger(),instrumenter.GetStamp())\n", id, id, id, id))
+	buffer.WriteString(fmt.Sprintf("p%s := inject.CreatePoint(%s_vars, %s_varname,\"%s\",instrumenter.GetLogger(),instrumenter.GetId())\n", id, id, id, id))
 	buffer.WriteString(fmt.Sprintf("inject.Encoder.Encode(p%s)\n", id))
 	return buffer.String()
 }

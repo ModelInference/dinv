@@ -22,13 +22,14 @@ var (
 )
 
 func Client() {
-	//dump
 	rAddr, errR := net.ResolveUDPAddr("udp4", ":8080")
 	printErr(errR)
 	lAddr, errL := net.ResolveUDPAddr("udp4", ":18585")
 	printErr(errL)
 	conn, errDial := net.DialUDP("udp", lAddr, rAddr)
 	printErr(errDial)
+	instrumenter.Initalize("8080")
+	//dump
 
 	for t := 0; t < RUNS; t++ {
 		term1, term2 = rand.Int()%LARGEST_TERM, rand.Int()%LARGEST_TERM
