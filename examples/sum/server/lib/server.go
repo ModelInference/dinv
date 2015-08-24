@@ -52,5 +52,5 @@ func handleConn(conn net.PacketConn) {
 	sum = term1 + term2
 	msg := MarshallInts([]int{sum})
 	conn.WriteTo(instrumenter.Pack(msg), addr)
-	//@dump
+	//@dump sending to client
 }

@@ -143,7 +143,7 @@ func generateCode(program *ProgramWrapper, packageIndex, sourceIndex int) []stri
 		} else {
 			collectedVariables = GetAccessibleVarsInScope(fileRelitiveDumpPosition, program.packages[packageIndex].sources[sourceIndex].comments, program.fset)
 		}
-		dumpcode := GenerateDumpCode(collectedVariables, lineNumber, program.packages[packageIndex].sources[sourceIndex].filename, program.packages[packageIndex].packageName)
+		dumpcode := GenerateDumpCode(collectedVariables, lineNumber, dump.Text, program.packages[packageIndex].sources[sourceIndex].filename, program.packages[packageIndex].packageName)
 
 		logger.Println(dumpcode)
 		generated_code = append(generated_code, dumpcode)
@@ -161,7 +161,7 @@ func generateCode(program *ProgramWrapper, packageIndex, sourceIndex int) []stri
 //injectionCode
 func injectCode(program *ProgramWrapper, packageIndex, sourceIndex int, injectionCode []string) string {
 	count := 0
-	rp := regexp.MustCompile("\\/\\/@dump")
+	rp := regexp.MustCompile("\\/\\/@dump.*")
 	instrumented := rp.ReplaceAllStringFunc(program.packages[packageIndex].sources[sourceIndex].text, func(s string) string {
 		replacement := injectionCode[count]
 		count++
@@ -376,17 +376,19 @@ func GetDumpNodes(file *ast.File) []*ast.Comment {
 //of all variables and their values, and the encoding of a
 //corresponding vector clock
 //TODO Removde Dump dependency on global variable "Logger"
-func GenerateDumpCode(vars []string, lineNumber int, path, packagename string) string {
+func GenerateDumpCode(vars []string, lineNumber int, comment, path, packagename string) string {
 	if len(vars) == 0 {
 		return ""
 	}
 	_, nameWithExt := filepath.Split(path)
 	ext := filepath.Ext(path)
+	commentMessage := strings.Replace(comment, "//@dump", "", -1)  //remove the dump from the comment
+	commentMessage = strings.Replace(commentMessage, " ", "_", -1) //remove the dump from the comment
 	filename := strings.Replace(nameWithExt, ext, "", 1)
 	var buffer bytes.Buffer
 
 	// write vars' values
-	id := packagename + "_" + filename + "_" + strconv.Itoa(lineNumber)
+	id := packagename + "_" + filename + "_" + strconv.Itoa(lineNumber) + "__" + commentMessage + "__"
 	buffer.WriteString(fmt.Sprintf("\ninject.InstrumenterInit(\"%s\")\n", packagename))
 	//potentially log as a local event
 	if dumpsLocalEvents {
