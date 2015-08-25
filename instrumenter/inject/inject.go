@@ -46,14 +46,25 @@ func CreatePoint(vars []interface{}, varNames []string, id string, logger *govec
 	hashedId := hash + "_" + id
 	for i := 0; i < numVars; i++ {
 		if vars[i] != nil {
+			//nasty switch statement for catching most basic go types
+			var dump logmerger.NameValuePair
+			dump.VarName = varNames[i]
+			dump.Value = vars[i]
 			switch reflect.TypeOf(vars[i]).Kind() {
-			case reflect.String, reflect.Int:
-				var dump logmerger.NameValuePair
-				dump.VarName = varNames[i]
-				dump.Value = vars[i]
-				dump.Type = reflect.TypeOf(vars[i]).String()
-				dumps = append(dumps, dump)
+			case reflect.Bool:
+				dump.Type = "boolean"
+			case reflect.Int, reflect.Int8, reflect.Int16, reflect.Int32, reflect.Int64,
+				reflect.Uint, reflect.Uint8, reflect.Uint16, reflect.Uint32, reflect.Uint64:
+				dump.Type = "int"
+			case reflect.Float32, reflect.Float64:
+				dump.Type = "float"
+			case reflect.String:
+				dump.Type = "string"
+			//unknown type to daikon don't add the variable
+			default:
+				continue
 			}
+			dumps = append(dumps, dump)
 		}
 	}
 	point := logmerger.Point{dumps, hashedId, logger.GetCurrentVC(), 0}

@@ -252,11 +252,7 @@ func writeValues(file *os.File, log []Point) {
 		for i := range point.Dump {
 			variable := point.Dump[i]
 			file.WriteString(fmt.Sprintf("%s\n", variable.VarName))
-			if variable.Type == "int" {
-				file.WriteString(fmt.Sprintf("%d\n", variable.Value))
-			} else {
-				file.WriteString(strings.Replace(fmt.Sprintf("%s", variable.Value), "\n", " ", -1) + "\n")
-			}
+			file.WriteString(fmt.Sprintf("%s\n", variable.value()))
 			file.WriteString(fmt.Sprintf("1\n"))
 		}
 		file.WriteString("\n")
@@ -286,12 +282,12 @@ func (nvp NameValuePair) value() string {
 		return fmt.Sprintf("%s", v.Bool())
 	case reflect.Int, reflect.Int8, reflect.Int16, reflect.Int32, reflect.Int64:
 		return fmt.Sprintf("%d", v.Int())
-	case reflect.Float32, reflect.Float64:
-		return fmt.Sprintf("%b", v.Float())
 	case reflect.Uint, reflect.Uint8, reflect.Uint16, reflect.Uint32, reflect.Uint64:
 		return fmt.Sprintf("%d", v.Uint())
+	case reflect.Float32, reflect.Float64:
+		return fmt.Sprintf("%.2f", v.Float())
 	case reflect.String:
-		return fmt.Sprintf("%s", v.String())
+		return fmt.Sprintf("%s", strings.Replace(fmt.Sprintf("%s", v.String()), "\n", " ", -1))
 	default:
 		return "Unknown type or value"
 	}

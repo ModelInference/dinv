@@ -210,8 +210,8 @@ func findFunction(stmt ast.Stmt, decls []ast.Decl) int {
 //restructured. The variables returned should be thoses affected by
 //IPC around a particular dump statement, not the entire program
 func getAffectedVars(program *ProgramWrapper) []string {
-	recvNodes := detectFunctionCalls(program.packages[0].sources[0].source, "conn", []string{"Read", "ReadFrom"})
-	sendNodes := detectFunctionCalls(program.packages[0].sources[0].source, "conn", []string{"Write", "WriteTo"})
+	recvNodes := detectFunctionCalls(program.packages[0].sources[0].source, "instrumenter", []string{"Unpack"})
+	sendNodes := detectFunctionCalls(program.packages[0].sources[0].source, "instrumenter", []string{"Pack"})
 	vars := sliceComputedVariables(program, recvNodes, programslicer.ComputeForwardSlice)
 	vars = append(vars, sliceComputedVariables(program, sendNodes, programslicer.ComputeBackwardSlice)...)
 	var varNames []string

@@ -6,13 +6,14 @@ import (
 	"os"
 
 	"bitbucket.org/bestchai/dinv/instrumenter"
+	"bitbucket.org/bestchai/dinv/instrumenter/inject"
 )
 
 const SIZEOFINT = 4
 
 var (
-	buf               [1024]byte
-	term1, term2, sum int
+	buf			[1024]byte
+	term1, term2, sum	int
 )
 
 func Server() {
@@ -40,7 +41,13 @@ func handleConn(conn net.PacketConn) {
 	_, addr, err := conn.ReadFrom(buf[0:])
 	args := instrumenter.Unpack(buf[0:]).([]byte)
 	printErr(err)
-	//@dump
+	
+inject.InstrumenterInit("server")
+server_server_43_____vars := []interface{}{SIZEOFINT,buf,term1,term2,sum}
+server_server_43_____varname := []string{"SIZEOFINT","buf","term1","term2","sum"}
+pserver_server_43____ := inject.CreatePoint(server_server_43_____vars, server_server_43_____varname,"server_server_43____",instrumenter.GetLogger(),instrumenter.GetId())
+inject.Encoder.Encode(pserver_server_43____)
+
 	//fmt.Printf("recieved: %s of size %d, with args %d", buf, n, args)
 
 	//adding local events for testing lattice /jan 23 2015
@@ -52,5 +59,11 @@ func handleConn(conn net.PacketConn) {
 	sum = term1 + term2
 	msg := MarshallInts([]int{sum})
 	conn.WriteTo(instrumenter.Pack(msg), addr)
-	//@dump sending to client
+	
+inject.InstrumenterInit("server")
+server_server_55___sending_to_client___vars := []interface{}{term1,term2,sum,SIZEOFINT,buf}
+server_server_55___sending_to_client___varname := []string{"term1","term2","sum","SIZEOFINT","buf"}
+pserver_server_55___sending_to_client__ := inject.CreatePoint(server_server_55___sending_to_client___vars, server_server_55___sending_to_client___varname,"server_server_55___sending_to_client__",instrumenter.GetLogger(),instrumenter.GetId())
+inject.Encoder.Encode(pserver_server_55___sending_to_client__)
+
 }
