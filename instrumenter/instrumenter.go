@@ -290,7 +290,14 @@ func getGlobalVariables(file *ast.File, fset *token.FileSet) []string {
 	global_objs := file.Scope.Objects
 	for identifier, _ := range global_objs {
 		//get variables of type constant and Var
-		if global_objs[identifier].Kind == ast.Var || global_objs[identifier].Kind == ast.Con { //|| global_objs[identifier].Kind == ast.Typ { //can be used for diving into structs
+		switch global_objs[identifier].Kind {
+		case ast.Var:
+			switch global_objs[identifier].Type {
+			case ast.StructType:
+				fmt.Println("FOUND STRUCT")
+			}
+
+		case ast.Con: //|| global_objs[identifier].Kind == ast.Typ { //can be used for diving into structs
 			logger.Printf("Global Found :%s\n", fmt.Sprintf("%v", identifier))
 			results = append(results, fmt.Sprintf("%v", identifier))
 		}
