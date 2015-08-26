@@ -3,8 +3,6 @@ package client
 import (
 	"fmt"
 	"os"
-	"bitbucket.org/bestchai/dinv/instrumenter/inject"
-	"bitbucket.org/bestchai/dinv/instrumenter"
 )
 
 func printErr(err error) {
@@ -22,13 +20,7 @@ func MarshallInts(args []int) []byte {
 			marshalled[(j*SIZEOFINT)+i] = byte(args[j] >> ((SIZEOFINT - 1 - i) * 8))
 		}
 	}
-	
-inject.InstrumenterInit("client")
-client_marshall_23_____vars := []interface{}{i,j,marshalled}
-client_marshall_23_____varname := []string{"i","j","marshalled"}
-pclient_marshall_23____ := inject.CreatePoint(client_marshall_23_____vars, client_marshall_23_____varname,"client_marshall_23____",instrumenter.GetLogger(),instrumenter.GetId())
-inject.Encoder.Encode(pclient_marshall_23____)
-
+	//@dump
 	return marshalled
 }
 

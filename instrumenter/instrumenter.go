@@ -285,24 +285,116 @@ func matchCallExpression(n *ast.CallExpr, varName string, funcNames []string) bo
 	return false
 }
 
+/*
+func (im ImportAdder) Visit(node ast.Node) (w ast.Visitor) {
+	switch t := node.(type) {
+	case *ast.GenDecl:
+		if t.Tok == token.IMPORT {
+			//remove duplicate imports
+			releventImports := nonDuplicateImports(im.PackagesToImport, t.Specs)
+			newSpecs := make([]ast.Spec, len(t.Specs)+len(releventImports))
+			for i, spec := range t.Specs {
+				newSpecs[i] = spec
+			}
+			for i, spec := range releventImports {
+				newPackage := &ast.BasicLit{token.NoPos, token.STRING, spec}
+				newSpecs[len(t.Specs)+i] = &ast.ImportSpec{nil, nil, newPackage, nil, token.NoPos}
+			}
+
+			t.Specs = newSpecs
+			return nil
+		}
+	}
+	return im
+}*/
+
+type structIds struct {
+	fields []string
+	types  []string
+}
+
 func getGlobalVariables(file *ast.File, fset *token.FileSet) []string {
 	var results []string
+
 	global_objs := file.Scope.Objects
 	for identifier, _ := range global_objs {
 		//get variables of type constant and Var
 		switch global_objs[identifier].Kind {
-		case ast.Var:
-			switch global_objs[identifier].Type {
-			case ast.StructType:
-				fmt.Println("FOUND STRUCT")
-			}
-
-		case ast.Con: //|| global_objs[identifier].Kind == ast.Typ { //can be used for diving into structs
-			logger.Printf("Global Found :%s\n", fmt.Sprintf("%v", identifier))
+		case ast.Var, ast.Con: //|| global_objs[identifier].Kind == ast.Typ { //can be used for diving into structs
+			fmt.Printf("Global Found :%s\n", fmt.Sprintf("%v", identifier))
 			results = append(results, fmt.Sprintf("%v", identifier))
 		}
 	}
+	structVars := collectStructs(results, file)
+	results = append(results, structVars...)
 	return results
+}
+
+func collectStructs(varNames []string, file *ast.File) []string {
+	var structs map[string]structIds = make(map[string]structIds)
+	//Collect all the structs by name field and type in the program
+	ast.Inspect(file, func(n ast.Node) bool {
+		switch x := n.(type) {
+		case *ast.TypeSpec:
+			switch typ := x.Type.(type) {
+			case *ast.StructType:
+				tmp := new(structIds)
+				name := x.Name.Name
+				for _, field := range typ.Fields.List {
+					if len(field.Names) < 1 {
+						return false
+					}
+					tmp.fields = append(tmp.fields, field.Names[0].Name)
+					tmpType, ok := field.Type.(*ast.Ident)
+					if !ok {
+						return false
+					}
+					tmp.types = append(tmp.types, tmpType.Name)
+
+				}
+				structs[name] = *tmp
+			}
+		}
+		return true
+	})
+	//add the named extensions to each struce itterativle
+	var structResults []string
+	ast.Inspect(file, func(n ast.Node) bool {
+		switch x := n.(type) {
+		case *ast.ValueSpec:
+			for i := range varNames {
+				if x.Names[0].Name == varNames[i] {
+					structType, ok := x.Type.(*ast.Ident)
+					if !ok {
+						return false
+					}
+					_, ok = structs[structType.Name]
+					if ok {
+						structResults = append(structResults, structClosure(structs, x.Names[0].Name, structType.Name)...)
+					}
+
+				}
+			}
+		}
+		return true
+	})
+	return structResults
+}
+
+//structClosure returns the names of all struct varialbes, including
+//nested structs
+func structClosure(s map[string]structIds, name, stype string) []string {
+	var names []string
+	id := s[stype]
+	for i := range id.fields {
+		names = append(names, name+"."+id.fields[i])
+		_, ok := s[id.types[i]]
+		if ok {
+			names = append(names, structClosure(s, name+"."+id.fields[i], id.types[i])...)
+		}
+	}
+	return names
+
 }
 
 //GetAccessibleVarsInScope returns the variables names of all
@@ -342,6 +434,7 @@ func getLocalVariables(dumpPosition int, file *ast.File, fset *token.FileSet) []
 					}
 				//collect variables from definition assignments
 				case *ast.AssignStmt:
+					logger.Println("Assignment found")
 					if t.Tok == token.DEFINE {
 						for _, exp := range t.Lhs {
 							ast.Inspect(exp, func(n ast.Node) bool {
@@ -359,6 +452,14 @@ func getLocalVariables(dumpPosition int, file *ast.File, fset *token.FileSet) []
 				}
 			}
 		}
+	}
+	for i := range results {
+		fmt.Printf("found local %s\n", results[i])
+	}
+	structVars := collectStructs(results, file)
+	results = append(results, structVars...)
+	for i := range results {
+		fmt.Printf("found local %s\n", results[i])
 	}
 
 	return results
