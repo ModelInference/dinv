@@ -57,54 +57,66 @@ func mineConsistentCuts(lattice [][]vclock.VClock, clocks [][]vclock.VClock, del
 //within a cut subsets of clocks can be totally ordered with one
 //another. These orderings are extracted from the log of clocks, are
 //retured as sets of indexed clock values. Where -> denotes a send and
-//matching recieve. Example: i -> j -> k, and x -> y, the returned
+//matching receieve. Example: i -> j -> k, and x -> y, the returned
 //indexes would be [[k,j,i],[y,x]]
 func totalOrderFromCut(cut Cut, clocks [][]vclock.VClock) [][]int {
-	used := make([]bool, len(cut.Clocks))
+	allreadyOrdered := make([]bool, len(cut.Clocks))
 	ancestors := countAncestors(cut)
 	ids := idClockMapper(clocks)
 	ordering := make([][]int, 0)
-	extracted := true
-	for extracted {
-		extracted = false
-		//get oldest clock
-		max, index := -1, -1
-		for i := range ancestors {
-			if ancestors[i] > max && !used[i] {
-				max, index = ancestors[i], i
-			}
-		}
-		if max < 0 {
-			return ordering
+	for true {
+		//find the root host of the totally ordered chain
+		rootHost, found := findUnorderedHost(ancestors, allreadyOrdered)
+		if !found {
+			break
 		}
 		ordering = append(ordering, make([]int, 0))
-		ordering[len(ordering)-1] = append(ordering[len(ordering)-1], index)
-		used[index] = true
-		extracted = true
-
-		child := true
-		//TODO fix the base case for some reason this is making pairs
-		//where it should not be
-		for child {
-			child = false
-			maxEvent, sendIndex := -1, -1
-			for i := range cut.Clocks {
-				if i != index && !used[i] {
-					receiver, event, found := matchSendAndReceive(cut.Clocks[i], clocks, ids[i])
-					if found && receiver == index && event > maxEvent {
-						maxEvent, sendIndex = event, i
-					}
-				}
+		appendOrdering(ordering, allreadyOrdered, rootHost)
+		//find all other hosts in the totally ordered chain
+		for true {
+			sendersIndex, found := findSenderInCut(cut, clocks, allreadyOrdered, ids, rootHost)
+			if !found {
+				break
 			}
-			if maxEvent >= 0 {
-				ordering[len(ordering)-1] = append(ordering[len(ordering)-1], sendIndex)
-				used[sendIndex] = true
-				child = true
-				index = sendIndex
-			}
+			appendOrdering(ordering, allreadyOrdered, sendersIndex)
+			rootHost = sendersIndex
 		}
 	}
 	return ordering
+}
+
+func appendOrdering(ordering [][]int, ordered []bool, hostIndex int) {
+	ordering[len(ordering)-1] = append(ordering[len(ordering)-1], hostIndex)
+	ordered[hostIndex] = true
+}
+
+func findSenderInCut(cut Cut, clocks [][]vclock.VClock, ordered []bool, ids []string, receiver int) (sender int, found bool) {
+	sender, found = -1, false
+	newestEvent := -1
+	//find the most recent receive on host rootHost
+	for potentialSender := range cut.Clocks {
+		if potentialSender != receiver && !ordered[potentialSender] {
+			matchedReceiver, event, matched := matchSendAndReceive(cut.Clocks[potentialSender], clocks, ids[potentialSender])
+			if matched && matchedReceiver == receiver && event > newestEvent {
+				newestEvent, sender, found = event, potentialSender, true
+			}
+		}
+	}
+	return sender, found
+}
+
+func findUnorderedHost(ancestors []int, ordered []bool) (unorderedHost int, found bool) {
+	//get oldest clock
+	unorderedHost, found = -1, false
+	maxAncestors := -1
+	for i := range ancestors {
+		//search for a clock that has yet to be allreadyOrdered with the
+		//newest value
+		if ancestors[i] > maxAncestors && !ordered[i] {
+			maxAncestors, unorderedHost, found = ancestors[i], i, true
+		}
+	}
+	return unorderedHost, found
 }
 
 //countAncestors returns the number of ancestors each clock in a cut
