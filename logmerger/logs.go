@@ -279,7 +279,7 @@ func (nvp NameValuePair) value() string {
 	v := reflect.ValueOf(nvp.Value)
 	switch v.Kind() {
 	case reflect.Bool:
-		return fmt.Sprintf("%s", v.Bool())
+		return fmt.Sprintf("%t", v.Bool())
 	case reflect.Int, reflect.Int8, reflect.Int16, reflect.Int32, reflect.Int64:
 		return fmt.Sprintf("%d", v.Int())
 	case reflect.Uint, reflect.Uint8, reflect.Uint16, reflect.Uint32, reflect.Uint64:
