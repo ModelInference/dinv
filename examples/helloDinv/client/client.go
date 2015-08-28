@@ -9,7 +9,6 @@ import (
 )
 
 func main() {
-
 	// sending UDP packet to specified address and port
 	conn := setupConnection(8080, 18585)
 	msg := "Hello DInv!"
