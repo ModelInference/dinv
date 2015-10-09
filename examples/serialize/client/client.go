@@ -16,6 +16,7 @@ func main() {
 	setArgs()
 	// sending UDP packet to specified address and port
 	conn := setupConnection(8080, listeningPort)
+	instrumenter.Initalize(fmt.Sprintf("listeningPort"))
 	for i := 0; i < requests; i++ {
 		msg := []int{listeningPort, i}
 		instrumentedMessage := instrumenter.Pack(msg)

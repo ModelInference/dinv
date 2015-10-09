@@ -44,7 +44,7 @@ function runTestProgram {
     cd $testDir/server
     go run server.go &
     sleep 1
-    clients=$1
+    clients=3
     cd $testDir/client
     for (( i = 0 ; i <clients ;i++))
     do
