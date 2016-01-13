@@ -436,6 +436,7 @@ Detected invariant include:
 #Command Line Usage
 
 Dinv has a set of command line arguments that can be broken into 3 categories
+
  * instrumenter arguments
  * logmerger arguments
  * arguments for both
