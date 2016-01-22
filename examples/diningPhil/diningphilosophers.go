@@ -7,6 +7,10 @@ import (
 	"net"
 	"os"
 	"time"
+
+	"bitbucket.org/bestchai/dinv/instrumenter"
+
+	"github.com/arcaneiceman/GoVector/govec"
 )
 
 const (
@@ -22,6 +26,7 @@ var (
 	Thinking       bool
 	LeftChopstick  bool
 	RightChopstick bool
+	Logger         *govec.GoLog
 )
 
 func EatingState() {
@@ -85,14 +90,7 @@ func makePhilosopher(port, neighbourPort int) *Philosopher {
 	go func() {
 		defer fmt.Printf("Chopstick #%d\n is down", port) //attempt to show when the chopsticks are no longer available
 		for true {
-			var buf [1024]byte
-			_, addr, err := conn.ReadFrom(buf[0:])
-			if err != nil {
-				panic(err)
-			}
-			fmt.Printf("Received Request\n")
-			uArgs := UnmarshallInts(buf[0:])
-			req := uArgs[0]
+			req, addr := getRequest(conn)
 			go func(request int) {
 				switch request {
 				case ReleaseStick:
@@ -103,13 +101,25 @@ func makePhilosopher(port, neighbourPort int) *Philosopher {
 					<-chopstick
 					fmt.Printf("Giving stick on %d\n", port)
 					resp := MarshallInts([]int{Ack})
-					conn.WriteTo(resp, addr)
+					conn.WriteTo(instrumenter.Pack(resp), addr)
 				}
 			}(req)
 		}
 	}()
 	fmt.Printf("server launched")
 	return &Philosopher{port, neighbourPort, chopstick, neighbour}
+}
+
+func getRequest(conn net.PacketConn) (int, net.Addr) {
+	var buf [1024]byte
+	_, addr, err := conn.ReadFrom(buf[0:])
+	if err != nil {
+		panic(err)
+	}
+	args := instrumenter.Unpack(buf[0:]).([]byte)
+	fmt.Printf("Received Request\n")
+	uArgs := UnmarshallInts(args)
+	return uArgs[0], addr
 }
 
 func (phil *Philosopher) think() {
@@ -128,19 +138,28 @@ func (phil *Philosopher) getChopsticks() {
 	fmt.Printf("request chopstick %d -> %d\n", phil.id, phil.neighbourId)
 	timeout := make(chan bool, 1)
 	neighbourChopstick := make(chan bool, 1)
-	//request chopstick function
 	go func() { time.Sleep(time.Duration(1e9)); timeout <- true }()
 	<-phil.chopstick
 	LeftChopstickState()
 	//timeout function
 	fmt.Printf("%v got his chopstick.\n", phil.id)
 
+	//request chopstick function
 	go func() {
+		//Send Request to Neighbour
 		var buf [1024]byte
 		req := MarshallInts([]int{RequestStick})
-		phil.neighbour.Write(req)
-		phil.neighbour.Read(buf[0:])
-		args := UnmarshallInts(buf[0:])
+		phil.neighbour.Write(instrumenter.Pack(req))
+
+		//Read response from Neighbour
+		_, err := phil.neighbour.Read(buf[0:])
+		if err != nil {
+			//Connection most likely timed out, chopstick unatainable
+			fmt.Printf(err.Error())
+			return
+		}
+		uArgs := instrumenter.Unpack(buf[0:]).([]byte)
+		args := UnmarshallInts(uArgs)
 		resp := args[0]
 		if resp == Ack {
 			fmt.Printf("Received chopstick %d <- %d\n", phil.id, phil.neighbourId)
@@ -165,7 +184,7 @@ func (phil *Philosopher) returnChopsticks() {
 	phil.chopstick <- true
 	req := MarshallInts([]int{ReleaseStick})
 	fmt.Printf("Returning stick %d -> %d\n", phil.id, phil.neighbourId)
-	phil.neighbour.Write(req)
+	phil.neighbour.Write(instrumenter.Pack(req))
 	ThinkingState()
 }
 
@@ -188,7 +207,10 @@ func main() {
 	philosopher := makePhilosopher(myPort, neighbourPort)
 	philosopher.dine()
 	fmt.Printf("%v is done dining\n", philosopher.id)
-	time.Sleep(time.Duration(1000))
+	//TODO this sleep is not working, however the vector clocks are
+	//now sending to one another.
+	time.Sleep(time.Duration(10000000))
+	fmt.Println("death")
 }
 
 //Marshalling Functions
@@ -221,34 +243,3 @@ func PrintErr(err error) {
 		os.Exit(1)
 	}
 }
-
-/*
-old main function used when all the hosts were mannaged by a single go program
-func main() {
-	philosophers := make([]*Philosopher, n)
-	for i := 0; i < n; i++ {
-		philosophers[i] = makePhilosopher(i, (i+1)%n)
-	}
-	setup := false
-	fmt.Printf("settingUp\n")
-	for !setup {
-		setup = true
-		for i := 0; i < n; i++ {
-			if philosophers[i] == nil {
-				//fmt.Printf("%d", i)
-				setup = false
-			}
-		}
-	}
-	fmt.Printf("There are %v philosophers sitting at a table.\n", len(philosophers))
-	fmt.Println("They each have one chopstick, and must borrow from their neighbor to eat.")
-	announce := make(chan *Philosopher)
-	for _, phil := range philosophers {
-		go phil.dine(announce)
-	}
-	for i := 0; i < len(philosophers); i++ {
-		phil := <-announce
-		fmt.Printf("%v is done dining %d/%d.\n", phil.id, i, n-1)
-	}
-}
-*/
