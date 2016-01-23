@@ -17,6 +17,7 @@ const (
 	Ack          = 0xFF
 	RequestStick = 1
 	ReleaseStick = 2
+	ExcuseMe     = 3
 	SIZEOFINT    = 4
 	n            = 50
 )
@@ -26,6 +27,7 @@ var (
 	Thinking       bool
 	LeftChopstick  bool
 	RightChopstick bool
+	Excused        bool
 	Logger         *govec.GoLog
 )
 
@@ -34,6 +36,7 @@ func EatingState() {
 	Thinking = false
 	LeftChopstick = true
 	RightChopstick = true
+	//@dump
 }
 
 func ThinkingState() {
@@ -41,18 +44,21 @@ func ThinkingState() {
 	Thinking = true
 	LeftChopstick = false
 	RightChopstick = false
+	//@dump
 }
 
 func LeftChopstickState() {
 	Eating = false
 	Thinking = true
 	LeftChopstick = true
+	//@dump
 }
 
 func RightChopstickState() {
 	Eating = false
 	Thinking = true
 	RightChopstick = true
+	//@dump
 }
 
 type Philosopher struct {
@@ -102,6 +108,11 @@ func makePhilosopher(port, neighbourPort int) *Philosopher {
 					fmt.Printf("Giving stick on %d\n", port)
 					resp := MarshallInts([]int{Ack})
 					conn.WriteTo(instrumenter.Pack(resp), addr)
+				case ExcuseMe:
+					if !Excused {
+						fmt.Printf("%d has been excused from the table\n", port)
+					}
+					Excused = true
 				}
 			}(req)
 		}
@@ -117,7 +128,7 @@ func getRequest(conn net.PacketConn) (int, net.Addr) {
 		panic(err)
 	}
 	args := instrumenter.Unpack(buf[0:]).([]byte)
-	fmt.Printf("Received Request\n")
+	//fmt.Printf("Received Request\n")
 	uArgs := UnmarshallInts(args)
 	return uArgs[0], addr
 }
@@ -195,6 +206,17 @@ func (phil *Philosopher) dine() {
 	phil.returnChopsticks()
 }
 
+//ask to be excused untill someone says you can
+func (phil *Philosopher) leaveTable() {
+	for true {
+		req := MarshallInts([]int{ExcuseMe})
+		phil.neighbour.Write(instrumenter.Pack(req))
+		if Excused == true {
+			break
+		}
+	}
+}
+
 //main should take as an argument the port number of the philosoper
 //and that of its neighbour
 func main() {
@@ -205,12 +227,12 @@ func main() {
 	flag.IntVar(&neighbourPort, "nP", 8081, "The port this host neighbour will listen on")
 	flag.Parse()
 	philosopher := makePhilosopher(myPort, neighbourPort)
-	philosopher.dine()
-	fmt.Printf("%v is done dining\n", philosopher.id)
-	//TODO this sleep is not working, however the vector clocks are
-	//now sending to one another.
-	time.Sleep(time.Duration(10000000))
-	fmt.Println("death")
+	for i := 0; i < 10; i++ {
+		philosopher.dine()
+	}
+	fmt.Printf("%v is done dining---------------------------------------------\n", philosopher.id)
+	philosopher.leaveTable()
+	fmt.Printf("%d left the table --------------------------------------------\n", philosopher.id)
 }
 
 //Marshalling Functions
