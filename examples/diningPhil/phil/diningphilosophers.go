@@ -36,7 +36,6 @@ func EatingState() {
 	Thinking = false
 	LeftChopstick = true
 	RightChopstick = true
-	//@dump
 }
 
 func ThinkingState() {
@@ -44,21 +43,18 @@ func ThinkingState() {
 	Thinking = true
 	LeftChopstick = false
 	RightChopstick = false
-	//@dump
 }
 
 func LeftChopstickState() {
 	Eating = false
 	Thinking = true
 	LeftChopstick = true
-	//@dump
 }
 
 func RightChopstickState() {
 	Eating = false
 	Thinking = true
 	RightChopstick = true
-	//@dump
 }
 
 type Philosopher struct {
@@ -114,6 +110,7 @@ func makePhilosopher(port, neighbourPort int) *Philosopher {
 					}
 					Excused = true
 				}
+				//@dump
 			}(req)
 		}
 	}()
@@ -143,6 +140,7 @@ func (phil *Philosopher) eat() {
 	EatingState()
 	fmt.Printf("%d is eating.\n", phil.id)
 	time.Sleep(time.Duration(rand.Int63n(1e9)))
+	//@dump
 }
 
 func (phil *Philosopher) getChopsticks() {
@@ -177,6 +175,7 @@ func (phil *Philosopher) getChopsticks() {
 			neighbourChopstick <- true
 			RightChopstickState()
 		}
+		//@dump
 	}()
 	select {
 	case <-neighbourChopstick:
@@ -197,6 +196,7 @@ func (phil *Philosopher) returnChopsticks() {
 	fmt.Printf("Returning stick %d -> %d\n", phil.id, phil.neighbourId)
 	phil.neighbour.Write(instrumenter.Pack(req))
 	ThinkingState()
+	//@dump
 }
 
 func (phil *Philosopher) dine() {
@@ -204,6 +204,7 @@ func (phil *Philosopher) dine() {
 	phil.getChopsticks()
 	phil.eat()
 	phil.returnChopsticks()
+	//@dump
 }
 
 //ask to be excused untill someone says you can
@@ -215,6 +216,7 @@ func (phil *Philosopher) leaveTable() {
 			break
 		}
 	}
+	//@dump
 }
 
 //main should take as an argument the port number of the philosoper
@@ -227,7 +229,7 @@ func main() {
 	flag.IntVar(&neighbourPort, "nP", 8081, "The port this host neighbour will listen on")
 	flag.Parse()
 	philosopher := makePhilosopher(myPort, neighbourPort)
-	for i := 0; i < 10; i++ {
+	for i := 0; i < 100; i++ {
 		philosopher.dine()
 	}
 	fmt.Printf("%v is done dining---------------------------------------------\n", philosopher.id)

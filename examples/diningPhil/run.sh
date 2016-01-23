@@ -30,7 +30,7 @@ function runTestPrograms {
         let "neighbourPort= (i+1)%Hosts + BasePort"
         go run diningphilosophers.go -mP $hostPort -nP $neighbourPort &
     done
-    sleep 10
+    sleep 60
     kill `ps | pgrep dining | awk '{print $1}'`
 }
 
