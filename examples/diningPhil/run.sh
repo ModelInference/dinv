@@ -36,7 +36,7 @@ function runTestPrograms {
 
 function runLogMerger {
     cd $testDir/diningPhil
-    dinv -v -l -name="fruits" -shiviz *Encoded.txt *Log.txt
+    dinv -v -l -name="philosophers" -shiviz *Encoded.txt *Log.txt
 }
 
 function shivizMerge {
@@ -77,11 +77,11 @@ then
     cleanUp
     exit
 fi
-installDinv
-instrument $P1
-runTestPrograms
-runLogMerger
-runDaikon
+time installDinv
+time instrument $P1
+time runTestPrograms
+time runLogMerger
+time runDaikon
 if [ "$1" == "-d" ];
 then
     exit
