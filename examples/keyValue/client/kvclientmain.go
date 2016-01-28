@@ -42,6 +42,8 @@ type ValReply struct {
 
 type KeyValService int
 
+var kvService *rpc.Client
+
 // Main server loop.
 func main() {
 	// parse args
@@ -53,11 +55,11 @@ func main() {
 
 	kvAddr := os.Args[1]
 	// Connect to the KV-service via RPC.
-	kvService, err := rpc.Dial("tcp", kvAddr)
-	checkError(err)
+	kvService, _ = rpc.Dial("tcp", kvAddr)
+	//checkError(err)
 
-	//Automatic(kvService)
-	Manual(kvService)
+	//Automatic()
+	Manual()
 
 	fmt.Println("\nMission accomplished.")
 }
@@ -70,6 +72,36 @@ func checkError(err error) {
 	}
 }
 
+func get(key string) (kvVal ValReply) {
+	getArgs := GetArgs{key}
+	err := kvService.Call("KeyValService.Get", getArgs, &kvVal)
+	checkError(err)
+	fmt.Println("KV.get(" + getArgs.Key + ") = " + kvVal.Val)
+	return kvVal
+}
+
+func put(key, value string) (kvVal ValReply) {
+	putArgs := PutArgs{
+		Key: key,
+		Val: value}
+	err := kvService.Call("KeyValService.Put", putArgs, &kvVal)
+	checkError(err)
+	fmt.Println("KV.put(" + putArgs.Key + "," + putArgs.Val + ") = " + kvVal.Val)
+	return kvVal
+}
+
+func test(key, test, value string) (kvVal ValReply) {
+	tsArgs := TestSetArgs{
+		Key:     key,
+		TestVal: test,
+		NewVal:  value}
+	err := kvService.Call("KeyValService.TestSet", tsArgs, &kvVal)
+	checkError(err)
+	fmt.Println("KV.get(" + tsArgs.Key + "," + tsArgs.TestVal + "," + tsArgs.NewVal + ") = " + kvVal.Val)
+	return kvVal
+
+}
+
 //Control the activity of a client by using keystrokes from the
 //command line. All default values are 42
 //Commands :
@@ -77,35 +109,18 @@ func checkError(err error) {
 // p : put value
 // t : test set
 // e : exit
-func Manual(kvService *rpc.Client) {
-	var (
-		kvVal ValReply //use kvVal for all RPC replies
-		input string   //userInput
-	)
-
+func Manual() {
+	var input string //userInput
 	for true {
 		_, err := fmt.Scanf("%s", &input)
+		checkError(err)
 		switch input {
 		case "g":
-			getArgs := GetArgs{"my-key"}
-			err = kvService.Call("KeyValService.Get", getArgs, &kvVal)
-			checkError(err)
-			fmt.Println("KV.get(" + getArgs.Key + ") = " + kvVal.Val)
+			get("my-key")
 		case "p":
-			putArgs := PutArgs{
-				Key: "my-key",
-				Val: "party-like-its-416"}
-			err = kvService.Call("KeyValService.Put", putArgs, &kvVal)
-			checkError(err)
-			fmt.Println("KV.put(" + putArgs.Key + "," + putArgs.Val + ") = " + kvVal.Val)
+			put("my-key", "party-like-its-416")
 		case "t":
-			tsArgs := TestSetArgs{
-				Key:     "my-key",
-				TestVal: "foo",
-				NewVal:  "bar"}
-			err = kvService.Call("KeyValService.TestSet", tsArgs, &kvVal)
-			checkError(err)
-			fmt.Println("KV.get(" + tsArgs.Key + "," + tsArgs.TestVal + "," + tsArgs.NewVal + ") = " + kvVal.Val)
+			test("my-key", "foo", "bar")
 		case "e":
 			return
 		default:
@@ -116,46 +131,10 @@ func Manual(kvService *rpc.Client) {
 }
 
 //automated client execution
-func Automatic(kvService *rpc.Client) {
-	// Use kvVal for all RPC replies.
-	var kvVal ValReply
-	// Get("my-key")
-	getArgs := GetArgs{"my-key"}
-	err := kvService.Call("KeyValService.Get", getArgs, &kvVal)
-	checkError(err)
-	fmt.Println("KV.get(" + getArgs.Key + ") = " + kvVal.Val)
-
-	// Put("my-key", 2016)
-	putArgs := PutArgs{
-		Key: "my-key",
-		Val: "party-like-its-416"}
-	err = kvService.Call("KeyValService.Put", putArgs, &kvVal)
-	checkError(err)
-	fmt.Println("KV.put(" + putArgs.Key + "," + putArgs.Val + ") = " + kvVal.Val)
-
-	// Get("my-key")
-	getArgs = GetArgs{
-		Key: "my-key"}
-	err = kvService.Call("KeyValService.Get", getArgs, &kvVal)
-	checkError(err)
-	fmt.Println("KV.get(" + getArgs.Key + ") = " + kvVal.Val)
-
-	// TestSet("my-key", "foo", "bar")
-	tsArgs := TestSetArgs{
-		Key:     "my-key",
-		TestVal: "foo",
-		NewVal:  "bar"}
-	err = kvService.Call("KeyValService.TestSet", tsArgs, &kvVal)
-	checkError(err)
-	fmt.Println("KV.get(" + tsArgs.Key + "," + tsArgs.TestVal + "," + tsArgs.NewVal + ") = " + kvVal.Val)
-
-	// TestSet("my-key", "party-like-its-416", "bar")
-	tsArgs = TestSetArgs{
-		Key:     "my-key",
-		TestVal: "party-like-its-416",
-		NewVal:  "bar"}
-	err = kvService.Call("KeyValService.Get", tsArgs, &kvVal)
-	checkError(err)
-	fmt.Println("KV.get(" + tsArgs.Key + "," + tsArgs.TestVal + "," + tsArgs.NewVal + ") = " + kvVal.Val)
-
+func Automatic() {
+	get("my-key")
+	put("my-key", "party-like-its-416")
+	get("my-key")
+	test("my-key", "foo", "bar")
+	test("my-key", "party-like-its-416", "bar")
 }
