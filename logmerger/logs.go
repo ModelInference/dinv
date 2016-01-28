@@ -352,5 +352,7 @@ var namingSchemes = map[string][]string{
 	"colors": []string{
 		"blue", "red", "green", "purple", "black", "orange", "yellow", "gold", "white", "pink", "azure", "brown", "cobalt", "cyan", "grey", "indigo", "jade"},
 	"fruits":       []string{"Apple", "Banana", "Apricot", "Strawberry", "Orange", "Grape", "Raspberry", "Blackberry", "Blueberry", "WaterMelon", "Rambutan", "Lanzones", "Pears", "Plums", "Peaches", "Pineapple", "Cantaloupe", "Papaya", "Jackfruit", "Durian"},
-	"philosophers": []string{"Abelard", "Adorno", "Aquinas", "Arendt", "Aristotle", "Augustine", "Bacon", "Barthes", "Bataille", "Baudrillard", "Beauvoir", "Benjamin", "Berkeley", "Butler", "Camus", "Chomsky", "Cixous", "Deleuze", "Derrida", "Descartes", "Dewey", "Foucault", "Gadamer", "Habermas", "Haraway", "Hegel", "Heidegger", "Hobbes", "Hume", "Husserl", "Irigaray", "James", "Immanuel", "Kristeva", "Tzu", "Levinas", "Locke", "Lyotard", "Merleau-Ponty", "Mill", "Moore", "Nietzsche", "Plato", "Quine", "Rand", "Rousseau", "Sartre", "Schopenhauer", "Spinoza", "Wittgenstein"},
+	"philosophers": []string{"Aristotle", "Chomsky", "Locke", "Nietzsche", "Plato"},
 }
+
+//"philosophers": []string{"Abelard", "Adorno", "Aquinas", "Arendt", "Aristotle", "Augustine", "Bacon", "Barthes", "Bataille", "Baudrillard", "Beauvoir", "Benjamin", "Berkeley", "Butler", "Camus", "Chomsky", "Cixous", "Deleuze", "Derrida", "Descartes", "Dewey", "Foucault", "Gadamer", "Habermas", "Haraway", "Hegel", "Heidegger", "Hobbes", "Hume", "Husserl", "Irigaray", "James", "Immanuel", "Kristeva", "Tzu", "Levinas", "Locke", "Lyotard", "Merleau-Ponty", "Mill", "Moore", "Nietzsche", "Plato", "Quine", "Rand", "Rousseau", "Sartre", "Schopenhauer", "Spinoza", "Wittgenstein"},
