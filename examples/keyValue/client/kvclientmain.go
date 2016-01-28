@@ -52,17 +52,76 @@ func main() {
 	}
 
 	kvAddr := os.Args[1]
-
 	// Connect to the KV-service via RPC.
 	kvService, err := rpc.Dial("tcp", kvAddr)
 	checkError(err)
 
+	//Automatic(kvService)
+	Manual(kvService)
+
+	fmt.Println("\nMission accomplished.")
+}
+
+// If error is non-nil, print it out and halt.
+func checkError(err error) {
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "Error ", err.Error())
+		os.Exit(1)
+	}
+}
+
+//Control the activity of a client by using keystrokes from the
+//command line. All default values are 42
+//Commands :
+// g : get value
+// p : put value
+// t : test set
+// e : exit
+func Manual(kvService *rpc.Client) {
+	var (
+		kvVal ValReply //use kvVal for all RPC replies
+		input string   //userInput
+	)
+
+	for true {
+		_, err := fmt.Scanf("%s", &input)
+		switch input {
+		case "g":
+			getArgs := GetArgs{"my-key"}
+			err = kvService.Call("KeyValService.Get", getArgs, &kvVal)
+			checkError(err)
+			fmt.Println("KV.get(" + getArgs.Key + ") = " + kvVal.Val)
+		case "p":
+			putArgs := PutArgs{
+				Key: "my-key",
+				Val: "party-like-its-416"}
+			err = kvService.Call("KeyValService.Put", putArgs, &kvVal)
+			checkError(err)
+			fmt.Println("KV.put(" + putArgs.Key + "," + putArgs.Val + ") = " + kvVal.Val)
+		case "t":
+			tsArgs := TestSetArgs{
+				Key:     "my-key",
+				TestVal: "foo",
+				NewVal:  "bar"}
+			err = kvService.Call("KeyValService.TestSet", tsArgs, &kvVal)
+			checkError(err)
+			fmt.Println("KV.get(" + tsArgs.Key + "," + tsArgs.TestVal + "," + tsArgs.NewVal + ") = " + kvVal.Val)
+		case "e":
+			return
+		default:
+			usage := fmt.Sprintf("Manual Control Usage: \ng: get\np: put\nt: test\ne: exit\n")
+			fmt.Println(usage)
+		}
+	}
+}
+
+//automated client execution
+func Automatic(kvService *rpc.Client) {
 	// Use kvVal for all RPC replies.
 	var kvVal ValReply
-
 	// Get("my-key")
 	getArgs := GetArgs{"my-key"}
-	err = kvService.Call("KeyValService.Get", getArgs, &kvVal)
+	err := kvService.Call("KeyValService.Get", getArgs, &kvVal)
 	checkError(err)
 	fmt.Println("KV.get(" + getArgs.Key + ") = " + kvVal.Val)
 
@@ -99,13 +158,4 @@ func main() {
 	checkError(err)
 	fmt.Println("KV.get(" + tsArgs.Key + "," + tsArgs.TestVal + "," + tsArgs.NewVal + ") = " + kvVal.Val)
 
-	fmt.Println("\nMission accomplished.")
-}
-
-// If error is non-nil, print it out and halt.
-func checkError(err error) {
-	if err != nil {
-		fmt.Fprintf(os.Stderr, "Error ", err.Error())
-		os.Exit(1)
-	}
 }
