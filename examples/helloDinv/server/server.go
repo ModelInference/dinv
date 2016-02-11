@@ -34,7 +34,8 @@ func handleConn(conn net.PacketConn) {
 	var buf [512]byte
 
 	_, addr, err := conn.ReadFrom(buf[0:])
-	instrumenter.Unpack(buf[0:])
+	var received string
+	instrumenter.Unpack(buf[0:], &received)
 	printErr(err)
 	msg := fmt.Sprintf("Hello There! time now is %s \n", time.Now().String())
 	conn.WriteTo(instrumenter.Pack(msg), addr)

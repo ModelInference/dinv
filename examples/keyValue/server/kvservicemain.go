@@ -36,6 +36,10 @@ import (
 	"strconv"
 	"sync"
 	"time"
+
+	"bitbucket.org/bestchai/dinv/instrumenter"
+
+	"github.com/arcaneiceman/GoVector/govec"
 )
 
 // args in get(args)
@@ -66,11 +70,14 @@ type MapVal struct {
 	value string // the underlying value representation
 }
 
-// Map implementing the key-value store.
-var kvmap map[string]*MapVal
-
-// Mutex for accessing kvmap from different goroutines safely.
-var mapMutex *sync.Mutex
+var (
+	// Map implementing the key-value store.
+	kvmap map[string]*MapVal
+	// Mutex for accessing kvmap from different goroutines safely.
+	mapMutex *sync.Mutex
+	//Vector clock logger
+	Logger *govec.GoLog
+)
 
 // Reserved value in the service that is used to indicate that the key
 // is unavailable: used in return values to clients and internally.
@@ -110,20 +117,25 @@ func CheckKeyFail(val *MapVal) bool {
 }
 
 // GET
-func (kvs *KeyValService) Get(args *GetArgs, reply *ValReply) error {
+func (kvs *KeyValService) Get(buf []byte, reply *ValReply) error {
 	// Acquire mutex for exclusive access to kvmap.
 	mapMutex.Lock()
 	// Defer mutex unlock to (any) function exit.
 	defer mapMutex.Unlock()
+	rec := instrumenter.Unpack(buf).(map[interface{}]interface{})
+	fmt.Println(rec)
+	args := GetArgs{rec["Key"].(string)}
+	fmt.Println(args)
+	/*
+		val := lookupKey(args.Key)
 
-	val := lookupKey(args.Key)
+		if CheckKeyFail(val) {
+			reply.Val = unavail
+			return nil
+		}
 
-	if CheckKeyFail(val) {
-		reply.Val = unavail
-		return nil
-	}
-
-	reply.Val = val.value // execute the get
+		reply.Val = val.value // execute the get
+	*/
 	return nil
 }
 

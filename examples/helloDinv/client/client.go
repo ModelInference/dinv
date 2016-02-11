@@ -17,12 +17,15 @@ func main() {
 	printErr(errWrite)
 
 	// Reading the response message
-	var buf [1024]byte
+	var (
+		buf        [1024]byte
+		recMessage string
+	)
 	n, errRead := conn.Read(buf[0:])
 	printErr(errRead)
-	unpackedMessage := instrumenter.Unpack(buf[:n])
-	typeAssertedMessage := unpackedMessage.(string)
-	fmt.Println(">>>" + typeAssertedMessage)
+	instrumenter.Unpack(buf[:n], &recMessage)
+	//typeAssertedMessage := unpackedMessage.(string)
+	fmt.Println(">>>" + recMessage)
 	//@dump
 
 	os.Exit(0)

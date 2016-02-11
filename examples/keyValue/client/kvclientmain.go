@@ -15,6 +15,10 @@ import (
 	"fmt"
 	"net/rpc"
 	"os"
+
+	"bitbucket.org/bestchai/dinv/instrumenter"
+
+	"github.com/arcaneiceman/GoVector/govec"
 )
 
 // args in get(args)
@@ -42,7 +46,10 @@ type ValReply struct {
 
 type KeyValService int
 
-var kvService *rpc.Client
+var (
+	kvService *rpc.Client
+	Logger    *govec.GoLog
+)
 
 // Main server loop.
 func main() {
@@ -72,30 +79,37 @@ func checkError(err error) {
 	}
 }
 
+//get the value for the corresponding key from the key value store
 func get(key string) (kvVal ValReply) {
-	getArgs := GetArgs{key}
-	err := kvService.Call("KeyValService.Get", getArgs, &kvVal)
+	//var getArgs GetArgs = GetArgs{key}
+	//err := kvService.Call("KeyValService.Get", instrumenter.Pack(getArgs), &kvVal)
+	err := kvService.Call("KeyValService.Get", instrumenter.Pack(GetArgs{key}), &kvVal)
 	checkError(err)
-	fmt.Println("KV.get(" + getArgs.Key + ") = " + kvVal.Val)
+	//fmt.Println("KV.get(" + getArgs.Key + ") = " + kvVal.Val)
+	fmt.Println("KV.get(" + key + ") = " + kvVal.Val)
 	return kvVal
 }
 
+//put sets the value of the given key to "value" in the key value
+//store
 func put(key, value string) (kvVal ValReply) {
 	putArgs := PutArgs{
 		Key: key,
 		Val: value}
-	err := kvService.Call("KeyValService.Put", putArgs, &kvVal)
+	err := kvService.Call("KeyValService.Put", instrumenter.Pack(putArgs), &kvVal)
 	checkError(err)
 	fmt.Println("KV.put(" + putArgs.Key + "," + putArgs.Val + ") = " + kvVal.Val)
 	return kvVal
 }
 
+//test check the the "key" in the key value store, for the value
+//"test" if test matches "value" will replace it.
 func test(key, test, value string) (kvVal ValReply) {
 	tsArgs := TestSetArgs{
 		Key:     key,
 		TestVal: test,
 		NewVal:  value}
-	err := kvService.Call("KeyValService.TestSet", tsArgs, &kvVal)
+	err := kvService.Call("KeyValService.TestSet", instrumenter.Pack(tsArgs), &kvVal)
 	checkError(err)
 	fmt.Println("KV.get(" + tsArgs.Key + "," + tsArgs.TestVal + "," + tsArgs.NewVal + ") = " + kvVal.Val)
 	return kvVal
@@ -112,8 +126,7 @@ func test(key, test, value string) (kvVal ValReply) {
 func Manual() {
 	var input string //userInput
 	for true {
-		_, err := fmt.Scanf("%s", &input)
-		checkError(err)
+		fmt.Scanf("%s", &input)
 		switch input {
 		case "g":
 			get("my-key")
