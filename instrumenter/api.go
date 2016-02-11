@@ -37,10 +37,18 @@ func Pack(msg interface{}) []byte {
 //are returned with the logging info removed.
 //This method is to be used on all data upon receving it
 //Precondition, the array of bytes was packed before sending
+/*
 func Unpack(msg []byte) interface{} {
 	initDinv("")
 	callingFunction := getCallingFunctionID()
 	return goVecLogger.UnpackReceive("Received on "+callingFunction+" "+id, msg)
+}*/
+
+func Unpack(msg []byte, pack interface{}) {
+	initDinv("")
+	callingFunction := getCallingFunctionID()
+	goVecLogger.UnpackReceive("Received on "+callingFunction+" "+id, msg, pack)
+	return
 }
 
 //Initalize is an optional call for naming hosts uniquely based on a
@@ -85,7 +93,7 @@ func GetId() string {
 //decoder is encoders counterpart, taking an encoded array of bytes
 //and returning the underlying go object as an interface. The returned
 //value must by type cast before it can be used
-func CustomEncoderDecoder(encoder func(interface{}) ([]byte, error), decoder func([]byte) (interface{}, error)) {
+func CustomEncoderDecoder(encoder func(interface{}) ([]byte, error), decoder func([]byte, interface{}) error) {
 	initDinv("")
 	gvLogger := GetLogger()
 	gvLogger.SetEncoderDecoder(encoder, decoder)
