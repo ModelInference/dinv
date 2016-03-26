@@ -6,13 +6,17 @@
 package instrumenter
 
 import (
+	"encoding/gob"
+	"os"
 	"bytes"
 	"fmt"
 	"regexp"
 	"runtime/pprof"
 	"time"
+	"reflect"
 
 	"github.com/arcaneiceman/GoVector/govec"
+	"bitbucket.org/bestchai/dinv/logmerger"
 )
 
 var (
@@ -20,6 +24,36 @@ var (
 	id          string       //Timestamp for identifiying loggers
 	goVecLogger *govec.GoLog //GoVec logger, used to track vector timestamps
 )
+
+func Dump(pairs ...logmerger.NameValuePair){
+	initDinv("")
+	id := getCallingFunctionID()
+	hashedId := GetId() + "_" + id
+	logger := GetLogger()
+	for i := 0; i < len(pairs); i++ {
+			if pairs[i].Value != nil {
+				//nasty switch statement for catching most basic go types
+				switch reflect.TypeOf(pairs[i].Value).Kind() {
+				case reflect.Bool:
+					pairs[i].Type = "boolean"
+				case reflect.Int, reflect.Int8, reflect.Int16, reflect.Int32, reflect.Int64,
+					reflect.Uint, reflect.Uint8, reflect.Uint16, reflect.Uint32, reflect.Uint64:
+					pairs[i].Type = "int"
+				case reflect.Float32, reflect.Float64:
+					pairs[i].Type = "float"
+				case reflect.String:
+					pairs[i].Type = "string"
+				//unknown type to daikon don't add the variable
+				default:
+					continue
+				}
+			}
+		}
+	point := logmerger.Point{pairs, hashedId, logger.GetCurrentVC(), 0}
+	Encoder.Encode(point)
+	
+}
+
 
 //Pack takes an an argument a set of bytes msg, and returns that set
 //of bytes with all current logging information wrapping the buffer.
@@ -136,4 +170,67 @@ func getCallingFunctionID() string {
 	}
 	fmt.Printf("%s\n", buf)
 	return ""
+}
+
+/* Injection Code */
+//injection code is used to dynamicly write an injection file,
+//containing methods called by dump statements
+
+//header_code contains all the needed imports for the injection code,
+//and is designed to have the package name written at runtime
+
+var Encoder *gob.Encoder //global
+var packageName string
+
+//body code contains utility functions called by the code injected at
+//dump statements
+//TODO add comments to the inject code
+//TODO build array of acceptable types for encoding
+//TODO make the logger an argument to CreatePoint
+
+
+
+func InstrumenterInit(pname string) {
+	if Encoder == nil {
+		packageName = pname
+		id := GetId()
+		encodedLogname := fmt.Sprintf("%s-%sEncoded.txt", packageName, id)
+		encodedLog, _ := os.Create(encodedLogname)
+		Encoder = gob.NewEncoder(encodedLog)
+	}
+}
+
+func CreatePoint(vars []interface{}, varNames []string, id string, logger *govec.GoLog, hash string) logmerger.Point {
+	numVars := len(varNames)
+	dumps := make([]logmerger.NameValuePair, 0)
+	hashedId := hash + "_" + id
+	for i := 0; i < numVars; i++ {
+		if vars[i] != nil {
+			//nasty switch statement for catching most basic go types
+			var dump logmerger.NameValuePair
+			dump.VarName = varNames[i]
+			dump.Value = vars[i]
+			switch reflect.TypeOf(vars[i]).Kind() {
+			case reflect.Bool:
+				dump.Type = "boolean"
+			case reflect.Int, reflect.Int8, reflect.Int16, reflect.Int32, reflect.Int64,
+				reflect.Uint, reflect.Uint8, reflect.Uint16, reflect.Uint32, reflect.Uint64:
+				dump.Type = "int"
+			case reflect.Float32, reflect.Float64:
+				dump.Type = "float"
+			case reflect.String:
+				dump.Type = "string"
+			//unknown type to daikon don't add the variable
+			default:
+				continue
+			}
+			dumps = append(dumps, dump)
+		}
+	}
+	point := logmerger.Point{dumps, hashedId, logger.GetCurrentVC(), 0}
+	return point
+}
+
+func Local(logger *govec.GoLog, id string) {
+	logger.LogLocalEvent(fmt.Sprintf("Dump @ id %s", id))
 }

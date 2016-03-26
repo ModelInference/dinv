@@ -27,7 +27,7 @@ import (
 	"bitbucket.org/bestchai/dinv/programslicer"
 
 	"golang.org/x/tools/go/loader"
-	"golang.org/x/tools/go/types"
+	"go/types"
 
 	"bitbucket.org/bestchai/dinv/programslicer/cfg"
 )
@@ -497,10 +497,10 @@ func GenerateDumpCode(vars []string, lineNumber int, comment, path, packagename 
 
 	// write vars' values
 	id := packagename + "_" + filename + "_" + strconv.Itoa(lineNumber) + "__" + commentMessage + "__"
-	buffer.WriteString(fmt.Sprintf("\ninject.InstrumenterInit(\"%s\")\n", packagename))
+	buffer.WriteString(fmt.Sprintf("\ninstrumenter.InstrumenterInit(\"%s\")\n", packagename))
 	//potentially log as a local event
 	if dumpsLocalEvents {
-		buffer.WriteString(fmt.Sprintf("inject.Local(instrumenter.GetLogger(),\"%s\")\n", id))
+		buffer.WriteString(fmt.Sprintf("instrumenter.Local(instrumenter.GetLogger(),\"%s\")\n", id))
 	}
 
 	buffer.WriteString(fmt.Sprintf("%s_vars := []interface{}{", id))
@@ -517,8 +517,8 @@ func GenerateDumpCode(vars []string, lineNumber int, comment, path, packagename 
 
 	//injectPoint
 	buffer.WriteString(fmt.Sprintf("\"%s\"}\n", vars[len(vars)-1]))
-	buffer.WriteString(fmt.Sprintf("p%s := inject.CreatePoint(%s_vars, %s_varname,\"%s\",instrumenter.GetLogger(),instrumenter.GetId())\n", id, id, id, id))
-	buffer.WriteString(fmt.Sprintf("inject.Encoder.Encode(p%s)\n", id))
+	buffer.WriteString(fmt.Sprintf("p%s := instrumenter.CreatePoint(%s_vars, %s_varname,\"%s\",instrumenter.GetLogger(),instrumenter.GetId())\n", id, id, id, id))
+	buffer.WriteString(fmt.Sprintf("instrumenter.Encoder.Encode(p%s)\n", id))
 	return buffer.String()
 }
 

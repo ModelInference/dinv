@@ -13,7 +13,7 @@ import (
 
 	"bitbucket.org/bestchai/dinv/programslicer/cfg"
 	"golang.org/x/tools/go/loader"
-	"golang.org/x/tools/go/types"
+	"go/types"
 )
 
 //Program wrapper is a wrapper for an entire package, the source code
