@@ -10,7 +10,7 @@ import (
 	"bitbucket.org/bestchai/dinv/programslicer/cfg"
 	"bitbucket.org/bestchai/dinv/programslicer/dataflow"
 	"golang.org/x/tools/go/loader"
-	"golang.org/x/tools/go/types"
+	"go/types"
 )
 
 // Create CFG
