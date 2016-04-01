@@ -40,8 +40,9 @@ func Server() {
 
 func handleConn(conn net.PacketConn) {
 	var rpc rpcResponse
+	var args []byte
 	_, addr, err := conn.ReadFrom(buf[0:])
-	args := instrumenter.Unpack(buf[0:]).([]byte)
+	instrumenter.Unpack(buf[0:],&args)
 	printErr(err)
 	//@dump
 	uArgs := UnmarshallInts(args)
