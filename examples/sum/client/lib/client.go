@@ -48,7 +48,8 @@ func Client() {
 		// Reading the response message
 
 		_, errRead := conn.Read(buf[0:])
-		ret := instrumenter.Unpack(buf[0:]).([]byte)
+		var ret []byte
+		instrumenter.Unpack(buf[0:],&ret)
 		printErr(errRead)
 
 		uret := UnmarshallInts(ret)
