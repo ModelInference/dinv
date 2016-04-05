@@ -541,7 +541,7 @@ func writeInstrumentedFile(source string, filename string) {
 }
 
 func addImports(file *ast.File) {
-	packagesToImport := []string{"\"bitbucket.org/bestchai/dinv/instrumenter/inject\"", "\"bitbucket.org/bestchai/dinv/instrumenter\""}
+	packagesToImport := []string{"\"bitbucket.org/bestchai/dinv/instrumenter\""}
 	im := ImportAdder{packagesToImport}
 	ast.Walk(im, file)
 }
