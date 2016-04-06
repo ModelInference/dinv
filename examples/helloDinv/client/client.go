@@ -6,7 +6,6 @@ import (
 	"os"
 
 	"bitbucket.org/bestchai/dinv/instrumenter"
-	"bitbucket.org/bestchai/dinv/logmerger"
 )
 
 func main() {
@@ -27,7 +26,7 @@ func main() {
 	instrumenter.Unpack(buf[:n], &recMessage)
 	//typeAssertedMessage := unpackedMessage.(string)
 	fmt.Println(">>>" + recMessage)
-	instrumenter.Dump(logmerger.NameValuePair{"n",n,""})
+	instrumenter.Dump("n,msg",n,msg)
 	os.Exit(0)
 }
 
