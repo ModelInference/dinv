@@ -43,7 +43,7 @@ function fixModDir {
 function runTestProgram {
     cd $testDir/$1
     go run $1.go &
-    sleep 1
+    sleep 2
 }
 
 #cleanup removes the generated log files, and tracke files. Furthermore, it kills the server process to free the port for future executions.
