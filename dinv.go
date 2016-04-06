@@ -204,7 +204,7 @@ func sortLogs(logs []string) ([]string, []string, error) {
 	//NOTE if the file names change these regexes will need to .e
 	//also the rely on the nanosecond timestamp ID as an identifier
 	govecLogRegex := "(.+).log-Log.txt"
-	pointLogRegex := ".+-(.+)Encoded.txt"
+	pointLogRegex := "(.+)Encoded.txt"
 	ErrorString := ""
 	goReg := regexp.MustCompile(govecLogRegex)
 	pointReg := regexp.MustCompile(pointLogRegex)

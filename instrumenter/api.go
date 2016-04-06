@@ -23,6 +23,8 @@ var (
 	initialized = false      //Boolean used to track the initalization of the logger
 	id          string       //Timestamp for identifiying loggers
 	goVecLogger *govec.GoLog //GoVec logger, used to track vector timestamps
+	Encoder *gob.Encoder //global name value pair point encoder
+	packageName string
 )
 
 func Dump(pairs ...logmerger.NameValuePair){
@@ -144,6 +146,11 @@ func initDinv(hostName string) {
 			id = hostName
 		}
 		goVecLogger = govec.Initialize(id, id+".log")
+
+		encodedLogname := fmt.Sprintf("%sEncoded.txt", id)
+		encodedLog, _ := os.Create(encodedLogname)
+		Encoder = gob.NewEncoder(encodedLog)
+
 		initialized = true
 	}
 }
@@ -179,9 +186,6 @@ func getCallingFunctionID() string {
 //header_code contains all the needed imports for the injection code,
 //and is designed to have the package name written at runtime
 
-var Encoder *gob.Encoder //global
-var packageName string
-
 //body code contains utility functions called by the code injected at
 //dump statements
 //TODO add comments to the inject code
@@ -190,15 +194,6 @@ var packageName string
 
 
 
-func InstrumenterInit(pname string) {
-	if Encoder == nil {
-		packageName = pname
-		id := GetId()
-		encodedLogname := fmt.Sprintf("%s-%sEncoded.txt", packageName, id)
-		encodedLog, _ := os.Create(encodedLogname)
-		Encoder = gob.NewEncoder(encodedLog)
-	}
-}
 
 func CreatePoint(vars []interface{}, varNames []string, id string, logger *govec.GoLog, hash string) logmerger.Point {
 	numVars := len(varNames)

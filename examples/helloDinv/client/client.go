@@ -28,7 +28,6 @@ func main() {
 	//typeAssertedMessage := unpackedMessage.(string)
 	fmt.Println(">>>" + recMessage)
 	instrumenter.Dump(logmerger.NameValuePair{"n",n,""})
-
 	os.Exit(0)
 }
 

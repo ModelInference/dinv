@@ -497,8 +497,6 @@ func GenerateDumpCode(vars []string, lineNumber int, comment, path, packagename 
 
 	// write vars' values
 	id := packagename + "_" + filename + "_" + strconv.Itoa(lineNumber) + "__" + commentMessage + "__"
-	buffer.WriteString(fmt.Sprintf("\ninstrumenter.InstrumenterInit(\"%s\")\n", packagename))
-	//potentially log as a local event
 	if dumpsLocalEvents {
 		buffer.WriteString(fmt.Sprintf("instrumenter.Local(instrumenter.GetLogger(),\"%s\")\n", id))
 	}
