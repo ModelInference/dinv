@@ -14,6 +14,7 @@ import (
 	"runtime/pprof"
 	"time"
 	"reflect"
+	"strings"
 
 	"github.com/arcaneiceman/GoVector/govec"
 	"bitbucket.org/bestchai/dinv/logmerger"
@@ -27,28 +28,36 @@ var (
 	packageName string
 )
 
-func Dump(pairs ...logmerger.NameValuePair){
+func Dump(names string, values ...interface{}) {
 	initDinv("")
 	id := getCallingFunctionID()
 	hashedId := GetId() + "_" + id
 	logger := GetLogger()
-	for i := 0; i < len(pairs); i++ {
-			if pairs[i].Value != nil {
+
+	nameList := strings.Split(names,",")
+	if len(nameList) != len(values) {
+		panic(fmt.Errorf("dump at [%s] has unequal arguemnt lengths"))
+	}
+	pairs := make([]logmerger.NameValuePair,0)
+	for i := 0; i < len(values); i++ {
+			if values[i] != nil {
+				pair := logmerger.NameValuePair{nameList[i],values[i],""}
 				//nasty switch statement for catching most basic go types
-				switch reflect.TypeOf(pairs[i].Value).Kind() {
+				switch reflect.TypeOf(values[i]).Kind() {
 				case reflect.Bool:
-					pairs[i].Type = "boolean"
+					pair.Type = "boolean"
 				case reflect.Int, reflect.Int8, reflect.Int16, reflect.Int32, reflect.Int64,
 					reflect.Uint, reflect.Uint8, reflect.Uint16, reflect.Uint32, reflect.Uint64:
-					pairs[i].Type = "int"
+					pair.Type = "int"
 				case reflect.Float32, reflect.Float64:
-					pairs[i].Type = "float"
+					pair.Type = "float"
 				case reflect.String:
-					pairs[i].Type = "string"
+					pair.Type = "string"
 				//unknown type to daikon don't add the variable
 				default:
 					continue
 				}
+				pairs = append(pairs,pair)
 			}
 		}
 	point := logmerger.Point{pairs, hashedId, logger.GetCurrentVC(), 0}
