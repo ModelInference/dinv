@@ -77,6 +77,7 @@ func Instrument(options map[string]string, inlogger *log.Logger) {
 	if err != nil {
 		logger.Fatalf("Error: %s", err.Error())
 	}
+	ast.Print(program.fset,program.packages[0].sources[0].source)
 	for packageIndex, pack := range program.packages {
 		for sourceIndex := range pack.sources {
 			genCode := generateCode(program, packageIndex, sourceIndex)

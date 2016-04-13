@@ -73,6 +73,7 @@ func getWrapperFromString(sourceString string) (*ProgramWrapper, error) {
 	if err != nil {
 		return nil, err
 	}
+
 	filename := comments.Name.String()
 	//make the single files the head of a list
 	sources := append(make([]*ast.File, 0), source)
