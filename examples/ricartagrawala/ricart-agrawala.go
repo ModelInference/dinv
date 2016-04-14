@@ -1,8 +1,6 @@
-package main
+package ricartagrawala
 
 import (
-	"os"
-	"strconv"
 	"net"
 	"fmt"
 	"time"
@@ -33,13 +31,27 @@ func (m *Message) String () string{
 	return fmt.Sprintf("[ %s | %d | clock(%d)]",m.Body,m.Sender,m.Lamport)
 }
 
+type Plan struct {
+	runs int
+}
+
+type Report struct {
+	starved bool
+	crashed bool
+	errorMessage error
+	otherDied bool
+}
+
+
 func critical() {
 	fmt.Printf("Running Critical Section on %d with Request time:%d \n",id, RequestTime)
 }
 
-func main() {
-	id, _ = strconv.Atoi(os.Args[1])
-	hosts, _ = strconv.Atoi(os.Args[2])
+
+
+func Host(idArg, hostsArg int, plan Plan){
+	id = idArg
+	hosts = hostsArg
 	fmt.Printf("Starting %d\n",id+BASEPORT)
 	initConnections(id,hosts)
 	fmt.Printf("Connected to %d hosts on %d\n",len(nodes),id)
@@ -50,10 +62,13 @@ func main() {
 	//broadcast hello to everyone
 	broadcast(fmt.Sprintf("Hello from %d",id))
 
+
+	//local variables to track outstanding critical requests
 	crit := false 					//true if critical section is requested
 	outstanding := make([]int,0)	//messages being witheld
 	okays := make(map[int]bool)
 	sentTime := time.Now()
+	starving := 0
 	for true {
 		if !crit {
 			crit = (rand.Float64() > .99)
@@ -62,6 +77,7 @@ func main() {
 				outstanding = make([]int,0)
 				okays = make(map[int]bool)
 				sentTime = time.Now()
+				starving = 0
 				//fmt.Printf("Requesting Critical on %d at time %d\n",id,RequestTime)
 				broadcast("critical")
 			}
@@ -89,12 +105,18 @@ func main() {
 				break
 			case "critical":
 				if !crit || RequestTime > m.Lamport || (RequestTime == m.Lamport && id < m.Sender) {
+					if crit {
+						starving++
+					}
 					//fmt.Printf("sending ok to %d from %d Their Request Time:%d My Request Time: %d\n",m.Sender,id,m.Lamport,RequestTime)
 					send("ok",m.Sender)
 				} else {
 					//fmt.Printf("withholding ok (%d/%d) on %d from request id:%d lamport:%d Requesting Time :%d\n",len(outstanding),hosts-1,id,m.Sender,m.Lamport,RequestTime)
 					outstanding = append(outstanding,m.Sender)
 				}
+				break
+			case "death":
+				crashGracefully(fmt.Errorf("Got the death message from %d now I die too\n",m.Sender))
 				break
 			default:
 				continue
@@ -123,6 +145,10 @@ func main() {
 			}
 		}
 
+		if starving >= hosts {
+			crashGracefully(fmt.Errorf("Starved to death on host %d\n",id))
+		}
+
 
 	}
 }
@@ -135,7 +161,7 @@ func receive() {
 		//listen.SetDeadline(time.Now().Add(time.Second))
 		n, err := listen.Read(buf[0:])
 		if err != nil {
-			//printErr(err)
+			crashGracefully(err)
 			continue
 		} 
 		Lamport++
@@ -166,17 +192,16 @@ func send(msg string, host int) {
 		out := instrumenter.Pack(m)
 		//fmt.Printf("sending %s [ %d --> %d ] {body : %s}\n",msg,id, host,m.String())
 		listen.WriteToUDP(out,nodes[host])
-		//time.Sleep(1000 * time.Millisecond)
 }
 
 
 func initConnections(id, hosts int){
 	Lamport = 0
 	lAddr, err := net.ResolveUDPAddr("udp4", ":"+fmt.Sprintf("%d", BASEPORT + id))
-	printErr(err)
+	crashGracefully(err)
 	listen, err = net.ListenUDP("udp4",lAddr)
 	listen.SetReadBuffer(1024)
-	printErr(err)
+	crashGracefully(err)
 	nodes = make(map[int]*net.UDPAddr)
 	for i:=0; i<hosts; i++{
 		//dont make a connection with yourself
@@ -184,9 +209,7 @@ func initConnections(id, hosts int){
 			continue
 		} else {
 			nodes[i], err = net.ResolveUDPAddr("udp4", ":"+fmt.Sprintf("%d", BASEPORT + i))
-			printErr(err)
-			//nodes[BASEPORT + i], err = net.DialUDP("udp",nil,addr)
-			//printErr(err)
+			crashGracefully(err)
 		}
 	}
 }
@@ -195,4 +218,9 @@ func printErr(err error) {
 	if err != nil {
 		fmt.Println(err)
 	}
+}
+
+func crashGracefully(err error) {
+	broadcast("death")
+	panic(err)
 }
