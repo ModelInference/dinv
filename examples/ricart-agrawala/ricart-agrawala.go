@@ -13,13 +13,14 @@ import (
 const BASEPORT  = 10000
 
 var (
-	nodes map[int]*net.UDPAddr
-	listen *net.UDPConn
-	Lamport int
-	id int
-	hosts int
-	lastMessage Message
-	updated bool
+	nodes map[int]*net.UDPAddr		//List of all nodes in the group
+	listen *net.UDPConn				//Listening Port
+	Lamport int						//Lamport logical clock
+	RequestTime int					//Clock Time request was sent at
+	id int							//Id of this host
+	hosts int						//number of hosts in the group
+	lastMessage Message				//The last message sent out
+	updated bool					//true if the host has received an message and not processed it
 )
 
 type Message struct {
@@ -33,40 +34,39 @@ func (m *Message) String () string{
 }
 
 func critical() {
-	fmt.Printf("You might be the sickest node of them all : %d\n",id)
+	fmt.Printf("Running Critical Section on %d with Request time:%d \n",id, RequestTime)
 }
 
 func main() {
 	id, _ = strconv.Atoi(os.Args[1])
 	hosts, _ = strconv.Atoi(os.Args[2])
 	fmt.Printf("Starting %d\n",id+BASEPORT)
-	//for len(nodes) < hosts -1 {
-		initConnections(id,hosts)
-		fmt.Printf("Connected to %d hosts on %d\n",len(nodes),id)
-		time.Sleep(1000 * time.Millisecond)
-	//}
+	initConnections(id,hosts)
+	fmt.Printf("Connected to %d hosts on %d\n",len(nodes),id)
+	time.Sleep(1000 * time.Millisecond)
 
 	//start the receving demon
 	go receive()
+	//broadcast hello to everyone
 	broadcast(fmt.Sprintf("Hello from %d",id))
 
-	crit := false
-	outstanding := make([]int,0)
+	crit := false 					//true if critical section is requested
+	outstanding := make([]int,0)	//messages being witheld
 	okays := make(map[int]bool)
 	sentTime := time.Now()
 	for true {
 		if !crit {
 			crit = (rand.Float64() > .99)
 			if crit {
-				fmt.Printf("Requesting Critical on %d\n",id)
-				broadcast("critical")
+				RequestTime = Lamport
 				outstanding = make([]int,0)
 				okays = make(map[int]bool)
 				sentTime = time.Now()
+				//fmt.Printf("Requesting Critical on %d at time %d\n",id,RequestTime)
+				broadcast("critical")
 			}
 		}
 		
-		//send("ok",(id + 1)%hosts)
 
 		if updated {
 			updated = false
@@ -74,8 +74,8 @@ func main() {
 			switch m.Body {
 			case "ok":
 				okays[m.Sender]=true
-				fmt.Printf("received ok (%d/%d) on %d\n",len(okays),hosts-1,id)
-				trues := "["
+				//fmt.Printf("received ok (%d/%d) on %d\n",len(okays),hosts-1,id)
+				trues := fmt.Sprintf("%d",id)+ " - ["
 				for i:= 0; i< hosts; i++ {
 					if okays[i] {
 						trues += fmt.Sprintf("%d: X\t",i)
@@ -84,14 +84,15 @@ func main() {
 					}
 				}
 				trues += "]"
-				fmt.Println(trues)
+				//fmt.Println(trues)
 
 				break
 			case "critical":
-				if Lamport > m.Lamport || (Lamport == m.Lamport && id < m.Sender) || !crit {
+				if !crit || RequestTime > m.Lamport || (RequestTime == m.Lamport && id < m.Sender) {
+					//fmt.Printf("sending ok to %d from %d Their Request Time:%d My Request Time: %d\n",m.Sender,id,m.Lamport,RequestTime)
 					send("ok",m.Sender)
 				} else {
-					fmt.Printf("withholding ok (%d/%d) on %d\n",len(outstanding),hosts-1,id)
+					//fmt.Printf("withholding ok (%d/%d) on %d from request id:%d lamport:%d Requesting Time :%d\n",len(outstanding),hosts-1,id,m.Sender,m.Lamport,RequestTime)
 					outstanding = append(outstanding,m.Sender)
 				}
 				break
@@ -101,7 +102,7 @@ func main() {
 		}
 	
 		//timeout
-		if crit && sentTime.Add(time.Second * 2).Before(time.Now()){
+		if crit && sentTime.Add(time.Millisecond * 100).Before(time.Now()){
 			sentTime = time.Now()
 			//fmt.Printf("Timeout ok %d",id)
 			for i:=0; i<hosts; i++{
@@ -131,7 +132,7 @@ func receive() {
 	for true {
 		buf := make([]byte,1024)
 		m := new(Message)
-		listen.SetDeadline(time.Now().Add(time.Second))
+		//listen.SetDeadline(time.Now().Add(time.Second))
 		n, err := listen.Read(buf[0:])
 		if err != nil {
 			//printErr(err)
@@ -158,11 +159,14 @@ func broadcast(msg string) {
 func send(msg string, host int) {
 		Lamport++
 		m := Message{Lamport,msg,id}
+		if msg == "critical" {
+			m.Lamport = RequestTime
+		}
 
 		out := instrumenter.Pack(m)
 		//fmt.Printf("sending %s [ %d --> %d ] {body : %s}\n",msg,id, host,m.String())
 		listen.WriteToUDP(out,nodes[host])
-		time.Sleep(1000 * time.Millisecond)
+		//time.Sleep(1000 * time.Millisecond)
 }
 
 
