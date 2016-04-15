@@ -64,6 +64,8 @@ func initalizeLogMerger(options map[string]string, inlogger *log.Logger) {
 				mergePlan = entireCutMerge
 			case "SRM":
 				mergePlan = sendReceiveMerge
+			case "NONE":
+				mergePlan = noMerge
 			default:
 				mergePlan = func([]State) [][]Point { logger.Fatalf("Error Invalid Merge Plan"); return nil }
 			}
@@ -87,8 +89,24 @@ func initalizeLogMerger(options map[string]string, inlogger *log.Logger) {
 func Merge(logfiles []string, gologfiles []string, options map[string]string, inlogger *log.Logger) {
 	initalizeLogMerger(options, inlogger)
 	logs := buildLogs(logfiles, gologfiles)
-	states := mineStates(logs)
-	writeTraceFiles(states)
+	//jump to writing 
+	if options["mergePlan"] == "NONE" {
+		writeUnmergedTraces(logfiles,logs)
+	} else {
+		states := mineStates(logs)
+		writeTraceFiles(states)
+	}
+}
+
+//writeUnmergedTraces is used when daikon traces for individual hosts
+//are wanted. The point logs passed in should not be merged
+func writeUnmergedTraces(filenames []string, logs [][]Point){
+	for i , filename := range filenames {
+		unmergedName := filename + "unmerged.log"
+		logger.Printf("New unmerged trace %s\n", unmergedName)
+		writeLogToFile(logs[i], unmergedName)
+	}
+
 }
 
 //buildLogs parses the log files into a 2D array of program points,
@@ -261,6 +279,13 @@ func totalOrderLineNumberMerge(states []State) [][]Point {
 		}
 	}
 	fmt.Println()
+	return mergedPoints
+}
+
+
+func noMerge(states []State) [][]Point {
+	mergedPoints := make([][]Point, len(states))
+	fmt.Println("No Merging points")
 	return mergedPoints
 }
 
