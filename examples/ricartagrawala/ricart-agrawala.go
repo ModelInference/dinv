@@ -19,6 +19,9 @@ var (
 	hosts int						//number of hosts in the group
 	lastMessage Message				//The last message sent out
 	updated bool					//true if the host has received an message and not processed it
+
+	plan Plan
+	report Report
 )
 
 type Message struct {
@@ -33,6 +36,7 @@ func (m *Message) String () string{
 
 type Plan struct {
 	runs int
+	complete bool
 }
 
 type Report struct {
@@ -49,9 +53,10 @@ func critical() {
 
 
 
-func Host(idArg, hostsArg int, plan Plan){
+func Host(idArg, hostsArg int, planArg Plan) Report {
 	id = idArg
 	hosts = hostsArg
+	plan = planArg
 	fmt.Printf("Starting %d\n",id+BASEPORT)
 	initConnections(id,hosts)
 	fmt.Printf("Connected to %d hosts on %d\n",len(nodes),id)
@@ -68,7 +73,7 @@ func Host(idArg, hostsArg int, plan Plan){
 	outstanding := make([]int,0)	//messages being witheld
 	okays := make(map[int]bool)
 	sentTime := time.Now()
-	starving := 0
+	starving := make(map[int]bool)
 	for true {
 		if !crit {
 			crit = (rand.Float64() > .99)
@@ -77,7 +82,7 @@ func Host(idArg, hostsArg int, plan Plan){
 				outstanding = make([]int,0)
 				okays = make(map[int]bool)
 				sentTime = time.Now()
-				starving = 0
+				starving =make(map[int]bool)
 				//fmt.Printf("Requesting Critical on %d at time %d\n",id,RequestTime)
 				broadcast("critical")
 			}
@@ -106,7 +111,7 @@ func Host(idArg, hostsArg int, plan Plan){
 			case "critical":
 				if !crit || RequestTime > m.Lamport || (RequestTime == m.Lamport && id < m.Sender) {
 					if crit {
-						starving++
+						starving[m.Sender] = true
 					}
 					//fmt.Printf("sending ok to %d from %d Their Request Time:%d My Request Time: %d\n",m.Sender,id,m.Lamport,RequestTime)
 					send("ok",m.Sender)
@@ -116,7 +121,7 @@ func Host(idArg, hostsArg int, plan Plan){
 				}
 				break
 			case "death":
-				crashGracefully(fmt.Errorf("Got the death message from %d now I die too\n",m.Sender))
+				crashGracefully(fmt.Errorf("I %d Got the death message from %d now I die too\n",id,m.Sender))
 				break
 			default:
 				continue
@@ -145,12 +150,16 @@ func Host(idArg, hostsArg int, plan Plan){
 			}
 		}
 
-		if starving >= hosts {
+		if len(starving) >= hosts {
+			report.starved = true
 			crashGracefully(fmt.Errorf("Starved to death on host %d\n",id))
 		}
 
-
+		if report.crashed  || plan.complete {
+			break
+		}
 	}
+	return report
 }
 
 
@@ -214,13 +223,13 @@ func initConnections(id, hosts int){
 	}
 }
 
-func printErr(err error) {
-	if err != nil {
-		fmt.Println(err)
-	}
-}
 
 func crashGracefully(err error) {
-	broadcast("death")
-	panic(err)
+	if err != nil {
+		fmt.Println(err)
+		report.errorMessage = err
+		report.crashed = true
+		fmt.Printf("broadcasting death on %d\n",id)
+		broadcast("death")
+	}
 }
