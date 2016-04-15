@@ -72,7 +72,7 @@ function runLogMerger {
  cd $testDir
  mv $1/*.txt ./
  mv $2/*.txt ./
- dinv -v -l -shiviz *Encoded.txt *Log.txt
+ dinv -v -l -plan=NONE -shiviz *Encoded.txt *Log.txt
 }
 
 #runDaikon first preforms work on the trace files, then prints out the invareints detected.

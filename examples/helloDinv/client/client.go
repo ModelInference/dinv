@@ -10,6 +10,7 @@ import (
 
 func main() {
 	// sending UDP packet to specified address and port
+	instrumenter.Initalize("Client")
 	conn := setupConnection(8080, 18585)
 	msg := "Hello DInv!"
 	instrumentedMessage := instrumenter.Pack(msg)

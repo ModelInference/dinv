@@ -10,6 +10,7 @@ import (
 
 //@dump
 func main() {
+	instrumenter.Initalize("Server")
 	conn, err := net.ListenPacket("udp", ":8080")
 	//	if err != nil {
 	//		fmt.Println(err)
