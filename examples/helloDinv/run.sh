@@ -93,9 +93,9 @@ then
     cleanup
     exit
 fi
-installDinv
-instrument client
-instrument server
+#installDinv
+#instrument client
+#instrument server
 runTestProgram server
 runTestProgram client
 runLogMerger client server

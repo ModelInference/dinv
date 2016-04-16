@@ -35,6 +35,7 @@ func (m *Message) String() string {
 }
 
 type Plan struct {
+	id 		int
 	runs     int
 	complete bool
 }
@@ -47,10 +48,12 @@ type Report struct {
 }
 
 func critical() {
+	instrumenter.Dump("nodes,listen,Lamport,RequestTime,id,hosts,lastMessage,updated,plan,report",nodes,listen,Lamport,RequestTime,id,hosts,lastMessage,updated,plan,report)
 	fmt.Printf("Running Critical Section on %d with Request time:%d \n", id, RequestTime)
 }
 
 func Host(idArg, hostsArg int, planArg Plan) Report {
+	instrumenter.Initalize(fmt.Sprintf("%d-%d",idArg,planArg.id))
 	id = idArg
 	hosts = hostsArg
 	plan = planArg
@@ -81,6 +84,7 @@ func Host(idArg, hostsArg int, planArg Plan) Report {
 				starving = make(map[int]bool)
 				//fmt.Printf("Requesting Critical on %d at time %d\n",id,RequestTime)
 				broadcast("critical")
+				instrumenter.Dump("nodes,listen,Lamport,RequestTime,id,hosts,lastMessage,updated,plan,report",nodes,listen,Lamport,RequestTime,id,hosts,lastMessage,updated,plan,report)
 			}
 		}
 
@@ -106,16 +110,19 @@ func Host(idArg, hostsArg int, planArg Plan) Report {
 			case "critical":
 				if !crit || RequestTime > m.Lamport || (RequestTime == m.Lamport && id < m.Sender) {
 					if crit {
+						instrumenter.Dump("nodes,listen,Lamport,RequestTime,id,hosts,lastMessage,updated,plan,report",nodes,listen,Lamport,RequestTime,id,hosts,lastMessage,updated,plan,report)
 						starving[m.Sender] = true
 					}
 					//fmt.Printf("sending ok to %d from %d Their Request Time:%d My Request Time: %d\n",m.Sender,id,m.Lamport,RequestTime)
 					send("ok", m.Sender)
 				} else {
 					//fmt.Printf("withholding ok (%d/%d) on %d from request id:%d lamport:%d Requesting Time :%d\n",len(outstanding),hosts-1,id,m.Sender,m.Lamport,RequestTime)
+					instrumenter.Dump("nodes,listen,Lamport,RequestTime,id,hosts,lastMessage,updated,plan,report",nodes,listen,Lamport,RequestTime,id,hosts,lastMessage,updated,plan,report)
 					outstanding = append(outstanding, m.Sender)
 				}
 				break
 			case "death":
+				instrumenter.Dump("nodes,listen,Lamport,RequestTime,id,hosts,lastMessage,updated,plan,report",nodes,listen,Lamport,RequestTime,id,hosts,lastMessage,updated,plan,report)
 				crashGracefully(fmt.Errorf("I %d Got the death message from %d now I die too\n", id, m.Sender))
 				break
 			default:
