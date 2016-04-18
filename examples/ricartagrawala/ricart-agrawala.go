@@ -35,25 +35,39 @@ func (m *Message) String() string {
 }
 
 type Plan struct {
-	id 		int
-	runs     int
-	complete bool
+	Id 		int
+	Criticals int
 }
 
 type Report struct {
-	starved      bool
-	crashed      bool
-	errorMessage error
-	otherDied    bool
+	Starved      bool
+	Crashed      bool
+	ErrorMessage error
+	OtherDied    bool
+	Criticals int
+}
+
+func (r Report) ReportMatchesPlan(p Plan) bool {
+	if r.Starved || r.Crashed || r.OtherDied {
+		return false
+	}
+	if r.ErrorMessage != nil {
+		return false
+	}
+	if p.Criticals == r.Criticals {
+		return true
+	}
+	return true
 }
 
 func critical() {
 	instrumenter.Dump("nodes,listen,Lamport,RequestTime,id,hosts,lastMessage,updated,plan,report",nodes,listen,Lamport,RequestTime,id,hosts,lastMessage,updated,plan,report)
+	report.Criticals++
 	fmt.Printf("Running Critical Section on %d with Request time:%d \n", id, RequestTime)
 }
 
 func Host(idArg, hostsArg int, planArg Plan) Report {
-	instrumenter.Initalize(fmt.Sprintf("%d-%d",idArg,planArg.id))
+	instrumenter.Initalize(fmt.Sprintf("%d-%d",idArg,planArg.Id))
 	id = idArg
 	hosts = hostsArg
 	plan = planArg
@@ -71,9 +85,22 @@ func Host(idArg, hostsArg int, planArg Plan) Report {
 	crit := false                 //true if critical section is requested
 	outstanding := make([]int, 0) //messages being witheld
 	okays := make(map[int]bool)
+	done := make(map[int]bool,0)
 	sentTime := time.Now()
 	starving := make(map[int]bool)
 	for true {
+
+		if len(done) == hosts {
+			fmt.Printf("Host %d done\n",plan.Id)
+			break
+		}
+
+		if (plan.Criticals == report.Criticals){
+			//everything is done
+			done[plan.Id] = true
+			broadcast("done")
+		}
+
 		if !crit {
 			crit = (rand.Float64() > .99)
 			if crit {
@@ -125,6 +152,9 @@ func Host(idArg, hostsArg int, planArg Plan) Report {
 				instrumenter.Dump("nodes,listen,Lamport,RequestTime,id,hosts,lastMessage,updated,plan,report",nodes,listen,Lamport,RequestTime,id,hosts,lastMessage,updated,plan,report)
 				crashGracefully(fmt.Errorf("I %d Got the death message from %d now I die too\n", id, m.Sender))
 				break
+			case "done":
+				done[m.Sender] = true
+				break
 			default:
 				continue
 			}
@@ -153,18 +183,20 @@ func Host(idArg, hostsArg int, planArg Plan) Report {
 		}
 
 		if len(starving) >= hosts {
-			report.starved = true
+			report.Starved = true
 			crashGracefully(fmt.Errorf("Starved to death on host %d\n", id))
 		}
 
-		if report.crashed || plan.complete {
+		if report.Crashed {
 			break
 		}
 	}
+	fmt.Printf("exiting")
 	return report
 }
 
 func receive() {
+	//defer listen.Close()
 	for true {
 		buf := make([]byte, 1024)
 		m := new(Message)
@@ -172,7 +204,7 @@ func receive() {
 		n, err := listen.Read(buf[0:])
 		if err != nil {
 			crashGracefully(err)
-			continue
+			break
 		}
 		Lamport++
 		instrumenter.Unpack(buf[:n], m)
@@ -226,8 +258,8 @@ func initConnections(id, hosts int) {
 func crashGracefully(err error) {
 	if err != nil {
 		fmt.Println(err)
-		report.errorMessage = err
-		report.crashed = true
+		report.ErrorMessage = err
+		report.Crashed = true
 		fmt.Printf("broadcasting death on %d\n", id)
 		broadcast("death")
 	}
