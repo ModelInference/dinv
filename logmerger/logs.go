@@ -63,7 +63,7 @@ func injectMissingPoints(points []Point, log *golog) []Point {
 			indexFound = false
 			//The point log did not contain the index, inject a
 			//supplementary one
-		} else {
+		} else if goLogIndex < len(log.clocks){
 			//fmt.Printf("Injecting Clock %s into log %s\n", log.clocks[goLogIndex].ReturnVCString(), log.id)
 			newPoint := new(Point)
 			newPoint.VectorClock = log.clocks[goLogIndex].Bytes()
@@ -174,7 +174,7 @@ func GoLogFromString(clockLog, regex string) (*golog, error) {
 
 	vclocks := make([]*vclock.VClock, 0)
 	for i := range rawClocks {
-		clock, err := ClockFromString(rawClocks[i], "\"([A-Za-z0-9]+)\":([0-9]+)")
+		clock, err := ClockFromString(rawClocks[i], "\"([A-Za-z0-9_]+)\":([0-9]+)")
 		if clock == nil || err != nil {
 			return nil, err
 		}
