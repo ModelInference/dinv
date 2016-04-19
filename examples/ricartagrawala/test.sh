@@ -1,8 +1,10 @@
 #!/bin/bash
 
 HOSTS=3
-SLEEPTIME=7
+SLEEPTIME=3
 
+DINV=$GOPATH/src/bitbucket.org/bestchai/dinv
+testDir=$DINV/examples/ricartagrawala
 #ricart-agrawala test cases
 function shutdown {
     kill `ps | pgrep ricart | awk '{print $1}'` > /dev/null
@@ -45,20 +47,43 @@ function runTests {
     testWrapper "halfhostsmanycriticals_test.go" $HOSTS $SLEEPTIME
 }
 
+function instrument {
+    dinv -i -v -dir=$testDir/$1
+}
+
 function runDaikon {
-     for directory in *-txt; do
+    cd $testDir/test
+     for directory in ./*-txt; do
          echo $directory
          cd $directory
          dinv -v -l *Encoded.txt *Log.txt
-         mkdir dinv
-         mv *.dtrace dinv
+         mkdir dinv-output
+         mv *.dtrace dinv-output
          dinv -v -l -plan=NONE *Encoded.txt *Log.txt
-         mkdir daikon
-         mv *.dtrace daikon
+         mkdir daikon-output
+         mv *.dtrace daikon-output
+         cd ..
      done
  }
  
+function cleanup {
+    cd $testDir/test
+    rm -r ./*-txt
+    rm *.txt
+}    
 
+if [ "$1" == "-c" ];
+then
+    cleanup
+    exit
+fi
+instrument 
 runTests
 runDaikon
+if [ "$1" == "-d" ];
+then
+    exit
+fi
+#cleanup
+
 
