@@ -13,7 +13,6 @@ var (
 )
 
 func TestMain(m *testing.M) {
-	
 	var idarg = flag.Int("id",0, "hosts id")
 	var hostsarg = flag.Int("hosts",0, "#of hosts")
 	flag.Parse()
@@ -22,11 +21,13 @@ func TestMain(m *testing.M) {
 	m.Run()
 }
 
-func TestHostStartup(t *testing.T){
+func TestOneHostOneCritical(t *testing.T){
 	plan := ricartagrawala.Plan{idInput,0}
+	if idInput == 0 {
+		plan.Criticals = 1
+	}
 	report := ricartagrawala.Host(idInput,hostsInput,plan)
 	if !report.ReportMatchesPlan(plan) {
 		t.Error(report.ErrorMessage)
 	}
-	
 }
