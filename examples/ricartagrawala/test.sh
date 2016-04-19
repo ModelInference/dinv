@@ -21,8 +21,8 @@ function setup {
 function runTest {
     for (( i=0; i<$2; i++))
     do
-        #go test $1 -id=$i -hosts=$2 >> output.txt &
-        go test $1 -id=$i -hosts=$2 &
+        go test $1 -id=$i -hosts=$2 >> $ioutput.txt &
+        #go test $1 -id=$i -hosts=$2 &
     done
 }
 
@@ -77,7 +77,6 @@ then
     cleanup
     exit
 fi
-instrument 
 runTests
 runDaikon
 if [ "$1" == "-d" ];

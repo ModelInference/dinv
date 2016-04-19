@@ -61,8 +61,7 @@ func (r Report) ReportMatchesPlan(p Plan) bool {
 }
 
 func critical() {
-	//insturmenter.Dump("nodes,listen,Lamport,RequestTime,id,hosts,lastMessage,updated,plan,report",nodes,listen,Lamport,RequestTime,id,hosts,lastMessage,updated,plan,report)
-				//@dump
+	instrumenter.Dump("nodes,listen,Lamport,RequestTime,id,hosts,lastMessage,updated,plan,report",nodes,listen,Lamport,RequestTime,id,hosts,lastMessage,updated,plan,report)
 	report.Criticals++
 	fmt.Printf("Running Critical Section on %d, run(%d/%d)  with Request time:%d \n", id, report.Criticals,plan.Criticals,RequestTime)
 }
@@ -122,8 +121,7 @@ func Host(idArg, hostsArg int, planArg Plan) Report {
 				starving = make(map[int]bool)
 				//fmt.Printf("Requesting Critical on %d at time %d\n",id,RequestTime)
 				broadcast("critical")
-				//@dump
-				//insturmenter.Dump("nodes,listen,Lamport,RequestTime,id,hosts,lastMessage,updated,plan,report",nodes,listen,Lamport,RequestTime,id,hosts,lastMessage,updated,plan,report)
+				//instrumenter.Dump("nodes,listen,Lamport,RequestTime,id,hosts,lastMessage,updated,plan,report",nodes,listen,Lamport,RequestTime,id,hosts,lastMessage,updated,plan,report)
 			}
 		}
 
@@ -149,22 +147,19 @@ func Host(idArg, hostsArg int, planArg Plan) Report {
 			case "critical":
 				if !crit || RequestTime > m.Lamport || (RequestTime == m.Lamport && id < m.Sender) {
 					if crit {
-				//@dump
-						//insturmenter.Dump("nodes,listen,Lamport,RequestTime,id,hosts,lastMessage,updated,plan,report",nodes,listen,Lamport,RequestTime,id,hosts,lastMessage,updated,plan,report)
+						//instrumenter.Dump("nodes,listen,Lamport,RequestTime,id,hosts,lastMessage,updated,plan,report",nodes,listen,Lamport,RequestTime,id,hosts,lastMessage,updated,plan,report)
 						starving[m.Sender] = true
 					}
 					//fmt.Printf("sending ok to %d from %d Their Request Time:%d My Request Time: %d\n",m.Sender,id,m.Lamport,RequestTime)
 					send("ok", m.Sender)
 				} else {
 					//fmt.Printf("withholding ok (%d/%d) on %d from request id:%d lamport:%d Requesting Time :%d\n",len(outstanding),hosts-1,id,m.Sender,m.Lamport,RequestTime)
-				//@dump
-					//insturmenter.Dump("nodes,listen,Lamport,RequestTime,id,hosts,lastMessage,updated,plan,report",nodes,listen,Lamport,RequestTime,id,hosts,lastMessage,updated,plan,report)
+					//instrumenter.Dump("nodes,listen,Lamport,RequestTime,id,hosts,lastMessage,updated,plan,report",nodes,listen,Lamport,RequestTime,id,hosts,lastMessage,updated,plan,report)
 					outstanding = append(outstanding, m.Sender)
 				}
 				break
 			case "death":
-				//@dump
-				//insturmenter.Dump("nodes,listen,Lamport,RequestTime,id,hosts,lastMessage,updated,plan,report",nodes,listen,Lamport,RequestTime,id,hosts,lastMessage,updated,plan,report)
+				//instrumenter.Dump("nodes,listen,Lamport,RequestTime,id,hosts,lastMessage,updated,plan,report",nodes,listen,Lamport,RequestTime,id,hosts,lastMessage,updated,plan,report)
 				crashGracefully(fmt.Errorf("I %d Got the death message from %d now I die too\n", id, m.Sender))
 				break
 			case "done":
@@ -231,6 +226,7 @@ func receive() {
 		}
 		Lamport++
 		instrumenter.Unpack(buf[:n], m)
+		instrumenter.Dump("nodes,listen,Lamport,RequestTime,id,hosts,lastMessage,updated,plan,report",nodes,listen,Lamport,RequestTime,id,hosts,lastMessage,updated,plan,report)
 		//fmt.Printf("received %s [ %d <-- %d ]\n",m.String(),id,m.Sender)
 		if m.Lamport > Lamport {
 			Lamport = m.Lamport
@@ -248,6 +244,7 @@ func broadcast(msg string) {
 }
 
 func send(msg string, host int) {
+	instrumenter.Dump("nodes,listen,Lamport,RequestTime,id,hosts,lastMessage,updated,plan,report",nodes,listen,Lamport,RequestTime,id,hosts,lastMessage,updated,plan,report)
 	Lamport++
 	m := Message{Lamport, msg, id}
 	if msg == "critical" {
