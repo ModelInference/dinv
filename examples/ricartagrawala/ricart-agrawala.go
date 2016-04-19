@@ -63,7 +63,7 @@ func (r Report) ReportMatchesPlan(p Plan) bool {
 func critical() {
 	instrumenter.Dump("nodes,listen,Lamport,RequestTime,id,hosts,lastMessage,updated,plan,report",nodes,listen,Lamport,RequestTime,id,hosts,lastMessage,updated,plan,report)
 	report.Criticals++
-	fmt.Printf("Running Critical Section on %d with Request time:%d \n", id, RequestTime)
+	fmt.Printf("Running Critical Section on %d, run(%d/%d)  with Request time:%d \n", id, report.Criticals,plan.Criticals,RequestTime)
 }
 
 func Host(idArg, hostsArg int, planArg Plan) Report {
@@ -71,7 +71,7 @@ func Host(idArg, hostsArg int, planArg Plan) Report {
 	id = idArg
 	hosts = hostsArg
 	plan = planArg
-	fmt.Printf("Starting %d\n", id+BASEPORT)
+	fmt.Printf("Starting %d with plan to execute crit %d times\n", id+BASEPORT,planArg.Criticals)
 	initConnections(id, hosts)
 	fmt.Printf("Connected to %d hosts on %d\n", len(nodes), id)
 	time.Sleep(1000 * time.Millisecond)
@@ -83,31 +83,41 @@ func Host(idArg, hostsArg int, planArg Plan) Report {
 
 	//local variables to track outstanding critical requests
 	crit := false                 //true if critical section is requested
+	finishing := false
 	outstanding := make([]int, 0) //messages being witheld
 	okays := make(map[int]bool)
 	done := make(map[int]bool,0)
 	sentTime := time.Now()
 	starving := make(map[int]bool)
+	timeouts := 0
 	for true {
 
-		if len(done) == hosts {
+		if len(done) >= hosts  && len(okays) >= (hosts - 1) {
 			fmt.Printf("Host %d done\n",plan.Id)
+			break
+		} else if finishing && timeouts > 5{
 			break
 		}
 
-		if (plan.Criticals == report.Criticals){
+		if (plan.Criticals == report.Criticals && !finishing){
 			//everything is done
+			finishing =true
 			done[plan.Id] = true
+			okays = make(map[int]bool)
+			sentTime = time.Now()
+			timeouts = 0
 			broadcast("done")
+			//fmt.Println("broadcasting done")
 		}
 
-		if !crit {
+		if !crit && !finishing {
 			crit = (rand.Float64() > .99)
 			if crit {
 				RequestTime = Lamport
 				outstanding = make([]int, 0)
 				okays = make(map[int]bool)
 				sentTime = time.Now()
+				timeouts = 0
 				starving = make(map[int]bool)
 				//fmt.Printf("Requesting Critical on %d at time %d\n",id,RequestTime)
 				broadcast("critical")
@@ -154,6 +164,8 @@ func Host(idArg, hostsArg int, planArg Plan) Report {
 				break
 			case "done":
 				done[m.Sender] = true
+				fmt.Printf("sending done ok to %d from %d Their Request Time:%d My Request Time: %d recieved %d/%d \n",m.Sender,id,m.Lamport,RequestTime,len(done),hosts-1)
+				send("ok", m.Sender)
 				break
 			default:
 				continue
@@ -161,15 +173,21 @@ func Host(idArg, hostsArg int, planArg Plan) Report {
 		}
 
 		//timeout
-		if crit && sentTime.Add(time.Millisecond*100).Before(time.Now()) {
+		if (crit || finishing) && sentTime.Add(time.Millisecond*100).Before(time.Now()) {
 			sentTime = time.Now()
+			timeouts++
 			//fmt.Printf("Timeout ok %d",id)
 			for i := 0; i < hosts; i++ {
 				//dont make a connection with yourself
 				if i == id || okays[i] {
 					continue
 				} else {
-					send("critical", i)
+					if crit {
+						send("critical", i)
+					} else {
+						fmt.Printf("resending done %d/%d criticals %d/%d dones",report.Criticals,plan.Criticals,len(done),hosts)
+						send("done", i)
+					}
 				}
 			}
 		}

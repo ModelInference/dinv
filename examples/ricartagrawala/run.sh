@@ -2,7 +2,7 @@
 
     for (( i=0; i<$1; i++))
     do
-        go test -id=$i -hosts=$1 &
+        go test $2 -id=$i -hosts=$1 &
     done
 
     sleep 1

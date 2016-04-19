@@ -4,6 +4,7 @@ package ricartagrawala_test
 import (
 	"testing"
 	"flag"
+	"fmt"
 	"bitbucket.org/bestchai/dinv/examples/ricartagrawala"
 )
 
@@ -14,6 +15,7 @@ var (
 
 func TestMain(m *testing.M) {
 	
+	fmt.Println("testing")
 	var idarg = flag.Int("id",0, "hosts id")
 	var hostsarg = flag.Int("hosts",0, "#of hosts")
 	flag.Parse()
@@ -28,5 +30,6 @@ func TestHostStartup(t *testing.T){
 	if !report.ReportMatchesPlan(plan) {
 		t.Error(report.ErrorMessage)
 	}
+		t.Error("ERROR")
 	
 }
