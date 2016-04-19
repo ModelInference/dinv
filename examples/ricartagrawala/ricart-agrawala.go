@@ -67,7 +67,7 @@ func critical() {
 }
 
 func Host(idArg, hostsArg int, planArg Plan) Report {
-	instrumenter.Initalize(fmt.Sprintf("%d-%d",idArg,planArg.Id))
+	instrumenter.Initalize(fmt.Sprintf("%d_%d",idArg,planArg.Id))
 	id = idArg
 	hosts = hostsArg
 	plan = planArg

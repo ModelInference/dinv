@@ -18,6 +18,9 @@ import (
 
 	"github.com/arcaneiceman/GoVector/govec"
 	"bitbucket.org/bestchai/dinv/logmerger"
+
+
+	"github.com/arcaneiceman/GoVector/govec/vclock"
 )
 
 var (
@@ -61,6 +64,8 @@ func Dump(names string, values ...interface{}) {
 			}
 		}
 	point := logmerger.Point{pairs, hashedId, logger.GetCurrentVC(), 0}
+	clock, _  := vclock.FromBytes(logger.GetCurrentVC())
+	fmt.Println(clock.ReturnVCString())
 	Encoder.Encode(point)
 	
 }
