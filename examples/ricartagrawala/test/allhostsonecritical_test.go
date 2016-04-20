@@ -3,6 +3,7 @@ package ricartagrawala_test
 import (
 	"testing"
 	"flag"
+	"fmt"
 	"bitbucket.org/bestchai/dinv/examples/ricartagrawala"
 )
 
@@ -25,6 +26,8 @@ func TestAllHostsOneCriticals(t *testing.T){
 	plan := ricartagrawala.Plan{idInput,1}
 	report := ricartagrawala.Host(idInput,hostsInput,plan)
 	if !report.ReportMatchesPlan(plan) {
+		fmt.Println("FAILED")
 		t.Error(report.ErrorMessage)
 	}
+	fmt.Println("PASSED")
 }
