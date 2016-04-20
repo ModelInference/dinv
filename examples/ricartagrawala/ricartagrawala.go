@@ -100,6 +100,9 @@ func Host(idArg, hostsArg int, planArg Plan) Report {
 			break
 		} else if finishing && timeouts > 100 {
 			break
+		} else if timeouts > 100 {
+			crashGracefully(fmt.Errorf("other hosts presumed dead on %d dead, now timing out",id))
+			break
 		}
 		
 		//check if the job specified by the plan is complete
@@ -306,3 +309,5 @@ func crashGracefully(err error) {
 	}
 	instrumenter.Dump("nodes,listen,Lamport,RequestTime,id,hosts,lastMessage.Body,lastMessage.Lamport,lastMessage.Sender,updated,plan.Id,plan.Criticals,report.Starved,report.Crashed,report.ErrorMessage,report.OtherDied,report.Criticals", nodes, listen, Lamport, RequestTime, id, hosts, lastMessage.Body, lastMessage.Lamport, lastMessage.Sender, updated, plan.Id, plan.Criticals, report.Starved,report.Crashed,report.ErrorMessage,report.OtherDied,report.Criticals)
 }
+
+
