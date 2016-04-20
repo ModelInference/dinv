@@ -1,7 +1,7 @@
 #!/bin/bash
 
 HOSTS=3
-SLEEPTIME=10
+SLEEPTIME=2
 
 DINV=$GOPATH/src/bitbucket.org/bestchai/dinv
 testDir=$DINV/examples/ricartagrawala
@@ -24,12 +24,11 @@ function runTest {
     do
         go test $1 -id=$i -hosts=$2 >> passfail.stext &
         pids[$i]=$!
-        #go test $1 -id=$i -hosts=$2 &
     done
+
     for (( i=0; i<$2; i++))
     do
         wait ${pids[$i]}
-        #go test $1 -id=$i -hosts=$2 &
     done
 }
 
@@ -155,9 +154,9 @@ then
     exit
 fi
 runTests
-#runLogMerger
-#sortOutput
-#runDaikon
+runLogMerger
+sortOutput
+runDaikon
 if [ "$1" == "-d" ];
 then
     exit
