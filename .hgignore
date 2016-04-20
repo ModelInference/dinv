@@ -5,6 +5,7 @@ syntax: glob
 *.dtrace
 *.sw[a-z]
 *.txt
+savedtest*
 mod_*
 TestPrograms/*.txt
 TestPrograms/t3/*.txt
