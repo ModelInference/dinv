@@ -6,7 +6,7 @@ Initialization Complete
 Client {"Client":2}
 Sending from client.go:16 Client
  {  } { {"Client":1} }
-Client {"Client":3, "Server":3}
+Client {"Server":3, "Client":3}
 Received on client.go:27 Client
  {  } { {"Client":2} }
 Server {"Server":1}

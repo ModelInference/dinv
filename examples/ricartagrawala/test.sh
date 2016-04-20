@@ -51,24 +51,93 @@ function instrument {
     dinv -i -v -dir=$testDir/$1
 }
 
-function runDaikon {
+function runLogMerger {
     cd $testDir/test
      for directory in ./*-txt; do
          echo $directory
          cd $directory
+         #merging consistant cuts
          dinv -v -l *Encoded.txt *Log.txt
          mkdir dinv-output
          mv *.dtrace dinv-output
+         #regualr daikon output
          dinv -v -l -plan=NONE *Encoded.txt *Log.txt
          mkdir daikon-output
          mv *.dtrace daikon-output
          cd ..
      done
- }
+}
+
+function sortOutput {
+    cd $testDir/test
+        let "i = 0"
+        for directory in ./*-txt; do
+            #sort dinv's output
+            cd $directory/dinv-output
+            for file in ./*; do
+                #directory does not exist
+                cleanName=`echo $file | sed 's/[:\/]//g'`
+                if [ ! -d ../../dinv-$cleanName ]; then
+                    mkdir ../../dinv-$cleanName
+                fi
+
+                mv $file ../../dinv-$cleanName/$i.dtrace
+                let "i = i + 1"
+            
+            done
+
+            cd ../..
+
+            cd $directory/daikon-output
+            for file in ./*; do
+                #directory does not exist
+                cleanName=`echo $file | sed 's/[:\/]//g'`
+                if [ ! -d ../../daikon-$cleanName ]; then
+                    mkdir ../../daikon-$cleanName
+                fi
+
+                mv $file ../../daikon-$cleanName/$i.dtrace
+                let "i = i + 1"
+            
+            done
+            #sort diakons output
+            #for file in $directory/daikon-output/*; do
+                #directory does not exist
+            #    if [ ! -d daikon-$file ]; then
+            #        mkdir dinv-$file
+            #    fi
+
+            #    mv $file daikon-$file/$directory_$file
+            #done
+        done
+    }
+
+
+
+function runDaikon {
+    cd $testDir/test
+    for directory in ./daikon*; do
+        java daikon.Daikon $directory/*
+        mv *.gz $directory
+        gunzip $directory/*.gz
+    done
+
+    cd $testDir/test
+    for directory in ./dinv*; do
+        java daikon.Daikon $directory/*
+        mv *.gz $directory
+        gunzip $directory/*.gz
+    done
+}
+
+
  
 function cleanup {
     cd $testDir/test
     rm -r ./*-txt
+    rm -r dinv*
+    rm -r daikon*
+    rm *.gz
     rm *.txt
 }    
 
@@ -78,6 +147,8 @@ then
     exit
 fi
 runTests
+runLogMerger
+sortOutput
 runDaikon
 if [ "$1" == "-d" ];
 then
