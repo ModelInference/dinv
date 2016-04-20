@@ -11,7 +11,7 @@ function genMutants {
     cd /tmp
     rm -r go-mutesting*
 
-    go-mutesting --exec "$GOPATH/src/github.com/zimmski/go-mutesting/scripts/simple.sh" --do-not-remove-tmp-folder --exec-timeout 1 bitbucket.org/bestchai/dinv/examples/ricartagrawala/...
+    go-mutesting --exec --verbose --debug "$GOPATH/src/github.com/zimmski/go-mutesting/scripts/simple.sh" --do-not-remove-tmp-folder --exec-timeout 1 bitbucket.org/bestchai/dinv/examples/ricartagrawala/...
 
 
     cd go-mutesting*
@@ -87,18 +87,19 @@ function checkInvariants {
 }
 
 function tornago {
-    #genMutants
+    genMutants
     #backupOriginal
     #runOriginal
     #runMutants
     #checkInvariants
-    summarizeOutput "daikon"
-    summarizeOutput "dinv"
+    #passfail
+    #summarizeOutput "daikon"
+    #summarizeOutput "dinv"
 
 }
 
 function summarizeOutput {
-    cd $tornago/savedtest1
+    cd $tornago
     errorrx=" ([0-9])+ errors found in ([0-9,]+)"
     falserx=" ([0-9])+ false positives, out of ([0-9,]+), "
     for mutant in dir*;do 
@@ -127,6 +128,19 @@ function summarizeOutput {
         done < $mutant/$1.txt
         echo $mutant -- $1    - Errors: $dinvE  total statements $dinvTE FalseP: $dinvFP total statements $dinvTFP >> $tornago/output.txt
     done
+}
+
+function passfail {
+    cd $tornago
+    for mutant in dir*;do 
+        if [[ `grep FAILED output.stext` == "" ]]
+        then
+            echo $mutant 0-- PASSED -- >>$tornago/output.txt
+        else
+            echo $mutant 0-- FAILED -- >>$tornago/output.txt
+        fi
+    done
+~                
 }
 
 function cleanup {

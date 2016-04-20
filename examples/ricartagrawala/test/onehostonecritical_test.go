@@ -4,6 +4,7 @@ package ricartagrawala_test
 import (
 	"testing"
 	"flag"
+	"fmt"
 	"bitbucket.org/bestchai/dinv/examples/ricartagrawala"
 )
 

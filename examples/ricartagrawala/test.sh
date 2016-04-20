@@ -1,7 +1,7 @@
 #!/bin/bash
 
 HOSTS=3
-SLEEPTIME=3
+SLEEPTIME=10
 
 DINV=$GOPATH/src/bitbucket.org/bestchai/dinv
 testDir=$DINV/examples/ricartagrawala
@@ -19,17 +19,24 @@ function setup {
 }
 
 function runTest {
+    pids=()
     for (( i=0; i<$2; i++))
     do
-        go test $1 -id=$i -hosts=$2 >> $ioutput.txt &
+        go test $1 -id=$i -hosts=$2 >> passfail.stext &
+        pids[$i]=$!
+        #go test $1 -id=$i -hosts=$2 &
+    done
+    for (( i=0; i<$2; i++))
+    do
+        wait ${pids[$i]}
         #go test $1 -id=$i -hosts=$2 &
     done
 }
 
 function testWrapper {
     echo testing $1
+    echo testing $1 >> passfail.stext
     runTest $1 $2
-    sleep $3
     mkdir $1-txt
     mv *.txt $1-txt
     shutdown
@@ -61,7 +68,7 @@ function runLogMerger {
          mkdir dinv-output
          mv *.dtrace dinv-output
          #regualr daikon output
-         dinv -v -l -plan=NONE *Encoded.txt *Log.txt
+         dinv -l -plan=NONE *Encoded.txt *Log.txt
          mkdir daikon-output
          mv *.dtrace daikon-output
          cd ..
@@ -139,6 +146,7 @@ function cleanup {
     rm -r daikon*
     rm *.gz
     rm *.txt
+    rm *.stext
 }    
 
 if [ "$1" == "-c" ];
@@ -146,10 +154,10 @@ then
     cleanup
     exit
 fi
-runTests >> passfail.log
-runLogMerger
-sortOutput
-runDaikon
+runTests
+#runLogMerger
+#sortOutput
+#runDaikon
 if [ "$1" == "-d" ];
 then
     exit
