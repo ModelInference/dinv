@@ -155,7 +155,7 @@ func mineStates(logs [][]Point) []State {
 	logger.Printf("\nStripping Clocks... ")
 	clocks, _ := VectorClockArraysFromLogs(logs)
 	logger.Printf("Done\nBuilding Lattice... ")
-	lattice := BuildLattice(clocks)
+	lattice := BuildLattice2(clocks)
 	logger.Printf("Done\nCalculating Delta... ")
 	deltaComm := enumerateCommunication(clocks)
 	logger.Printf("Done\nMining Consistent Cuts... ")
@@ -188,7 +188,7 @@ func statesFromCuts(cuts []Cut, clocks [][]vclock.VClock, logs [][]Point) []Stat
 			}
 		}
 		state.TotalOrdering = totalOrderFromCut(cut, clocks)
-		logger.Printf("%s\n", state.String())
+		//logger.Printf("%s\n", state.String())
 		fmt.Printf("\rExtracting states %3.0f%% \t[%d] found", 100*float32(cutIndex)/float32(len(cuts)), len(states))
 		states = append(states, *state)
 	}

@@ -45,7 +45,7 @@ func mineConsistentCuts(lattice [][]vclock.VClock, clocks [][]vclock.VClock, del
 			}
 			if communicationDelta == 0 {
 				fmt.Printf("\rcomputing cuts %3.0f%%  \t[%d] found", 100*float32(i)/float32(len(lattice)), len(consistentCuts))
-				logger.Printf("%s\n", potentialCut.String())
+				//logger.Printf("%s\n", potentialCut.String())
 				consistentCuts = append(consistentCuts, potentialCut)
 			}
 		}

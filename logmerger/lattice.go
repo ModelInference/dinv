@@ -22,6 +22,65 @@ import (
 	"gopkg.in/eapache/queue.v1"
 )
 
+
+
+
+//BuildLattice constructs a lattice based on an ordered set of vector clocks. The
+//computed lattice is represented as a 2-D array of vector clocks
+//[i][j] where the i is the level of the lattice, and j is a set of
+//events at that level
+func BuildLattice2(clocks [][]vclock.VClock) [][]vclock.VClock {
+	latticePoint := vclock.New()
+	//initalize lattice clock
+	ids := idClockMapper(clocks)
+	levels := sumTime(clocks)
+	for i := range clocks {
+		latticePoint.Update(ids[i], 0)
+	}
+	level, points := 0, 0
+	lattice := make([][]vclock.VClock, 0)
+	current, next := queue.New(), queue.New()
+	next.Add(latticePoint)
+	for next.Length() > 0 {
+		lattice = append(lattice, make([]vclock.VClock, 0))
+		current = next
+		nextMap := make(map[string]*vclock.VClock)
+		for current.Length() > 0 {
+			p := current.Peek().(*vclock.VClock)
+			current.Remove()
+			for i := range ids {
+				pu := p.Copy()
+				pu.Update(ids[i], 0)
+				vstring := pu.ReturnVCString()
+				_, ok := nextMap[vstring]
+				if !ok && correctLatticePoint(clocks[i], pu, ids[i]) {
+					//fmt.Println(vstring)
+					nextMap[vstring] = pu
+					points++
+				}
+			}
+			next = mapToQueue(nextMap)
+			fmt.Printf("\rComputing lattice  %3.0f%% \t point %d\t fanout %d", 100*float32(level)/float32(levels), points, len(lattice[level]))
+			lattice[len(lattice)-1] = append(lattice[len(lattice)-1], *p.Copy())
+		}
+		level++
+	}
+	fmt.Println()
+	return lattice
+
+}
+
+func mapToQueue(vmap map[string]*vclock.VClock) *queue.Queue {
+	q := queue.New()
+	for _, clock := range vmap {
+		q.Add(clock)
+	}
+	return q
+}
+
+
+
+
 //BuildLattice constructs a lattice based on an ordered set of vector clocks. The
 //computed lattice is represented as a 2-D array of vector clocks
 //[i][j] where the i is the level of the lattice, and j is a set of

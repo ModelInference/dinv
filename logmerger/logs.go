@@ -44,7 +44,7 @@ func injectMissingPoints(points []Point, log *golog) []Point {
 	injectedPoints := make([]Point, 0)
 	//itterate over all the point logs
 	indexFound := false
-	for pointIndex < len(points) {
+	for pointIndex < len(points) && goLogIndex < len(log.clocks) {
 		//setup for a do while loop
 		pointClock, _ := vclock.FromBytes(points[pointIndex].VectorClock)
 		ticks, found := pointClock.FindTicks(log.id)
