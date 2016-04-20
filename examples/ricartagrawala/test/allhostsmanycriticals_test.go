@@ -23,9 +23,11 @@ func TestMain(m *testing.M) {
 
 func TestAllHostsManyCriticals(t *testing.T){
 	plan := ricartagrawala.Plan{idInput,10}
-	fmt.Println(plan.Criticals)
+	//fmt.Println(plan.Criticals)
 	report := ricartagrawala.Host(idInput,hostsInput,plan)
 	if !report.ReportMatchesPlan(plan) {
+		fmt.Println("FAILED")
 		t.Error(report.ErrorMessage)
 	}
+	fmt.Println("PASSED")
 }

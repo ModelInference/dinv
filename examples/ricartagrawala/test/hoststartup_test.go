@@ -28,8 +28,9 @@ func TestHostStartup(t *testing.T){
 	plan := ricartagrawala.Plan{idInput,0}
 	report := ricartagrawala.Host(idInput,hostsInput,plan)
 	if !report.ReportMatchesPlan(plan) {
+		fmt.Println("FAILED")
 		t.Error(report.ErrorMessage)
-	}
-		t.Error("ERROR")
+	}		
+	fmt.Println("PASSED")
 	
 }

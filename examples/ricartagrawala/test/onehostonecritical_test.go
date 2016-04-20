@@ -28,6 +28,8 @@ func TestOneHostOneCritical(t *testing.T){
 	}
 	report := ricartagrawala.Host(idInput,hostsInput,plan)
 	if !report.ReportMatchesPlan(plan) {
+		fmt.Println("FAILED")
 		t.Error(report.ErrorMessage)
-	}
+	}		
+	fmt.Println("PASSED")
 }

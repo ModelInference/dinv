@@ -146,7 +146,7 @@ then
     cleanup
     exit
 fi
-runTests
+runTests >> passfail.log
 runLogMerger
 sortOutput
 runDaikon
