@@ -5,13 +5,14 @@ import (
 	"net"
 	"os"
 	"time"
-	"github.com/arcaneiceman/GoVector/govec"
+	"bitbucket.org/bestchai/dinv/instrumenter"
 )
 
-const MESSAGES  = 10
+const MESSAGES  = 11
+const mod = 2
 
 func Client(myPort, headPort, tailPort string) {
-	Logger := govec.Initialize("client", "clientlogfile")
+	instrumenter.Initalize("Client")
 	// sending UDP packet to specified address and port
 
 	myAddr, err := net.ResolveUDPAddr("udp", ":"+myPort)
@@ -27,18 +28,35 @@ func Client(myPort, headPort, tailPort string) {
 
 
 	for i := 0; i < MESSAGES; i++ {
-		outgoingMessage := i
-		outBuf := Logger.PrepareSend("Head Node", outgoingMessage)
-		_, errWrite := listen.WriteToUDP(outBuf,head)
+		m := new(Message)
+		m.Request = "PUT"
+
+		m.Key = fmt.Sprintf("%d",i)
+		if i%mod ==0  {
+			m.Val = "willy"
+		} else {
+			m.Val = "wonka"
+		}
+		instrumenter.Dump("m.Val",m.Val)
+
+		out := instrumenter.Pack(m)
+		_, errWrite := listen.WriteToUDP(out,head)
 		printErr(errWrite)
 
-		_, _, err := listen.ReadFrom(buf[0:])
+		r := new(Message)
+		n, _, err := listen.ReadFrom(buf[0:])
 		printErr(err)
-		var incommingMessage int
-		Logger.UnpackReceive("Received Message From TailNode", buf[0:], &incommingMessage)
+		instrumenter.Unpack(buf[:n], r)
 		time.Sleep(1)
 	}
+
+	m := new(Message)
+	m.Request = "DIE"
+	out := instrumenter.Pack(m)
+	_, errWrite := listen.WriteToUDP(out,head)
+	printErr(errWrite)
 	listen.Close()
+
 
 }
 
