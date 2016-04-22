@@ -17,12 +17,28 @@ function runTest {
     echo starting client    
     go test $testDir/run/run_test.go -id=0 -hosts=$1 &
 
-    sleep 5
+    for (( i=0; i<$1; i++))
+    do
+        wait ${pids[$i]}
+    done
     shutdown
-    #for (( i=0; i<$2; i++))
-    #do
-    #    wait ${pids[$i]}
-    #done
+}
+
+function runLogMerger {
+    cd $testDir/run
+    dinv -v -l -shiviz *Encoded.txt *Log.txt
+}
+
+function runDaikon {
+    cd $testDir/run
+    for file in ./*.dtrace; do
+        java daikon.Daikon $file
+    done
+    rm output.txt
+    for trace in ./*.gz; do
+        java daikon.PrintInvariants $trace >> output.txt
+    done
+    cat output.txt
 }
 
 function shutdown {
@@ -42,6 +58,8 @@ then
     exit
 fi
 runTest $1
+runLogMerger
+runDaikon
 if [ "$1" == "-d" ];
 then
     exit
