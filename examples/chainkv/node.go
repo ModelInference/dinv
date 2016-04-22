@@ -44,6 +44,8 @@ var id 			int
 var storeSize 	int
 var last        bool
 
+var myLog *os.File
+
 func Node(idArg, nextArg, lastArg string) {
 	initNode(idArg, nextArg, lastArg)	
 	var buf [512]byte
@@ -55,8 +57,6 @@ func Node(idArg, nextArg, lastArg string) {
 		instrumenter.Unpack(buf[:n], m)
 		m.err = err
 		errPrint(m.err)
-
-		fmt.Printf("Recieved %s\n", m.Request)
 
 		//go func (m *Message) {
 			switch m.Request{
@@ -119,6 +119,15 @@ func initNode(idArg, next, lastArg string) {
 	id, err = strconv.Atoi(idArg)
 	errPrint(err)
 	last = (lastArg == idArg)
+
+	//fileio
+	myLog, err = os.OpenFile(idMap[idArg]+".alog", os.O_WRONLY|os.O_CREATE, 0777)
+	errPrint(err)
+}
+
+func nLog(message string){
+	fmt.Println(message)
+	myLog.WriteString(message +"\n")
 }
 
 func errPrint(err error) {

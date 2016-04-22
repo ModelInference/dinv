@@ -13,7 +13,7 @@ function runTest {
         go test $testDir/run/run_test.go -id=$i -hosts=$1 &
         pids[$i]=$!
     done
-    sleep 1
+    sleep 3
     echo starting client    
     go test $testDir/run/run_test.go -id=0 -hosts=$1 &
 
@@ -54,15 +54,32 @@ function cleanup {
  rm *.log
 }
 
+function cleanupcontrol {
+ cd $testDir/runa
+ rm *.alog
+ }
+
+
+function cleanupall {
+    cleanup
+    cleanupcontrol
+}
+
 
 if [ "$1" == "-c" ];
 then
-    cleanup
+    cleanupall
     exit
 fi
-runTest $1
-runLogMerger
-runDaikon
+if [ "$1" == "-t" ];
+then
+    runTest 5
+    runLogMerger
+    runDaikon
+else
+    runTest 5
+    cleanup
+fi
 if [ "$1" == "-d" ];
 then
     exit

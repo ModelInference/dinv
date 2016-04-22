@@ -22,6 +22,9 @@ var conn *net.UDPConn
 var head *net.UDPAddr
 var tail *net.UDPAddr
 
+
+var clientLog *os.File
+
 func Client(myPort, headPort, tailPort string) {
 	instrumenter.Initalize("Client")
 	initializeClient(myPort, headPort, tailPort)
@@ -36,7 +39,6 @@ func Client(myPort, headPort, tailPort string) {
 
 		m.Key = fmt.Sprintf("%d",i)
 		m.Val = messages[i]
-
 		out := instrumenter.Pack(m)
 		_, errWrite := conn.WriteToUDP(out,head)
 		printErr(errWrite)
@@ -60,6 +62,8 @@ func initializeClient(myPort, headPort, tailPort string) {
 	head, err = net.ResolveUDPAddr("udp", ":"+headPort)
 	printErr(err)
 	tail, err = net.ResolveUDPAddr("udp", ":"+tailPort)
+	clientLog, err = os.OpenFile("Client.alog", os.O_WRONLY|os.O_CREATE, 0777)
+	printErr(err)
 	time.Sleep(1000000)
 	printErr(err)
 }
@@ -71,6 +75,12 @@ func shutdown() {
 	_, errWrite := conn.WriteToUDP(out,head)
 	printErr(errWrite)
 	conn.Close()
+}
+
+func cLog(message string){
+	//message = message + time.Now().String()
+	fmt.Println(message)
+	myLog.WriteString(message +"\n")
 }
 
 func printErr(err error) {
