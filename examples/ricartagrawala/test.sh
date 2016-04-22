@@ -1,12 +1,13 @@
 #!/bin/bash
 
 HOSTS=3
-SLEEPTIME=2
+SLEEPTIME=10
 
 DINV=$GOPATH/src/bitbucket.org/bestchai/dinv
 testDir=$DINV/examples/ricartagrawala
 #ricart-agrawala test cases
 function shutdown {
+    sleep $SLEEPTIME
     kill `ps | pgrep ricart | awk '{print $1}'` > /dev/null
 }
 
@@ -25,6 +26,7 @@ function runTest {
         go test $1 -id=$i -hosts=$2 >> passfail.stext &
         pids[$i]=$!
     done
+
 
     for (( i=0; i<$2; i++))
     do

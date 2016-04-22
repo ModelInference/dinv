@@ -252,6 +252,7 @@ func writeValues(file *os.File, log []Point) {
 		for i := range point.Dump {
 			variable := point.Dump[i]
 			file.WriteString(fmt.Sprintf("%s\n", variable.VarName))
+
 			file.WriteString(fmt.Sprintf("%s\n", variable.value()))
 			file.WriteString(fmt.Sprintf("1\n"))
 		}
@@ -287,7 +288,7 @@ func (nvp NameValuePair) value() string {
 	case reflect.Float32, reflect.Float64:
 		return fmt.Sprintf("%.2f", v.Float())
 	case reflect.String:
-		return fmt.Sprintf("%s", strings.Replace(fmt.Sprintf("%s", v.String()), "\n", " ", -1))
+		return fmt.Sprintf("\"%s\"", strings.Replace(fmt.Sprintf("%s", v.String()), "\n", " ", -1))
 	default:
 		return "Unknown type or value"
 	}

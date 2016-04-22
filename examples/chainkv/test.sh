@@ -49,6 +49,9 @@ function shutdown {
 function cleanup {
  cd $testDir/run
  rm *.txt
+ rm *.dtrace
+ rm *.gz
+ rm *.log
 }
 
 
