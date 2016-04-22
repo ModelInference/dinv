@@ -8,56 +8,69 @@ import (
 	"bitbucket.org/bestchai/dinv/instrumenter"
 )
 
-const MESSAGES  = 11
 const mod = 2
+
+type Cmessage struct {
+	Request string
+	Key 	string
+	Val 	string
+	Unavailable int
+	err     error
+}
+
+var conn *net.UDPConn
+var head *net.UDPAddr
+var tail *net.UDPAddr
 
 func Client(myPort, headPort, tailPort string) {
 	instrumenter.Initalize("Client")
+	initializeClient(myPort, headPort, tailPort)
 	// sending UDP packet to specified address and port
 
-	myAddr, err := net.ResolveUDPAddr("udp", ":"+myPort)
-	listen, err := net.ListenUDP("udp", myAddr)
-	printErr(err)
-	head, err := net.ResolveUDPAddr("udp", ":"+headPort)
-	printErr(err)
-	tail, err := net.ResolveUDPAddr("udp", ":"+tailPort)
-	print(tail)
-	time.Sleep(1000000)
-	printErr(err)
 	var buf [512]byte
 
 
-	for i := 0; i < MESSAGES; i++ {
-		m := new(Message)
+	for i := 0; i < len(messages); i++ {
+		m := new(Cmessage)
 		m.Request = "PUT"
 
 		m.Key = fmt.Sprintf("%d",i)
-		if i%mod ==0  {
-			m.Val = "willy"
-		} else {
-			m.Val = "wonka"
-		}
-		instrumenter.Dump("m.Val",m.Val)
+		m.Val = messages[i]
 
 		out := instrumenter.Pack(m)
-		_, errWrite := listen.WriteToUDP(out,head)
+		_, errWrite := conn.WriteToUDP(out,head)
 		printErr(errWrite)
 
-		r := new(Message)
-		n, _, err := listen.ReadFrom(buf[0:])
+		r := new(Cmessage)
+		n, _, err := conn.ReadFrom(buf[0:])
 		printErr(err)
 		instrumenter.Unpack(buf[:n], r)
+		instrumenter.Dump("m.Val",m.Val)
 		time.Sleep(1)
 	}
 
-	m := new(Message)
+	shutdown()
+
+}
+
+func initializeClient(myPort, headPort, tailPort string) {
+	myAddr, err := net.ResolveUDPAddr("udp", ":"+myPort)
+	conn, err = net.ListenUDP("udp", myAddr)
+	printErr(err)
+	head, err = net.ResolveUDPAddr("udp", ":"+headPort)
+	printErr(err)
+	tail, err = net.ResolveUDPAddr("udp", ":"+tailPort)
+	time.Sleep(1000000)
+	printErr(err)
+}
+
+func shutdown() {
+	m := new(Cmessage)
 	m.Request = "DIE"
 	out := instrumenter.Pack(m)
-	_, errWrite := listen.WriteToUDP(out,head)
+	_, errWrite := conn.WriteToUDP(out,head)
 	printErr(errWrite)
-	listen.Close()
-
-
+	conn.Close()
 }
 
 func printErr(err error) {
@@ -66,3 +79,5 @@ func printErr(err error) {
 		os.Exit(1)
 	}
 }
+var messages = []string {
+"It", "was", "the", "best", "of", "times,", "it", "was", "the", "worst", "of", "times,", "it", "was", "the", "age", "of", "wisdom,", "it", "was", "the", "age", "of", "foolishness,", "it", "was", "the", "epoch", "of", "belief,", "it", "was", "the", "epoch", "of", "incredulity,", "it", "was", "the", "season", "of", "Light,", "it", "was", "the", "season", "of", "Darkness,", "it", "was", "the", "spring", "of", "hope,", "it", "was", "the", "winter", "of", "despair,", "we", "had", "everything", "before", "us,", "we", "had", "nothing", "before", "us,", "we", "were", "all", "going", "direct", "to", "Heaven,", "we", "were", "all", "going", "direct", "the", "other", "way--in", "short,", "the", "period", "was", "so", "far", "like", "the", "present", "period,", "that", "some", "of", "its", "noisiest", "authorities", "insisted", "on", "its", "being", "received,", "for", "good", "or", "for", "evil,", "in", "the", "superlative", "degree", "of", "comparison", "only." }
