@@ -8,47 +8,56 @@ import (
 	"bitbucket.org/bestchai/dinv/instrumenter"
 )
 
-const mod = 2
-
 type Cmessage struct {
-	Request string
-	Key 	string
-	Val 	string
-	Unavailable int
-	err     error
+	Request		string
+	Key		string
+	Val		string
+	Unavailable	int
+	err		error
 }
 
 var conn *net.UDPConn
 var head *net.UDPAddr
 var tail *net.UDPAddr
 
-
 var clientLog *os.File
 
+//+@# Automatic Documentation by Dovid, Generated (Sun Apr 24 13:44:25 PDT 2016)
+// >>> 	 Key (string), errWrite (error), out ([]byte), i (int), m (*testing.Cmessage),
+// >>> 	 Val (string)
+// >>> sent on line:49 by conn 
+//       instrumenter.Dump("Key,errWrite,out,i,m,Val",Key,errWrite,out,i,m,Val)
+// <<< 	 err (error), n (int)
+// <<< received on line:53 by conn 
+//       instrumenter.Dump("err,n",err,n)
+//-@# End Auto Documentation
 func Client(myPort, headPort, tailPort string) {
 	instrumenter.Initalize("Client")
 	initializeClient(myPort, headPort, tailPort)
-	// sending UDP packet to specified address and port
 
 	var buf [512]byte
 
 
-	for i := 0; i < len(messages); i++ {
-		m := new(Cmessage)
-		m.Request = "PUT"
 
-		m.Key = fmt.Sprintf("%d",i)
+	for i := 0; i < len(messages); i++ {
+
+		m := new(Cmessage)
+
+		m.Request = "PUT"
+		m.Key = fmt.Sprintf("%d", i)
 		m.Val = messages[i]
 		out := instrumenter.Pack(m)
-		_, errWrite := conn.WriteToUDP(out,head)
+		_, errWrite := conn.WriteToUDP(out, head)
 		printErr(errWrite)
 
+		instrumenter.Dump("i",i)
 		r := new(Cmessage)
 		n, _, err := conn.ReadFrom(buf[0:])
 		printErr(err)
 		instrumenter.Unpack(buf[:n], r)
-		instrumenter.Dump("m.Val",m.Val)
+		fmt.Println("client Acked")
 		time.Sleep(1)
+
 	}
 
 	shutdown()
@@ -68,19 +77,20 @@ func initializeClient(myPort, headPort, tailPort string) {
 	printErr(err)
 }
 
+
 func shutdown() {
 	m := new(Cmessage)
 	m.Request = "DIE"
 	out := instrumenter.Pack(m)
-	_, errWrite := conn.WriteToUDP(out,head)
+	_, errWrite := conn.WriteToUDP(out, head)
 	printErr(errWrite)
 	conn.Close()
 }
 
-func cLog(message string){
-	//message = message + time.Now().String()
+func cLog(message string) {
+	message = message + " ("+time.Now().String()+ ") "
 	fmt.Println(message)
-	myLog.WriteString(message +"\n")
+	clientLog.WriteString(message + "\n")
 }
 
 func printErr(err error) {
@@ -89,5 +99,7 @@ func printErr(err error) {
 		os.Exit(1)
 	}
 }
-var messages = []string {
-"It", "was", "the", "best", "of", "times,", "it", "was", "the", "worst", "of", "times,", "it", "was", "the", "age", "of", "wisdom,", "it", "was", "the", "age", "of", "foolishness,", "it", "was", "the", "epoch", "of", "belief,", "it", "was", "the", "epoch", "of", "incredulity,", "it", "was", "the", "season", "of", "Light,", "it", "was", "the", "season", "of", "Darkness,", "it", "was", "the", "spring", "of", "hope,", "it", "was", "the", "winter", "of", "despair,", "we", "had", "everything", "before", "us,", "we", "had", "nothing", "before", "us,", "we", "were", "all", "going", "direct", "to", "Heaven,", "we", "were", "all", "going", "direct", "the", "other", "way--in", "short,", "the", "period", "was", "so", "far", "like", "the", "present", "period,", "that", "some", "of", "its", "noisiest", "authorities", "insisted", "on", "its", "being", "received,", "for", "good", "or", "for", "evil,", "in", "the", "superlative", "degree", "of", "comparison", "only." }
+
+var messages = []string{
+	"It", "was", "the", "best", "of", "times,", "it", "was", "the", "worst", "of", "times,", "it", "was", "the", "age", "of", "wisdom,", "it", "was", "the", "age", "of", "foolishness,", "it", "was", "the", "epoch", "of", "belief,", "it", "was", "the", "epoch", "of", "incredulity,", "it", "was", "the", "season", "of", "Light,", "it", "was", "the", "season", "of", "Darkness,", "it", "was", "the", "spring", "of", "hope,", "it", "was", "the", "winter", "of", "despair,", "we", "had", "everything", "before", "us,", "we", "had", "nothing", "before", "us,", "we", "were", "all", "going", "direct", "to", "Heaven,", "we", "were", "all", "going", "direct", "the", "other", "way--in", "short,", "the", "period", "was", "so", "far", "like", "the", "present", "period,", "that", "some", "of", "its", "noisiest", "authorities", "insisted", "on", "its", "being", "received,", "for", "good", "or", "for", "evil,", "in", "the", "superlative", "degree", "of", "comparison", "only."}
+

@@ -14,21 +14,21 @@ import (
 )
 
 const (
-	Ack          = 0xFF
-	RequestStick = 1
-	ReleaseStick = 2
-	ExcuseMe     = 3
-	SIZEOFINT    = 4
-	n            = 50
+	Ack		= 0xFF
+	RequestStick	= 1
+	ReleaseStick	= 2
+	ExcuseMe	= 3
+	SIZEOFINT	= 4
+	n		= 50
 )
 
 var (
-	Eating         bool
-	Thinking       bool
-	LeftChopstick  bool
-	RightChopstick bool
-	Excused        bool
-	Logger         *govec.GoLog
+	Eating		bool
+	Thinking	bool
+	LeftChopstick	bool
+	RightChopstick	bool
+	Excused		bool
+	Logger		*govec.GoLog
 )
 
 func EatingState() {
@@ -58,9 +58,9 @@ func RightChopstickState() {
 }
 
 type Philosopher struct {
-	id, neighbourId int
-	chopstick       chan bool // the left chopstick // inspired by the wikipedia page, left chopsticks should be used first
-	neighbour       *net.UDPConn
+	id, neighbourId	int
+	chopstick	chan bool	// the left chopstick // inspired by the wikipedia page, left chopsticks should be used first
+	neighbour	*net.UDPConn
 }
 
 func makePhilosopher(port, neighbourPort int) *Philosopher {
@@ -90,7 +90,7 @@ func makePhilosopher(port, neighbourPort int) *Philosopher {
 	chopstick <- true
 	fmt.Printf("launching chopstick server\n")
 	go func() {
-		defer fmt.Printf("Chopstick #%d\n is down", port) //attempt to show when the chopsticks are no longer available
+		defer fmt.Printf("Chopstick #%d\n is down", port)	//attempt to show when the chopsticks are no longer available
 		for true {
 			req, addr := getRequest(conn)
 			go func(request int) {
@@ -102,15 +102,14 @@ func makePhilosopher(port, neighbourPort int) *Philosopher {
 					fmt.Printf("stick requested from %d\n", port)
 					<-chopstick
 					fmt.Printf("Giving stick on %d\n", port)
-					resp := MarshallInts([]int{Ack})
-					conn.WriteTo(instrumenter.Pack(resp), addr)
+					conn.WriteTo(instrumenter.Pack(Ack), addr)
 				case ExcuseMe:
 					if !Excused {
 						fmt.Printf("%d has been excused from the table\n", port)
 					}
 					Excused = true
 				}
-				//@dump
+				instrumenter.Dump("Thinking,Eating", Thinking, Eating)
 			}(req)
 		}
 	}()
@@ -124,10 +123,10 @@ func getRequest(conn net.PacketConn) (int, net.Addr) {
 	if err != nil {
 		panic(err)
 	}
-	args := instrumenter.Unpack(buf[0:]).([]byte)
+	var response int
+	instrumenter.Unpack(buf[0:], &response)
 	//fmt.Printf("Received Request\n")
-	uArgs := UnmarshallInts(args)
-	return uArgs[0], addr
+	return response, addr
 }
 
 func (phil *Philosopher) think() {
@@ -140,7 +139,7 @@ func (phil *Philosopher) eat() {
 	EatingState()
 	fmt.Printf("%d is eating.\n", phil.id)
 	time.Sleep(time.Duration(rand.Int63n(1e9)))
-	//@dump
+	instrumenter.Dump("Thinking,Eating", Thinking, Eating)
 }
 
 func (phil *Philosopher) getChopsticks() {
@@ -157,8 +156,7 @@ func (phil *Philosopher) getChopsticks() {
 	go func() {
 		//Send Request to Neighbour
 		var buf [1024]byte
-		req := MarshallInts([]int{RequestStick})
-		phil.neighbour.Write(instrumenter.Pack(req))
+		phil.neighbour.Write(instrumenter.Pack(RequestStick))
 
 		//Read response from Neighbour
 		_, err := phil.neighbour.Read(buf[0:])
@@ -167,15 +165,15 @@ func (phil *Philosopher) getChopsticks() {
 			fmt.Printf(err.Error())
 			return
 		}
-		uArgs := instrumenter.Unpack(buf[0:]).([]byte)
-		args := UnmarshallInts(uArgs)
-		resp := args[0]
-		if resp == Ack {
+		var response int
+
+		instrumenter.Unpack(buf[0:], &response)
+		if response == Ack {
 			fmt.Printf("Received chopstick %d <- %d\n", phil.id, phil.neighbourId)
 			neighbourChopstick <- true
 			RightChopstickState()
 		}
-		//@dump
+		instrumenter.Dump("Thinking,Eating", Thinking, Eating)
 	}()
 	select {
 	case <-neighbourChopstick:
@@ -192,11 +190,10 @@ func (phil *Philosopher) getChopsticks() {
 
 func (phil *Philosopher) returnChopsticks() {
 	phil.chopstick <- true
-	req := MarshallInts([]int{ReleaseStick})
 	fmt.Printf("Returning stick %d -> %d\n", phil.id, phil.neighbourId)
-	phil.neighbour.Write(instrumenter.Pack(req))
+	phil.neighbour.Write(instrumenter.Pack(ReleaseStick))
 	ThinkingState()
-	//@dump
+	instrumenter.Dump("Thinking,Eating", Thinking, Eating)
 }
 
 func (phil *Philosopher) dine() {
@@ -204,19 +201,18 @@ func (phil *Philosopher) dine() {
 	phil.getChopsticks()
 	phil.eat()
 	phil.returnChopsticks()
-	//@dump
+	instrumenter.Dump("Thinking,Eating", Thinking, Eating)
 }
 
 //ask to be excused untill someone says you can
 func (phil *Philosopher) leaveTable() {
 	for true {
-		req := MarshallInts([]int{ExcuseMe})
-		phil.neighbour.Write(instrumenter.Pack(req))
+		phil.neighbour.Write(instrumenter.Pack(ExcuseMe))
 		if Excused == true {
 			break
 		}
 	}
-	//@dump
+	instrumenter.Dump("Thinking,Eating", Thinking, Eating)
 }
 
 //main should take as an argument the port number of the philosoper
