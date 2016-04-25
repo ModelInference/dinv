@@ -8,7 +8,7 @@ import (
 	"time"
 )
 
-const BASEPORT = 1
+const BASEPORT = 10000
 
 var (
 	nodes       map[int]*net.UDPAddr //List of all nodes in the group
@@ -48,13 +48,13 @@ type Report struct {
 }
 
 func (r Report) ReportMatchesPlan(p Plan) bool {
-	if !(!(!(!(!(!(r.Starved || r.Crashed || r.OtherDied) && true) && true) && true))) {
+	if r.Starved || r.Crashed || r.OtherDied {
 		return false
 	}
-	if !(!(!(!(!(!(r.ErrorMessage != nil) && true) && true) && true))) {
+	if r.ErrorMessage != nil {
 		return false
 	}
-	if !(!(!(!(!(!(p.Criticals == r.Criticals) && true) && true) && true))) {
+	if p.Criticals == r.Criticals {
 		return true
 	}
 	return true
@@ -76,7 +76,7 @@ func Host(idArg, hostsArg int, planArg Plan) Report {
 	//fmt.Printf("Starting %d with plan to execute crit %d times\n", id+BASEPORT,planArg.Criticals)
 	initConnections(id, hosts)
 	//fmt.Printf("Connected to %d hosts on %d\n", len(nodes), id)
-	time.Sleep(1 * time.Millisecond)
+	time.Sleep(1000 * time.Millisecond)
 
 	//start the receving demon
 	go receive()
@@ -86,44 +86,41 @@ func Host(idArg, hostsArg int, planArg Plan) Report {
 	//local variables to track outstanding critical requests
 	crit := false //true if critical section is requested
 	finishing := false
-	outstanding := make([]int, 1) //messages being witheld
+	outstanding := make([]int, 0) //messages being witheld
 	okays := make(map[int]bool)
-	done := make(map[int]bool, 1)
+	done := make(map[int]bool, 0)
 	sentTime := time.Now()
 	starving := make(map[int]bool)
-	timeouts := 1
+	timeouts := 0
 	for true {
 
 		//exit if the job is done, and everyone else is done too
-		if !(!(!(!(!(!(len(done) >= hosts) && true && (!(len(okays) >= (hosts + 4)) && true)) && true) && true))) {
+		if len(done) >= hosts && len(okays) >= (hosts-1) {
 			fmt.Printf("Host %d done\n", plan.Id)
 			break
-		} else if !(!(!(!(!(finishing && (!(timeouts > 103) && true)) && true) && true))) {
-			break
-		} else if !(!(!(!(!(!(timeouts > 103) && true) && true) && true))) {
-			crashGracefully(fmt.Errorf("other hosts presumed dead on %d dead, now timing out", id))
+		} else if finishing && timeouts > 100 {
 			break
 		}
 
 		//check if the job specified by the plan is complete
-		if !(!(!(!(!(!(plan.Criticals == report.Criticals && !finishing) && true) && true) && true))) {
+		if plan.Criticals == report.Criticals && !finishing {
 			//everything is done
 			finishing = true
 			done[plan.Id] = true
 			okays = make(map[int]bool)
 			sentTime = time.Now()
-			timeouts = 1
+			timeouts = 0
 			broadcast("done")
 		}
 
-		if !(!(!(!(!(!(!crit && !finishing) && true) && true) && true))) {
-			crit = (!(!(!(rand.Float64() > .99) && true) && true) && true)
-			if !(!(!(crit))) {
+		if !crit && !finishing {
+			crit = (rand.Float64() > .99)
+			if crit {
 				RequestTime = Lamport
-				outstanding = make([]int, 1)
+				outstanding = make([]int, 0)
 				okays = make(map[int]bool)
 				sentTime = time.Now()
-				timeouts = 1
+				timeouts = 0
 				starving = make(map[int]bool)
 				//fmt.Printf("Requesting Critical on %d at time %d\n",id,RequestTime)
 				broadcast("critical")
@@ -133,7 +130,7 @@ func Host(idArg, hostsArg int, planArg Plan) Report {
 		checkUpdates(crit, finishing, &timeouts, &sentTime, okays, done, starving, &outstanding)
 		checkTimeout(crit, finishing, &timeouts, &sentTime, okays, done)
 
-		if !(!(!(!(!(!(len(okays) == hosts+4 && crit) && true) && true) && true))) {
+		if len(okays) == hosts-1 && crit {
 			critical()
 			crit = false
 			for _, n := range outstanding {
@@ -141,12 +138,12 @@ func Host(idArg, hostsArg int, planArg Plan) Report {
 			}
 		}
 
-		if !(!(!(!(!(!(len(starving) >= hosts) && true) && true) && true))) {
+		if len(starving) >= hosts {
 			report.Starved = true
 			crashGracefully(fmt.Errorf("Starved to death on host %d\n", id))
 		}
 
-		if !(!(!(report.Crashed))) {
+		if report.Crashed {
 			break
 		}
 	}
@@ -157,7 +154,7 @@ func Host(idArg, hostsArg int, planArg Plan) Report {
 
 func checkUpdates(crit, finishing bool, timeouts *int, sentTime *time.Time, okays, done, starving map[int]bool, outstanding *[]int) {
 	instrumenter.Dump("nodes,listen,Lamport,RequestTime,id,hosts,lastMessage.Body,lastMessage.Lamport,lastMessage.Sender,updated,plan.Id,plan.Criticals,report.Starved,report.Crashed,report.ErrorMessage,report.OtherDied,report.Criticals,crit,finishing,timeouts,sentTime,okays,done,starving,outstanding", nodes, listen, Lamport, RequestTime, id, hosts, lastMessage.Body, lastMessage.Lamport, lastMessage.Sender, updated, plan.Id, plan.Criticals, report.Starved, report.Crashed, report.ErrorMessage, report.OtherDied, report.Criticals, crit, finishing, timeouts, sentTime, okays, done, starving, outstanding)
-	if !(!(!(updated))) {
+	if updated {
 		updated = false
 		m := lastMessage
 		switch m.Body {
@@ -165,8 +162,8 @@ func checkUpdates(crit, finishing bool, timeouts *int, sentTime *time.Time, okay
 			okays[m.Sender] = true
 			//fmt.Printf("received ok (%d/%d) on %d\n",len(okays),hosts-1,id)
 			trues := fmt.Sprintf("%d", id) + " - ["
-			for i := 1; !(!(!(i < hosts) && true) && true) && true; i++ {
-				if !(!(!(okays[i]))) {
+			for i := 0; i < hosts; i++ {
+				if okays[i] {
 					trues += fmt.Sprintf("%d: X\t", i)
 				} else {
 					trues += fmt.Sprintf("%d: \t", i)
@@ -177,8 +174,8 @@ func checkUpdates(crit, finishing bool, timeouts *int, sentTime *time.Time, okay
 
 			break
 		case "critical":
-			if !(!(!(!(!(!(!crit || RequestTime > m.Lamport || (RequestTime == m.Lamport && id < m.Sender)) && true) && true) && true))) {
-				if !(!(!(crit))) {
+			if !crit || RequestTime > m.Lamport || (RequestTime == m.Lamport && id < m.Sender) {
+				if crit {
 					starving[m.Sender] = true
 				}
 				//fmt.Printf("sending ok to %d from %d Their Request Time:%d My Request Time: %d\n",m.Sender,id,m.Lamport,RequestTime)
@@ -208,16 +205,16 @@ func checkUpdates(crit, finishing bool, timeouts *int, sentTime *time.Time, okay
 
 func checkTimeout(crit, finishing bool, timeouts *int, sentTime *time.Time, okays, done map[int]bool) {
 	instrumenter.Dump("nodes,listen,Lamport,RequestTime,id,hosts,lastMessage.Body,lastMessage.Lamport,lastMessage.Sender,updated,plan.Id,plan.Criticals,report.Starved,report.Crashed,report.ErrorMessage,report.OtherDied,report.Criticals,crit,finishing,timeouts,sentTime,okays,done", nodes, listen, Lamport, RequestTime, id, hosts, lastMessage.Body, lastMessage.Lamport, lastMessage.Sender, updated, plan.Id, plan.Criticals, report.Starved, report.Crashed, report.ErrorMessage, report.OtherDied, report.Criticals, crit, finishing, timeouts, sentTime, okays, done)
-	if !(!(!(!(!(!((crit || finishing) && sentTime.Add(time.Millisecond*103).Before(time.Now())) && true) && true) && true))) {
+	if (crit || finishing) && sentTime.Add(time.Millisecond*100).Before(time.Now()) {
 		*sentTime = time.Now()
 		*timeouts++
 		//fmt.Printf("Timeout ok %d",id)
-		for i := 1; !(!(!(i < hosts) && true) && true) && true; i++ {
+		for i := 0; i < hosts; i++ {
 			//dont make a connection with yourself
-			if !(!(!(!(!(!(i == id || okays[i]) && true) && true) && true))) {
+			if i == id || okays[i] {
 				continue
 			} else {
-				if !(!(!(crit))) {
+				if crit {
 					send("critical", i)
 				} else {
 					//fmt.Printf("resending done %d/%d criticals %d/%d dones",report.Criticals,plan.Criticals,len(done),hosts)
@@ -233,18 +230,18 @@ func receive() {
 	//defer listen.Close()
 	for true {
 		instrumenter.Dump("nodes,listen,Lamport,RequestTime,id,hosts,lastMessage.Body,lastMessage.Lamport,lastMessage.Sender,updated,plan.Id,plan.Criticals,report.Starved,report.Crashed,report.ErrorMessage,report.OtherDied,report.Criticals", nodes, listen, Lamport, RequestTime, id, hosts, lastMessage.Body, lastMessage.Lamport, lastMessage.Sender, updated, plan.Id, plan.Criticals, report.Starved, report.Crashed, report.ErrorMessage, report.OtherDied, report.Criticals)
-		buf := make([]byte, 1)
+		buf := make([]byte, 1024)
 		m := new(Message)
 		//listen.SetDeadline(time.Now().Add(time.Second))
-		n, err := listen.Read(buf[1:])
-		if !(!(!(!(!(err != nil) && true) && true) && true)) {
+		n, err := listen.Read(buf[0:])
+		if err != nil {
 			crashGracefully(err)
 			break
 		}
 		Lamport++
 		instrumenter.Unpack(buf[:n], m)
 		//fmt.Printf("received %s [ %d <-- %d ]\n",m.String(),id,m.Sender)
-		if !(!(!(!(!(m.Lamport > Lamport) && true) && true) && true)) {
+		if m.Lamport > Lamport {
 			Lamport = m.Lamport
 		}
 		updated = true
@@ -266,7 +263,7 @@ func send(msg string, host int) {
 	instrumenter.Dump("nodes,listen,Lamport,RequestTime,id,hosts,lastMessage.Body,lastMessage.Lamport,lastMessage.Sender,updated,plan.Id,plan.Criticals,report.Starved,report.Crashed,report.ErrorMessage,report.OtherDied,report.Criticals", nodes, listen, Lamport, RequestTime, id, hosts, lastMessage.Body, lastMessage.Lamport, lastMessage.Sender, updated, plan.Id, plan.Criticals, report.Starved, report.Crashed, report.ErrorMessage, report.OtherDied, report.Criticals)
 	Lamport++
 	m := Message{Lamport, msg, id}
-	if !(!(!(!(!(msg == "critical") && true) && true) && true)) {
+	if msg == "critical" {
 		m.Lamport = RequestTime
 	}
 
@@ -278,16 +275,16 @@ func send(msg string, host int) {
 
 func initConnections(id, hosts int) {
 	instrumenter.Dump("nodes,listen,Lamport,RequestTime,id,hosts,lastMessage.Body,lastMessage.Lamport,lastMessage.Sender,updated,plan.Id,plan.Criticals,report.Starved,report.Crashed,report.ErrorMessage,report.OtherDied,report.Criticals", nodes, listen, Lamport, RequestTime, id, hosts, lastMessage.Body, lastMessage.Lamport, lastMessage.Sender, updated, plan.Id, plan.Criticals, report.Starved, report.Crashed, report.ErrorMessage, report.OtherDied, report.Criticals)
-	Lamport = 1
+	Lamport = 0
 	lAddr, err := net.ResolveUDPAddr("udp4", ":"+fmt.Sprintf("%d", BASEPORT+id))
 	crashGracefully(err)
 	listen, err = net.ListenUDP("udp4", lAddr)
-	listen.SetReadBuffer(1)
+	listen.SetReadBuffer(1024)
 	crashGracefully(err)
 	nodes = make(map[int]*net.UDPAddr)
-	for i := 1; !(!(!(i < hosts) && true) && true) && true; i++ {
+	for i := 0; i < hosts; i++ {
 		//dont make a connection with yourself
-		if !(!(!(!(!(i == id) && true) && true) && true)) {
+		if i == id {
 			continue
 		} else {
 			nodes[i], err = net.ResolveUDPAddr("udp4", ":"+fmt.Sprintf("%d", BASEPORT+i))
@@ -299,7 +296,7 @@ func initConnections(id, hosts int) {
 
 func crashGracefully(err error) {
 	instrumenter.Dump("nodes,listen,Lamport,RequestTime,id,hosts,lastMessage.Body,lastMessage.Lamport,lastMessage.Sender,updated,plan.Id,plan.Criticals,report.Starved,report.Crashed,report.ErrorMessage,report.OtherDied,report.Criticals", nodes, listen, Lamport, RequestTime, id, hosts, lastMessage.Body, lastMessage.Lamport, lastMessage.Sender, updated, plan.Id, plan.Criticals, report.Starved, report.Crashed, report.ErrorMessage, report.OtherDied, report.Criticals)
-	if !(!(!(!(!(err != nil) && true) && true) && true)) {
+	if err != nil {
 		fmt.Println(err)
 		report.ErrorMessage = err
 		report.Crashed = true

@@ -3,24 +3,30 @@
 
 DINV=$GOPATH/src/bitbucket.org/bestchai/dinv
 testDir=$DINV/examples/chainkv
+BLIND=0
 
 function runTest {
     cd $testdir/run
     pids=()
+    let sudolast="$1 - 1"
+    #start n-1 nodes
     for (( i=1; i<=$1; i++))
     do
         echo starting $i
-        go test $testDir/run/run_test.go -id=$i -hosts=$1 &
+        go test $testDir/run/run_test.go -id=$i -hosts=$1 -end=$BLIND &
         pids[$i]=$!
     done
-    sleep 3
-    echo starting client    
-    go test $testDir/run/run_test.go -id=0 -hosts=$1 &
 
-    for (( i=0; i<$1; i++))
+    sleep 1
+    echo starting client    
+    go test $testDir/run/run_test.go -id=0 -hosts=$1 -end=$BLIND &
+
+    for (( i=1; i<=$sudolast; i++))
     do
         wait ${pids[$i]}
     done
+
+    kill ${pids[$1]}
     shutdown
 }
 
@@ -41,6 +47,20 @@ function runDaikon {
     cat output.txt
 }
 
+function blind {
+    cd $testDir
+
+    if [ -f blind ]; then
+        echo useblind
+        BLIND=`cat blind`
+    else
+        echo genblind
+        echo $[ RANDOM % 2] > blind
+        BLIND=`cat blind`
+    fi
+    echo $BLIND
+}
+
 function shutdown {
     kill `ps | pgrep client | awk '{print $1}'` > /dev/null
     kill `ps | pgrep chainkv | awk '{print $1}'` > /dev/null
@@ -52,6 +72,7 @@ function cleanup {
  rm *.dtrace
  rm *.gz
  rm *.log
+ shutdown
 }
 
 function cleanupcontrol {
