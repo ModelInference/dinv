@@ -1,13 +1,12 @@
 #!/bin/bash
 
 HOSTS=3
-SLEEPTIME=10
+SLEEPTIME=20
 
 DINV=$GOPATH/src/bitbucket.org/bestchai/dinv
 testDir=$DINV/examples/ricartagrawala
 #ricart-agrawala test cases
 function shutdown {
-    sleep $SLEEPTIME
     kill `ps | pgrep ricart | awk '{print $1}'` > /dev/null
 }
 
@@ -23,7 +22,7 @@ function runTest {
     pids=()
     for (( i=0; i<$2; i++))
     do
-        go test $1 -id=$i -hosts=$2 >> passfail.stext &
+        go test $1 -id=$i -hosts=$2 -time=$3 >> passfail.stext &
         pids[$i]=$!
     done
 
@@ -34,10 +33,29 @@ function runTest {
     done
 }
 
+function runOneMutant {
+    pids=()
+    go test $1 -id=0 -hosts=$2 -time=$3 >> passfail.stext &
+    cp backup/ricartagrawala.go ricartagrawala.go
+    for (( i=1; i<$2; i++))
+    do
+        go test $1 -id=$i -hosts=$2 -time=$3 >> passfail.stext &
+        pids[$i]=$!
+    done
+
+
+    for (( i=0; i<$2; i++))
+    do
+        wait ${pids[$i]}
+    done
+}
+
+
 function testWrapper {
     echo testing $1
     echo testing $1 >> passfail.stext
-    runTest $1 $2
+    #runTest $1 $2 $3
+    runOneMutant $1 $2 $3
     mkdir $1-txt
     mv *.txt $1-txt
     shutdown
@@ -49,8 +67,8 @@ function runTests {
     testWrapper "hoststartup_test.go" $HOSTS $SLEEPTIME
     testWrapper "onehostonecritical_test.go" $HOSTS $SLEEPTIME
     testWrapper "onehostmanycritical_test.go" $HOSTS $SLEEPTIME
-    testWrapper "allhostsonecritical_test.go" $HOSTS 10
-    testWrapper "allhostsmanycriticals_test.go" $HOSTS 15
+    testWrapper "allhostsonecritical_test.go" $HOSTS $SLEEPTIME
+    testWrapper "allhostsmanycriticals_test.go" $HOSTS $SLEEPTIME
     testWrapper "halfhostsonecritical_test.go" $HOSTS $SLEEPTIME
     testWrapper "halfhostsmanycriticals_test.go" $HOSTS $SLEEPTIME
 }
@@ -69,7 +87,7 @@ function runLogMerger {
          mkdir dinv-output
          mv *.dtrace dinv-output
          #regualr daikon output
-         dinv -l -plan=NONE *Encoded.txt *Log.txt
+         dinv -l -plan=NONE *Encoded.txt *Log.txt 
          mkdir daikon-output
          mv *.dtrace daikon-output
          cd ..

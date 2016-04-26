@@ -1,4 +1,3 @@
-
 package ricartagrawala_test
 
 import (
@@ -11,19 +10,22 @@ import (
 var (
 	idInput int
 	hostsInput int
+	timeInput int
 )
 
 func TestMain(m *testing.M) {
 	var idarg = flag.Int("id",0, "hosts id")
 	var hostsarg = flag.Int("hosts",0, "#of hosts")
+	var timearg = flag.Int("time",0,"timeout")
 	flag.Parse()
 	idInput = *idarg
 	hostsInput = *hostsarg
+	timeInput = *timearg
 	m.Run()
 }
 
-func TestOneHostOneCritical(t *testing.T){
-	plan := ricartagrawala.Plan{idInput,0}
+func TestAllHostsManyCriticals(t *testing.T){
+	plan := ricartagrawala.Plan{idInput,10,timeInput}
 	if idInput == 0 {
 		plan.Criticals = 1
 	}
