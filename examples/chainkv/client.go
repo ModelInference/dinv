@@ -22,13 +22,13 @@ var tail *net.UDPAddr
 
 var clientLog *os.File
 
+
 //+@# Automatic Documentation by Dovid, Generated (Sun Apr 24 13:44:25 PDT 2016)
-// >>> 	 Key (string), errWrite (error), out ([]byte), i (int), m (*testing.Cmessage),
-// >>> 	 Val (string)
-// >>> sent on line:49 by conn 
-//       instrumenter.Dump("Key,errWrite,out,i,m,Val",Key,errWrite,out,i,m,Val)
+// >>> out ([]byte), i (int), m (*testing.Cmessage)
+// >>> sent on line:47 by conn 
+//       instrumenter.Dump("m.Request,m.Key,m.Val,m.Unavailable,m.err,out,i,m,Val",Key,out,i,m,Val)
 // <<< 	 err (error), n (int)
-// <<< received on line:53 by conn 
+// <<< received on line:51 by conn 
 //       instrumenter.Dump("err,n",err,n)
 //-@# End Auto Documentation
 func Client(myPort, headPort, tailPort string) {
@@ -36,9 +36,6 @@ func Client(myPort, headPort, tailPort string) {
 	initializeClient(myPort, headPort, tailPort)
 
 	var buf [512]byte
-
-
-
 	for i := 0; i < len(messages); i++ {
 
 		m := new(Cmessage)
@@ -50,12 +47,11 @@ func Client(myPort, headPort, tailPort string) {
 		_, errWrite := conn.WriteToUDP(out, head)
 		printErr(errWrite)
 
-		instrumenter.Dump("i",i)
 		r := new(Cmessage)
 		n, _, err := conn.ReadFrom(buf[0:])
 		printErr(err)
 		instrumenter.Unpack(buf[:n], r)
-		fmt.Println("client Acked")
+		instrumenter.Dump("m.Request,m.Key,m.Val", m.Request, m.Key, m.Val)
 		time.Sleep(1)
 
 	}

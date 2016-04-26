@@ -19,6 +19,7 @@ var (
 	hosts       int                  //number of hosts in the group
 	lastMessage Message              //The last message sent out
 	updated     bool                 //true if the host has received an message and not processed it
+	startTime	time.Time 			//The startup time of the node
 
 	plan   Plan
 	report Report
@@ -37,6 +38,7 @@ func (m *Message) String() string {
 type Plan struct {
 	Id        int
 	Criticals int
+	GlobalTimeout int
 }
 
 type Report struct {
@@ -73,10 +75,11 @@ func Host(idArg, hostsArg int, planArg Plan) Report {
 	id = idArg
 	hosts = hostsArg
 	plan = planArg
+	startTime = time.Now()
 	//fmt.Printf("Starting %d with plan to execute crit %d times\n", id+BASEPORT,planArg.Criticals)
 	initConnections(id, hosts)
 	//fmt.Printf("Connected to %d hosts on %d\n", len(nodes), id)
-	time.Sleep(1000 * time.Millisecond)
+	time.Sleep(100 * time.Millisecond)
 
 	//start the receving demon
 	go receive()
@@ -98,7 +101,10 @@ func Host(idArg, hostsArg int, planArg Plan) Report {
 		if len(done) >= hosts && len(okays) >= (hosts-1) {
 			fmt.Printf("Host %d done\n", plan.Id)
 			break
-		} else if finishing && timeouts > 100 {
+		} else if finishing && timeouts > 10 {
+			break
+		} else if startTime.Add(time.Second * time.Duration(plan.GlobalTimeout)).Before(time.Now()) {
+			fmt.Printf("TIMEOUT")
 			break
 		}
 
