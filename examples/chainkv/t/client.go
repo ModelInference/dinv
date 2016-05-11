@@ -23,6 +23,14 @@ var tail *net.UDPAddr
 var clientLog *os.File
 
 
+//+@# Automatic Documentation by Dovid, Generated (Sun Apr 24 13:44:25 PDT 2016)
+// >>> out ([]byte), i (int), m (*testing.Cmessage)
+// >>> sent on line:47 by conn 
+//       instrumenter.Dump("m.Request,m.Key,m.Val,m.Unavailable,m.err,out,i,m,Val",Key,out,i,m,Val)
+// <<< 	 err (error), n (int)
+// <<< received on line:51 by conn 
+//       instrumenter.Dump("err,n",err,n)
+//-@# End Auto Documentation
 func Client(myPort, headPort, tailPort string) {
 	instrumenter.Initalize("Client")
 	initializeClient(myPort, headPort, tailPort)
@@ -36,9 +44,6 @@ func Client(myPort, headPort, tailPort string) {
 		m.Key = fmt.Sprintf("%d", i)
 		m.Val = messages[i]
 		out := instrumenter.Pack(m)
-
-		cLog(fmt.Sprintf("m.Key = %s", m.Key))
-
 		_, errWrite := conn.WriteToUDP(out, head)
 		printErr(errWrite)
 

@@ -34,10 +34,10 @@ function runLogMerger {
     cd $testDir/run
     dinv -v -l -shiviz *Encoded.txt *Log.txt
 
-    for file in ./*__*;do 
-        echo $file
-        rm $file
-    done
+    #for file in ./*__*;do 
+    #    echo $file
+    #    rm $file
+    #done
 }
 
 function runDaikon {

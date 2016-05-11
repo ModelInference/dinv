@@ -40,6 +40,17 @@ var last bool
 
 var myLog *os.File
 
+//+@# Automatic Documentation by Dovid, Generated (Sun Apr 24 13:43:44 PDT 2016)
+// >>> 	 err (error), n (int), buf ([512]byte), errWrite (error), out ([]byte),
+// >>> 	 m (*testing.Message), err (error)
+// >>> sent on line:97 by listen 
+//       instrumenter.Dump("err,n,buf,errWrite,out,m.Request,m.Key,m.Val,m.Unavailable,m.err",err,n,buf,errWrite,out,m.Request,m.Key,m.Val,m.Unavailable,m.err)
+// <<< 	 err (error), storeSize (int),
+// <<< 	 m (*testing.Message), err (error), key (int), errWrite (error),
+// <<< 	 n (int), err (error), out ([]byte), keyValInfo (*testing.KeyValInfo)
+// <<< received on line:61 by listen 
+//       instrumenter.Dump("err,storeSize,m.Request,m.Key,m.Val,m.Unavailable,m.err,err,errWrite,n,out,keyValInfo.Key,keyValInfo.Val,keyValInfo.Unavailable" ,err,storeSize,m.Request,m.Key,m.Val,m.Unavailable,m.err,errWrite,n,out,keyValInfo.Key,keyValInfo.Val,keyValInfo.Unavailable)
+//-@# End Auto Documentation
 func Node(idArg, nextArg, lastArg string) {
 	initNode(idArg, nextArg, lastArg)
 
@@ -81,7 +92,6 @@ func Node(idArg, nextArg, lastArg string) {
 			break
 		}
 
-		nLog(fmt.Sprintf("m.Key = %s, last = %t", m.Key, last))
 
 		out := instrumenter.Pack(m)
 		_, errWrite := listen.WriteToUDP(out, nextNode)

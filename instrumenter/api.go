@@ -78,21 +78,28 @@ func Pack(msg interface{}) []byte {
 
 }
 
+//PackM operates identically to Pack, but allows for custom messages
+//to be logged
+func PackM(msg interface{}, log string) []byte {
+	initDinv("")
+	return goVecLogger.PrepareSend(log, msg)
+
+}
+
 //Unpack removes logging information from an array of bytes. The bytes
 //are returned with the logging info removed.
 //This method is to be used on all data upon receving it
 //Precondition, the array of bytes was packed before sending
-/*
-func Unpack(msg []byte) interface{} {
-	initDinv("")
-	callingFunction := getCallingFunctionID()
-	return goVecLogger.UnpackReceive("Received on "+callingFunction+" "+id, msg)
-}*/
-
 func Unpack(msg []byte, pack interface{}) {
 	initDinv("")
 	callingFunction := getCallingFunctionID()
 	goVecLogger.UnpackReceive("Received on "+callingFunction+" "+id, msg, pack)
+	return
+}
+
+func UnpackM(msg []byte, pack interface{},log string) {
+	initDinv("")
+	goVecLogger.UnpackReceive(log, msg, pack)
 	return
 }
 
