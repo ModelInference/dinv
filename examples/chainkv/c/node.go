@@ -81,8 +81,6 @@ func Node(idArg, nextArg, lastArg string) {
 			break
 		}
 
-		nLog(fmt.Sprintf("m.Key = %s, last = %t", m.Key, last))
-
 		out := instrumenter.Pack(m)
 		_, errWrite := listen.WriteToUDP(out, nextNode)
 		errPrint(errWrite)

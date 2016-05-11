@@ -36,9 +36,6 @@ func Client(myPort, headPort, tailPort string) {
 		m.Key = fmt.Sprintf("%d", i)
 		m.Val = messages[i]
 		out := instrumenter.Pack(m)
-
-		cLog(fmt.Sprintf("m.Key = %s", m.Key))
-
 		_, errWrite := conn.WriteToUDP(out, head)
 		printErr(errWrite)
 

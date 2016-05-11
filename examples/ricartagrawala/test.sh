@@ -36,7 +36,7 @@ function runTest {
 function runOneMutant {
     pids=()
     go test $1 -id=0 -hosts=$2 -time=$3 >> passfail.stext &
-    cp backup/ricartagrawala.go ricartagrawala.go
+    cp ../backup/ricartagrawala.go ../ricartagrawala.go
     for (( i=1; i<$2; i++))
     do
         go test $1 -id=$i -hosts=$2 -time=$3 >> passfail.stext &

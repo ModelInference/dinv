@@ -9,3 +9,7 @@ savedtest*
 mod_*
 TestPrograms/*.txt
 TestPrograms/t3/*.txt
+
+examples/ricartagrawala/gonadoresults/*
+examples/chainkv/results/*
+userstudy/*

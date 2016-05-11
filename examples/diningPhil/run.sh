@@ -36,7 +36,7 @@ function runTestPrograms {
 
 function runLogMerger {
     cd $testDir/diningPhil
-    dinv -v -l -name="philosophers" -shiviz *Encoded.txt *Log.txt
+    dinv -v -l -plan=NONE -name="philosophers" -shiviz *Encoded.txt *Log.txt
 }
 
 function shivizMerge {
