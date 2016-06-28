@@ -22,14 +22,10 @@ import (
 	"regexp"
 	"strings"
 
-	"golang.org/x/tools/go/ast/astutil"
-
 	"bitbucket.org/bestchai/dinv/programslicer"
+	"golang.org/x/tools/go/ast/astutil"
+	"github.com/arcaneiceman/GoVector/capture"
 
-	"golang.org/x/tools/go/loader"
-	"go/types"
-
-	"bitbucket.org/bestchai/dinv/programslicer/cfg"
 )
 
 var (
@@ -40,6 +36,24 @@ var (
 	instDirectory    = ""
 	instFile         = ""
 )
+
+//Instrument oversees the instrumentation of an entire package
+//for each file provided
+func Instrument(options map[string]string, inlogger *log.Logger) {
+	initializeInstrumenter(options, inlogger)
+	program, err := getProgramWrapper()
+	if err != nil {
+		logger.Fatalf("Error: %s", err.Error())
+	}
+	ast.Print(program.Fset, program.Packages[0].Sources[0].Source)
+	for pnum, pack := range program.Packages {
+		for snum := range pack.Sources {
+			genCode := generateCode(program, pnum, snum)
+			instrumented := injectCode(program, pnum, snum, genCode)
+			writeInstrumentedFile(instrumented, program.Packages[pnum].Sources[snum].Filename)
+		}
+	}
+}
 
 //initalizeInstrumenter generates a logger if none exists, and returns
 //the default settings
@@ -69,31 +83,14 @@ func initializeInstrumenter(options map[string]string, inlogger *log.Logger) {
 	}
 }
 
-//Instrument oversees the instrumentation of an entire package
-//for each file provided
-func Instrument(options map[string]string, inlogger *log.Logger) {
-	initializeInstrumenter(options, inlogger)
-	program, err := getProgramWrapper()
-	if err != nil {
-		logger.Fatalf("Error: %s", err.Error())
-	}
-	ast.Print(program.fset,program.packages[0].sources[0].source)
-	for packageIndex, pack := range program.packages {
-		for sourceIndex := range pack.sources {
-			genCode := generateCode(program, packageIndex, sourceIndex)
-			instrumented := injectCode(program, packageIndex, sourceIndex, genCode)
-			writeInstrumentedFile(instrumented, program.packages[packageIndex].sources[sourceIndex].filename)
-		}
-	}
-}
 
-func getProgramWrapper() (*ProgramWrapper, error) {
+func getProgramWrapper() (*programslicer.ProgramWrapper, error) {
 	var (
-		program *ProgramWrapper
+		program *programslicer.ProgramWrapper
 		err     error
 	)
 	if instDirectory != "" {
-		program, err = getProgramWrapperDirectory(instDirectory)
+		program, err = programslicer.GetProgramWrapperDirectory(instDirectory)
 		if err != nil {
 			return program, err
 		}
@@ -124,62 +121,65 @@ func InplaceDirectorySwap(dir string) error {
 }
 
 //generateCode constructs code for dump statements for the source code
-//located at program.source[sourceIndex].
-func generateCode(program *ProgramWrapper, packageIndex, sourceIndex int) []string {
+//located at program.source[snum].
+func generateCode(program *programslicer.ProgramWrapper, pnum, snum int) []string {
 	var generated_code []string
-	var collectedVariables []string
-	dumpNodes := GetDumpNodes(program.packages[packageIndex].sources[sourceIndex].comments)
+	dumpNodes := GetDumpNodes(program.Packages[pnum].Sources[snum].Comments)
+	affected := getAffectedVars(program)
 
 	//check for dumps and write imports here
 	if len(dumpNodes) > 0 {
-		addImports(program.packages[packageIndex].sources[sourceIndex].comments)
+		addImports(program.Fset, program.Packages[pnum].Sources[snum].Comments)
 	}
 	for _, dump := range dumpNodes {
-		dumpPos := dump.Pos()
+		//dumpPos := dump.Pos()
 		//file relitive dump position (dump abs - file abs = dump rel)
-		fileRelitiveDumpPosition := int(dumpPos - program.packages[packageIndex].sources[sourceIndex].comments.Pos() + 1)
-		lineNumber := program.fset.Position(dumpPos).Line
-		if dataflow {
-			collectedVariables = getAccessedAffectedVars(dump, program)
-		} else {
-			collectedVariables = GetAccessibleVarsInScope(fileRelitiveDumpPosition, program.packages[packageIndex].sources[sourceIndex].comments, program.fset)
-		}
-		dumpcode := GenerateDumpCode(collectedVariables, lineNumber, dump.Text, program.packages[packageIndex].sources[sourceIndex].filename, program.packages[packageIndex].packageName)
+		//fileRelitiveDumpPosition := int(dumpPos - program.Packages[pnum].Sources[snum].Comments.Pos() + 1)
+		lineNumber := program.Fset.Position(dump.Pos()).Line
+
+		collectedVariables := getAccessedAffectedVars(dump,affected,program)
+		dumpcode := GenerateDumpCode(collectedVariables, lineNumber, dump.Text, program.Packages[pnum].Sources[snum].Filename, program.Packages[pnum].PackageName)
 
 		logger.Println(dumpcode)
 		generated_code = append(generated_code, dumpcode)
 	}
 	//write the text of the source code out
 	buf := new(bytes.Buffer)
-	printer.Fprint(buf, program.fset, program.packages[packageIndex].sources[sourceIndex].comments)
-	program.packages[packageIndex].sources[sourceIndex].text = buf.String()
+	printer.Fprint(buf, program.Fset, program.Packages[pnum].Sources[snum].Comments)
+	program.Packages[pnum].Sources[snum].Text = buf.String()
 
 	return generated_code
 }
 
-//injectCode replaces dump statements in the source code of
-//program.source[sourceIndex] with lines of code defined in
-//injectionCode
-func injectCode(program *ProgramWrapper, packageIndex, sourceIndex int, injectionCode []string) string {
-	count := 0
-	rp := regexp.MustCompile("\\/\\/@dump.*")
-	instrumented := rp.ReplaceAllStringFunc(program.packages[packageIndex].sources[sourceIndex].text, func(s string) string {
-		replacement := injectionCode[count]
-		count++
-		return replacement
-	})
-	addImports(program.packages[packageIndex].sources[sourceIndex].comments)
-	return instrumented
-}
-
 //getAccessedAffectedVars returns the names of all variables affected
 //by a send, or a receive within the scope of the dump statement
-func getAccessedAffectedVars(dump *ast.Comment, program *ProgramWrapper) []string {
-
+func getAccessedAffectedVars(dump *ast.Comment, affectedFuncs map[*ast.FuncDecl][]*programslicer.FuncNode,  program *programslicer.ProgramWrapper) []string {
+	//check that the node is within the known program
+	pnum, snum := program.FindFile(dump)
+	if pnum < 0 || snum < 0 {
+		return nil
+	}
+	_, f := findFunction(dump,program.Packages[pnum].Sources[snum].Comments.Decls)
+	if f == nil {
+		return nil
+	}
+	//find variables within the scope of the dump statement
+	var affected []string
+	inScope := GetAccessibleVarsInScope(int(dump.Pos()), program.Packages[pnum].Sources[snum].Comments, program.Fset)
+	//collect all the variables affected by networking in the known
+	//function
+	for _, fn := range affectedFuncs[f] {
+		names := make([]string,0)
+		for _, vars := range fn.NVars {
+			names = append(names,vars.Name())
+		}
+		affected = append(affected,collectStructs(names,program.Packages[pnum].Sources[snum].Comments)...)
+	}
+	//remove duplicates
+	inScope = removedups(inScope)
+	affected = removedups(affected)
+	//find variables both in scope and affected
 	var affectedInScope []string
-	inScope := GetAccessibleVarsInScope(int(dump.Pos()), program.packages[0].sources[0].comments, program.fset)
-	affected := getAffectedVars(program)
-
 	for _, inScopeVar := range inScope {
 		for _, affectedVar := range affected {
 			if inScopeVar == affectedVar {
@@ -191,18 +191,53 @@ func getAccessedAffectedVars(dump *ast.Comment, program *ProgramWrapper) []strin
 	return affectedInScope
 }
 
-//findFunction searches through a set of declaractions decls, for the
-//statement stmt, the index of that statement is returned if it is
-//found, if not -1 is returned.
-func findFunction(stmt ast.Stmt, decls []ast.Decl) int {
-	for dcl := 0; dcl < len(decls)-1; dcl++ {
-		if stmt.Pos() > decls[dcl].Pos() && stmt.Pos() < decls[dcl+1].Pos() {
-			return dcl
+func removedups (slice []string) []string {
+	encountered := make(map[string]bool,len(slice))
+	noDups := make([]string,0)
+	for _, e := range slice {
+		if !encountered[e] {
+			encountered[e] = true
+			noDups = append(noDups,e)
 		}
 	}
-	return -1
+	return noDups
 }
 
+//injectCode replaces dump statements in the source code of
+//program.source[snum] with lines of code defined in
+//injectionCode
+func injectCode(program *programslicer.ProgramWrapper, pnum, snum int, injectionCode []string) string {
+	count := 0
+	rp := regexp.MustCompile("\\/\\/@dump.*")
+	instrumented := rp.ReplaceAllStringFunc(program.Packages[pnum].Sources[snum].Text, func(s string) string {
+		replacement := injectionCode[count]
+		count++
+		return replacement
+	})
+	addImports(program.Fset, program.Packages[pnum].Sources[snum].Comments)
+	return instrumented
+}
+
+
+//findFunction searches through a set of declaractions decls, for the
+//statement stmt, the number of the function, which contains the stmt
+//is returned
+func findFunction(n ast.Node, decls []ast.Decl) (int, *ast.FuncDecl) {
+	fcount := -1
+	for dcl := 0; dcl < len(decls)-1; dcl++ {
+		_ , ok := decls[dcl].(*ast.FuncDecl)
+		if ok {
+			fcount++
+		}
+		if n.Pos() > decls[dcl].Pos() && n.Pos() < decls[dcl+1].Pos() {
+			return fcount, decls[dcl].(*ast.FuncDecl)
+		}
+	}
+	if n.Pos() > decls[len(decls)-1].Pos(){
+		return fcount+1, decls[len(decls)-1].(*ast.FuncDecl)
+	}
+	return -1, nil
+}
 //getAfffectedVars searches through an entire program specified by
 //program, and returns the names of all variables modified by
 //interprocess communication.
@@ -210,111 +245,113 @@ func findFunction(stmt ast.Stmt, decls []ast.Decl) int {
 //TODO getAffectedVars does not work at the moment and should be
 //restructured. The variables returned should be thoses affected by
 //IPC around a particular dump statement, not the entire program
-func getAffectedVars(program *ProgramWrapper) []string {
-	recvNodes := detectFunctionCalls(program.packages[0].sources[0].source, "instrumenter", []string{"Unpack"})
-	sendNodes := detectFunctionCalls(program.packages[0].sources[0].source, "instrumenter", []string{"Pack"})
-	vars := sliceComputedVariables(program, recvNodes, programslicer.ComputeForwardSlice)
-	vars = append(vars, sliceComputedVariables(program, sendNodes, programslicer.ComputeBackwardSlice)...)
-	var varNames []string
-	for _, variable := range vars {
-		varNames = append(varNames, variable.Name())
-	}
-	return varNames
-}
-
-//TODO pass the program wrapper to the program slicer, along with
-//indexes to the what is being calculated
-func sliceComputedVariables(program *ProgramWrapper, nodes []*ast.Node, computer func(start ast.Stmt, cfg *cfg.CFG, info *loader.PackageInfo, fset *token.FileSet) []ast.Stmt) []*types.Var {
-	var affectedVars []*types.Var
-	for _, node := range nodes {
-		recvStmt := (*node).(ast.Stmt)
-		dcl := findFunction(recvStmt, program.packages[0].sources[0].source.Decls)
-		logger.Println("receive function") //BUG These dual print statements seemt to be totally corrupting the output
-		logger.Println(dcl)
-		firstFunc := program.packages[0].sources[0].source.Decls[dcl].(*ast.FuncDecl)
-		program.packages[0].sources[0].cfgs[0].cfg = cfg.FromFunc(firstFunc)
-		vars := programslicer.GetAffectedVariables(recvStmt, program.packages[0].sources[0].cfgs[0].cfg, program.prog.Created[0], program.fset, computer)
-		affectedVars = append(affectedVars, vars...)
-	}
-	return affectedVars
-}
-
-//(replacement for match send and receive)
-//detectFunctionCalls searches an ast.File for instances of a varible
-//(varname) making a calls to a list of functions. Nodes in the ast
-//where such calls are made are returned
-//ex. conn.Write, and conn.WriteTo are searchable as sending functions
-func detectFunctionCalls(f *ast.File, varName string, funcNames []string) []*ast.Node {
-	var results []*ast.Node
-	ast.Inspect(f, func(n ast.Node) bool {
-		switch z := n.(type) {
-		case *ast.ExprStmt:
-			switch x := z.X.(type) {
-			case *ast.CallExpr:
-				if matchCallExpression(x, varName, funcNames) {
-					results = append(results, &n)
-				}
-			}
-		case *ast.AssignStmt:
-			switch x := z.Rhs[0].(type) {
-			case *ast.CallExpr:
-				if matchCallExpression(x, varName, funcNames) {
-					results = append(results, &n)
-				}
-			}
-			return true
+func getAffectedVars(program *programslicer.ProgramWrapper) map[*ast.FuncDecl][]*programslicer.FuncNode {
+	sending, receiving, both := capture.GetCommNodes(program)
+	affectedFunctions := make(map[*ast.FuncDecl][]*programslicer.FuncNode)
+	for _, send := range sending {
+		sendStmt := (*send).(ast.Stmt)
+		funcNodes := programslicer.GetAffectedVariables(sendStmt,program,programslicer.ComputeBackwardSlice,programslicer.GetTaintedPointsBackwards)
+		for f , fNode := range funcNodes {
+			affectedFunctions[f] = append(affectedFunctions[f],fNode)
 		}
-		return true
-	})
+	}
+	for _, rec := range receiving {
+		recStmt := (*rec).(ast.Stmt)
+		funcNodes := programslicer.GetAffectedVariables(recStmt,program,programslicer.ComputeForwardSlice,programslicer.GetTaintedPointsForward)
+		for f , fNode := range funcNodes {
+			affectedFunctions[f] = append(affectedFunctions[f],fNode)
+		}
+	}
+	for _, bidir := range both {
+		commStmt := (*bidir).(ast.Stmt)
+		forwards := programslicer.GetAffectedVariables(commStmt,program,programslicer.ComputeForwardSlice,programslicer.GetTaintedPointsForward)
+		for f , fNode := range forwards {
+			affectedFunctions[f] = append(affectedFunctions[f],fNode)
+		}
+		backwards := programslicer.GetAffectedVariables(commStmt,program,programslicer.ComputeBackwardSlice,programslicer.GetTaintedPointsBackwards)
+		for f , fNode := range backwards {
+			affectedFunctions[f] = append(affectedFunctions[f],fNode)
+		}
+	}
+	return affectedFunctions
+}
+
+//GetAccessibleVarsInScope returns the variables names of all
+//varialbes in scope at the point start.
+func GetAccessibleVarsInScope(dumpPosition int, file *ast.File, fset *token.FileSet) []string {
+	logger.Println("Collecting Scope Variables")
+	globals := GetGlobalVariables(file, fset)
+	locals := GetLocalVariables(dumpPosition, file, fset)
+	return append(globals, locals...)
+}
+
+func GetLocalVariables(dumpPosition int, file *ast.File, fset *token.FileSet) []string {
+	var results []string
+	filePos := fset.File(file.Package)
+	logger.Printf("packagename : %s\n searching Pos dumpPosition %d\n", file.Name.String(), dumpPosition)
+	//TODO rename path and write comments
+	//the +2 is probably to grab a send or receive after the dump??
+	//if the dump is outside of the file return nothing
+	if dumpPosition > filePos.Size() || dumpPosition+2 > filePos.Size() {
+		return make([]string, 0)
+	}
+	path, _ := astutil.PathEnclosingInterval(file, filePos.Pos(dumpPosition), filePos.Pos(dumpPosition+2)) // why +2
+	//collect the parameters to the function
+	if len(path) > 0 {
+		_, f := findFunction(path[0], file.Decls)
+		if f != nil {
+			for _, feilds := range f.Type.Params.List {
+				for _, param := range feilds.Names {
+					results = append(results, param.Name)
+				}
+			}
+		}
+	}
+	for _, astnode := range path {
+		logger.Println("%v", astutil.NodeDescription(astnode))
+		switch t := astnode.(type) {
+		case *ast.BlockStmt:
+			stmts := t.List
+			logger.Printf("Block found at position :%d of size %d\n", int(t.Pos()), len(stmts))
+			for _, stmtnode := range stmts {
+				logger.Printf("Statement type:%s", stmtnode)
+				switch t := stmtnode.(type) {
+				case *ast.DeclStmt:
+					idents := t.Decl.(*ast.GenDecl).Specs[0].(*ast.ValueSpec).Names
+					for _, identifier := range idents {
+						//collect node if in scope at the dump statement
+						if int(identifier.Pos()) < dumpPosition && identifier.Name != "_" {
+							logger.Printf("Local Found :%s\n", fmt.Sprintf("%v", identifier))
+							results = append(results, fmt.Sprintf("%v", identifier.Name))
+						}
+					}
+				//collect variables from definition assignments
+				case *ast.AssignStmt:
+					if t.Tok == token.DEFINE {
+						for _, exp := range t.Lhs {
+							ast.Inspect(exp, func(n ast.Node) bool {
+								switch resolvedNode := n.(type) {
+								case *ast.Ident:
+									if int(resolvedNode.Pos()) < dumpPosition && resolvedNode.Name != "_" {
+										logger.Printf("Local Found :%s\n", resolvedNode.Name)
+										results = append(results, resolvedNode.Name)
+									}
+								}
+								return true
+							})
+						}
+					}
+				}
+			}
+		}
+	}
+	//Compute the closure of structures in the variables
+	structVars := collectStructs(results, file)
+	results = append(results, structVars...)
 	return results
 }
 
-//matchCallExpression determines if a particular call expression
-//involvs (varName) calling any of the listed functions
-func matchCallExpression(n *ast.CallExpr, varName string, funcNames []string) bool {
-	switch y := n.Fun.(type) {
-	case *ast.SelectorExpr:
-		left, _ := y.X.(*ast.Ident)
-		if left.Name == varName {
-			for _, name := range funcNames {
-				if y.Sel.Name == name {
-					return true
-				}
-			}
-		}
-	}
-	return false
-}
-
-/*
-func (im ImportAdder) Visit(node ast.Node) (w ast.Visitor) {
-	switch t := node.(type) {
-	case *ast.GenDecl:
-		if t.Tok == token.IMPORT {
-			//remove duplicate imports
-			releventImports := nonDuplicateImports(im.PackagesToImport, t.Specs)
-			newSpecs := make([]ast.Spec, len(t.Specs)+len(releventImports))
-			for i, spec := range t.Specs {
-				newSpecs[i] = spec
-			}
-			for i, spec := range releventImports {
-				newPackage := &ast.BasicLit{token.NoPos, token.STRING, spec}
-				newSpecs[len(t.Specs)+i] = &ast.ImportSpec{nil, nil, newPackage, nil, token.NoPos}
-			}
-
-			t.Specs = newSpecs
-			return nil
-		}
-	}
-	return im
-}*/
-
-type structIds struct {
-	fields []string
-	types  []string
-}
-
-func getGlobalVariables(file *ast.File, fset *token.FileSet) []string {
+func GetGlobalVariables(file *ast.File, fset *token.FileSet) []string {
 	var results []string
 
 	global_objs := file.Scope.Objects
@@ -330,6 +367,12 @@ func getGlobalVariables(file *ast.File, fset *token.FileSet) []string {
 	results = append(results, structVars...)
 	return results
 }
+
+type structIds struct {
+	fields []string
+	types  []string
+}
+
 
 func collectStructs(varNames []string, file *ast.File) []string {
 	var structs map[string]structIds = make(map[string]structIds)
@@ -398,73 +441,7 @@ func structClosure(s map[string]structIds, name, stype string) []string {
 
 }
 
-//GetAccessibleVarsInScope returns the variables names of all
-//varialbes in scope at the point start.
-//TODO rename start to dump line of code
-func GetAccessibleVarsInScope(dumpPosition int, file *ast.File, fset *token.FileSet) []string {
-	logger.Println("Collecting Scope Variables")
-	globals := getGlobalVariables(file, fset)
-	locals := getLocalVariables(dumpPosition, file, fset)
-	return append(globals, locals...)
-}
 
-func getLocalVariables(dumpPosition int, file *ast.File, fset *token.FileSet) []string {
-	var results []string
-	filePos := fset.File(file.Package)
-	logger.Printf("packagename : %s\n searching Pos dumpPosition %d\n", file.Name.String(), dumpPosition)
-	//TODO rename path and write comments
-	//the +2 is probably to grab a send or receive after the dump??
-	path, _ := astutil.PathEnclosingInterval(file, filePos.Pos(dumpPosition), filePos.Pos(dumpPosition+2)) // why +2
-	for _, astnode := range path {
-		logger.Println("%v", astutil.NodeDescription(astnode))
-		switch t := astnode.(type) {
-		case *ast.BlockStmt:
-			stmts := t.List
-			logger.Printf("Block found at position :%d of size %d\n", int(t.Pos()), len(stmts))
-			for _, stmtnode := range stmts {
-				//logger.Printf("Statement type:%s", stmtnode.)
-				switch t := stmtnode.(type) {
-				case *ast.DeclStmt:
-					idents := t.Decl.(*ast.GenDecl).Specs[0].(*ast.ValueSpec).Names
-					for _, identifier := range idents {
-						//collect node if in scope at the dump statement
-						if int(identifier.Pos()) < dumpPosition && identifier.Name != "_" {
-							logger.Printf("Local Found :%s\n", fmt.Sprintf("%v", identifier))
-							results = append(results, fmt.Sprintf("%v", identifier.Name))
-						}
-					}
-				//collect variables from definition assignments
-				case *ast.AssignStmt:
-					logger.Println("Assignment found")
-					if t.Tok == token.DEFINE {
-						for _, exp := range t.Lhs {
-							ast.Inspect(exp, func(n ast.Node) bool {
-								switch resolvedNode := n.(type) {
-								case *ast.Ident:
-									if int(resolvedNode.Pos()) < dumpPosition && resolvedNode.Name != "_" {
-										logger.Printf("Local Found :%s\n", resolvedNode.Name)
-										results = append(results, resolvedNode.Name)
-									}
-								}
-								return true
-							})
-						}
-					}
-				}
-			}
-		}
-	}
-	for i := range results {
-		fmt.Printf("found local %s\n", results[i])
-	}
-	structVars := collectStructs(results, file)
-	results = append(results, structVars...)
-	for i := range results {
-		fmt.Printf("found local %s\n", results[i])
-	}
-
-	return results
-}
 
 //GetDumpNodes traverses a file and returns all ast.Node's
 //representing comments of the form //@dump
@@ -522,10 +499,10 @@ func GenerateDumpCode(vars []string, lineNumber int, comment, path, packagename 
 }
 
 //prints given AST
-func (p *ProgramWrapper) printAST() {
-	for _, pack := range p.packages {
-		for _, source := range pack.sources {
-			ast.Print(p.fset, source.source)
+func printAST(p *programslicer.ProgramWrapper) {
+	for _, pack := range p.Packages {
+		for _, source := range pack.Sources {
+			ast.Print(p.Fset, source.Source)
 		}
 	}
 }
@@ -539,55 +516,9 @@ func writeInstrumentedFile(source string, filename string) {
 	file.Close()
 }
 
-func addImports(file *ast.File) {
+func addImports(fset *token.FileSet, file *ast.File) {
 	packagesToImport := []string{"\"bitbucket.org/bestchai/dinv/instrumenter\""}
-	im := ImportAdder{packagesToImport}
-	ast.Walk(im, file)
-}
-
-type ImportAdder struct {
-	PackagesToImport []string
-}
-
-func (im ImportAdder) Visit(node ast.Node) (w ast.Visitor) {
-	switch t := node.(type) {
-	case *ast.GenDecl:
-		if t.Tok == token.IMPORT {
-			//remove duplicate imports
-			releventImports := nonDuplicateImports(im.PackagesToImport, t.Specs)
-			newSpecs := make([]ast.Spec, len(t.Specs)+len(releventImports))
-			for i, spec := range t.Specs {
-				newSpecs[i] = spec
-			}
-			for i, spec := range releventImports {
-				newPackage := &ast.BasicLit{token.NoPos, token.STRING, spec}
-				newSpecs[len(t.Specs)+i] = &ast.ImportSpec{nil, nil, newPackage, nil, token.NoPos}
-			}
-
-			t.Specs = newSpecs
-			return nil
-		}
+	for _, pack := range packagesToImport {
+		astutil.AddImport(fset,file,pack)
 	}
-	return im
-}
-
-func nonDuplicateImports(packagesToImport []string, specs []ast.Spec) []string {
-	var releventImports []string
-	for _, potential := range packagesToImport {
-		var duplicate bool = false
-		for _, existing := range specs {
-			enode := existing.(ast.Node)
-			switch e := enode.(type) {
-			case *ast.ImportSpec:
-				if potential == e.Path.Value { //not sure this compairison works
-					duplicate = true
-					break
-				}
-			}
-		}
-		if !duplicate {
-			releventImports = append(releventImports, potential)
-		}
-	}
-	return releventImports
 }
