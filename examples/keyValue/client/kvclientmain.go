@@ -15,6 +15,7 @@ import (
 	"fmt"
 	"os"
 	"net/rpc"
+	"bitbucket.org/wantonsolutions/dovid/detect"
 )
 
 // args in get(args)
@@ -54,7 +55,7 @@ func main() {
 	kvAddr := os.Args[1]
 
 	// Connect to the KV-service via RPC.
-	kvService, err := rpc.Dial("tcp", kvAddr)
+	kvService, err := dovid.Dial(rpc.Dial,"tcp",kvAddr)
 	checkError(err)
 
 	// Use kvVal for all RPC replies.
