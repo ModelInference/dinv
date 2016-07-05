@@ -29,6 +29,7 @@ import (
 
 var (
 	logger           *log.Logger
+	clean 			 = false
 	dataflow         = false
 	debug            = false
 	dumpsLocalEvents = false
@@ -44,7 +45,11 @@ func Instrument(options map[string]string, inlogger *log.Logger) {
 	if err != nil {
 		logger.Fatalf("Error: %s", err.Error())
 	}
-	//ast.Print(program.Fset, program.Packages[0].Sources[0].Source)
+	if clean {
+		cleanSources(program)
+		return
+	}
+	ast.Print(program.Fset, program.Packages[0].Sources[0].Source)
 	for pnum, pack := range program.Packages {
 		for snum := range pack.Sources {
 			InsturmentSource(program, pnum, snum)
@@ -63,6 +68,8 @@ func initializeInstrumenter(options map[string]string, inlogger *log.Logger) {
 	}
 	for setting := range options {
 		switch setting {
+		case "clean":
+			clean = true
 		case "debug":
 			debug = true
 		case "dataflow":
@@ -105,7 +112,40 @@ func getProgramWrapper() (*programslicer.ProgramWrapper, error) {
 	//TODO write functionality for piping
 	return program, nil
 }
+func cleanSources(p *programslicer.ProgramWrapper) {
+	for pnum, pack := range p.Packages {
+		for snum, source := range pack.Sources {
+			ast.Inspect(source.Comments, func(n ast.Node) bool {
+				switch x := n.(type) {
+				case *ast.ExprStmt:
+					switch c := x.X.(type) {
+					case *ast.CallExpr:
+						switch s := c.Fun.(type) {
+						case *ast.SelectorExpr: 
+							switch xx := s.X.(type) {
+							case *ast.Ident:
+							fmt.Println(xx.Name)
+							fmt.Println(s.Sel.Name)
+								if xx.Name == "dinvRT" && s.Sel.Name == "Dump" {
+									x.X = ast.NewIdent("//@dump")
+								}
+							}
+						}
+					}
+				}
+				return true
+			})
+			removeImports(p.Fset,p.Packages[pnum].Sources[snum].Comments)
+			buf := new(bytes.Buffer)
+			printer.Fprint(buf, p.Fset, p.Packages[pnum].Sources[snum].Comments)
+			p.Packages[pnum].Sources[snum].Text = buf.String()
+			fmt.Println(buf.String()) //TODO remove
 
+			writeInstrumentedFile(p, pnum, snum)
+		}
+	}
+	return
+}
 func InplaceDirectorySwap(dir string) error {
 	newDir := dir + "_orig"
 	return filepath.Walk(dir, func(path string, info os.FileInfo, err error) error {
@@ -122,7 +162,6 @@ func InplaceDirectorySwap(dir string) error {
 //generateCode constructs code for dump statements for the source code
 //located at program.source[snum].
 func InsturmentSource(program *programslicer.ProgramWrapper, pnum, snum int) {
-	var generated_code []string
 	dumpNodes := GetDumpNodes(program.Packages[pnum].Sources[snum].Comments)
 	affected := getAffectedVars(program)
 	fmt.Printf("affected functions size %d\n",len(affected))
@@ -139,7 +178,8 @@ func InsturmentSource(program *programslicer.ProgramWrapper, pnum, snum int) {
 		dumpcode := GenerateDumpCode(collectedVariables, lineNumber, dump.Text, program.Packages[pnum].Sources[snum].Filename, program.Packages[pnum].PackageName)
 		dump.Text = dumpcode
 		logger.Println(dumpcode)
-		generated_code = append(generated_code, dumpcode)
+
+
 	}
 	//write the text of the source code out
 	buf := new(bytes.Buffer)
@@ -455,7 +495,7 @@ func GetDumpNodes(file *ast.File) []*ast.Comment {
 //TODO Removde Dump dependency on global variable "Logger"
 func GenerateDumpCode(vars []string, lineNumber int, comment, path, packagename string) string {
 	if len(vars) <= 0 {
-		return ""
+		return "//@dump (This line [" + strconv.Itoa(lineNumber) + "] contains no in-scope networking variables)"
 	}
 	_, nameWithExt := filepath.Split(path)
 	ext := filepath.Ext(path)
@@ -504,3 +544,14 @@ func addImports(fset *token.FileSet, file *ast.File) {
 		astutil.AddImport(fset,file,pack)
 	}
 }
+
+func removeImports(fset *token.FileSet, file * ast.File) {
+	packagesToRemove := []string{"bitbucket.org/bestchai/dinv/dinvRT"}
+	for _, pack := range packagesToRemove {
+		if !astutil.UsesImport(file,pack) {
+			astutil.DeleteImport(fset,file,pack)
+		}
+	}
+	return
+}
+
