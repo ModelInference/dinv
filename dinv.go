@@ -32,6 +32,7 @@ var (
 	logmer bool
 
 	//options for instrumenting
+	clean 			 bool
 	dataflowAnalysis bool
 	dumpsLocalEvents bool
 	directory        string
@@ -55,6 +56,7 @@ func setFlags() {
 	flag.BoolVar(&inst, "instrumenter", false, "go run dinv -instrumenter -dir=directory")
 	flag.BoolVar(&inst, "i", false, "go run dinv -i -dir=directory")
 
+	flag.BoolVar(&clean, "c", false, "go run dinv -i -c removes converts insturmented dump code into commments")
 	flag.BoolVar(&dataflowAnalysis, "df", false, "-df=true triggers dataflow analysis at dumpstatements")
 	flag.BoolVar(&dumpsLocalEvents, "local", false, "-local=true logs //@dump annotations as local events")
 	flag.StringVar(&directory, "dir", defaultDirectory, "-dir=directoryName recursivly instruments a directory inplace, original directory is duplicated for safty")
@@ -123,7 +125,10 @@ func main() {
 			logger.Printf("Insturmenting Directory :%s\n", directory)
 			options["directory"] = directory
 		}
-
+		
+		if clean {
+			options["clean"] = "on"
+		}
 		//set dataflow flag
 		if dataflowAnalysis {
 			options["dataflow"] = "on"
