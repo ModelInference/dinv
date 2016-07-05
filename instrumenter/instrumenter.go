@@ -124,8 +124,6 @@ func cleanSources(p *programslicer.ProgramWrapper) {
 						case *ast.SelectorExpr: 
 							switch xx := s.X.(type) {
 							case *ast.Ident:
-							fmt.Println(xx.Name)
-							fmt.Println(s.Sel.Name)
 								if xx.Name == "dinvRT" && s.Sel.Name == "Dump" {
 									x.X = ast.NewIdent("//@dump")
 								}
@@ -139,8 +137,6 @@ func cleanSources(p *programslicer.ProgramWrapper) {
 			buf := new(bytes.Buffer)
 			printer.Fprint(buf, p.Fset, p.Packages[pnum].Sources[snum].Comments)
 			p.Packages[pnum].Sources[snum].Text = buf.String()
-			fmt.Println(buf.String()) //TODO remove
-
 			writeInstrumentedFile(p, pnum, snum)
 		}
 	}
@@ -164,17 +160,14 @@ func InplaceDirectorySwap(dir string) error {
 func InsturmentSource(program *programslicer.ProgramWrapper, pnum, snum int) {
 	dumpNodes := GetDumpNodes(program.Packages[pnum].Sources[snum].Comments)
 	affected := getAffectedVars(program)
-	fmt.Printf("affected functions size %d\n",len(affected))
 
-	//check for dumps and write imports here
-	fmt.Printf("dumpnodes %d\n",len(dumpNodes))
 	if len(dumpNodes) > 0 {
 		addImports(program.Fset, program.Packages[pnum].Sources[snum].Comments)
 	}
 	for _, dump := range dumpNodes {
 		lineNumber := program.Fset.Position(dump.Pos()).Line
 		collectedVariables := getAccessedAffectedVars(dump,affected,program)
-		fmt.Printf("collected variables #%d\n",len(collectedVariables))
+		logger.Printf("collected variables #%d\n",len(collectedVariables))
 		dumpcode := GenerateDumpCode(collectedVariables, lineNumber, dump.Text, program.Packages[pnum].Sources[snum].Filename, program.Packages[pnum].PackageName)
 		dump.Text = dumpcode
 		logger.Println(dumpcode)
@@ -185,7 +178,6 @@ func InsturmentSource(program *programslicer.ProgramWrapper, pnum, snum int) {
 	buf := new(bytes.Buffer)
 	printer.Fprint(buf, program.Fset, program.Packages[pnum].Sources[snum].Comments)
 	program.Packages[pnum].Sources[snum].Text = buf.String()
-	fmt.Println(buf.String()) //TODO remove
 }
 
 //getAccessedAffectedVars returns the names of all variables affected
@@ -194,7 +186,7 @@ func getAccessedAffectedVars(dump *ast.Comment, affectedFuncs map[*ast.FuncDecl]
 	//check that the node is within the known program
 	pnum, snum := program.FindFile(dump)
 	if pnum < 0 || snum < 0 {
-		fmt.Println("Pacakge or Source does not exist")
+		fmt.Println("Package or Source does not exist")
 		return nil
 	}
 	_, f := findFunction(dump,program.Packages[pnum].Sources[snum].Source.Decls) //NOTE changed from comments.decls for debugging july 4
@@ -207,13 +199,11 @@ func getAccessedAffectedVars(dump *ast.Comment, affectedFuncs map[*ast.FuncDecl]
 	inScope := GetAccessibleVarsInScope(int(dump.Pos()), program.Packages[pnum].Sources[snum].Comments, program.Fset)
 	//collect all the variables affected by networking in the known
 	//function
-	fmt.Printf("affected functions size %d\n",len(affectedFuncs))
 	for _, fn := range affectedFuncs[f] {
 		names := make([]string,0)
 		for _, vars := range fn.NVars {
 			names = append(names,vars.Name())
 		}
-		fmt.Println("names: %s\n",names)
 		affected = append(affected,names...)
 		affected = append(affected,collectStructs(names,program.Packages[pnum].Sources[snum].Comments)...)
 	}
@@ -275,7 +265,7 @@ func getAffectedVars(program *programslicer.ProgramWrapper) map[*ast.FuncDecl][]
 	sending, receiving, both := capture.GetCommNodes(program)
 	affectedFunctions := make(map[*ast.FuncDecl][]*programslicer.FuncNode)
 	for _, send := range sending {
-		fmt.Printf("Slicing from sender %s\n",send)
+		logger.Printf("Slicing from sender %s\n",send)
 		sendStmt := (*send).(ast.Stmt)
 		funcNodes := programslicer.GetAffectedVariables(sendStmt,program,programslicer.ComputeBackwardSlice,programslicer.GetTaintedPointsBackwards)
 		for f , fNode := range funcNodes {
@@ -283,7 +273,7 @@ func getAffectedVars(program *programslicer.ProgramWrapper) map[*ast.FuncDecl][]
 		}
 	}
 	for _, rec := range receiving {
-		fmt.Printf("Slicing from recv %s\n",rec)
+		logger.Printf("Slicing from recv %s\n",rec)
 		recStmt := (*rec).(ast.Stmt)
 		funcNodes := programslicer.GetAffectedVariables(recStmt,program,programslicer.ComputeForwardSlice,programslicer.GetTaintedPointsForward)
 		for f , fNode := range funcNodes {
@@ -291,7 +281,7 @@ func getAffectedVars(program *programslicer.ProgramWrapper) map[*ast.FuncDecl][]
 		}
 	}
 	for _, bidir := range both {
-		fmt.Printf("Slicing from bidir %s\n",bidir)
+		logger.Printf("Slicing from bidir %s\n",bidir)
 		commStmt := (*bidir).(ast.Stmt)
 		forwards := programslicer.GetAffectedVariables(commStmt,program,programslicer.ComputeForwardSlice,programslicer.GetTaintedPointsForward)
 		for f , fNode := range forwards {
@@ -322,7 +312,7 @@ func GetGlobalVariables(file *ast.File, fset *token.FileSet) []string {
 		//get variables of type constant and Var
 		switch global_objs[identifier].Kind {
 		case ast.Var, ast.Con: //|| global_objs[identifier].Kind == ast.Typ { //can be used for diving into structs
-			fmt.Printf("Global Found :%s\n", fmt.Sprintf("%v", identifier))
+			logger.Printf("Global Found :%s\n", fmt.Sprintf("%v", identifier))
 			results = append(results, fmt.Sprintf("%v", identifier))
 		}
 	}
@@ -358,16 +348,13 @@ func GetLocalVariables(dumpPosition int, file *ast.File, fset *token.FileSet) []
 		switch t := astnode.(type) {
 		case *ast.BlockStmt:
 			stmts := t.List
-			logger.Printf("Block found at position :%d of size %d\n", int(t.Pos()), len(stmts))
 			for _, stmtnode := range stmts {
-				logger.Printf("Statement type:%s", stmtnode)
 				switch t := stmtnode.(type) {
 				case *ast.DeclStmt:
 					idents := t.Decl.(*ast.GenDecl).Specs[0].(*ast.ValueSpec).Names
 					for _, identifier := range idents {
 						//collect node if in scope at the dump statement
 						if int(identifier.Pos()) < dumpPosition && identifier.Name != "_" {
-							logger.Printf("Local Found :%s\n", fmt.Sprintf("%v", identifier))
 							results = append(results, fmt.Sprintf("%v", identifier.Name))
 						}
 					}
@@ -379,7 +366,6 @@ func GetLocalVariables(dumpPosition int, file *ast.File, fset *token.FileSet) []
 								switch resolvedNode := n.(type) {
 								case *ast.Ident:
 									if int(resolvedNode.Pos()) < dumpPosition && resolvedNode.Name != "_" {
-										logger.Printf("Local Found :%s\n", resolvedNode.Name)
 										results = append(results, resolvedNode.Name)
 									}
 								}
@@ -394,7 +380,7 @@ func GetLocalVariables(dumpPosition int, file *ast.File, fset *token.FileSet) []
 	//Compute the closure of structures in the variables
 	structVars := collectStructs(results, file)
 	results = append(results, structVars...)
-	fmt.Printf("local Vars: %s\n",results)
+	logger.Printf("local Vars: %s\n",results)
 	return results
 }
 

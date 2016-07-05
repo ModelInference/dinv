@@ -25,7 +25,7 @@ import (
 // Create Program Dependence Graph
 
 var (
-	debug = true
+	debug = false
 )
 
 type FuncNode struct {
@@ -312,9 +312,11 @@ func ComputeSliceIP(root ast.Stmt, p *ProgramWrapper,
 		} else {
 			fmt.Printf("Function %s found with id %d\n",fd.Name,fd)
 		}
-		fmt.Printf("Current Task:\t Perform Slice in Function %s, From Line %d\n",fd.Name.Name,p.Fset.Position(task.Root.Pos()).Line)
 		stmts := slicer(task.Root,p.Packages[pnum].Sources[snum].Cfgs[fnum].Cfg,info,p.Fset,nil)
-		fmt.Printf("Slice Found with %d statements\n",len(stmts))
+		if debug {
+			fmt.Printf("Slice Found with %d statements\n",len(stmts))
+			fmt.Printf("Current Task:\t Perform Slice in Function %s, From Line %d\n",fd.Name.Name,p.Fset.Position(task.Root.Pos()).Line)
+		}
 		appended := false
 
 		for _, stm := range stmts {
@@ -441,6 +443,7 @@ func ComputeForwardSlice(start ast.Stmt, cf *cfg.CFG, info *loader.PackageInfo, 
 
 	var slice []ast.Stmt
 	dataflow.CreateDataDepGraph(cf, info)
+	fmt.Println("Afterwards")
 	//added
 	cf.InitializeBlocks()
 	cfg.BuildDomTree(cf)
@@ -448,7 +451,6 @@ func ComputeForwardSlice(start ast.Stmt, cf *cfg.CFG, info *loader.PackageInfo, 
 	//\/added
 	//invC := cf.BuildPostDomTree()		//MODIFIED from post dom
 	invC.FindControlDeps()
-
 	if debug {
 		var buf bytes.Buffer
 		invC.PrintControlDepDot(&buf, fset, func(s ast.Stmt) string {
@@ -479,22 +481,17 @@ func ComputeForwardSlice(start ast.Stmt, cf *cfg.CFG, info *loader.PackageInfo, 
 
 		if debug {
 			fmt.Printf("visiting ")
-			p := u.Stmt.Pos()
-			fmt.Println(fset.Position(p).Line)
 			fmt.Printf("control depsee size :%d\n",len(u.ControlDepee))
 		}
 		for _, v := range u.ControlDepee {
 
-			fmt.Println(fset.Position(v.Stmt.Pos()).Line)
 			if !visited[v.Stmt] {
 				visited[v.Stmt] = true
 				queue = append(queue, v.Stmt)
 				slice = append(slice, v.Stmt)
 			}
 		}
-		fmt.Println("data deps :")
 		for _, v := range u.DataDepee {
-			fmt.Println(fset.Position(v.Stmt.Pos()).Line)
 			if !visited[v.Stmt] {
 				visited[v.Stmt] = true
 				queue = append(queue, v.Stmt)
@@ -540,41 +537,27 @@ func ComputeBackwardSlice(start ast.Stmt, Cfg *cfg.CFG, info *loader.PackageInfo
 		queue = queue[1:]
 		u := invC.Blocks[uStmt]
 
-		for a , b := range invC.Blocks {
-			fmt.Printf("index %s \t stmnt %s\n",a,b)
-		}
-		fmt.Printf("ustmnt %s\n",uStmt)
 
 		if debug {
 			fmt.Printf("visiting %d\t trying %s\n",uStmt.Pos(),u.String())
-			if u == nil {
-				fmt.Println("u is nil")
-			}
 			fmt.Println(fset.Position(u.Stmt.Pos()).Line)
 			fmt.Printf("control deps size :%d\n",len(u.ControlDep))
 		}
 			for _, v := range u.ControlDep {
 
-				fmt.Println(fset.Position(v.Stmt.Pos()).Line)
 				if !visited[v.Stmt] {
 					visited[v.Stmt] = true
 					queue = append(queue, v.Stmt)
 					slice = append(slice, v.Stmt)
 				}
 			}
-			fmt.Printf("data deps size :%d\n",len(u.DataDep))
 			for _, v := range u.DataDep {
-				fmt.Println(fset.Position(v.Stmt.Pos()).Line)
 				if !visited[v.Stmt] {
 					visited[v.Stmt] = true
 					queue = append(queue, v.Stmt)
 					slice = append(slice, v.Stmt)
 				}
 			}
-	}
-	fmt.Printf("Statements Found %d\n", len(slice))
-	for _, st := range slice {
-		fmt.Printf("Statements  %s\n", st)
 	}
 	return slice
 }
@@ -586,11 +569,9 @@ func GetAffectedVariables( root ast.Stmt, p *ProgramWrapper,
 	
 	nodes := ComputeSliceIP(root,p,slicer,pointCollecter)
 	for _, node := range nodes {
-		fmt.Printf("slice size : %d\n",len(node.Slice))
 		defs, _ := dataflow.ReferencedVars(node.Slice, p.Prog.Created[0])
 		for def := range defs {
 			node.NVars = append(node.NVars, def)
-			fmt.Println(def.Name())
 		}
 	}
 	return nodes
