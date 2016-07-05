@@ -19,7 +19,6 @@ import (
 	"path/filepath"
 	"strconv"
 
-	"regexp"
 	"strings"
 
 	"bitbucket.org/bestchai/dinv/programslicer"
@@ -45,12 +44,11 @@ func Instrument(options map[string]string, inlogger *log.Logger) {
 	if err != nil {
 		logger.Fatalf("Error: %s", err.Error())
 	}
-	ast.Print(program.Fset, program.Packages[0].Sources[0].Source)
+	//ast.Print(program.Fset, program.Packages[0].Sources[0].Source)
 	for pnum, pack := range program.Packages {
 		for snum := range pack.Sources {
-			genCode := generateCode(program, pnum, snum)
-			instrumented := injectCode(program, pnum, snum, genCode)
-			writeInstrumentedFile(instrumented, program.Packages[pnum].Sources[snum].Filename)
+			InsturmentSource(program, pnum, snum)
+			writeInstrumentedFile(program, pnum, snum)
 		}
 	}
 }
@@ -123,7 +121,7 @@ func InplaceDirectorySwap(dir string) error {
 
 //generateCode constructs code for dump statements for the source code
 //located at program.source[snum].
-func generateCode(program *programslicer.ProgramWrapper, pnum, snum int) []string {
+func InsturmentSource(program *programslicer.ProgramWrapper, pnum, snum int) {
 	var generated_code []string
 	dumpNodes := GetDumpNodes(program.Packages[pnum].Sources[snum].Comments)
 	affected := getAffectedVars(program)
@@ -135,16 +133,11 @@ func generateCode(program *programslicer.ProgramWrapper, pnum, snum int) []strin
 		addImports(program.Fset, program.Packages[pnum].Sources[snum].Comments)
 	}
 	for _, dump := range dumpNodes {
-		//dumpPos := dump.Pos()
-		//file relitive dump position (dump abs - file abs = dump rel)
-		//fileRelitiveDumpPosition := int(dumpPos - program.Packages[pnum].Sources[snum].Comments.Pos() + 1)
 		lineNumber := program.Fset.Position(dump.Pos()).Line
-//
 		collectedVariables := getAccessedAffectedVars(dump,affected,program)
 		fmt.Printf("collected variables #%d\n",len(collectedVariables))
 		dumpcode := GenerateDumpCode(collectedVariables, lineNumber, dump.Text, program.Packages[pnum].Sources[snum].Filename, program.Packages[pnum].PackageName)
 		dump.Text = dumpcode
-		//TODO TODO TODO Start here tomorrow
 		logger.Println(dumpcode)
 		generated_code = append(generated_code, dumpcode)
 	}
@@ -152,9 +145,7 @@ func generateCode(program *programslicer.ProgramWrapper, pnum, snum int) []strin
 	buf := new(bytes.Buffer)
 	printer.Fprint(buf, program.Fset, program.Packages[pnum].Sources[snum].Comments)
 	program.Packages[pnum].Sources[snum].Text = buf.String()
-	fmt.Println(buf.String())
-
-	return generated_code
+	fmt.Println(buf.String()) //TODO remove
 }
 
 //getAccessedAffectedVars returns the names of all variables affected
@@ -213,22 +204,6 @@ func removedups (slice []string) []string {
 	}
 	return noDups
 }
-
-//injectCode replaces dump statements in the source code of
-//program.source[snum] with lines of code defined in
-//injectionCode
-func injectCode(program *programslicer.ProgramWrapper, pnum, snum int, injectionCode []string) string {
-	count := 0
-	rp := regexp.MustCompile("\\/\\/@dump.*")
-	instrumented := rp.ReplaceAllStringFunc(program.Packages[pnum].Sources[snum].Text, func(s string) string {
-		replacement := injectionCode[count]
-		count++
-		return replacement
-	})
-	addImports(program.Fset, program.Packages[pnum].Sources[snum].Comments)
-	return instrumented
-}
-
 
 //findFunction searches through a set of declaractions decls, for the
 //statement stmt, the number of the function, which contains the stmt
@@ -299,6 +274,23 @@ func GetAccessibleVarsInScope(dumpPosition int, file *ast.File, fset *token.File
 	return append(globals, locals...)
 }
 
+func GetGlobalVariables(file *ast.File, fset *token.FileSet) []string {
+	var results []string
+
+	global_objs := file.Scope.Objects
+	for identifier, _ := range global_objs {
+		//get variables of type constant and Var
+		switch global_objs[identifier].Kind {
+		case ast.Var, ast.Con: //|| global_objs[identifier].Kind == ast.Typ { //can be used for diving into structs
+			fmt.Printf("Global Found :%s\n", fmt.Sprintf("%v", identifier))
+			results = append(results, fmt.Sprintf("%v", identifier))
+		}
+	}
+	structVars := collectStructs(results, file)
+	results = append(results, structVars...)
+	return results
+}
+
 func GetLocalVariables(dumpPosition int, file *ast.File, fset *token.FileSet) []string {
 	var results []string
 	filePos := fset.File(file.Package)
@@ -366,22 +358,6 @@ func GetLocalVariables(dumpPosition int, file *ast.File, fset *token.FileSet) []
 	return results
 }
 
-func GetGlobalVariables(file *ast.File, fset *token.FileSet) []string {
-	var results []string
-
-	global_objs := file.Scope.Objects
-	for identifier, _ := range global_objs {
-		//get variables of type constant and Var
-		switch global_objs[identifier].Kind {
-		case ast.Var, ast.Con: //|| global_objs[identifier].Kind == ast.Typ { //can be used for diving into structs
-			fmt.Printf("Global Found :%s\n", fmt.Sprintf("%v", identifier))
-			results = append(results, fmt.Sprintf("%v", identifier))
-		}
-	}
-	structVars := collectStructs(results, file)
-	results = append(results, structVars...)
-	return results
-}
 
 type structIds struct {
 	fields []string
@@ -511,12 +487,14 @@ func printAST(p *programslicer.ProgramWrapper) {
 	}
 }
 
-//writeInstrumentedFile writes a file with the contents source, with
-//the filename "prefixfilename"
-func writeInstrumentedFile(source string, filename string) {
-	file, _ := os.Create(filename)
-	logger.Printf("Writing file %s\n", filename)
-	file.WriteString(source)
+func writeInstrumentedFile (p *programslicer.ProgramWrapper, pnum, snum int) {
+	filename := p.Packages[pnum].Sources[snum].Filename
+	file, err := os.Create(filename)
+	if err != nil {
+		panic(err)
+	}
+	logger.Printf("Writing file %s\n",filename)
+	file.WriteString(p.Packages[pnum].Sources[snum].Text)
 	file.Close()
 }
 
