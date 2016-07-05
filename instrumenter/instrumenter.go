@@ -99,11 +99,12 @@ func getProgramWrapper() (*programslicer.ProgramWrapper, error) {
 			return program, err
 		}
 	} else if instFile != "" {
-		//TODO write functionality for insturmenting a single file //
-		//look to getProgramWrapperFromSource in programBuilder
-		//program = getProgramWrapperFile(instFile)
-		//err = InplaceFileSwap(instFile)
+		program, err = programslicer.GetProgramWrapperFile(instFile)
+		if err != nil {
+			return program, err
+		}
 	}
+	//TODO write functionality for piping
 	return program, nil
 }
 
@@ -126,8 +127,10 @@ func generateCode(program *programslicer.ProgramWrapper, pnum, snum int) []strin
 	var generated_code []string
 	dumpNodes := GetDumpNodes(program.Packages[pnum].Sources[snum].Comments)
 	affected := getAffectedVars(program)
+	fmt.Printf("affected functions size %d\n",len(affected))
 
 	//check for dumps and write imports here
+	fmt.Printf("dumpnodes %d\n",len(dumpNodes))
 	if len(dumpNodes) > 0 {
 		addImports(program.Fset, program.Packages[pnum].Sources[snum].Comments)
 	}
@@ -136,10 +139,12 @@ func generateCode(program *programslicer.ProgramWrapper, pnum, snum int) []strin
 		//file relitive dump position (dump abs - file abs = dump rel)
 		//fileRelitiveDumpPosition := int(dumpPos - program.Packages[pnum].Sources[snum].Comments.Pos() + 1)
 		lineNumber := program.Fset.Position(dump.Pos()).Line
-
+//
 		collectedVariables := getAccessedAffectedVars(dump,affected,program)
+		fmt.Printf("collected variables #%d\n",len(collectedVariables))
 		dumpcode := GenerateDumpCode(collectedVariables, lineNumber, dump.Text, program.Packages[pnum].Sources[snum].Filename, program.Packages[pnum].PackageName)
-
+		dump.Text = dumpcode
+		//TODO TODO TODO Start here tomorrow
 		logger.Println(dumpcode)
 		generated_code = append(generated_code, dumpcode)
 	}
@@ -147,6 +152,7 @@ func generateCode(program *programslicer.ProgramWrapper, pnum, snum int) []strin
 	buf := new(bytes.Buffer)
 	printer.Fprint(buf, program.Fset, program.Packages[pnum].Sources[snum].Comments)
 	program.Packages[pnum].Sources[snum].Text = buf.String()
+	fmt.Println(buf.String())
 
 	return generated_code
 }
@@ -157,10 +163,12 @@ func getAccessedAffectedVars(dump *ast.Comment, affectedFuncs map[*ast.FuncDecl]
 	//check that the node is within the known program
 	pnum, snum := program.FindFile(dump)
 	if pnum < 0 || snum < 0 {
+		fmt.Println("Pacakge or Source does not exist")
 		return nil
 	}
-	_, f := findFunction(dump,program.Packages[pnum].Sources[snum].Comments.Decls)
+	_, f := findFunction(dump,program.Packages[pnum].Sources[snum].Source.Decls) //NOTE changed from comments.decls for debugging july 4
 	if f == nil {
+		fmt.Println("Function Not found")
 		return nil
 	}
 	//find variables within the scope of the dump statement
@@ -168,11 +176,14 @@ func getAccessedAffectedVars(dump *ast.Comment, affectedFuncs map[*ast.FuncDecl]
 	inScope := GetAccessibleVarsInScope(int(dump.Pos()), program.Packages[pnum].Sources[snum].Comments, program.Fset)
 	//collect all the variables affected by networking in the known
 	//function
+	fmt.Printf("affected functions size %d\n",len(affectedFuncs))
 	for _, fn := range affectedFuncs[f] {
 		names := make([]string,0)
 		for _, vars := range fn.NVars {
 			names = append(names,vars.Name())
 		}
+		fmt.Println("names: %s\n",names)
+		affected = append(affected,names...)
 		affected = append(affected,collectStructs(names,program.Packages[pnum].Sources[snum].Comments)...)
 	}
 	//remove duplicates
@@ -249,6 +260,7 @@ func getAffectedVars(program *programslicer.ProgramWrapper) map[*ast.FuncDecl][]
 	sending, receiving, both := capture.GetCommNodes(program)
 	affectedFunctions := make(map[*ast.FuncDecl][]*programslicer.FuncNode)
 	for _, send := range sending {
+		fmt.Printf("Slicing from sender %s\n",send)
 		sendStmt := (*send).(ast.Stmt)
 		funcNodes := programslicer.GetAffectedVariables(sendStmt,program,programslicer.ComputeBackwardSlice,programslicer.GetTaintedPointsBackwards)
 		for f , fNode := range funcNodes {
@@ -256,6 +268,7 @@ func getAffectedVars(program *programslicer.ProgramWrapper) map[*ast.FuncDecl][]
 		}
 	}
 	for _, rec := range receiving {
+		fmt.Printf("Slicing from recv %s\n",rec)
 		recStmt := (*rec).(ast.Stmt)
 		funcNodes := programslicer.GetAffectedVariables(recStmt,program,programslicer.ComputeForwardSlice,programslicer.GetTaintedPointsForward)
 		for f , fNode := range funcNodes {
@@ -263,6 +276,7 @@ func getAffectedVars(program *programslicer.ProgramWrapper) map[*ast.FuncDecl][]
 		}
 	}
 	for _, bidir := range both {
+		fmt.Printf("Slicing from bidir %s\n",bidir)
 		commStmt := (*bidir).(ast.Stmt)
 		forwards := programslicer.GetAffectedVariables(commStmt,program,programslicer.ComputeForwardSlice,programslicer.GetTaintedPointsForward)
 		for f , fNode := range forwards {
@@ -348,6 +362,7 @@ func GetLocalVariables(dumpPosition int, file *ast.File, fset *token.FileSet) []
 	//Compute the closure of structures in the variables
 	structVars := collectStructs(results, file)
 	results = append(results, structVars...)
+	fmt.Printf("local Vars: %s\n",results)
 	return results
 }
 
@@ -463,38 +478,27 @@ func GetDumpNodes(file *ast.File) []*ast.Comment {
 //corresponding vector clock
 //TODO Removde Dump dependency on global variable "Logger"
 func GenerateDumpCode(vars []string, lineNumber int, comment, path, packagename string) string {
-	if len(vars) == 0 {
+	if len(vars) <= 0 {
 		return ""
 	}
 	_, nameWithExt := filepath.Split(path)
 	ext := filepath.Ext(path)
-	commentMessage := strings.Replace(comment, "//@dump", "", -1)  //remove the dump from the comment
-	commentMessage = strings.Replace(commentMessage, " ", "_", -1) //remove the dump from the comment
 	filename := strings.Replace(nameWithExt, ext, "", 1)
 	var buffer bytes.Buffer
 
 	// write vars' values
-	id := packagename + "_" + filename + "_" + strconv.Itoa(lineNumber) + "__" + commentMessage + "__"
-	if dumpsLocalEvents {
-		buffer.WriteString(fmt.Sprintf("instrumenter.Local(instrumenter.GetLogger(),\"%s\")\n", id))
+	id := packagename + "_" + filename + "_" + strconv.Itoa(lineNumber) + "_"
+	var varlist string
+	var namedVarList string
+	for i:=0;i<(len(vars)-1);i++ {
+		namedVarList += id + vars[i] + ","
+		varlist += vars[i] + ","
 	}
+	namedVarList += id + vars[len(vars)-1]
+	varlist+= vars[len(vars)-1]
+	dumpString := "dinvRT.Dump(\"" + namedVarList + "\"," + varlist + ")"
 
-	buffer.WriteString(fmt.Sprintf("%s_vars := []interface{}{", id))
-	for i := 0; i < len(vars)-1; i++ {
-		buffer.WriteString(fmt.Sprintf("%s,", vars[i]))
-	}
-	buffer.WriteString(fmt.Sprintf("%s}\n", vars[len(vars)-1]))
-
-	// write vars' names
-	buffer.WriteString(fmt.Sprintf("%s_varname := []string{", id))
-	for i := 0; i < len(vars)-1; i++ {
-		buffer.WriteString(fmt.Sprintf("\"%s\",", vars[i]))
-	}
-
-	//injectPoint
-	buffer.WriteString(fmt.Sprintf("\"%s\"}\n", vars[len(vars)-1]))
-	buffer.WriteString(fmt.Sprintf("p%s := instrumenter.CreatePoint(%s_vars, %s_varname,\"%s\",instrumenter.GetLogger(),instrumenter.GetId())\n", id, id, id, id))
-	buffer.WriteString(fmt.Sprintf("instrumenter.Encoder.Encode(p%s)\n", id))
+	buffer.WriteString(dumpString)
 	return buffer.String()
 }
 
@@ -517,7 +521,7 @@ func writeInstrumentedFile(source string, filename string) {
 }
 
 func addImports(fset *token.FileSet, file *ast.File) {
-	packagesToImport := []string{"\"bitbucket.org/bestchai/dinv/instrumenter\""}
+	packagesToImport := []string{"bitbucket.org/bestchai/dinv/dinvRT"}
 	for _, pack := range packagesToImport {
 		astutil.AddImport(fset,file,pack)
 	}
