@@ -162,14 +162,12 @@ func reachingDefResultSets(blocks []ast.Stmt, ins, outs map[ast.Stmt]*bitset.Bit
 		out[block] = make(map[ast.Stmt]struct{})
 
 		for i, ok := uint(0), true; ok; i++ {
-				println(i)
 			if i, ok = ins[block].NextSet(i); ok {
 				in[block][blocks[i]] = struct{}{}
 			}
 		}
 
 		for i, ok := uint(0), true; ok; i++ {
-				println(i)
 			if i, ok = outs[block].NextSet(i); ok {
 				out[block][blocks[i]] = struct{}{}
 			}
