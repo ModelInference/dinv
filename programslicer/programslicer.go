@@ -25,7 +25,7 @@ import (
 // Create Program Dependence Graph
 
 var (
-	debug = false
+	debug = true
 )
 
 type FuncNode struct {
@@ -437,7 +437,7 @@ func taintedArgs(args,tainted []string) []int {
 }
 
 func ComputeForwardSlice(start ast.Stmt, cf *cfg.CFG, info *loader.PackageInfo, fset *token.FileSet, sliceSoFar []ast.Stmt) []ast.Stmt {
-	//fmt.Println("Computing Forward Slice")
+	fmt.Println("Computing Forward Slice")
 
 	var slice []ast.Stmt
 	dataflow.CreateDataDepGraph(cf, info)
@@ -478,23 +478,23 @@ func ComputeForwardSlice(start ast.Stmt, cf *cfg.CFG, info *loader.PackageInfo, 
 		u := invC.Blocks[uStmt]
 
 		if debug {
-			fmt.Println("visiting ")
+			fmt.Printf("visiting ")
 			p := u.Stmt.Pos()
 			fmt.Println(fset.Position(p).Line)
-			fmt.Println("control deps :")
+			fmt.Printf("control depsee size :%d\n",len(u.ControlDepee))
 		}
 		for _, v := range u.ControlDepee {
 
-			//fmt.Println.Fset.Position(v.Stmt.Pos()).Line)
+			fmt.Println(fset.Position(v.Stmt.Pos()).Line)
 			if !visited[v.Stmt] {
 				visited[v.Stmt] = true
 				queue = append(queue, v.Stmt)
 				slice = append(slice, v.Stmt)
 			}
 		}
-		//fmt.Println("data deps :")
+		fmt.Println("data deps :")
 		for _, v := range u.DataDepee {
-			//fmt.Println.Fset.Position(v.Stmt.Pos()).Line)
+			fmt.Println(fset.Position(v.Stmt.Pos()).Line)
 			if !visited[v.Stmt] {
 				visited[v.Stmt] = true
 				queue = append(queue, v.Stmt)
@@ -507,7 +507,7 @@ func ComputeForwardSlice(start ast.Stmt, cf *cfg.CFG, info *loader.PackageInfo, 
 }
 
 func ComputeBackwardSlice(start ast.Stmt, Cfg *cfg.CFG, info *loader.PackageInfo,fset *token.FileSet, sliceSoFar []ast.Stmt) []ast.Stmt {
-	//fmt.Println("Computing Backwards Slice")
+	fmt.Println("Computing Backwards Slice")
 	var slice []ast.Stmt
 	dataflow.CreateDataDepGraph(Cfg, info)
 	invC := Cfg.BuildPostDomTree()
@@ -535,15 +535,23 @@ func ComputeBackwardSlice(start ast.Stmt, Cfg *cfg.CFG, info *loader.PackageInfo
 	}
 	visited[start] = true
 	slice = append(slice, start)
-	for len(queue) != 0 {
+	for len(queue) > 0 {
 		uStmt := queue[0]
 		queue = queue[1:]
 		u := invC.Blocks[uStmt]
 
+		for a , b := range invC.Blocks {
+			fmt.Printf("index %s \t stmnt %s\n",a,b)
+		}
+		fmt.Printf("ustmnt %s\n",uStmt)
+
 		if debug {
-			fmt.Println("visiting ")
+			fmt.Printf("visiting %d\t trying %s\n",uStmt.Pos(),u.String())
+			if u == nil {
+				fmt.Println("u is nil")
+			}
 			fmt.Println(fset.Position(u.Stmt.Pos()).Line)
-			fmt.Println("control deps :")
+			fmt.Printf("control deps size :%d\n",len(u.ControlDep))
 		}
 			for _, v := range u.ControlDep {
 
@@ -554,7 +562,7 @@ func ComputeBackwardSlice(start ast.Stmt, Cfg *cfg.CFG, info *loader.PackageInfo
 					slice = append(slice, v.Stmt)
 				}
 			}
-			fmt.Println("data deps :")
+			fmt.Printf("data deps size :%d\n",len(u.DataDep))
 			for _, v := range u.DataDep {
 				fmt.Println(fset.Position(v.Stmt.Pos()).Line)
 				if !visited[v.Stmt] {
@@ -565,6 +573,9 @@ func ComputeBackwardSlice(start ast.Stmt, Cfg *cfg.CFG, info *loader.PackageInfo
 			}
 	}
 	fmt.Printf("Statements Found %d\n", len(slice))
+	for _, st := range slice {
+		fmt.Printf("Statements  %s\n", st)
+	}
 	return slice
 }
 
@@ -575,9 +586,11 @@ func GetAffectedVariables( root ast.Stmt, p *ProgramWrapper,
 	
 	nodes := ComputeSliceIP(root,p,slicer,pointCollecter)
 	for _, node := range nodes {
+		fmt.Printf("slice size : %d\n",len(node.Slice))
 		defs, _ := dataflow.ReferencedVars(node.Slice, p.Prog.Created[0])
 		for def := range defs {
 			node.NVars = append(node.NVars, def)
+			fmt.Println(def.Name())
 		}
 	}
 	return nodes

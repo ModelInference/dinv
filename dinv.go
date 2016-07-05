@@ -108,8 +108,8 @@ func main() {
 			if !exists {
 				logger.Fatalf("Error: : %s\n", err.Error())
 			}
-			logger.Fatalf(" -file Option under construction sorry\n")
 
+			logger.Printf("Instrumenting File %s\n",file)
 			options["file"] = file
 		}
 
