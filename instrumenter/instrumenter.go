@@ -49,7 +49,7 @@ func Instrument(options map[string]string, inlogger *log.Logger) {
 		cleanSources(program)
 		return
 	}
-	ast.Print(program.Fset, program.Packages[0].Sources[0].Source)
+	//ast.Print(program.Fset, program.Packages[0].Sources[0].Source)
 	for pnum, pack := range program.Packages {
 		for snum := range pack.Sources {
 			InsturmentSource(program, pnum, snum)

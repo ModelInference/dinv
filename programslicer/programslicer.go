@@ -171,7 +171,8 @@ func findCallStmnts(call *ast.Object, p *ProgramWrapper) []ast.Stmt{
 	for _ , pack := range p.Packages {
 		for _ , Source := range pack.Sources {
 			if call != nil {
-				fmt.Printf("searching for call %s in source %s\n",call.Name,Source.Filename)
+
+				if debug {fmt.Printf("searching for call %s in source %s\n",call.Name,Source.Filename)}
 			}
 			ast.Inspect(Source.Source, func(n ast.Node) bool {
 				switch w := n.(type){
@@ -310,7 +311,7 @@ func ComputeSliceIP(root ast.Stmt, p *ProgramWrapper,
 			fmt.Printf("Error:\t function discriptor not found")
 			continue
 		} else {
-			fmt.Printf("Function %s found with id %d\n",fd.Name,fd)
+			if debug {fmt.Printf("Function %s found with id %d\n",fd.Name,fd)}
 		}
 		stmts := slicer(task.Root,p.Packages[pnum].Sources[snum].Cfgs[fnum].Cfg,info,p.Fset,nil)
 		if debug {
@@ -334,7 +335,8 @@ func ComputeSliceIP(root ast.Stmt, p *ProgramWrapper,
 		call, decs, onStmts := findCalledFunctions(fs[fd].Slice,p)
 
 		for i , d := range decs {
-			fmt.Printf("Function:\t %s calls %s\n",fs[fd].Name,d.Name)
+			
+			if debug { fmt.Printf("Function:\t %s calls %s\n",fs[fd].Name,d.Name)}
 			///Experimential IPC
 			assignment := GenCallJoin(call[i],d)
 			if assignment != nil {
@@ -349,14 +351,14 @@ func ComputeSliceIP(root ast.Stmt, p *ProgramWrapper,
 			_, ok := fs[f]
 			//if not add the function
 			if !ok {
-				fmt.Printf("Function %s Added to the function store with value %d \n",f.Name.Name,f)
+				//if debfmt.Printf("Function %s Added to the function store with value %d \n",f.Name.Name,f)
 				fs[f] = NewFuncNode(f,task.Root,false)
 			}
 			fs[fd].Calls[f] = fs[f]
 			
 			points := pointCollecter(fs[fd].Slice,info, onStmts[i], f, p)
 			
-			fmt.Printf("function %s added to the task queue with %d tainted points\n",f.Name,len(points))
+			//fmt.Printf("function %s added to the task queue with %d tainted points\n",f.Name,len(points))
 			for _, point := range points {
 				taskQueue.Add(NewTask(point,f))
 			}
@@ -439,11 +441,11 @@ func taintedArgs(args,tainted []string) []int {
 }
 
 func ComputeForwardSlice(start ast.Stmt, cf *cfg.CFG, info *loader.PackageInfo, fset *token.FileSet, sliceSoFar []ast.Stmt) []ast.Stmt {
-	fmt.Println("Computing Forward Slice")
-
+	if debug {
+		fmt.Println("Computing Forward Slice")
+	}
 	var slice []ast.Stmt
 	dataflow.CreateDataDepGraph(cf, info)
-	fmt.Println("Afterwards")
 	//added
 	cf.InitializeBlocks()
 	cfg.BuildDomTree(cf)
@@ -504,7 +506,7 @@ func ComputeForwardSlice(start ast.Stmt, cf *cfg.CFG, info *loader.PackageInfo, 
 }
 
 func ComputeBackwardSlice(start ast.Stmt, Cfg *cfg.CFG, info *loader.PackageInfo,fset *token.FileSet, sliceSoFar []ast.Stmt) []ast.Stmt {
-	fmt.Println("Computing Backwards Slice")
+	if debug {fmt.Println("Computing Backwards Slice")}
 	var slice []ast.Stmt
 	dataflow.CreateDataDepGraph(Cfg, info)
 	invC := Cfg.BuildPostDomTree()
