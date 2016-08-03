@@ -35,6 +35,7 @@ function installDinv {
 
 function instrument {
     dinv -i -v -dir=$testDir/$1
+    GoVector -v -file=$testDir/$1.go
 }
 
 
@@ -102,9 +103,9 @@ then
     exit
 fi
 installDinv
-#instrument $P1
-#instrument $P2
-#instrument $P3
+instrument $P1
+instrument $P2
+instrument $P3
 runTestPrograms
 runLogMerger
 shivizMerge
