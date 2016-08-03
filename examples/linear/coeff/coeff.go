@@ -5,7 +5,6 @@ import (
 	"net"
 
 	"bitbucket.org/bestchai/dinv/examples/linear/comm"
-	"bitbucket.org/bestchai/dinv/instrumenter"
 )
 
 const (
@@ -45,11 +44,10 @@ func handleConn(conn net.PacketConn, conn2 *net.UDPConn) {
 
 	//read from client
 	_, addr, err := conn.ReadFrom(buf[0:])
-	args := instrumenter.Unpack(buf[0:]).([]byte)
 	//@dump
 	comm.PrintErr(err)
 	//unmarshall client arguments
-	uArgs := comm.UnmarshallInts(args)
+	uArgs := comm.UnmarshallInts(buf)
 	term1, term2 = uArgs[0], uArgs[1]
 	coeff = rand.Int() % LARGEST_COEFF
 	//marshall coefficient, with terms, send to linn server
@@ -57,22 +55,21 @@ func handleConn(conn net.PacketConn, conn2 *net.UDPConn) {
 	//	fmt.Printf("Coeff: T1:%d\tT2:%d\tCoeff:%d\n", term1, term2, coeff)
 	//}
 	msg := comm.MarshallInts([]int{term1, term2, coeff})
-	_, errWrite := conn2.Write(instrumenter.Pack(msg))
+	_, errWrite := conn2.Write(msg)
 	comm.PrintErr(errWrite)
 	//@dump
 
 	//read response from linn server
 	_, errRead := conn2.Read(buf[0:])
-	ret := instrumenter.Unpack(buf[0:]).([]byte)
 	//@dump
 	comm.PrintErr(errRead)
 	//unmarshall response from linn server
-	uret := comm.UnmarshallInts(ret)
+	uret := comm.UnmarshallInts(buf)
 	lin := uret[0]
 	//fmt.Printf("C: %d*%d + %d = %d\n", coeff, term1, term2, lin)
 	//marshall response and send back to client
 	msg2 := comm.MarshallInts([]int{lin})
 
-	conn.WriteTo(instrumenter.Pack(msg2), addr)
+	conn.WriteTo(msg2, addr)
 	//@dump
 }

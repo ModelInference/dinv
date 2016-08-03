@@ -7,9 +7,7 @@ import (
 	"os"
 
 	"github.com/arcaneiceman/GoVector/govec"
-
 	"bitbucket.org/bestchai/dinv/examples/linear/comm"
-	"bitbucket.org/bestchai/dinv/instrumenter"
 )
 
 const (
@@ -39,18 +37,17 @@ func main() {
 
 		msg := comm.MarshallInts([]int{term1, term2})
 		// sending UDP packet to specified address and port
-		_, errWrite := conn.Write(instrumenter.Pack(msg))
+		_, errWrite := conn.Write(msg)
 		//@dump
 		comm.PrintErr(errWrite)
 
 		// Reading the response message
 
 		_, errRead := conn.Read(buf[0:])
-		ret := instrumenter.Unpack(buf[0:]).([]byte)
 		//@dump
 		comm.PrintErr(errRead)
 
-		uret := comm.UnmarshallInts(ret)
+		uret := comm.UnmarshallInts(buf)
 		sum = uret[0]
 		//if debug {
 		//	fmt.Printf("C: x*%d + %d = %d\n", term1, term2, sum)

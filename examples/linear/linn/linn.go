@@ -6,8 +6,6 @@ import (
 	"os"
 
 	"bitbucket.org/bestchai/dinv/examples/linear/comm"
-	"bitbucket.org/bestchai/dinv/instrumenter"
-	"github.com/wantonsolutions/GoVector/govec"
 )
 
 //var debug = false
@@ -40,10 +38,9 @@ func handleConn(conn net.PacketConn) {
 	_, addr, err := conn.ReadFrom(buf[0:])
 
 	//@dump
-	args := instrumenter.Unpack(buf[0:]).([]byte)
 	comm.PrintErr(err)
 
-	uArgs := comm.UnmarshallInts(args)
+	uArgs := comm.UnmarshallInts(buf)
 	term1, term2, coeff = uArgs[0], uArgs[1], uArgs[2]
 	lin = coeff*term1 + term2
 	//if debug {
@@ -52,7 +49,6 @@ func handleConn(conn net.PacketConn) {
 	msg := comm.MarshallInts([]int{lin})
 
 	//@dump
-	conn.WriteTo(instrumenter.Pack(msg), addr)
+	conn.WriteTo(msg, addr)
 }
 
-var Logger *govec.GoLog
