@@ -211,16 +211,21 @@ func getAccessedAffectedVars(dump *ast.Comment, affectedFuncs map[*ast.FuncDecl]
 	inScope = removedups(inScope)
 	affected = removedups(affected)
 	//find variables both in scope and affected
-	var affectedInScope []string
-	for _, inScopeVar := range inScope {
-		for _, affectedVar := range affected {
-			if inScopeVar == affectedVar {
-				affectedInScope = append(affectedInScope, inScopeVar)
-				break
+	var vars []string
+
+	if dataflow {
+		for _, inScopeVar := range inScope {
+			for _, affectedVar := range affected {
+				if inScopeVar == affectedVar {
+					vars = append(vars, inScopeVar)
+					break
+				}
 			}
 		}
+	} else {
+		vars = inScope
 	}
-	return affectedInScope
+	return vars
 }
 
 func removedups (slice []string) []string {
@@ -343,6 +348,7 @@ func GetLocalVariables(dumpPosition int, file *ast.File, fset *token.FileSet) []
 			}
 		}
 	}
+	fmt.Println("vars : %d\n",len(results))
 	for _, astnode := range path {
 		logger.Println("%v", astutil.NodeDescription(astnode))
 		switch t := astnode.(type) {
@@ -418,6 +424,7 @@ func collectStructs(varNames []string, file *ast.File) []string {
 		}
 		return true
 	})
+	fmt.Printf("Found %d structs\n",len(structs))
 	//add the named extensions to each struce itterativle
 	var structResults []string
 	ast.Inspect(file, func(n ast.Node) bool {

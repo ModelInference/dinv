@@ -257,7 +257,7 @@ func genPackageWrapper(SourceFiles []*ast.File, commentFiles []*ast.File, Filena
 			Filename: Filenames[i],
 			Cfgs:     Cfgs})
 	}
-	fmt.Println("Wrappers Built")
+	if debug {fmt.Println("Wrappers Built")}
 	return &PackageWrapper{
 		PackageName: pName,
 		Sources:     Sources,

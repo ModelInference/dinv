@@ -179,6 +179,7 @@ func getCallingFunctionID() string {
 	block := profiles[1]
 	var buf bytes.Buffer
 	block.WriteTo(&buf, 1)
+	//fmt.Printf("%s",buf)
 	passedFrontOnStack := false
 	re := regexp.MustCompile("([a-zA-Z0-9]+.go:[0-9]+)")
 	ownFilename := regexp.MustCompile("api.go") // hardcoded own filename

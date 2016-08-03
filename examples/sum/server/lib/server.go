@@ -2,10 +2,11 @@ package server
 
 import (
 	"fmt"
+	"github.com/arcaneiceman/GoVector/capture"
 	"net"
 	"os"
 
-	"bitbucket.org/bestchai/dinv/instrumenter"
+	"bitbucket.org/bestchai/dinv/dinvRT"
 )
 
 const SIZEOFINT = 4
@@ -41,14 +42,14 @@ func Server() {
 func handleConn(conn net.PacketConn) {
 	var rpc rpcResponse
 	var args []byte
-	_, addr, err := conn.ReadFrom(buf[0:])
-	instrumenter.Unpack(buf[0:],&args)
+	_, addr, err := capture.ReadFrom(conn.ReadFrom, buf[0:])
+	dinvRT.Unpack(buf[0:], &args)
 	printErr(err)
 	//@dump
 	uArgs := UnmarshallInts(args)
 	rpc.term1, rpc.term2 = uArgs[0], uArgs[1]
 	rpc.sum = rpc.term1 + rpc.term2
 	msg := MarshallInts([]int{rpc.sum})
-	conn.WriteTo(instrumenter.Pack(msg), addr)
+	capture.WriteTo(conn.WriteTo, dinvRT.Pack(msg), addr)
 	//@dump sending to client
 }
