@@ -27,7 +27,7 @@ func MarshallInts(args []int) []byte {
 	return marshalled
 }
 
-func UnmarshallInts(args []byte) []int {
+func UnmarshallInts(args [1024]byte) []int {
 	var i, j uint
 	unmarshalled := make([]int, len(args)/SIZEOFINT, len(args)/SIZEOFINT)
 	for j = 0; int(j) < len(args)/SIZEOFINT; j++ {
