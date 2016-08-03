@@ -3,8 +3,9 @@ package main
 import (
 	"math/rand"
 	"net"
+	"fmt"
+	"os"
 
-	"bitbucket.org/bestchai/dinv/examples/linear/comm"
 )
 
 const (
@@ -16,20 +17,20 @@ const (
 //dump
 func main() {
 	conn, err := net.ListenPacket("udp", ":8080")
-	comm.PrintErr(err)
+	PrintErr(err)
 
 	//setup connection to linn server
 	rAddr, errR := net.ResolveUDPAddr("udp4", ":9090")
-	comm.PrintErr(errR)
+	PrintErr(errR)
 	lAddr, errL := net.ResolveUDPAddr("udp4", ":8081")
-	comm.PrintErr(errL)
+	PrintErr(errL)
 	conn2, errDial := net.DialUDP("udp", lAddr, rAddr)
-	comm.PrintErr(errDial)
+	PrintErr(errDial)
 
 	//main loop
 	for {
 		if err != nil {
-			comm.PrintErr(err)
+			PrintErr(err)
 			continue
 		}
 		handleConn(conn, conn2)
@@ -45,31 +46,64 @@ func handleConn(conn net.PacketConn, conn2 *net.UDPConn) {
 	//read from client
 	_, addr, err := conn.ReadFrom(buf[0:])
 	//@dump
-	comm.PrintErr(err)
+	PrintErr(err)
 	//unmarshall client arguments
-	uArgs := comm.UnmarshallInts(buf)
+	uArgs := UnmarshallInts(buf)
 	term1, term2 = uArgs[0], uArgs[1]
 	coeff = rand.Int() % LARGEST_COEFF
 	//marshall coefficient, with terms, send to linn server
 	//if debug {
 	//	fmt.Printf("Coeff: T1:%d\tT2:%d\tCoeff:%d\n", term1, term2, coeff)
 	//}
-	msg := comm.MarshallInts([]int{term1, term2, coeff})
+	msg := MarshallInts([]int{term1, term2, coeff})
 	_, errWrite := conn2.Write(msg)
-	comm.PrintErr(errWrite)
+	PrintErr(errWrite)
 	//@dump
 
 	//read response from linn server
 	_, errRead := conn2.Read(buf[0:])
 	//@dump
-	comm.PrintErr(errRead)
+	PrintErr(errRead)
 	//unmarshall response from linn server
-	uret := comm.UnmarshallInts(buf)
+	uret := UnmarshallInts(buf)
 	lin := uret[0]
 	//fmt.Printf("C: %d*%d + %d = %d\n", coeff, term1, term2, lin)
 	//marshall response and send back to client
-	msg2 := comm.MarshallInts([]int{lin})
+	msg2 := MarshallInts([]int{lin})
 
 	conn.WriteTo(msg2, addr)
 	//@dump
+}
+
+const (
+	SIZEOFINT = 4
+)
+
+func PrintErr(err error) {
+	if err != nil {
+		fmt.Println(err)
+		os.Exit(1)
+	}
+}
+
+func MarshallInts(args []int) []byte {
+	var i, j uint
+	marshalled := make([]byte, len(args)*SIZEOFINT, len(args)*SIZEOFINT)
+	for j = 0; int(j) < len(args); j++ {
+		for i = 0; i < SIZEOFINT; i++ {
+			marshalled[(j*SIZEOFINT)+i] = byte(args[j] >> ((SIZEOFINT - 1 - i) * 8))
+		}
+	}
+	return marshalled
+}
+
+func UnmarshallInts(args [1024]byte) []int {
+	var i, j uint
+	unmarshalled := make([]int, len(args)/SIZEOFINT, len(args)/SIZEOFINT)
+	for j = 0; int(j) < len(args)/SIZEOFINT; j++ {
+		for i = 0; i < SIZEOFINT; i++ {
+			unmarshalled[j] += int(args[SIZEOFINT*(j+1)-1-i] << (i * 8))
+		}
+	}
+	return unmarshalled
 }

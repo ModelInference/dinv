@@ -35,13 +35,17 @@ function installDinv {
 
 function instrument {
     dinv -i -v -dir=$testDir/$1
-    GoVector -v -file=$testDir/$1.go
+    GoVector -v -dir=$testDir/$1
 }
 
 
 function fixModDir {
-    rm -r $testDir/$1
-    mv $testDir/$1_orig $testDir/$1
+    if [ -d $testDir/$1 ]; then
+        if [ -d $testDir/$1_orig ]; then
+            rm -r $testDir/$1
+            mv $testDir/$1_orig $testDir/$1
+        fi
+    fi
 }
 
 
@@ -92,6 +96,9 @@ function cleanUp {
     rm ./*.dtrace
     rm ./*.gz
     rm ./*.txt
+    fixModDir $P1
+    fixModDir $P2
+    fixModDir $P3
     
 }
 
