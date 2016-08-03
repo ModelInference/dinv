@@ -63,11 +63,75 @@ func BuildLattice2(clocks [][]vclock.VClock) [][]vclock.VClock {
 			fmt.Printf("\rComputing lattice  %3.0f%% \t point %d\t fanout %d", 100*float32(level)/float32(levels), points, len(lattice[level]))
 			lattice[len(lattice)-1] = append(lattice[len(lattice)-1], *p.Copy())
 		}
+		levelToString(&lattice[level])
 		level++
 	}
 	fmt.Println()
 	return lattice
 
+}
+
+//BuildLattice constructs a lattice based on an ordered set of vector clocks. The
+//computed lattice is represented as a 2-D array of vector clocks
+//[i][j] where the i is the level of the lattice, and j is a set of
+//events at that level
+func BuildLattice3(clocks [][]vclock.VClock) [][]vclock.VClock {
+	latticePoint := vclock.New()
+	//initalize lattice clock
+	ids := idClockMapper(clocks)
+	mClocks := clocksToMaps(clocks) //clockWrapper
+	levels := sumTime(clocks)
+	for i := range clocks {
+		latticePoint.Update(ids[i], 0)
+	}
+	level, points := 0, 0
+	lattice := make([][]vclock.VClock, levels*levels) //make the total lattice the number of levels squared for safty
+	lattice[level] = make([]vclock.VClock,1) // equal to the size of the ids
+	lattice[level][0] = *latticePoint
+	for len(lattice[level]) > 0{
+		level++
+		nextMap := make(map[string]*vclock.VClock,len(lattice[level-1])*len(ids))// next lattice level = previous *num nodes (worst case)
+		levelPoints := 0
+		for j := range lattice[level-1] {
+			p := lattice[level-1][j]
+			for i, id := range ids {
+				pu := p.Copy()
+				pu.Update(ids[i], 0)
+				vstring := pu.ReturnVCString()
+				_, ok := nextMap[vstring]
+				if !ok && fastCorrectLatticePoint(mClocks, pu, id){
+					//fmt.Println(vstring)
+					nextMap[vstring] = pu
+					levelPoints++
+				}
+			}
+		}
+		lattice[level] = mapToArray(nextMap)
+		fmt.Printf("\rComputing lattice  %3.0f%% \t points %d\t fanout %d", 100*float32(level)/float32(levels), points, len(lattice[level]))
+		//levelToString(&lattice[level])
+		points+=levelPoints
+	}
+	fmt.Println()
+	return lattice
+
+}
+
+func levelToString(level *[]vclock.VClock) {
+	fmt.Println("-----------------------------------------------")
+	for i := range *level {
+		fmt.Printf("##%s##",(*level)[i].ReturnVCString())
+	}
+	fmt.Println("-----------------------------------------------")
+}
+
+func mapToArray(vmap map[string]*vclock.VClock) []vclock.VClock {
+	array := make([]vclock.VClock,len(vmap))
+	i := 0
+	for _, clock := range vmap {
+		array[i] = *clock
+		i++
+	}
+	return array
 }
 
 func mapToQueue(vmap map[string]*vclock.VClock) *queue.Queue {
@@ -76,6 +140,28 @@ func mapToQueue(vmap map[string]*vclock.VClock) *queue.Queue {
 		q.Add(clock)
 	}
 	return q
+}
+
+
+//return id -> clockValue -> vectorClock map
+func clocksToMaps(clocks [][]vclock.VClock) map[string]map[uint64]map[string]uint64 {
+	ids := idClockMapper(clocks)
+	mClocks := make(map[string]map[uint64]map[string]uint64,len(ids))
+	for i , id := range ids {
+		mClocks[id] = make(map[uint64]map[string]uint64,len(clocks[i]))
+		for j, _ := range clocks[i] {
+			mClocks[id][uint64(j)] = make(map[string]uint64)
+			for _, cid := range ids {
+				value, found := clocks[i][j].FindTicks(cid)
+				if found {
+					//fmt.Printf("id = %s, index %d, cid %s, val %d\n",id,j,cid,value)
+					mClocks[id][uint64(j)][cid] = value
+				}
+			}
+		}
+	}
+	fmt.Println("Done Mapping Clocks")
+	return mClocks
 }
 
 
@@ -152,6 +238,31 @@ func correctLatticePoint(loggedClocks []vclock.VClock, latticePoint *vclock.VClo
 	}
 	return false
 }
+
+func fastCorrectLatticePoint(mClocks map[string]map[uint64]map[string]uint64, point *vclock.VClock, id string) bool {
+	clockValue, found := point.FindTicks(id)
+	clock, ok := mClocks[id][clockValue-1]
+	if !ok {
+		//fmt.Printf("Log does not contain a clock for %s val: %d\n",id,clockValue)
+		//NOTE I could memoize this in the future to prevent getting
+		//here
+		return false
+	}
+	if !found {
+		fmt.Printf("id %s not found in point\n",id)
+		return false
+	}
+	for cid, loggedTicks := range clock {
+		latticeTicks, _ := point.FindTicks(cid)
+		if loggedTicks > latticeTicks {
+			//fmt.Printf("loggedTicks:%s > latticeTicks:%s\n",clock,point.ReturnVCString())
+			return false
+		}
+	}
+	//fmt.Println("added")
+	return true
+}
+	
 
 func LatticeValidWithLog(latticePoint, loggedClock *vclock.VClock) bool {
 	latticeIds := getClockIds(latticePoint)

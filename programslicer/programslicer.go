@@ -340,7 +340,7 @@ func ComputeSliceIP(root ast.Stmt, p *ProgramWrapper,
 			///Experimential IPC
 			assignment := GenCallJoin(call[i],d)
 			if assignment != nil {
-				fmt.Println("Appending a joining assignment for the two functions")
+				//fmt.Println("Appending a joining assignment for the two functions")
 				fs[fd].Slice = append(fs[fd].Slice,assignment)
 			}
 		}

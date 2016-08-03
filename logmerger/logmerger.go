@@ -155,7 +155,7 @@ func mineStates(logs [][]Point) []State {
 	logger.Printf("\nStripping Clocks... ")
 	clocks, _ := VectorClockArraysFromLogs(logs)
 	logger.Printf("Done\nBuilding Lattice... ")
-	lattice := BuildLattice2(clocks)
+	lattice := BuildLattice3(clocks)
 	logger.Printf("Done\nCalculating Delta... ")
 	deltaComm := enumerateCommunication(clocks)
 	logger.Printf("Done\nMining Consistent Cuts... ")

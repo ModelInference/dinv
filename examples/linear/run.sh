@@ -88,9 +88,6 @@ function shivizMerge {
 function cleanUp {
     kill `ps | pgrep $P3 | awk '{print $1}'`
     kill `ps | pgrep $P2 | awk '{print $1}'`
-    fixModDir $P1
-    fixModDir $P2
-    fixModDir $P3
     rm ./*.dtrace
     rm ./*.gz
     rm ./*.txt
@@ -105,9 +102,9 @@ then
     exit
 fi
 installDinv
-instrument $P1
-instrument $P2
-instrument $P3
+#instrument $P1
+#instrument $P2
+#instrument $P3
 runTestPrograms
 runLogMerger
 shivizMerge
