@@ -39,16 +39,17 @@ More concretely, DInv analyzes Go programs and can:
 # Installation
 -----------------------
 
-DInv is written in [ go lang ](http://golang.org/) and requires a working installation of [Daikon ](http://plse.cs.washington.edu/daikon/). The following instructions are for Ubuntu 14.04
+DInv is written in [go lang](http://golang.org/) and requires a working installation of [Daikon](http://plse.cs.washington.edu/daikon/). The following instructions are for Ubuntu 14.04.
 
-The latest version of go is available through the apt package manager
-    sudo apt-get install golang
+The version of go available through the apt package manager is out of date. Please [download go from the offical website](https://golang.org/dl/) and follow the [installation instructions](https://golang.org/doc/install#install) to setup a go workspace.
 
 (Note that DInv cannot be compiled using gccgo. Running DInv with gccgo will cause spurious errors.)
 
-DInv is built to run within a standard go workspace environment. Go workspaces provide a mechanism for importing, and running the source code of bitbucket and github repositories. This interface is used throughout the installation, and is necessary for the instrumentation process. For detailed instructions on how to configure a go workspace  see [ how to write go code ](http://golang.org/doc/code.html#Organization)
+DInv is built to run within a standard go workspace environment. Go workspaces provide a mechanism for importing, and running the source code of bitbucket and github repositories. This interface is used throughout the installation, and is necessary for the instrumentation process. For detailed instructions on how to configure a go workspace see [how to write go code](http://golang.org/doc/code.html#Organization).
 
-The `GoPath` environment variable is a reference to the root of your go workspace. This variable must be set to use both the `go get` instruction, as well as our example programs.
+The `GOPATH` environment variable is a reference to the root of your go workspace. This variable must be set to use both the `go get` instruction, as well as our example programs.
+
+DInv uses mercurial for source control management. If not already installed, get it with `apt-get install mercurial` or from the [official website](https://www.mercurial-scm.org/).
 
 To clone the repository run the following commands
 
@@ -66,15 +67,17 @@ Dinv depends on a number of remote repositories, you can install these by runnin
  * github.com/arcaneiceman/GoVector/govec/vclock
  * github.com/willf/bitset
  * golang.org/x/tools/go/loader
- * golang.org/x/tools/go/types
+ * golang.org/go/types
  * gopkg.in/eapache/queue.v1
-
+ * github.com/hashicorp/go-msgpack/codec
+ * golang.org/x/net/websocket
+ 
 To infer invariants on the trace files produced by DInv
-[install](http://plse.cs.washington.edu/daikon/download/doc/daikon/Installing-Daikon.html#Complete-installation)  [Daikon](http://plse.cs.washington.edu/daikon/).
+[install](http://plse.cs.washington.edu/daikon/download/doc/daikon/Installing-Daikon.html#Complete-installation) [Daikon](http://plse.cs.washington.edu/daikon/).
 
 ## Installing DInv
 
-After you install the above dependencies, install DInv by running
+After you install the above dependencies, install DInv by running. The binary will be placed in `$GOPATH/bin` and can be run with `$GOPATH/bin/dinv`.
 
 `go install bitbucket.org/bestchai/dinv`
 
