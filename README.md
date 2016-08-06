@@ -41,7 +41,7 @@ More concretely, DInv analyzes Go programs and can:
 
 DInv is written in [go lang](http://golang.org/) and requires a working installation of [Daikon](http://plse.cs.washington.edu/daikon/). The following instructions are for Ubuntu 14.04.
 
-The version of go available through the apt package manager is out of date. Please [download go from the offical website](https://golang.org/dl/) and follow the [installation instructions](https://golang.org/doc/install#install) to setup a go workspace.
+The version of Go available through the apt package manager is out of date. Please [download go from the offical website](https://golang.org/dl/) and follow the [installation instructions](https://golang.org/doc/install#install) to setup a go workspace. The latest version of Go that DInv is confirmed to work with is `1.6.3`.
 
 (Note that DInv cannot be compiled using gccgo. Running DInv with gccgo will cause spurious errors.)
 
