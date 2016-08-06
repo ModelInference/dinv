@@ -1,70 +1,99 @@
-//api provides a set of functions for analyzing network traffic. The
-//Pack() and Unpack() functions are the primary interface for
-//tracking communction. They must be used on all transmitted data
-//before and after transmission respecfully.
-
 package dinvRT
 
 import (
-	"encoding/gob"
-	"os"
 	"bytes"
+	"encoding/gob"
 	"fmt"
+	"os"
+	"reflect"
 	"regexp"
 	"runtime/pprof"
-	"time"
-	"reflect"
 	"strings"
+	"time"
 
-	"github.com/arcaneiceman/GoVector/govec"
 	"bitbucket.org/bestchai/dinv/logmerger"
+	"github.com/arcaneiceman/GoVector/govec"
 )
 
 var (
-	initialized = false      //Boolean used to track the initalization of the logger
-	id          string       //Timestamp for identifiying loggers
-	goVecLogger *govec.GoLog //GoVec logger, used to track vector timestamps
-	Encoder *gob.Encoder //global name value pair point encoder
-	packageName string
+	initialized = false                            //Boolean used to track the initalization of the logger
+	id          string                             //Timestamp for identifiying loggers
+	goVecLogger *govec.GoLog                       //GoVec logger, used to track vector timestamps
+	packageName string                             // TODO packageName is not used -- can it be removed?
+	useKV       bool                               // set to true if $USE_KV is set to any value
+	Encoder     *gob.Encoder                       // global name value pair point encoder
+	varStore    map[string]logmerger.NameValuePair // used to store variable name/value pairs between multiple dumps
 )
 
 func Dump(names string, values ...interface{}) {
 	initDinv("")
-	id := getCallingFunctionID()
-	hashedId := GetId() + "_" + id
-	logger := GetLogger()
 
-	nameList := strings.Split(names,",")
+	nameList := strings.Split(names, ",")
 	if len(nameList) != len(values) {
-		panic(fmt.Errorf("dump at [%s] has unequal arguemnt lengths"))
+		panic(fmt.Errorf("dump at [%s] has unequal argument lengths"))
 	}
-	pairs := make([]logmerger.NameValuePair,0)
-	for i := 0; i < len(values); i++ {
+
+	if !useKV {
+		pairs := make([]logmerger.NameValuePair, 0, len(values))
+		for i := 0; i < len(values); i++ {
 			if values[i] != nil {
-				pair := logmerger.NameValuePair{nameList[i],values[i],""}
-				//nasty switch statement for catching most basic go types
-				switch reflect.TypeOf(values[i]).Kind() {
-				case reflect.Bool:
-					pair.Type = "boolean"
-				case reflect.Int, reflect.Int8, reflect.Int16, reflect.Int32, reflect.Int64,
-					reflect.Uint, reflect.Uint8, reflect.Uint16, reflect.Uint32, reflect.Uint64:
-					pair.Type = "int"
-				case reflect.Float32, reflect.Float64:
-					pair.Type = "float"
-				case reflect.String:
-					pair.Type = "string"
-				//unknown type to daikon don't add the variable
-				default:
-					continue
-				}
-				pairs = append(pairs,pair)
+				pairs = append(pairs, newPair(nameList[i], values[i]))
 			}
 		}
-	point := logmerger.Point{pairs, hashedId, logger.GetCurrentVC(), 0}
-	Encoder.Encode(point)
-	
+		logPairList(pairs)
+	} else {
+		for i := 0; i < len(values); i++ {
+			if values[i] != nil {
+				varStore[nameList[i]] = newPair(nameList[i], values[i])
+			}
+		}
+	}
 }
 
+func newPair(name string, value interface{}) (pair logmerger.NameValuePair) {
+	pair = logmerger.NameValuePair{VarName: name, Value: value, Type: ""}
+	//nasty switch statement for catching most basic go types
+	switch reflect.TypeOf(value).Kind() {
+	case reflect.Bool:
+		pair.Type = "boolean"
+	case reflect.Int, reflect.Int8, reflect.Int16, reflect.Int32, reflect.Int64,
+		reflect.Uint, reflect.Uint8, reflect.Uint16, reflect.Uint32, reflect.Uint64:
+		pair.Type = "int"
+	case reflect.Float32, reflect.Float64:
+		pair.Type = "float"
+	case reflect.String:
+		pair.Type = "string"
+		//unknown type to daikon don't add the variable
+		// TODO: should a variable with unknown type still be included?
+	}
+	return pair
+}
+
+// write array of variables to log
+func logPairList(pairs []logmerger.NameValuePair) {
+	point := logmerger.Point{
+		Dump:               pairs,
+		Id:                 getHashedId(),
+		VectorClock:        GetLogger().GetCurrentVC(),
+		CommunicationDelta: 0,
+	}
+	fmt.Printf("%v", point)
+	Encoder.Encode(point)
+}
+
+// called from (un)pack functions, so before every network request
+// if kv is enabled, all entries in varStore will be logged and the map will be emptied
+func logVarStore() {
+	if !useKV {
+		return
+	}
+	pairs := make([]logmerger.NameValuePair, 0, len(varStore))
+	for _, pair := range varStore {
+		pairs = append(pairs, pair)
+	}
+	logPairList(pairs)
+	varStore = make(map[string]logmerger.NameValuePair)
+}
 
 //Pack takes an an argument a set of bytes msg, and returns that set
 //of bytes with all current logging information wrapping the buffer.
@@ -73,17 +102,16 @@ func Dump(names string, values ...interface{}) {
 //information
 func Pack(msg interface{}) []byte {
 	initDinv("")
-	callingFunction := getCallingFunctionID()
-	return goVecLogger.PrepareSend("Sending from "+callingFunction+" "+id, msg)
-
+	logVarStore()
+	return goVecLogger.PrepareSend("Sending from "+getCallingFunctionID()+" "+id, msg)
 }
 
 //PackM operates identically to Pack, but allows for custom messages
 //to be logged
 func PackM(msg interface{}, log string) []byte {
 	initDinv("")
+	logVarStore()
 	return goVecLogger.PrepareSend(log, msg)
-
 }
 
 //Unpack removes logging information from an array of bytes. The bytes
@@ -92,13 +120,14 @@ func PackM(msg interface{}, log string) []byte {
 //Precondition, the array of bytes was packed before sending
 func Unpack(msg []byte, pack interface{}) {
 	initDinv("")
-	callingFunction := getCallingFunctionID()
-	goVecLogger.UnpackReceive("Received on "+callingFunction+" "+id, msg, pack)
+	logVarStore()
+	goVecLogger.UnpackReceive("Received on "+getCallingFunctionID()+" "+id, msg, pack)
 	return
 }
 
-func UnpackM(msg []byte, pack interface{},log string) {
+func UnpackM(msg []byte, pack interface{}, log string) {
 	initDinv("")
+	logVarStore()
 	goVecLogger.UnpackReceive(log, msg, pack)
 	return
 }
@@ -167,8 +196,16 @@ func initDinv(hostName string) {
 		encodedLog, _ := os.Create(encodedLogname)
 		Encoder = gob.NewEncoder(encodedLog)
 
+		useKV = os.Getenv("USE_KV") != ""
+		fmt.Printf("use kv: %t", useKV)
+		varStore = make(map[string]logmerger.NameValuePair)
+
 		initialized = true
 	}
+}
+
+func getHashedId() string {
+	return GetId() + "_" + getCallingFunctionID()
 }
 
 //getCallingFunctionID returns the file name and line number of the
@@ -208,9 +245,6 @@ func getCallingFunctionID() string {
 //TODO add comments to the inject code
 //TODO build array of acceptable types for encoding
 //TODO make the logger an argument to CreatePoint
-
-
-
 
 func CreatePoint(vars []interface{}, varNames []string, id string, logger *govec.GoLog, hash string) logmerger.Point {
 	numVars := len(varNames)
