@@ -22,13 +22,13 @@ function instrument {
 }
 
 function runTestPrograms {
-    cd $testDir/$P1
+    cd $testDir
     pwd
     for (( i=0; i<Hosts; i++))
     do
         let "hostPort=i + BasePort"
         let "neighbourPort= (i+1)%Hosts + BasePort"
-        go run diningphilosophers.go -mP $hostPort -nP $neighbourPort &
+        go run diningphilosopher.go -mP $hostPort -nP $neighbourPort &
     done
     sleep 60
     kill `ps | pgrep dining | awk '{print $1}'`
@@ -77,11 +77,11 @@ then
     cleanUp
     exit
 fi
-time installDinv
-time instrument $P1
-time runTestPrograms
-time runLogMerger
-time runDaikon
+#time installDinv
+#time instrument $P1
+runTestPrograms
+#time runLogMerger
+#time runDaikon
 if [ "$1" == "-d" ];
 then
     exit
