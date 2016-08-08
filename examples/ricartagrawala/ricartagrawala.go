@@ -1,34 +1,38 @@
 package ricartagrawala
 
 import (
-	"bitbucket.org/bestchai/dinv/instrumenter"
+	"bitbucket.org/bestchai/dinv/dinvRT"
+	"github.com/arcaneiceman/GoVector/capture"
 	"fmt"
 	"math/rand"
 	"net"
 	"time"
+	"bytes"
+	"encoding/gob"
+	"log"
 )
 
 const BASEPORT = 10000
 
 var (
-	nodes       map[int]*net.UDPAddr //List of all nodes in the group
-	listen      *net.UDPConn         //Listening Port
-	Lamport     int                  //Lamport logical clock
-	RequestTime int                  //Clock Time request was sent at
-	id          int                  //Id of this host
-	hosts       int                  //number of hosts in the group
-	lastMessage Message              //The last message sent out
-	updated     bool                 //true if the host has received an message and not processed it
-	startTime	time.Time 			//The startup time of the node
+	nodes		map[int]*net.UDPAddr	//List of all nodes in the group
+	listen		*net.UDPConn		//Listening Port
+	Lamport		int			//Lamport logical clock
+	RequestTime	int			//Clock Time request was sent at
+	id		int			//Id of this host
+	hosts		int			//number of hosts in the group
+	lastMessage	Message			//The last message sent out
+	updated		bool			//true if the host has received an message and not processed it
+	startTime	time.Time		//The startup time of the node
 
-	plan   Plan
-	report Report
+	plan	Plan
+	report	Report
 )
 
 type Message struct {
-	Lamport int
-	Body    string
-	Sender  int
+	Lamport	int
+	Body	string
+	Sender	int
 }
 
 func (m *Message) String() string {
@@ -36,17 +40,17 @@ func (m *Message) String() string {
 }
 
 type Plan struct {
-	Id        int
-	Criticals int
-	GlobalTimeout int
+	Id		int
+	Criticals	int
+	GlobalTimeout	int
 }
 
 type Report struct {
-	Starved      bool
-	Crashed      bool
-	ErrorMessage error
-	OtherDied    bool
-	Criticals    int
+	Starved		bool
+	Crashed		bool
+	ErrorMessage	error
+	OtherDied	bool
+	Criticals	int
 }
 
 func (r Report) ReportMatchesPlan(p Plan) bool {
@@ -63,15 +67,15 @@ func (r Report) ReportMatchesPlan(p Plan) bool {
 }
 
 func critical() {
-	instrumenter.Dump("nodes,listen,Lamport,RequestTime,id,hosts,lastMessage.Body,lastMessage.Lamport,lastMessage.Sender,updated,plan.Id,plan.Criticals,report.Starved,report.Crashed,report.ErrorMessage,report.OtherDied,report.Criticals", nodes, listen, Lamport, RequestTime, id, hosts, lastMessage.Body, lastMessage.Lamport, lastMessage.Sender, updated, plan.Id, plan.Criticals, report.Starved, report.Crashed, report.ErrorMessage, report.OtherDied, report.Criticals)
+	dinvRT.Dump("nodes,listen,Lamport,RequestTime,id,hosts,lastMessage.Body,lastMessage.Lamport,lastMessage.Sender,updated,plan.Id,plan.Criticals,report.Starved,report.Crashed,report.ErrorMessage,report.OtherDied,report.Criticals", nodes, listen, Lamport, RequestTime, id, hosts, lastMessage.Body, lastMessage.Lamport, lastMessage.Sender, updated, plan.Id, plan.Criticals, report.Starved, report.Crashed, report.ErrorMessage, report.OtherDied, report.Criticals)
 	report.Criticals++
 	//fmt.Printf("Running Critical Section on %d, run(%d/%d)  with Request time:%d \n", id, report.Criticals,plan.Criticals,RequestTime)
-	instrumenter.Dump("nodes,listen,Lamport,RequestTime,id,hosts,lastMessage.Body,lastMessage.Lamport,lastMessage.Sender,updated,plan.Id,plan.Criticals,report.Starved,report.Crashed,report.ErrorMessage,report.OtherDied,report.Criticals", nodes, listen, Lamport, RequestTime, id, hosts, lastMessage.Body, lastMessage.Lamport, lastMessage.Sender, updated, plan.Id, plan.Criticals, report.Starved, report.Crashed, report.ErrorMessage, report.OtherDied, report.Criticals)
+	//dinvRT.Dump("nodes,listen,Lamport,RequestTime,id,hosts,lastMessage.Body,lastMessage.Lamport,lastMessage.Sender,updated,plan.Id,plan.Criticals,report.Starved,report.Crashed,report.ErrorMessage,report.OtherDied,report.Criticals", nodes, listen, Lamport, RequestTime, id, hosts, lastMessage.Body, lastMessage.Lamport, lastMessage.Sender, updated, plan.Id, plan.Criticals, report.Starved, report.Crashed, report.ErrorMessage, report.OtherDied, report.Criticals)
 }
 
 func Host(idArg, hostsArg int, planArg Plan) Report {
-	instrumenter.Initalize(fmt.Sprintf("%d_%d", idArg, planArg.Id))
-	instrumenter.Dump("nodes,listen,Lamport,RequestTime,id,hosts,lastMessage.Body,lastMessage.Lamport,lastMessage.Sender,updated,plan.Id,plan.Criticals,report.Starved,report.Crashed,report.ErrorMessage,report.OtherDied,report.Criticals", nodes, listen, Lamport, RequestTime, id, hosts, lastMessage.Body, lastMessage.Lamport, lastMessage.Sender, updated, plan.Id, plan.Criticals, report.Starved, report.Crashed, report.ErrorMessage, report.OtherDied, report.Criticals)
+	//dinvRT.Initalize(fmt.Sprintf("%d_%d", idArg, planArg.Id))
+	//dinvRT.Dump("nodes,listen,Lamport,RequestTime,id,hosts,lastMessage.Body,lastMessage.Lamport,lastMessage.Sender,updated,plan.Id,plan.Criticals,report.Starved,report.Crashed,report.ErrorMessage,report.OtherDied,report.Criticals", nodes, listen, Lamport, RequestTime, id, hosts, lastMessage.Body, lastMessage.Lamport, lastMessage.Sender, updated, plan.Id, plan.Criticals, report.Starved, report.Crashed, report.ErrorMessage, report.OtherDied, report.Criticals)
 	id = idArg
 	hosts = hostsArg
 	plan = planArg
@@ -87,9 +91,9 @@ func Host(idArg, hostsArg int, planArg Plan) Report {
 	broadcast(fmt.Sprintf("Hello from %d", id))
 
 	//local variables to track outstanding critical requests
-	crit := false //true if critical section is requested
+	crit := false	//true if critical section is requested
 	finishing := false
-	outstanding := make([]int, 0) //messages being witheld
+	outstanding := make([]int, 0)	//messages being witheld
 	okays := make(map[int]bool)
 	done := make(map[int]bool, 0)
 	sentTime := time.Now()
@@ -130,7 +134,7 @@ func Host(idArg, hostsArg int, planArg Plan) Report {
 				starving = make(map[int]bool)
 				//fmt.Printf("Requesting Critical on %d at time %d\n",id,RequestTime)
 				broadcast("critical")
-				//instrumenter.Dump("nodes,listen,Lamport,RequestTime,id,hosts,lastMessage,updated,plan,report",nodes,listen,Lamport,RequestTime,id,hosts,lastMessage,updated,plan,report)
+				////dinvRT.Dump("nodes,listen,Lamport,RequestTime,id,hosts,lastMessage,updated,plan,report",nodes,listen,Lamport,RequestTime,id,hosts,lastMessage,updated,plan,report)
 			}
 		}
 		checkUpdates(crit, finishing, &timeouts, &sentTime, okays, done, starving, &outstanding)
@@ -154,12 +158,12 @@ func Host(idArg, hostsArg int, planArg Plan) Report {
 		}
 	}
 	fmt.Printf("exiting")
-	instrumenter.Dump("nodes,listen,Lamport,RequestTime,id,hosts,lastMessage.Body,lastMessage.Lamport,lastMessage.Sender,updated,plan.Id,plan.Criticals,report.Starved,report.Crashed,report.ErrorMessage,report.OtherDied,report.Criticals", nodes, listen, Lamport, RequestTime, id, hosts, lastMessage.Body, lastMessage.Lamport, lastMessage.Sender, updated, plan.Id, plan.Criticals, report.Starved, report.Crashed, report.ErrorMessage, report.OtherDied, report.Criticals)
+	//dinvRT.Dump("nodes,listen,Lamport,RequestTime,id,hosts,lastMessage.Body,lastMessage.Lamport,lastMessage.Sender,updated,plan.Id,plan.Criticals,report.Starved,report.Crashed,report.ErrorMessage,report.OtherDied,report.Criticals", nodes, listen, Lamport, RequestTime, id, hosts, lastMessage.Body, lastMessage.Lamport, lastMessage.Sender, updated, plan.Id, plan.Criticals, report.Starved, report.Crashed, report.ErrorMessage, report.OtherDied, report.Criticals)
 	return report
 }
 
 func checkUpdates(crit, finishing bool, timeouts *int, sentTime *time.Time, okays, done, starving map[int]bool, outstanding *[]int) {
-	instrumenter.Dump("nodes,listen,Lamport,RequestTime,id,hosts,lastMessage.Body,lastMessage.Lamport,lastMessage.Sender,updated,plan.Id,plan.Criticals,report.Starved,report.Crashed,report.ErrorMessage,report.OtherDied,report.Criticals,crit,finishing,timeouts,sentTime,okays,done,starving,outstanding", nodes, listen, Lamport, RequestTime, id, hosts, lastMessage.Body, lastMessage.Lamport, lastMessage.Sender, updated, plan.Id, plan.Criticals, report.Starved, report.Crashed, report.ErrorMessage, report.OtherDied, report.Criticals, crit, finishing, timeouts, sentTime, okays, done, starving, outstanding)
+	//dinvRT.Dump("nodes,listen,Lamport,RequestTime,id,hosts,lastMessage.Body,lastMessage.Lamport,lastMessage.Sender,updated,plan.Id,plan.Criticals,report.Starved,report.Crashed,report.ErrorMessage,report.OtherDied,report.Criticals,crit,finishing,timeouts,sentTime,okays,done,starving,outstanding", nodes, listen, Lamport, RequestTime, id, hosts, lastMessage.Body, lastMessage.Lamport, lastMessage.Sender, updated, plan.Id, plan.Criticals, report.Starved, report.Crashed, report.ErrorMessage, report.OtherDied, report.Criticals, crit, finishing, timeouts, sentTime, okays, done, starving, outstanding)
 	if updated {
 		updated = false
 		m := lastMessage
@@ -192,7 +196,7 @@ func checkUpdates(crit, finishing bool, timeouts *int, sentTime *time.Time, okay
 			}
 			break
 		case "death":
-			//instrumenter.Dump("nodes,listen,Lamport,RequestTime,id,hosts,lastMessage,updated,plan,report",nodes,listen,Lamport,RequestTime,id,hosts,lastMessage,updated,plan,report)
+			////dinvRT.Dump("nodes,listen,Lamport,RequestTime,id,hosts,lastMessage,updated,plan,report",nodes,listen,Lamport,RequestTime,id,hosts,lastMessage,updated,plan,report)
 			crashGracefully(fmt.Errorf("I %d Got the death message from %d now I die too\n", id, m.Sender))
 			break
 		case "done":
@@ -206,11 +210,11 @@ func checkUpdates(crit, finishing bool, timeouts *int, sentTime *time.Time, okay
 		}
 	}
 
-	instrumenter.Dump("nodes,listen,Lamport,RequestTime,id,hosts,lastMessage.Body,lastMessage.Lamport,lastMessage.Sender,updated,plan.Id,plan.Criticals,report.Starved,report.Crashed,report.ErrorMessage,report.OtherDied,report.Criticals", nodes, listen, Lamport, RequestTime, id, hosts, lastMessage.Body, lastMessage.Lamport, lastMessage.Sender, updated, plan.Id, plan.Criticals, report.Starved, report.Crashed, report.ErrorMessage, report.OtherDied, report.Criticals)
+	//dinvRT.Dump("nodes,listen,Lamport,RequestTime,id,hosts,lastMessage.Body,lastMessage.Lamport,lastMessage.Sender,updated,plan.Id,plan.Criticals,report.Starved,report.Crashed,report.ErrorMessage,report.OtherDied,report.Criticals", nodes, listen, Lamport, RequestTime, id, hosts, lastMessage.Body, lastMessage.Lamport, lastMessage.Sender, updated, plan.Id, plan.Criticals, report.Starved, report.Crashed, report.ErrorMessage, report.OtherDied, report.Criticals)
 }
 
 func checkTimeout(crit, finishing bool, timeouts *int, sentTime *time.Time, okays, done map[int]bool) {
-	instrumenter.Dump("nodes,listen,Lamport,RequestTime,id,hosts,lastMessage.Body,lastMessage.Lamport,lastMessage.Sender,updated,plan.Id,plan.Criticals,report.Starved,report.Crashed,report.ErrorMessage,report.OtherDied,report.Criticals,crit,finishing,timeouts,sentTime,okays,done", nodes, listen, Lamport, RequestTime, id, hosts, lastMessage.Body, lastMessage.Lamport, lastMessage.Sender, updated, plan.Id, plan.Criticals, report.Starved, report.Crashed, report.ErrorMessage, report.OtherDied, report.Criticals, crit, finishing, timeouts, sentTime, okays, done)
+	//dinvRT.Dump("nodes,listen,Lamport,RequestTime,id,hosts,lastMessage.Body,lastMessage.Lamport,lastMessage.Sender,updated,plan.Id,plan.Criticals,report.Starved,report.Crashed,report.ErrorMessage,report.OtherDied,report.Criticals,crit,finishing,timeouts,sentTime,okays,done", nodes, listen, Lamport, RequestTime, id, hosts, lastMessage.Body, lastMessage.Lamport, lastMessage.Sender, updated, plan.Id, plan.Criticals, report.Starved, report.Crashed, report.ErrorMessage, report.OtherDied, report.Criticals, crit, finishing, timeouts, sentTime, okays, done)
 	if (crit || finishing) && sentTime.Add(time.Millisecond*100).Before(time.Now()) {
 		*sentTime = time.Now()
 		*timeouts++
@@ -229,23 +233,31 @@ func checkTimeout(crit, finishing bool, timeouts *int, sentTime *time.Time, okay
 			}
 		}
 	}
-	instrumenter.Dump("nodes,listen,Lamport,RequestTime,id,hosts,lastMessage.Body,lastMessage.Lamport,lastMessage.Sender,updated,plan.Id,plan.Criticals,report.Starved,report.Crashed,report.ErrorMessage,report.OtherDied,report.Criticals,crit,finishing,timeouts,sentTime,okays,done", nodes, listen, Lamport, RequestTime, id, hosts, lastMessage.Body, lastMessage.Lamport, lastMessage.Sender, updated, plan.Id, plan.Criticals, report.Starved, report.Crashed, report.ErrorMessage, report.OtherDied, report.Criticals, crit, finishing, timeouts, sentTime, okays, done)
+	//dinvRT.Dump("nodes,listen,Lamport,RequestTime,id,hosts,lastMessage.Body,lastMessage.Lamport,lastMessage.Sender,updated,plan.Id,plan.Criticals,report.Starved,report.Crashed,report.ErrorMessage,report.OtherDied,report.Criticals,crit,finishing,timeouts,sentTime,okays,done", nodes, listen, Lamport, RequestTime, id, hosts, lastMessage.Body, lastMessage.Lamport, lastMessage.Sender, updated, plan.Id, plan.Criticals, report.Starved, report.Crashed, report.ErrorMessage, report.OtherDied, report.Criticals, crit, finishing, timeouts, sentTime, okays, done)
 }
 
 func receive() {
 	//defer listen.Close()
 	for true {
-		instrumenter.Dump("nodes,listen,Lamport,RequestTime,id,hosts,lastMessage.Body,lastMessage.Lamport,lastMessage.Sender,updated,plan.Id,plan.Criticals,report.Starved,report.Crashed,report.ErrorMessage,report.OtherDied,report.Criticals", nodes, listen, Lamport, RequestTime, id, hosts, lastMessage.Body, lastMessage.Lamport, lastMessage.Sender, updated, plan.Id, plan.Criticals, report.Starved, report.Crashed, report.ErrorMessage, report.OtherDied, report.Criticals)
+		//dinvRT.Dump("nodes,listen,Lamport,RequestTime,id,hosts,lastMessage.Body,lastMessage.Lamport,lastMessage.Sender,updated,plan.Id,plan.Criticals,report.Starved,report.Crashed,report.ErrorMessage,report.OtherDied,report.Criticals", nodes, listen, Lamport, RequestTime, id, hosts, lastMessage.Body, lastMessage.Lamport, lastMessage.Sender, updated, plan.Id, plan.Criticals, report.Starved, report.Crashed, report.ErrorMessage, report.OtherDied, report.Criticals)
 		buf := make([]byte, 1024)
 		m := new(Message)
 		//listen.SetDeadline(time.Now().Add(time.Second))
-		n, err := listen.Read(buf[0:])
+		_, err := capture.Read(listen.Read,buf[0:])
+		if err != nil {
+			crashGracefully(err)
+			break
+		}
+		var network bytes.Buffer
+		dec := gob.NewDecoder(&network)
+		err = dec.Decode(&m)
 		if err != nil {
 			crashGracefully(err)
 			break
 		}
 		Lamport++
-		instrumenter.Unpack(buf[:n], m)
+
+		//dinvRT.Unpack(buf[:n], m)
 		//fmt.Printf("received %s [ %d <-- %d ]\n",m.String(),id,m.Sender)
 		if m.Lamport > Lamport {
 			Lamport = m.Lamport
@@ -253,34 +265,38 @@ func receive() {
 		updated = true
 		lastMessage = *m
 	}
-	instrumenter.Dump("nodes,listen,Lamport,RequestTime,id,hosts,lastMessage.Body,lastMessage.Lamport,lastMessage.Sender,updated,plan.Id,plan.Criticals,report.Starved,report.Crashed,report.ErrorMessage,report.OtherDied,report.Criticals", nodes, listen, Lamport, RequestTime, id, hosts, lastMessage.Body, lastMessage.Lamport, lastMessage.Sender, updated, plan.Id, plan.Criticals, report.Starved, report.Crashed, report.ErrorMessage, report.OtherDied, report.Criticals)
+	//dinvRT.Dump("nodes,listen,Lamport,RequestTime,id,hosts,lastMessage.Body,lastMessage.Lamport,lastMessage.Sender,updated,plan.Id,plan.Criticals,report.Starved,report.Crashed,report.ErrorMessage,report.OtherDied,report.Criticals", nodes, listen, Lamport, RequestTime, id, hosts, lastMessage.Body, lastMessage.Lamport, lastMessage.Sender, updated, plan.Id, plan.Criticals, report.Starved, report.Crashed, report.ErrorMessage, report.OtherDied, report.Criticals)
 }
 
 func broadcast(msg string) {
-	instrumenter.Dump("nodes,listen,Lamport,RequestTime,id,hosts,lastMessage.Body,lastMessage.Lamport,lastMessage.Sender,updated,plan.Id,plan.Criticals,report.Starved,report.Crashed,report.ErrorMessage,report.OtherDied,report.Criticals", nodes, listen, Lamport, RequestTime, id, hosts, lastMessage.Body, lastMessage.Lamport, lastMessage.Sender, updated, plan.Id, plan.Criticals, report.Starved, report.Crashed, report.ErrorMessage, report.OtherDied, report.Criticals)
+	//dinvRT.Dump("nodes,listen,Lamport,RequestTime,id,hosts,lastMessage.Body,lastMessage.Lamport,lastMessage.Sender,updated,plan.Id,plan.Criticals,report.Starved,report.Crashed,report.ErrorMessage,report.OtherDied,report.Criticals", nodes, listen, Lamport, RequestTime, id, hosts, lastMessage.Body, lastMessage.Lamport, lastMessage.Sender, updated, plan.Id, plan.Criticals, report.Starved, report.Crashed, report.ErrorMessage, report.OtherDied, report.Criticals)
 	//fmt.Printf("broadcasting %s\n",msg)
 	for i := range nodes {
 		send(msg, i)
 	}
-	instrumenter.Dump("nodes,listen,Lamport,RequestTime,id,hosts,lastMessage.Body,lastMessage.Lamport,lastMessage.Sender,updated,plan.Id,plan.Criticals,report.Starved,report.Crashed,report.ErrorMessage,report.OtherDied,report.Criticals", nodes, listen, Lamport, RequestTime, id, hosts, lastMessage.Body, lastMessage.Lamport, lastMessage.Sender, updated, plan.Id, plan.Criticals, report.Starved, report.Crashed, report.ErrorMessage, report.OtherDied, report.Criticals)
+	//dinvRT.Dump("nodes,listen,Lamport,RequestTime,id,hosts,lastMessage.Body,lastMessage.Lamport,lastMessage.Sender,updated,plan.Id,plan.Criticals,report.Starved,report.Crashed,report.ErrorMessage,report.OtherDied,report.Criticals", nodes, listen, Lamport, RequestTime, id, hosts, lastMessage.Body, lastMessage.Lamport, lastMessage.Sender, updated, plan.Id, plan.Criticals, report.Starved, report.Crashed, report.ErrorMessage, report.OtherDied, report.Criticals)
 }
 
 func send(msg string, host int) {
-	instrumenter.Dump("nodes,listen,Lamport,RequestTime,id,hosts,lastMessage.Body,lastMessage.Lamport,lastMessage.Sender,updated,plan.Id,plan.Criticals,report.Starved,report.Crashed,report.ErrorMessage,report.OtherDied,report.Criticals", nodes, listen, Lamport, RequestTime, id, hosts, lastMessage.Body, lastMessage.Lamport, lastMessage.Sender, updated, plan.Id, plan.Criticals, report.Starved, report.Crashed, report.ErrorMessage, report.OtherDied, report.Criticals)
+	//dinvRT.Dump("nodes,listen,Lamport,RequestTime,id,hosts,lastMessage.Body,lastMessage.Lamport,lastMessage.Sender,updated,plan.Id,plan.Criticals,report.Starved,report.Crashed,report.ErrorMessage,report.OtherDied,report.Criticals", nodes, listen, Lamport, RequestTime, id, hosts, lastMessage.Body, lastMessage.Lamport, lastMessage.Sender, updated, plan.Id, plan.Criticals, report.Starved, report.Crashed, report.ErrorMessage, report.OtherDied, report.Criticals)
 	Lamport++
 	m := Message{Lamport, msg, id}
 	if msg == "critical" {
 		m.Lamport = RequestTime
 	}
-
-	out := instrumenter.Pack(m)
-	//fmt.Printf("sending %s [ %d --> %d ] {body : %s}\n",msg,id, host,m.String())
-	listen.WriteToUDP(out, nodes[host])
-	instrumenter.Dump("nodes,listen,Lamport,RequestTime,id,hosts,lastMessage.Body,lastMessage.Lamport,lastMessage.Sender,updated,plan.Id,plan.Criticals,report.Starved,report.Crashed,report.ErrorMessage,report.OtherDied,report.Criticals", nodes, listen, Lamport, RequestTime, id, hosts, lastMessage.Body, lastMessage.Lamport, lastMessage.Sender, updated, plan.Id, plan.Criticals, report.Starved, report.Crashed, report.ErrorMessage, report.OtherDied, report.Criticals)
+	//endcode
+	var network bytes.Buffer
+	enc := gob.NewEncoder(&network)
+	err := enc.Encode(m)
+	if err != nil {
+		log.Fatal("encode :", err)
+	}
+	capture.WriteToUDP(listen.WriteToUDP,network.Bytes(),nodes[host])
+	//dinvRT.Dump("nodes,listen,Lamport,RequestTime,id,hosts,lastMessage.Body,lastMessage.Lamport,lastMessage.Sender,updated,plan.Id,plan.Criticals,report.Starved,report.Crashed,report.ErrorMessage,report.OtherDied,report.Criticals", nodes, listen, Lamport, RequestTime, id, hosts, lastMessage.Body, lastMessage.Lamport, lastMessage.Sender, updated, plan.Id, plan.Criticals, report.Starved, report.Crashed, report.ErrorMessage, report.OtherDied, report.Criticals)
 }
 
 func initConnections(id, hosts int) {
-	instrumenter.Dump("nodes,listen,Lamport,RequestTime,id,hosts,lastMessage.Body,lastMessage.Lamport,lastMessage.Sender,updated,plan.Id,plan.Criticals,report.Starved,report.Crashed,report.ErrorMessage,report.OtherDied,report.Criticals", nodes, listen, Lamport, RequestTime, id, hosts, lastMessage.Body, lastMessage.Lamport, lastMessage.Sender, updated, plan.Id, plan.Criticals, report.Starved, report.Crashed, report.ErrorMessage, report.OtherDied, report.Criticals)
+	//dinvRT.Dump("nodes,listen,Lamport,RequestTime,id,hosts,lastMessage.Body,lastMessage.Lamport,lastMessage.Sender,updated,plan.Id,plan.Criticals,report.Starved,report.Crashed,report.ErrorMessage,report.OtherDied,report.Criticals", nodes, listen, Lamport, RequestTime, id, hosts, lastMessage.Body, lastMessage.Lamport, lastMessage.Sender, updated, plan.Id, plan.Criticals, report.Starved, report.Crashed, report.ErrorMessage, report.OtherDied, report.Criticals)
 	Lamport = 0
 	lAddr, err := net.ResolveUDPAddr("udp4", ":"+fmt.Sprintf("%d", BASEPORT+id))
 	crashGracefully(err)
@@ -297,11 +313,11 @@ func initConnections(id, hosts int) {
 			crashGracefully(err)
 		}
 	}
-	instrumenter.Dump("nodes,listen,Lamport,RequestTime,id,hosts,lastMessage.Body,lastMessage.Lamport,lastMessage.Sender,updated,plan.Id,plan.Criticals,report.Starved,report.Crashed,report.ErrorMessage,report.OtherDied,report.Criticals", nodes, listen, Lamport, RequestTime, id, hosts, lastMessage.Body, lastMessage.Lamport, lastMessage.Sender, updated, plan.Id, plan.Criticals, report.Starved, report.Crashed, report.ErrorMessage, report.OtherDied, report.Criticals)
+	//dinvRT.Dump("nodes,listen,Lamport,RequestTime,id,hosts,lastMessage.Body,lastMessage.Lamport,lastMessage.Sender,updated,plan.Id,plan.Criticals,report.Starved,report.Crashed,report.ErrorMessage,report.OtherDied,report.Criticals", nodes, listen, Lamport, RequestTime, id, hosts, lastMessage.Body, lastMessage.Lamport, lastMessage.Sender, updated, plan.Id, plan.Criticals, report.Starved, report.Crashed, report.ErrorMessage, report.OtherDied, report.Criticals)
 }
 
 func crashGracefully(err error) {
-	instrumenter.Dump("nodes,listen,Lamport,RequestTime,id,hosts,lastMessage.Body,lastMessage.Lamport,lastMessage.Sender,updated,plan.Id,plan.Criticals,report.Starved,report.Crashed,report.ErrorMessage,report.OtherDied,report.Criticals", nodes, listen, Lamport, RequestTime, id, hosts, lastMessage.Body, lastMessage.Lamport, lastMessage.Sender, updated, plan.Id, plan.Criticals, report.Starved, report.Crashed, report.ErrorMessage, report.OtherDied, report.Criticals)
+	//dinvRT.Dump("nodes,listen,Lamport,RequestTime,id,hosts,lastMessage.Body,lastMessage.Lamport,lastMessage.Sender,updated,plan.Id,plan.Criticals,report.Starved,report.Crashed,report.ErrorMessage,report.OtherDied,report.Criticals", nodes, listen, Lamport, RequestTime, id, hosts, lastMessage.Body, lastMessage.Lamport, lastMessage.Sender, updated, plan.Id, plan.Criticals, report.Starved, report.Crashed, report.ErrorMessage, report.OtherDied, report.Criticals)
 	if err != nil {
 		fmt.Println(err)
 		report.ErrorMessage = err
@@ -309,5 +325,5 @@ func crashGracefully(err error) {
 		fmt.Printf("broadcasting death on %d\n", id)
 		broadcast("death")
 	}
-	instrumenter.Dump("nodes,listen,Lamport,RequestTime,id,hosts,lastMessage.Body,lastMessage.Lamport,lastMessage.Sender,updated,plan.Id,plan.Criticals,report.Starved,report.Crashed,report.ErrorMessage,report.OtherDied,report.Criticals", nodes, listen, Lamport, RequestTime, id, hosts, lastMessage.Body, lastMessage.Lamport, lastMessage.Sender, updated, plan.Id, plan.Criticals, report.Starved, report.Crashed, report.ErrorMessage, report.OtherDied, report.Criticals)
+	//dinvRT.Dump("nodes,listen,Lamport,RequestTime,id,hosts,lastMessage.Body,lastMessage.Lamport,lastMessage.Sender,updated,plan.Id,plan.Criticals,report.Starved,report.Crashed,report.ErrorMessage,report.OtherDied,report.Criticals", nodes, listen, Lamport, RequestTime, id, hosts, lastMessage.Body, lastMessage.Lamport, lastMessage.Sender, updated, plan.Id, plan.Criticals, report.Starved, report.Crashed, report.ErrorMessage, report.OtherDied, report.Criticals)
 }

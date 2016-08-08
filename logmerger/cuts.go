@@ -36,7 +36,7 @@ func mineConsistentCuts(lattice [][]vclock.VClock, clocks [][]vclock.VClock, del
 				}
 				found, index := searchClockById(clocks[k], &lattice[i][j], ids[k])
 				if !found {
-					fmt.Printf("Cant Find matching clock %s - %d -> %s \t insted found %s \n", ids[k], ticks, lattice[i][j].ReturnVCString(), clocks[k][index].ReturnVCString())
+					fmt.Printf("\rCant Find matching clock %s - %d -> %s \t insted found %s", ids[k], ticks, lattice[i][j].ReturnVCString(), clocks[k][index].ReturnVCString())
 					break
 				}
 				//fmt.Printf("%d", communicationDelta)
@@ -171,7 +171,7 @@ func enumerateCommunication(clocks [][]vclock.VClock) [][]int {
 			receiver, receiverEvent, matched := matchSendAndReceive(clocks[i][j], clocks, ids[i])
 			if matched {
 				if lastSend != nil && clocks[i][j].Compare(lastSend, vclock.Equal) { //dont enumerate if the time has not changed since the last send
-					fmt.Printf("Ignoring duplicate clocks %s <--> %s\n", clocks[i][j].ReturnVCString(), lastSend.ReturnVCString())
+					//fmt.Printf("Ignoring duplicate clocks %s <--> %s\n", clocks[i][j].ReturnVCString(), lastSend.ReturnVCString())
 					continue
 				}
 				commDelta[i][j]++

@@ -1,0 +1,120 @@
+package main
+
+import (
+	"fmt"
+	"bitbucket.org/bestchai/dinv/dinvRT"
+	"net"
+	"os"
+	"time"
+
+	"github.com/arcaneiceman/GoVector/govec"
+	"github.com/arcaneiceman/GoVector/capture"
+)
+
+const (
+	SERVERPORT	= "8080"
+	CLIENTPORT	= "8081"
+	MESSAGES	= 1000
+)
+
+var done chan int = make(chan int, 2)
+
+func main() {
+	go server(SERVERPORT)
+	go client(CLIENTPORT, SERVERPORT)
+	//@dump (This line [23] contains no in-scope networking variables)
+	<-done
+	<-done
+}
+
+func client(listen, send string) {
+	Logger := govec.Initialize("client", "clientlogfile")
+	// sending UDP packet to specified address and port
+	conn := setupConnection(SERVERPORT, CLIENTPORT)
+
+	for i := 0; i < MESSAGES; i++ {
+		outgoingMessage := i
+		outBuf := Logger.PrepareSend("Sending message to server", outgoingMessage)
+		_, errWrite := capture.Write(conn.Write,outBuf)
+		printErr(errWrite)
+		dinvRT.Dump("main_ClientServer_38_outgoingMessage,main_ClientServer_38_outBuf,main_ClientServer_38_errWrite,main_ClientServer_38_Logger,main_ClientServer_38_conn", outgoingMessage, outBuf, errWrite, Logger, conn)
+
+		var inBuf [512]byte
+		var incommingMessage int
+		n, errRead := capture.Read(conn.Read,inBuf[0:])
+		printErr(errRead)
+		Logger.UnpackReceive("Received Message from server", inBuf[0:n], &incommingMessage)
+		incommingMessage = n - n + incommingMessage
+		fmt.Printf("GOT BACK : %d\n", incommingMessage)
+		time.Sleep(1)
+		dinvRT.Dump("main_ClientServer_48_outgoingMessage,main_ClientServer_48_outBuf,main_ClientServer_48_errWrite,main_ClientServer_48_incommingMessage,main_ClientServer_48_n,main_ClientServer_48_errRead,main_ClientServer_48_Logger,main_ClientServer_48_conn", outgoingMessage, outBuf, errWrite, incommingMessage, n, errRead, Logger, conn)
+
+	}
+	done <- 1
+	dinvRT.Dump("main_ClientServer_52_Logger,main_ClientServer_52_conn", Logger, conn)
+
+}
+
+func server(listen string) {
+	//@dump (This line [57] contains no in-scope networking variables)
+	Logger := govec.Initialize("server", "server")
+	conn, err := net.ListenPacket("udp", ":"+listen)
+	printErr(err)
+
+	var buf [512]byte
+
+	var n, nMinOne, nMinTwo int
+
+	for i := 0; i < MESSAGES; i++ {
+		_, addr, err := capture.ReadFrom(conn.ReadFrom,buf[0:])
+		var incommingMessage int
+		Logger.UnpackReceive("Received Message From Client", buf[0:], &incommingMessage)
+		fmt.Printf("Recieved %d\n", incommingMessage)
+		printErr(err)
+		dinvRT.Dump("main_ClientServer_72_addr,main_ClientServer_72_err,main_ClientServer_72_incommingMessage,main_ClientServer_72_Logger,main_ClientServer_72_conn,main_ClientServer_72_buf,main_ClientServer_72_n,main_ClientServer_72_nMinOne,main_ClientServer_72_nMinTwo", addr, err, incommingMessage, Logger, conn, buf, n, nMinOne, nMinTwo)
+
+		switch incommingMessage {
+		case 0:
+			nMinTwo = 0
+			n = 0
+			break
+		case 1:
+			nMinOne = 0
+			n = 1
+			break
+		default:
+			nMinTwo = nMinOne
+			nMinOne = n
+			n = nMinOne + nMinTwo
+			break
+		}
+		capture.WriteTo(conn.WriteTo,Logger.PrepareSend("Replying to client", n),addr)
+		time.Sleep(1)
+		dinvRT.Dump("main_ClientServer_91_addr,main_ClientServer_91_err,main_ClientServer_91_incommingMessage,main_ClientServer_91_Logger,main_ClientServer_91_conn,main_ClientServer_91_buf,main_ClientServer_91_n,main_ClientServer_91_nMinOne,main_ClientServer_91_nMinTwo", addr, err, incommingMessage, Logger, conn, buf, n, nMinOne, nMinTwo)
+
+	}
+	conn.Close()
+	done <- 1
+
+}
+
+func setupConnection(sendingPort, listeningPort string) *net.UDPConn {
+	rAddr, errR := net.ResolveUDPAddr("udp4", ":"+sendingPort)
+	printErr(errR)
+	lAddr, errL := net.ResolveUDPAddr("udp4", ":"+listeningPort)
+	printErr(errL)
+
+	conn, errDial := net.DialUDP("udp", lAddr, rAddr)
+	printErr(errDial)
+	if (errR == nil) && (errL == nil) && (errDial == nil) {
+		return conn
+	}
+	return nil
+}
+
+func printErr(err error) {
+	if err != nil {
+		fmt.Println(err)
+		os.Exit(1)
+	}
+}
