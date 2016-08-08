@@ -91,7 +91,7 @@ func getEventsWithIdenticalHostTime(points []Point, hostId string, time int) []P
 func matchSendAndReceive(sender vclock.VClock, clocks [][]vclock.VClock, senderId string) (receiver int, receiverEvent int, matched bool) {
 	receiver, receiverEvent, matched = -1, -1, false
 	var receiveClock = vclock.New()
-	for i := range clocks {
+New4
 		if getClockId(clocks[i]) != senderId {
 			//logger.Printf(" Clock ID : %s -> sender Id %s\n", getClockId(clocks[i]), senderId)
 			found, event := searchClockById(clocks[i], &sender, senderId)

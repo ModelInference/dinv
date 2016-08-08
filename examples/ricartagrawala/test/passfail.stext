@@ -1,0 +1,28 @@
+testing hoststartup_test.go
+ok  	command-line-arguments	0.114s
+ok  	command-line-arguments	0.116s
+ok  	command-line-arguments	0.111s
+testing onehostonecritical_test.go
+ok  	command-line-arguments	0.109s
+ok  	command-line-arguments	0.199s
+ok  	command-line-arguments	0.111s
+testing onehostmanycritical_test.go
+ok  	command-line-arguments	0.143s
+ok  	command-line-arguments	0.114s
+ok  	command-line-arguments	0.109s
+testing allhostsonecritical_test.go
+ok  	command-line-arguments	0.235s
+ok  	command-line-arguments	0.126s
+ok  	command-line-arguments	20.007s
+testing allhostsmanycriticals_test.go
+ok  	command-line-arguments	0.110s
+ok  	command-line-arguments	0.112s
+ok  	command-line-arguments	0.112s
+testing halfhostsonecritical_test.go
+ok  	command-line-arguments	0.109s
+ok  	command-line-arguments	0.141s
+ok  	command-line-arguments	0.111s
+testing halfhostsmanycriticals_test.go
+ok  	command-line-arguments	0.136s
+ok  	command-line-arguments	0.127s
+ok  	command-line-arguments	20.010s

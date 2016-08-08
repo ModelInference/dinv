@@ -113,8 +113,24 @@ func BuildLattice3(clocks [][]vclock.VClock) [][]vclock.VClock {
 	}
 	fmt.Println()
 	return lattice
-
 }
+
+func CompareLattice(a,b [][]vclock.VClock) {
+	for i:= range a {
+		for j:= range a[i] {
+			found := false
+			for k:= range b[i] {
+				if a[i][j].Compare(&b[i][k],vclock.Equal) {
+					found = true
+				}
+			}
+			if !found {
+				fmt.Printf("unequal lattice point %s\n",a[i][j].ReturnVCString())
+			}
+		}
+	}
+}
+
 
 func levelToString(level *[]vclock.VClock) {
 	fmt.Println("-----------------------------------------------")
@@ -131,7 +147,7 @@ func mapToArray(vmap map[string]*vclock.VClock) []vclock.VClock {
 		array[i] = *clock
 		i++
 	}
-	return array
+	return array[0:i]
 }
 
 func mapToQueue(vmap map[string]*vclock.VClock) *queue.Queue {
@@ -172,6 +188,7 @@ func clocksToMaps(clocks [][]vclock.VClock) map[string]map[uint64]map[string]uin
 //[i][j] where the i is the level of the lattice, and j is a set of
 //events at that level
 func BuildLattice(clocks [][]vclock.VClock) [][]vclock.VClock {
+	fmt.Println("lattices are cool")
 	latticePoint := vclock.New()
 	//initalize lattice clock
 	ids := idClockMapper(clocks)

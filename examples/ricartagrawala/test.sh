@@ -54,8 +54,8 @@ function runOneMutant {
 function testWrapper {
     echo testing $1
     echo testing $1 >> passfail.stext
-    #runTest $1 $2 $3
-    runOneMutant $1 $2 $3
+    runTest $1 $2 $3
+    #runOneMutant $1 $2 $3
     mkdir $1-txt
     mv *.txt $1-txt
     shutdown
@@ -130,7 +130,6 @@ function sortOutput {
             #for file in $directory/daikon-output/*; do
                 #directory does not exist
             #    if [ ! -d daikon-$file ]; then
-            #        mkdir dinv-$file
             #    fi
 
             #    mv $file daikon-$file/$directory_$file
