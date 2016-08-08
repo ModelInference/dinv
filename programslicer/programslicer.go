@@ -25,7 +25,7 @@ import (
 // Create Program Dependence Graph
 
 var (
-	debug = false
+	debug = true
 )
 
 type FuncNode struct {
@@ -481,6 +481,10 @@ func ComputeForwardSlice(start ast.Stmt, cf *cfg.CFG, info *loader.PackageInfo, 
 		queue = queue[1:]
 		u := invC.Blocks[uStmt]
 
+		if u == nil {
+			continue
+		}
+
 		if debug {
 			fmt.Printf("visiting ")
 			fmt.Printf("control depsee size :%d\n",len(u.ControlDepee))
@@ -538,7 +542,11 @@ func ComputeBackwardSlice(start ast.Stmt, Cfg *cfg.CFG, info *loader.PackageInfo
 		uStmt := queue[0]
 		queue = queue[1:]
 		u := invC.Blocks[uStmt]
-
+		
+		//TODO solve why u == nil probably comment ast
+		if u == nil {
+			continue
+		}
 
 		if debug {
 			fmt.Printf("visiting %d\t trying %s\n",uStmt.Pos(),u.String())

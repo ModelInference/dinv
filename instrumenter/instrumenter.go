@@ -196,7 +196,7 @@ func getAccessedAffectedVars(dump *ast.Comment, affectedFuncs map[*ast.FuncDecl]
 	}
 	//find variables within the scope of the dump statement
 	var affected []string
-	inScope := GetAccessibleVarsInScope(int(dump.Pos()), program.Packages[pnum].Sources[snum].Comments, program.Fset)
+	inScope := GetAccessibleVarsInScope(int(dump.Pos()), program.Packages[pnum].Sources[snum].Source, program.Fset)
 	//collect all the variables affected by networking in the known
 	//function
 	for _, fn := range affectedFuncs[f] {
