@@ -2,9 +2,10 @@ package main
 
 import (
 	"fmt"
+	"github.com/arcaneiceman/GoVector/capture"
+	"bitbucket.org/bestchai/dinv/dinvRT"
 	"net"
 	"os"
-
 )
 
 //var debug = false
@@ -34,9 +35,10 @@ func handleConn(conn net.PacketConn) {
 	var buf [1024]byte
 	var term1, term2, coeff, lin int
 
-	_, addr, err := conn.ReadFrom(buf[0:])
+	_, addr, err := capture.ReadFrom(conn.ReadFrom,buf[0:])
 
-	//@dump
+	dinvRT.Dump("main_linn_39_SIZEOFINT,main_linn_39_conn,main_linn_39_buf,main_linn_39_term1,main_linn_39_term2,main_linn_39_coeff,main_linn_39_lin,main_linn_39_addr,main_linn_39_err", SIZEOFINT, conn, buf, term1, term2, coeff, lin, addr, err)
+	dinvRT.Track("main_linn_40_SIZEOFINT,main_linn_40_conn,main_linn_40_buf,main_linn_40_term1,main_linn_40_term2,main_linn_40_coeff,main_linn_40_lin,main_linn_40_addr,main_linn_40_err", SIZEOFINT, conn, buf, term1, term2, coeff, lin, addr, err)
 	PrintErr(err)
 
 	uArgs := UnmarshallInts(buf)
@@ -47,8 +49,8 @@ func handleConn(conn net.PacketConn) {
 	//}
 	msg := MarshallInts([]int{lin})
 
-	//@dump
-	conn.WriteTo(msg, addr)
+	dinvRT.Dump("main_linn_51_SIZEOFINT,main_linn_51_conn,main_linn_51_buf,main_linn_51_term1,main_linn_51_term2,main_linn_51_coeff,main_linn_51_lin,main_linn_51_addr,main_linn_51_err,main_linn_51_uArgs,main_linn_51_msg", SIZEOFINT, conn, buf, term1, term2, coeff, lin, addr, err, uArgs, msg)
+	capture.WriteTo(conn.WriteTo,msg,addr)
 }
 
 const (

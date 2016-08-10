@@ -27,28 +27,34 @@ var (
 
 func Dump(names string, values ...interface{}) {
 	initDinv("")
-
 	nameList := strings.Split(names, ",")
 	if len(nameList) != len(values) {
 		panic(fmt.Errorf("dump at [%s] has unequal argument lengths"))
 	}
 
-	if !useKV {
-		pairs := make([]logmerger.NameValuePair, 0, len(values))
-		for i := 0; i < len(values); i++ {
-			if values[i] != nil {
-				pairs = append(pairs, newPair(nameList[i], values[i]))
-			}
-		}
-		logPairList(pairs)
-	} else {
-		for i := 0; i < len(values); i++ {
-			if values[i] != nil {
-				varStore[nameList[i]] = newPair(nameList[i], values[i])
-			}
+	for i := 0; i < len(values); i++ {
+		if values[i] != nil {
+			varStore[nameList[i]] = newPair(nameList[i], values[i])
 		}
 	}
 }
+
+func Track(names string, values ...interface{}) {
+	useKV = true
+	initDinv("")
+	nameList := strings.Split(names, ",")
+	if len(nameList) != len(values) {
+		panic(fmt.Errorf("track at [%s] has unequal argument lengths"))
+	}
+	pairs := make([]logmerger.NameValuePair, 0, len(values))
+	for i := 0; i < len(values); i++ {
+		if values[i] != nil {
+			pairs = append(pairs, newPair(nameList[i], values[i]))
+		}
+	}
+	logPairList(pairs)
+}
+
 
 func newPair(name string, value interface{}) (pair logmerger.NameValuePair) {
 	pair = logmerger.NameValuePair{VarName: name, Value: value, Type: ""}
@@ -196,12 +202,14 @@ func initDinv(hostName string) {
 		encodedLog, _ := os.Create(encodedLogname)
 		Encoder = gob.NewEncoder(encodedLog)
 
+	}
+	if useKV && varStore == nil {
 		useKV = os.Getenv("USE_KV") != ""
 		fmt.Printf("use kv: %t", useKV)
 		varStore = make(map[string]logmerger.NameValuePair)
-
-		initialized = true
 	}
+	initialized = true
+
 }
 
 func getHashedId() string {

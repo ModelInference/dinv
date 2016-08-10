@@ -18,6 +18,7 @@ import (
 	"os"
 	"path/filepath"
 	"strconv"
+	"regexp"
 
 	"strings"
 
@@ -158,21 +159,22 @@ func InplaceDirectorySwap(dir string) error {
 //generateCode constructs code for dump statements for the source code
 //located at program.source[snum].
 func InsturmentSource(program *programslicer.ProgramWrapper, pnum, snum int) {
-	dumpNodes := GetDumpNodes(program.Packages[pnum].Sources[snum].Comments)
+	dumpNodes := GetLogNodes(program.Packages[pnum].Sources[snum].Comments,"@dump")
+	trackNodes := GetLogNodes(program.Packages[pnum].Sources[snum].Comments,"@track")
+	allNodes := append(dumpNodes,trackNodes...)
+
 	affected := getAffectedVars(program)
 
 	if len(dumpNodes) > 0 {
 		addImports(program.Fset, program.Packages[pnum].Sources[snum].Comments)
 	}
-	for _, dump := range dumpNodes {
-		lineNumber := program.Fset.Position(dump.Pos()).Line
-		collectedVariables := getAccessedAffectedVars(dump,affected,program)
+	for _, logNode := range allNodes {
+		lineNumber := program.Fset.Position(logNode.Pos()).Line
+		collectedVariables := getAccessedAffectedVars(logNode,affected,program)
 		logger.Printf("collected variables #%d\n",len(collectedVariables))
-		dumpcode := GenerateDumpCode(collectedVariables, lineNumber, dump.Text, program.Packages[pnum].Sources[snum].Filename, program.Packages[pnum].PackageName)
-		dump.Text = dumpcode
-		logger.Println(dumpcode)
-
-
+		logcode := GenerateDumpCode(collectedVariables, lineNumber, logNode.Text, program.Packages[pnum].Sources[snum].Filename, program.Packages[pnum].PackageName)
+		logNode.Text = logcode
+		logger.Println(logcode)
 	}
 	//write the text of the source code out
 	buf := new(bytes.Buffer)
@@ -467,13 +469,13 @@ func structClosure(s map[string]structIds, name, stype string) []string {
 
 
 
-//GetDumpNodes traverses a file and returns all ast.Node's
-//representing comments of the form //@dump
-func GetDumpNodes(file *ast.File) []*ast.Comment {
+//GetLogNodes traverses a file and returns all ast.Node's
+//representing comments of the form matching the annotation
+func GetLogNodes(file *ast.File, annotation string) []*ast.Comment {
 	var dumpNodes []*ast.Comment
 	for _, commentGroup := range file.Comments {
 		for _, comment := range commentGroup.List {
-			if strings.Contains(comment.Text, "@dump") {
+			if strings.Contains(comment.Text, annotation) {
 				dumpNodes = append(dumpNodes, comment)
 			}
 		}
@@ -486,9 +488,14 @@ func GetDumpNodes(file *ast.File) []*ast.Comment {
 //of all variables and their values, and the encoding of a
 //corresponding vector clock
 //TODO Removde Dump dependency on global variable "Logger"
-func GenerateDumpCode(vars []string, lineNumber int, comment, path, packagename string) string {
+func GenerateDumpCode(vars []string, lineNumber int, annotation, path, packagename string) string {
+	//get the annotation function
+	annotationTypeRegex := regexp.MustCompile("//@([a-z]*)")
+	runtimeFunctionCall := strings.Title(annotationTypeRegex.FindStringSubmatch(annotation)[1])
+
+	fmt.Printf("Annotation %s, Function Call %s\n",annotation,runtimeFunctionCall)
 	if len(vars) <= 0 {
-		return "//@dump (This line [" + strconv.Itoa(lineNumber) + "] contains no in-scope networking variables)"
+		return annotation + " (This line [" + strconv.Itoa(lineNumber) + "] contains no in-scope networking variables)"
 	}
 	_, nameWithExt := filepath.Split(path)
 	ext := filepath.Ext(path)
@@ -505,9 +512,9 @@ func GenerateDumpCode(vars []string, lineNumber int, comment, path, packagename 
 	}
 	namedVarList += id + vars[len(vars)-1]
 	varlist+= vars[len(vars)-1]
-	dumpString := "dinvRT.Dump(\"" + namedVarList + "\"," + varlist + ")"
+	functionCallString := "dinvRT." + runtimeFunctionCall + "(\"" + namedVarList + "\"," + varlist + ")"
 
-	buffer.WriteString(dumpString)
+	buffer.WriteString(functionCallString)
 	return buffer.String()
 }
 
