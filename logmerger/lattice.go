@@ -94,6 +94,7 @@ func BuildLattice3(clocks [][]vclock.VClock) [][]vclock.VClock {
 		levelPoints := 0
 		for j := range lattice[level-1] {
 			p := lattice[level-1][j]
+			//fmt.Printf("Inital Point %s\n",p.ReturnVCString())
 			for i, id := range ids {
 				pu := p.Copy()
 				pu.Update(ids[i], 0)
@@ -166,19 +167,43 @@ func clocksToMaps(clocks [][]vclock.VClock) map[string]map[uint64]map[string]uin
 	for i , id := range ids {
 		mClocks[id] = make(map[uint64]map[string]uint64,len(clocks[i]))
 		for j, _ := range clocks[i] {
-			mClocks[id][uint64(j)] = make(map[string]uint64)
-			for _, cid := range ids {
-				value, found := clocks[i][j].FindTicks(cid)
-				if found {
-					//fmt.Printf("id = %s, index %d, cid %s, val %d\n",id,j,cid,value)
-					mClocks[id][uint64(j)][cid] = value
+			selfIndex, foundSelf := clocks[i][j].FindTicks(id)
+			if foundSelf {
+				mClocks[id][selfIndex] = make(map[string]uint64,len(ids))
+				for _, cid := range ids {
+					value, found := clocks[i][j].FindTicks(cid)
+					if found {
+						//logger.Printf("id = %s, index %d, cid %s, val %d\n",id,selfIndex,cid,value)
+						mClocks[id][selfIndex][cid] = value
+					} else {
+						//logger.Printf("not found %s %d %s %d\n",id,selfIndex,cid,value)
+					}
 				}
+			} else {
+				fmt.Printf("cound not find self %s - %d\n",id,j+1)
 			}
 		}
 	}
 	fmt.Println("Done Mapping Clocks")
+	//PrintMaps(mClocks)
 	return mClocks
 }
+
+func PrintMaps(clocks map[string]map[uint64]map[string]uint64) {
+	for id := range clocks {
+		fmt.Println(id)
+		i := uint64(1)
+		for range clocks[id] {
+			fmt.Print("[")
+			for cid := range clocks[id][i] {
+				fmt.Printf(" %s : %d ",cid,clocks[id][i][cid])
+			}
+			fmt.Printf("]\n")
+			i++
+		}
+	}
+}
+
 
 
 
@@ -257,24 +282,31 @@ func correctLatticePoint(loggedClocks []vclock.VClock, latticePoint *vclock.VClo
 }
 
 func fastCorrectLatticePoint(mClocks map[string]map[uint64]map[string]uint64, point *vclock.VClock, id string) bool {
+	//fmt.Printf("id match = %s\n",id)
 	clockValue, found := point.FindTicks(id)
-	clock, ok := mClocks[id][clockValue-1]
+	clock, ok := mClocks[id][clockValue]
 	if !ok {
-		//fmt.Printf("Log does not contain a clock for %s val: %d\n",id,clockValue)
-		//NOTE I could memoize this in the future to prevent getting
-		//here
+		logger.Printf("Log does not contain a clock for %s val: %d\n",id,clockValue)
 		return false
 	}
 	if !found {
-		fmt.Printf("id %s not found in point\n",id)
+		logger.Printf("id %s not found in point\n",id)
 		return false
 	}
+	if clock[id] != clockValue {
+		logger.Printf("o shit what are you doing! %d != %d\n",clock[id],clockValue)
+		return false
+	}
+	//fmt.Printf("lattice Clock: %s len logged :%d\n",point.ReturnVCString(),len(clock))
 	for cid, loggedTicks := range clock {
 		latticeTicks, _ := point.FindTicks(cid)
+		//fmt.Printf("p id:%s  ticks: %d \n",cid,loggedTicks)
 		if loggedTicks > latticeTicks {
-			//fmt.Printf("loggedTicks:%s > latticeTicks:%s\n",clock,point.ReturnVCString())
+			//fmt.Printf("Rejected lattice Clock: %s\n",point.ReturnVCString())
 			return false
+			//fmt.Println()
 		}
+		//fmt.Println()
 	}
 	//fmt.Println("added")
 	return true

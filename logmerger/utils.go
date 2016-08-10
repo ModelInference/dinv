@@ -39,6 +39,19 @@ func VectorClockArraysFromLogs(logs [][]Point) ([][]vclock.VClock, error) {
 	return clocks, nil
 }
 
+
+func VectorClockArraysFromGoVectorLogs(clockLogs []*golog) ([][]vclock.VClock, error) {
+	clocks := make([][]vclock.VClock, 0)
+	for i := range clockLogs {
+		clocks = append(clocks, make([]vclock.VClock, 0))
+		for j := range clockLogs[i].clocks {
+			clocks[i] = append(clocks[i], *clockLogs[i].clocks[j])
+			//logger.Println(clocks[i][j].ReturnVCString())
+		}
+	}
+	return clocks, nil
+}
+
 //searchLogForClock searches the log file for a clock value in key
 //clock with the specified id,
 //searchLogForClock assumes that the clocks are ordered in ascendin

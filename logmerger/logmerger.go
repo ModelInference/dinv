@@ -88,12 +88,12 @@ func initalizeLogMerger(options map[string]string, inlogger *log.Logger) {
 //output is a set of Daikon files
 func Merge(logfiles []string, gologfiles []string, options map[string]string, inlogger *log.Logger) {
 	initalizeLogMerger(options, inlogger)
-	logs := buildLogs(logfiles, gologfiles)
+	logs, goLogs := buildLogs(logfiles, gologfiles)
 	//jump to writing 
 	if options["mergePlan"] == "NONE" {
 		writeUnmergedTraces(logfiles,logs)
 	} else {
-		states := mineStates(logs)
+		states := mineStates(logs, goLogs)
 		writeTraceFiles(states)
 	}
 }
@@ -113,7 +113,7 @@ func writeUnmergedTraces(filenames []string, logs [][]Point){
 //one array per file. The logs are preprocesses, by appending their
 //id's to their variable names, and injecting a zeroed vector clock at
 //the begining of each log, to act as a base case during computation
-func buildLogs(logFiles []string, gologFiles []string) [][]Point {
+func buildLogs(logFiles []string, gologFiles []string) ([][]Point, []*golog) {
 	logs := make([][]Point, 0)
 	goLogs := make([]*golog, 0)
 	for i := 0; i < len(logFiles); i++ {
@@ -144,21 +144,22 @@ func buildLogs(logFiles []string, gologFiles []string) [][]Point {
 		writeShiVizLog(logs, goLogs)
 	}
 
-	return logs
+	return logs, goLogs
 }
 
 //mineStates is a an assembly line method for producting all the structures
 //nessisary for extracting distributed state. The input is an array of
 //logs, and the ouput is a set of ordered states extraced from those
 //logs.
-func mineStates(logs [][]Point) []State {
+func mineStates(logs [][]Point, clockLogs []*golog) []State {
 	logger.Printf("\nStripping Clocks... ")
-	clocks, _ := VectorClockArraysFromLogs(logs)
+	clocks, _ := VectorClockArraysFromGoVectorLogs(clockLogs)
 	logger.Printf("Done\nBuilding Lattice... ")
 	//NOTE REVERT TESTING
 	lattice := BuildLattice3(clocks)
-	latticeB := BuildLattice(clocks)
-	CompareLattice(lattice,latticeB)
+	//latticeB := BuildLattice(clocks)
+	//CompareLattice(lattice,latticeB)
+	//CompareLattice(latticeB,lattice)
 	logger.Printf("Done\nCalculating Delta... ")
 	deltaComm := enumerateCommunication(clocks)
 	logger.Printf("Done\nMining Consistent Cuts... ")

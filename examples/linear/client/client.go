@@ -2,15 +2,17 @@ package main
 
 import (
 	"fmt"
+	"github.com/arcaneiceman/GoVector/capture"
+	"bitbucket.org/bestchai/dinv/dinvRT"
 	"math/rand"
 	"net"
 	"os"
 )
 
 const (
-	ADDITION_ARGS = 2
-	LARGEST_TERM  = 100
-	RUNS          = 50
+	ADDITION_ARGS	= 2
+	LARGEST_TERM	= 100
+	RUNS		= 50
 )
 
 var debug = false
@@ -24,8 +26,8 @@ func main() {
 	PrintErr(errDial)
 
 	var (
-		buf               [1024]byte
-		term1, term2, sum int
+		buf			[1024]byte
+		term1, term2, sum	int
 	)
 	fmt.Println()
 	for t := 0; t <= RUNS; t++ {
@@ -34,14 +36,14 @@ func main() {
 
 		msg := MarshallInts([]int{term1, term2})
 		// sending UDP packet to specified address and port
-		_, errWrite := conn.Write(msg)
-		//@dump
+		_, errWrite := capture.Write(conn.Write,msg)
+		dinvRT.Dump("main_client_38_SIZEOFINT,main_client_38_LARGEST_TERM,main_client_38_RUNS,main_client_38_debug,main_client_38_ADDITION_ARGS,main_client_38_msg,main_client_38_errWrite,main_client_38_rAddr,main_client_38_errR,main_client_38_lAddr,main_client_38_errL,main_client_38_conn,main_client_38_errDial,main_client_38_buf", SIZEOFINT, LARGEST_TERM, RUNS, debug, ADDITION_ARGS, msg, errWrite, rAddr, errR, lAddr, errL, conn, errDial, buf)
 		PrintErr(errWrite)
 
 		// Reading the response message
 
-		_, errRead := conn.Read(buf[0:])
-		//@dump
+		_, errRead := capture.Read(conn.Read,buf[0:])
+		dinvRT.Dump("main_client_44_ADDITION_ARGS,main_client_44_LARGEST_TERM,main_client_44_RUNS,main_client_44_debug,main_client_44_SIZEOFINT,main_client_44_msg,main_client_44_errWrite,main_client_44_errRead,main_client_44_rAddr,main_client_44_errR,main_client_44_lAddr,main_client_44_errL,main_client_44_conn,main_client_44_errDial,main_client_44_buf", ADDITION_ARGS, LARGEST_TERM, RUNS, debug, SIZEOFINT, msg, errWrite, errRead, rAddr, errR, lAddr, errL, conn, errDial, buf)
 		PrintErr(errRead)
 
 		uret := UnmarshallInts(buf)
@@ -54,6 +56,7 @@ func main() {
 	fmt.Println()
 	os.Exit(0)
 }
+
 const (
 	SIZEOFINT = 4
 )
