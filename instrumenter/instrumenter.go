@@ -124,6 +124,7 @@ func cleanSources(p *programslicer.ProgramWrapper) {
 						switch s := c.Fun.(type) {
 						case *ast.SelectorExpr: 
 							switch xx := s.X.(type) {
+								//TODO include @track
 							case *ast.Ident:
 								if xx.Name == "dinvRT" && s.Sel.Name == "Dump" {
 									x.X = ast.NewIdent("//@dump")
@@ -512,7 +513,7 @@ func GenerateDumpCode(vars []string, lineNumber int, annotation, path, packagena
 	}
 	namedVarList += id + vars[len(vars)-1]
 	varlist+= vars[len(vars)-1]
-	functionCallString := "dinvRT." + runtimeFunctionCall + "(\"" + namedVarList + "\"," + varlist + ")"
+	functionCallString := "dinvRT." + runtimeFunctionCall + "(\""+id+"\",\"" + namedVarList + "\"," + varlist + ")"
 
 	buffer.WriteString(functionCallString)
 	return buffer.String()
