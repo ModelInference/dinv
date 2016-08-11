@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"github.com/arcaneiceman/GoVector/govec"
+	"bitbucket.org/bestchai/dinv/dinvRT"
 )
 
 const (
@@ -20,7 +21,6 @@ var done chan int = make(chan int, 2)
 func main() {
 	go server(SERVERPORT)
 	go client(CLIENTPORT, SERVERPORT)
-	//@dump (This line [23] contains no in-scope networking variables)
 	<-done
 	<-done
 }
@@ -35,7 +35,7 @@ func client(listen, send string) {
 		outBuf := Logger.PrepareSend("Sending message to server", outgoingMessage)
 		_, errWrite := conn.Write(outBuf)
 		printErr(errWrite)
-		//@dump
+		dinvRT.Dump("outMessage,errWrite,listen,send,i,MESSAGES,SERVERPORT,CLIENTPORT",outgoingMessage,errWrite,listen,send,i,MESSAGES,SERVERPORT,CLIENTPORT)
 
 		var inBuf [512]byte
 		var incommingMessage int
@@ -45,11 +45,9 @@ func client(listen, send string) {
 		incommingMessage = n - n + incommingMessage
 		fmt.Printf("GOT BACK : %d\n", incommingMessage)
 		time.Sleep(1)
-		//@dump
 
 	}
 	done <- 1
-	//@dump
 
 }
 
@@ -69,7 +67,6 @@ func server(listen string) {
 		Logger.UnpackReceive("Received Message From Client", buf[0:], &incommingMessage)
 		fmt.Printf("Recieved %d\n", incommingMessage)
 		printErr(err)
-		//@dump
 
 		switch incommingMessage {
 		case 0:
@@ -88,7 +85,6 @@ func server(listen string) {
 		}
 		conn.WriteTo(Logger.PrepareSend("Replying to client", n), addr)
 		time.Sleep(1)
-		//@dump
 
 	}
 	conn.Close()

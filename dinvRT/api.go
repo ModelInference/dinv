@@ -31,12 +31,14 @@ func Dump(names string, values ...interface{}) {
 	if len(nameList) != len(values) {
 		panic(fmt.Errorf("dump at [%s] has unequal argument lengths"))
 	}
-
+	pairs := make([]logmerger.NameValuePair, 0, len(values))
 	for i := 0; i < len(values); i++ {
 		if values[i] != nil {
-			varStore[nameList[i]] = newPair(nameList[i], values[i])
+			pairs = append(pairs, newPair(nameList[i], values[i]))
 		}
 	}
+	logPairList(pairs)
+
 }
 
 func Track(names string, values ...interface{}) {
@@ -46,13 +48,11 @@ func Track(names string, values ...interface{}) {
 	if len(nameList) != len(values) {
 		panic(fmt.Errorf("track at [%s] has unequal argument lengths"))
 	}
-	pairs := make([]logmerger.NameValuePair, 0, len(values))
 	for i := 0; i < len(values); i++ {
 		if values[i] != nil {
-			pairs = append(pairs, newPair(nameList[i], values[i]))
+			varStore[nameList[i]] = newPair(nameList[i], values[i])
 		}
 	}
-	logPairList(pairs)
 }
 
 
@@ -204,8 +204,6 @@ func initDinv(hostName string) {
 
 	}
 	if useKV && varStore == nil {
-		useKV = os.Getenv("USE_KV") != ""
-		fmt.Printf("use kv: %t", useKV)
 		varStore = make(map[string]logmerger.NameValuePair)
 	}
 	initialized = true
