@@ -1,15 +1,15 @@
 #!/bin/bash
 #hg revert ClientServer.go
 
-#sudo -E go install ../../
+sudo -E go install ../../
 #sudo -E go install ../../../../../github.com/arcaneiceman/GoVector
 
 
 #dinv -i -c -file=ClientServer.go
 #gofmt -w=true ClientServer.go
 
-echo "Insturmentation Cost"
-hg revert ClientServer.go
+#echo "Insturmentation Cost"
+#hg revert ClientServer.go
 
 echo "Control Run"
 runlim go run ClientServer.go > /dev/null
