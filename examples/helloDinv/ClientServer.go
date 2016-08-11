@@ -2,23 +2,37 @@ package main
 
 import (
 	"fmt"
+	"bitbucket.org/bestchai/dinv/dinvRT"
 	"net"
 	"os"
 	"time"
 
 	"github.com/arcaneiceman/GoVector/govec"
-	"bitbucket.org/bestchai/dinv/dinvRT"
+
+	"flag"
+	"runtime/pprof"
+	"log"
 )
 
 const (
-	SERVERPORT = "8080"
-	CLIENTPORT = "8081"
-	MESSAGES   = 1000
+	SERVERPORT	= "8080"
+	CLIENTPORT	= "8081"
+	MESSAGES	= 1000
 )
 
 var done chan int = make(chan int, 2)
+var cpuprofile = flag.String("cpuprofile", "", "write cpu profile to file")
 
 func main() {
+	flag.Parse()
+	if *cpuprofile != "" {
+		f, err := os.Create(*cpuprofile)
+		if err != nil {
+			log.Fatal(err)
+		}
+		pprof.StartCPUProfile(f)
+		defer pprof.StopCPUProfile()
+	}
 	go server(SERVERPORT)
 	go client(CLIENTPORT, SERVERPORT)
 	<-done
@@ -35,8 +49,6 @@ func client(listen, send string) {
 		outBuf := Logger.PrepareSend("Sending message to server", outgoingMessage)
 		_, errWrite := conn.Write(outBuf)
 		printErr(errWrite)
-		dinvRT.Dump("outMessage,errWrite,listen,send,i,MESSAGES,SERVERPORT,CLIENTPORT",outgoingMessage,errWrite,listen,send,i,MESSAGES,SERVERPORT,CLIENTPORT)
-
 		var inBuf [512]byte
 		var incommingMessage int
 		n, errRead := conn.Read(inBuf[0:])
@@ -52,7 +64,7 @@ func client(listen, send string) {
 }
 
 func server(listen string) {
-	//@dump (This line [57] contains no in-scope networking variables)
+	dinvRT.Dump("main_ClientServer_67_","main_ClientServer_67_SERVERPORT,main_ClientServer_67_CLIENTPORT,main_ClientServer_67_MESSAGES,main_ClientServer_67_done,main_ClientServer_67_cpuprofile,main_ClientServer_67_listen",SERVERPORT,CLIENTPORT,MESSAGES,done,cpuprofile,listen)
 	Logger := govec.Initialize("server", "server")
 	conn, err := net.ListenPacket("udp", ":"+listen)
 	printErr(err)

@@ -17,6 +17,7 @@ import (
 
 var (
 	initialized = false                            //Boolean used to track the initalization of the logger
+	fast 		= true
 	id          string                             //Timestamp for identifiying loggers
 	goVecLogger *govec.GoLog                       //GoVec logger, used to track vector timestamps
 	packageName string                             // TODO packageName is not used -- can it be removed?
@@ -25,7 +26,7 @@ var (
 	varStore    map[string]logmerger.NameValuePair // used to store variable name/value pairs between multiple dumps
 )
 
-func Dump(names string, values ...interface{}) {
+func Dump(did, names string, values ...interface{}) {
 	initDinv("")
 	nameList := strings.Split(names, ",")
 	if len(nameList) != len(values) {
@@ -37,11 +38,11 @@ func Dump(names string, values ...interface{}) {
 			pairs = append(pairs, newPair(nameList[i], values[i]))
 		}
 	}
-	logPairList(pairs)
+	logPairList(pairs, did)
 
 }
 
-func Track(names string, values ...interface{}) {
+func Track(did, names string, values ...interface{}) {
 	useKV = true
 	initDinv("")
 	nameList := strings.Split(names, ",")
@@ -76,10 +77,17 @@ func newPair(name string, value interface{}) (pair logmerger.NameValuePair) {
 }
 
 // write array of variables to log
-func logPairList(pairs []logmerger.NameValuePair) {
+func logPairList(pairs []logmerger.NameValuePair, did string) {
+	var dumpID string
+	if fast || did != ""{
+		dumpID = did
+	} else {
+		dumpID = getHashedId()
+	}
+
 	point := logmerger.Point{
 		Dump:               pairs,
-		Id:                 getHashedId(),
+		Id:                 dumpID,
 		VectorClock:        GetLogger().GetCurrentVC(),
 		CommunicationDelta: 0,
 	}
@@ -97,7 +105,7 @@ func logVarStore() {
 	for _, pair := range varStore {
 		pairs = append(pairs, pair)
 	}
-	logPairList(pairs)
+	logPairList(pairs, "kv")
 	varStore = make(map[string]logmerger.NameValuePair)
 }
 
@@ -109,7 +117,11 @@ func logVarStore() {
 func Pack(msg interface{}) []byte {
 	initDinv("")
 	logVarStore()
-	return goVecLogger.PrepareSend("Sending from "+getCallingFunctionID()+" "+id, msg)
+	if fast {
+		return goVecLogger.PrepareSend("Sending from "+id, msg) 
+	} else {
+		return goVecLogger.PrepareSend("Sending from "+getCallingFunctionID()+" "+id, msg) // slow
+	}
 }
 
 //PackM operates identically to Pack, but allows for custom messages
@@ -127,7 +139,11 @@ func PackM(msg interface{}, log string) []byte {
 func Unpack(msg []byte, pack interface{}) {
 	initDinv("")
 	logVarStore()
-	goVecLogger.UnpackReceive("Received on "+getCallingFunctionID()+" "+id, msg, pack)
+	if fast {
+		goVecLogger.UnpackReceive("Received on "+id, msg, pack)
+	} else {
+		goVecLogger.UnpackReceive("Received on "+getCallingFunctionID()+" "+id, msg, pack) //Slow
+	}
 	return
 }
 
