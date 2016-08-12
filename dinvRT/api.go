@@ -2,7 +2,8 @@ package dinvRT
 
 import (
 	"bytes"
-	"encoding/gob"
+	//"encoding/gob"
+	"encoding/json"
 	"fmt"
 	"os"
 	"reflect"
@@ -17,16 +18,22 @@ import (
 )
 
 var (
-	initialized = false //Boolean used to track the initalization of the logger
-	fast        = true
+	initialized = false                            //Boolean used to track the initalization of the logger
+	fast 		= true
 	id          string                             //Timestamp for identifiying loggers
 	goVecLogger *govec.GoLog                       //GoVec logger, used to track vector timestamps
 	packageName string                             // TODO packageName is not used -- can it be removed?
 	useKV       bool                               // set to true if $USE_KV is set to any value
-	Encoder     *gob.Encoder                       // global name value pair point encoder
+	//Encoder     *gob.Encoder                       // global name value pair point encoder
+	Encoder     *json.Encoder                        // global name value pair point encoder
+	eBuffer		*bytes.Buffer
+	logFile	*os.File
+	bufCounter	int
 	varStore    map[string]logmerger.NameValuePair // used to store variable name/value pairs between multiple dumps
 	varStoreMx  *sync.Mutex                        // manages access to varStore map
 )
+
+const BUFFLIMIT = 10
 
 func Dump(did, names string, values ...interface{}) {
 	initDinv("")
@@ -34,10 +41,12 @@ func Dump(did, names string, values ...interface{}) {
 	if len(nameList) != len(values) {
 		panic(fmt.Errorf("dump at [%s] has unequal argument lengths"))
 	}
-	pairs := make([]logmerger.NameValuePair, 0, len(values))
+	pairs := make([]logmerger.NameValuePair, len(values))
+	p := 0
 	for i := 0; i < len(values); i++ {
 		if values[i] != nil {
-			pairs = append(pairs, newPair(nameList[i], values[i]))
+			pairs[p] = newPair(nameList[i], values[i])
+			p++
 		}
 	}
 	logPairList(pairs, did)
@@ -59,6 +68,7 @@ func Track(did, names string, values ...interface{}) {
 		}
 	}
 }
+
 
 func newPair(name string, value interface{}) (pair logmerger.NameValuePair) {
 	pair = logmerger.NameValuePair{VarName: name, Value: value, Type: ""}
@@ -96,6 +106,12 @@ func logPairList(pairs []logmerger.NameValuePair, did string) {
 	}
 	// fmt.Printf("%v", point)
 	Encoder.Encode(point)
+	bufCounter++
+	if bufCounter >= BUFFLIMIT {
+		logFile.Write(eBuffer.Bytes())
+		eBuffer.Reset()
+		bufCounter = 0
+	}
 }
 
 // called from (un)pack functions, so before every network request
@@ -123,7 +139,7 @@ func Pack(msg interface{}) []byte {
 	initDinv("")
 	logVarStore()
 	if fast {
-		return goVecLogger.PrepareSend("Sending from "+id, msg)
+		return goVecLogger.PrepareSend("Sending from "+id, msg) 
 	} else {
 		return goVecLogger.PrepareSend("Sending from "+getCallingFunctionID()+" "+id, msg) // slow
 	}
@@ -219,9 +235,10 @@ func initDinv(hostName string) {
 		}
 		goVecLogger = govec.Initialize(id, id+".log")
 
+		eBuffer = new(bytes.Buffer)
 		encodedLogname := fmt.Sprintf("%sEncoded.txt", id)
-		encodedLog, _ := os.Create(encodedLogname)
-		Encoder = gob.NewEncoder(encodedLog)
+		logFile, _ = os.Create(encodedLogname)
+		Encoder = json.NewEncoder(eBuffer)
 
 	}
 	if useKV && varStore == nil {
@@ -230,6 +247,7 @@ func initDinv(hostName string) {
 	}
 
 	initialized = true
+
 }
 
 func getHashedId() string {
