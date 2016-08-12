@@ -13,17 +13,19 @@ import (
 
 	"bitbucket.org/bestchai/dinv/logmerger"
 	"github.com/arcaneiceman/GoVector/govec"
+	"sync"
 )
 
 var (
-	initialized = false                            //Boolean used to track the initalization of the logger
-	fast 		= true
+	initialized = false //Boolean used to track the initalization of the logger
+	fast        = true
 	id          string                             //Timestamp for identifiying loggers
 	goVecLogger *govec.GoLog                       //GoVec logger, used to track vector timestamps
 	packageName string                             // TODO packageName is not used -- can it be removed?
 	useKV       bool                               // set to true if $USE_KV is set to any value
 	Encoder     *gob.Encoder                       // global name value pair point encoder
 	varStore    map[string]logmerger.NameValuePair // used to store variable name/value pairs between multiple dumps
+	varStoreMx  *sync.Mutex                        // manages access to varStore map
 )
 
 func Dump(did, names string, values ...interface{}) {
@@ -49,13 +51,14 @@ func Track(did, names string, values ...interface{}) {
 	if len(nameList) != len(values) {
 		panic(fmt.Errorf("track at [%s] has unequal argument lengths"))
 	}
+	varStoreMx.Lock()
+	defer varStoreMx.Unlock()
 	for i := 0; i < len(values); i++ {
 		if values[i] != nil {
 			varStore[nameList[i]] = newPair(nameList[i], values[i])
 		}
 	}
 }
-
 
 func newPair(name string, value interface{}) (pair logmerger.NameValuePair) {
 	pair = logmerger.NameValuePair{VarName: name, Value: value, Type: ""}
@@ -79,7 +82,7 @@ func newPair(name string, value interface{}) (pair logmerger.NameValuePair) {
 // write array of variables to log
 func logPairList(pairs []logmerger.NameValuePair, did string) {
 	var dumpID string
-	if fast || did != ""{
+	if fast || did != "" {
 		dumpID = did
 	} else {
 		dumpID = getHashedId()
@@ -91,7 +94,7 @@ func logPairList(pairs []logmerger.NameValuePair, did string) {
 		VectorClock:        GetLogger().GetCurrentVC(),
 		CommunicationDelta: 0,
 	}
-	fmt.Printf("%v", point)
+	// fmt.Printf("%v", point)
 	Encoder.Encode(point)
 }
 
@@ -101,6 +104,8 @@ func logVarStore() {
 	if !useKV {
 		return
 	}
+	varStoreMx.Lock()
+	defer varStoreMx.Unlock()
 	pairs := make([]logmerger.NameValuePair, 0, len(varStore))
 	for _, pair := range varStore {
 		pairs = append(pairs, pair)
@@ -118,7 +123,7 @@ func Pack(msg interface{}) []byte {
 	initDinv("")
 	logVarStore()
 	if fast {
-		return goVecLogger.PrepareSend("Sending from "+id, msg) 
+		return goVecLogger.PrepareSend("Sending from "+id, msg)
 	} else {
 		return goVecLogger.PrepareSend("Sending from "+getCallingFunctionID()+" "+id, msg) // slow
 	}
@@ -221,9 +226,10 @@ func initDinv(hostName string) {
 	}
 	if useKV && varStore == nil {
 		varStore = make(map[string]logmerger.NameValuePair)
+		varStoreMx = &sync.Mutex{}
 	}
-	initialized = true
 
+	initialized = true
 }
 
 func getHashedId() string {
