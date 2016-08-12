@@ -6,7 +6,7 @@ package logmerger
 //readLog attempts to extract an array of program points from a log
 import (
 	"bufio"
-	"encoding/gob"
+	"encoding/json"
 	"fmt"
 	"os"
 	"reflect"
@@ -23,12 +23,13 @@ func readLog(filePath string) []Point {
 	if err != nil {
 		panic(err)
 	}
-	decoder := gob.NewDecoder(fileR)
+	decoder := json.NewDecoder(fileR)
 	pointArray := make([]Point, 0)
 	var e error = nil
 	for e == nil {
 		var decodedPoint Point
 		e = decoder.Decode(&decodedPoint)
+		fixJsonEncodingTypeConversion(&decodedPoint)
 		if e == nil {
 			//logger.Printf(decodedPoint.String())
 			pointArray = append(pointArray, decodedPoint)
@@ -36,6 +37,20 @@ func readLog(filePath string) []Point {
 	}
 	return pointArray
 }
+
+//Json encoding is fast, but it can mess with the types of the
+//variables passed to it. For instance integers are converted to
+//floating points by adding .00 to them. This function corrects for
+//these mistakes and returns the points to their origianl state.
+func fixJsonEncodingTypeConversion(point *Point) {
+	for i := range point.Dump {
+		if point.Dump[i].Type == "int" {
+			point.Dump[i].Value = int(point.Dump[i].Value.(float64))
+			fmt.Printf("type :%s\t value: %s\n",reflect.TypeOf(point.Dump[i].Value).String(),point.Dump[i].value())
+		}
+	}
+}
+
 
 //Inject missing points ensures that the log of points contains
 //incremental vector clocks.
@@ -230,6 +245,10 @@ func writeDeclaration(file *os.File, mapOfPoints map[string][]Point) {
 		file.WriteString(fmt.Sprintf("ppt p-%s:::%s\n", point.Id, point.Id))
 		file.WriteString(fmt.Sprintf("ppt-type point\n"))
 		for i := 0; i < len(point.Dump); i++ {
+			//TODO work with types we cant handle
+			if point.Dump[i].Type == "" {
+				continue
+			}
 			file.WriteString(fmt.Sprintf("variable %s\n", point.Dump[i].VarName))
 			file.WriteString(fmt.Sprintf("var-kind variable\n"))
 			file.WriteString(fmt.Sprintf("dec-type %s\n", point.Dump[i].Type))
@@ -250,7 +269,11 @@ func writeValues(file *os.File, log []Point) {
 		file.WriteString(fmt.Sprintf("this_invocation_nonce\n"))
 		file.WriteString(fmt.Sprintf("%d\n", i))
 		for i := range point.Dump {
+			//TODO work with types we cant handle
 			variable := point.Dump[i]
+			if variable.Type == "" {
+				continue
+			}
 			file.WriteString(fmt.Sprintf("%s\n", variable.VarName))
 
 			file.WriteString(fmt.Sprintf("%s\n", variable.value()))
@@ -290,7 +313,7 @@ func (nvp NameValuePair) value() string {
 	case reflect.String:
 		return fmt.Sprintf("\"%s\"", strings.Replace(fmt.Sprintf("%s", v.String()), "\n", " ", -1))
 	default:
-		return "Unknown type or value"
+		return ""
 	}
 }
 

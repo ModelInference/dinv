@@ -2,11 +2,10 @@ package main
 
 import (
 	"math/rand"
-	"github.com/arcaneiceman/GoVector/capture"
-	"bitbucket.org/bestchai/dinv/dinvRT"
 	"net"
 	"fmt"
 	"os"
+
 )
 
 const (
@@ -45,8 +44,8 @@ func handleConn(conn net.PacketConn, conn2 *net.UDPConn) {
 	var term1, term2, coeff int
 
 	//read from client
-	_, addr, err := capture.ReadFrom(conn.ReadFrom,buf[0:])
-	dinvRT.Dump("main_coeff_48_SIZEOFINT,main_coeff_48_LARGEST_COEFF,main_coeff_48_conn,main_coeff_48_conn2,main_coeff_48_buf,main_coeff_48_term1,main_coeff_48_term2,main_coeff_48_coeff,main_coeff_48_addr,main_coeff_48_err", SIZEOFINT, LARGEST_COEFF, conn, conn2, buf, term1, term2, coeff, addr, err)
+	_, addr, err := conn.ReadFrom(buf[0:])
+	//@dump
 	PrintErr(err)
 	//unmarshall client arguments
 	uArgs := UnmarshallInts(buf)
@@ -57,13 +56,13 @@ func handleConn(conn net.PacketConn, conn2 *net.UDPConn) {
 	//	fmt.Printf("Coeff: T1:%d\tT2:%d\tCoeff:%d\n", term1, term2, coeff)
 	//}
 	msg := MarshallInts([]int{term1, term2, coeff})
-	_, errWrite := capture.Write(conn2.Write,msg)
+	_, errWrite := conn2.Write(msg)
 	PrintErr(errWrite)
-	dinvRT.Dump("main_coeff_61_LARGEST_COEFF,main_coeff_61_SIZEOFINT,main_coeff_61_conn,main_coeff_61_conn2,main_coeff_61_buf,main_coeff_61_term1,main_coeff_61_term2,main_coeff_61_coeff,main_coeff_61_addr,main_coeff_61_err,main_coeff_61_uArgs,main_coeff_61_msg,main_coeff_61_errWrite", LARGEST_COEFF, SIZEOFINT, conn, conn2, buf, term1, term2, coeff, addr, err, uArgs, msg, errWrite)
+	//@dump
 
 	//read response from linn server
-	_, errRead := capture.Read(conn2.Read,buf[0:])
-	dinvRT.Dump("main_coeff_65_LARGEST_COEFF,main_coeff_65_SIZEOFINT,main_coeff_65_conn,main_coeff_65_conn2,main_coeff_65_buf,main_coeff_65_term1,main_coeff_65_term2,main_coeff_65_coeff,main_coeff_65_addr,main_coeff_65_err,main_coeff_65_uArgs,main_coeff_65_msg,main_coeff_65_errWrite,main_coeff_65_errRead", LARGEST_COEFF, SIZEOFINT, conn, conn2, buf, term1, term2, coeff, addr, err, uArgs, msg, errWrite, errRead)
+	_, errRead := conn2.Read(buf[0:])
+	//@dump
 	PrintErr(errRead)
 	//unmarshall response from linn server
 	uret := UnmarshallInts(buf)
@@ -71,8 +70,9 @@ func handleConn(conn net.PacketConn, conn2 *net.UDPConn) {
 	//fmt.Printf("C: %d*%d + %d = %d\n", coeff, term1, term2, lin)
 	//marshall response and send back to client
 	msg2 := MarshallInts([]int{lin})
-	capture.WriteTo(conn.WriteTo,msg2,addr)
-	dinvRT.Dump("main_coeff_75_LARGEST_COEFF,main_coeff_75_SIZEOFINT,main_coeff_75_conn,main_coeff_75_conn2,main_coeff_75_buf,main_coeff_75_term1,main_coeff_75_term2,main_coeff_75_coeff,main_coeff_75_addr,main_coeff_75_err,main_coeff_75_uArgs,main_coeff_75_msg,main_coeff_75_errWrite,main_coeff_75_errRead,main_coeff_75_uret,main_coeff_75_lin,main_coeff_75_msg2", LARGEST_COEFF, SIZEOFINT, conn, conn2, buf, term1, term2, coeff, addr, err, uArgs, msg, errWrite, errRead, uret, lin, msg2)
+
+	conn.WriteTo(msg2, addr)
+	//@dump
 }
 
 const (
