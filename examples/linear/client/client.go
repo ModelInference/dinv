@@ -29,19 +29,21 @@ func main() {
 	)
 	fmt.Println()
 	for t := 0; t <= RUNS; t++ {
+		//@track
 		fmt.Printf("\rExecuting[%2.0f]", float32(t)/float32(RUNS)*100)
 		term1, term2 = rand.Int()%LARGEST_TERM, rand.Int()%LARGEST_TERM
 
 		msg := MarshallInts([]int{term1, term2})
 		// sending UDP packet to specified address and port
 		_, errWrite := conn.Write(msg)
-		//@dump
+
 		PrintErr(errWrite)
 
+		//@track
 		// Reading the response message
 
 		_, errRead := conn.Read(buf[0:])
-		//@dump
+		//@track
 		PrintErr(errRead)
 
 		uret := UnmarshallInts(buf)

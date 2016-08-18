@@ -2,7 +2,6 @@ package dinvRT
 
 import (
 	"bytes"
-	//"encoding/gob"
 	"encoding/json"
 	"fmt"
 	"os"
@@ -15,6 +14,10 @@ import (
 	"bitbucket.org/bestchai/dinv/logmerger"
 	"github.com/arcaneiceman/GoVector/govec"
 	"sync"
+	"sort"
+
+	"crypto/sha1"
+	"io"
 )
 
 var (
@@ -23,21 +26,37 @@ var (
 	id          string                             //Timestamp for identifiying loggers
 	goVecLogger *govec.GoLog                       //GoVec logger, used to track vector timestamps
 	packageName string                             // TODO packageName is not used -- can it be removed?
-	useKV       bool                               // set to true if $USE_KV is set to any value
-	//Encoder     *gob.Encoder                       // global name value pair point encoder
 	Encoder     *json.Encoder                        // global name value pair point encoder
 	eBuffer		*bytes.Buffer
 	logFile	*os.File
 	bufCounter	int
+
+	useKV       bool                               // set to true if $USE_KV is set to any value
 	varStore    map[string]logmerger.NameValuePair // used to store variable name/value pairs between multiple dumps
 	varStoreMx  *sync.Mutex                        // manages access to varStore map
+	kvDumpIds	[]string
+	genKVID 	func ([]logmerger.NameValuePair) string
 )
 
+//The number of dump statements to be buffered before being written to
+//disk. This is purely for the sake of speed and may result in the
+//loss of dumped variables near the end of execution. For precise
+//results set to 1.
 const BUFFLIMIT = 10
 
+//Dump logs the values of variables passed in as a set of varadic
+//arguments. did is the dump id, it must be unique to the dump
+//statement, and the host. If a dump statement is constructed by hand,
+//the reccomended did is a line number + packagename + port number for
+//example 49-api.go-8080. names is a list of variable names logged
+//along with the values. names must be formatted as variable name
+//comma variable name. The comma is used to split the list and must be
+//included. Furthermore the number of names must correspond to the
+//number of values or the Dump will panic. Example:
+//dinvRT.Dump("49-api.go-8080","counter,variable2,buffersize",counter,variable2,buffersize)
 func Dump(did, names string, values ...interface{}) {
 	initDinv("")
-	nameList := strings.Split(names, ",")
+	nameList := strings.Split(names,",")
 	if len(nameList) != len(values) {
 		panic(fmt.Errorf("dump at [%s] has unequal argument lengths"))
 	}
@@ -50,9 +69,18 @@ func Dump(did, names string, values ...interface{}) {
 		}
 	}
 	logPairList(pairs, did)
-
 }
 
+//Track shares the signature and conventions of Dump, but logs to a
+//key value store as opposed to directly to disk. The key value store
+//is written to disk whenever a host increments is vector time (either
+//sending or receiving a message). The purpose of this functionality
+//is to create a 1 to 1 correspondiance between logged variables and
+//vector timestamps. Track statements are conceptually different than
+//dump statements in that they log the values of variables which may
+//be out of scope or non existant at the time their values are written
+//to disk. Track is intended to capture the summary of a hosts state
+//during its transition of vector time.
 func Track(did, names string, values ...interface{}) {
 	useKV = true
 	initDinv("")
@@ -65,11 +93,13 @@ func Track(did, names string, values ...interface{}) {
 	for i := 0; i < len(values); i++ {
 		if values[i] != nil {
 			varStore[nameList[i]] = newPair(nameList[i], values[i])
+			kvDumpIds = append(kvDumpIds,did) // collect the id of the dump statement being tracked
 		}
 	}
 }
 
-
+//newPair creates a name value pair out of an arbetrary variable and
+//its corresponding name.
 func newPair(name string, value interface{}) (pair logmerger.NameValuePair) {
 	pair = logmerger.NameValuePair{VarName: name, Value: value, Type: ""}
 	//nasty switch statement for catching most basic go types
@@ -114,6 +144,60 @@ func logPairList(pairs []logmerger.NameValuePair, did string) {
 	}
 }
 
+func hash(id string) string {
+	h := sha1.New()
+	io.WriteString(h,id)
+	bytes := fmt.Sprintf("%x",h.Sum(nil))
+	return strings.Trim(bytes," ")
+}
+
+//variableNamesID merges the names of each variable present in the kv
+//store into a unique id based on their name. This merging strategy
+//ignores the control flow of a program which collected the variable
+//values, it concentrates on the collection of variables insted
+func variableNamesID(pairs []logmerger.NameValuePair) string {
+	names := make(sort.StringSlice,len(pairs))
+	for i := range pairs {
+		names[i] = pairs[i].VarName
+	}
+	names.Sort()
+	return hash(concatStrings(names))
+
+}
+
+//smearedDumpID merges the names of the dump statements which where
+//reached during the current vector time. The name of the id is each
+//of the dumpID's appended together. Duplicates are removed from the
+//dumpID's
+func smearedDumpID(pairs []logmerger.NameValuePair) string {
+	names := make(sort.StringSlice,len(kvDumpIds))
+	for i := range kvDumpIds {
+		names[i] = kvDumpIds[i]
+	}
+	//sort the names of the dumps 
+	names.Sort()
+	//remove any duplicate names
+	noDups := make(map[string]string,0)
+	for i:= range names {
+		noDups[names[i]]=names[i]
+	}
+	uniqueNames := make([]string,0)
+	for i := range noDups {
+		uniqueNames = append(uniqueNames,noDups[i])
+	}
+
+	return hash(concatStrings(names))
+}
+
+func concatStrings(a []string) string {
+	var id string
+	for i:=range a {
+		id += a[i] +"_"
+	}
+	return id
+}
+
+
 // called from (un)pack functions, so before every network request
 // if kv is enabled, all entries in varStore will be logged and the map will be emptied
 func logVarStore() {
@@ -126,8 +210,12 @@ func logVarStore() {
 	for _, pair := range varStore {
 		pairs = append(pairs, pair)
 	}
-	logPairList(pairs, "kv")
+	sort.Sort(ByName(pairs))
+	kvid := genKVID(pairs)
+	logPairList(pairs, kvid)
+	//reset the kv store
 	varStore = make(map[string]logmerger.NameValuePair)
+	kvDumpIds = make([]string,0)
 }
 
 //Pack takes an an argument a set of bytes msg, and returns that set
@@ -244,6 +332,9 @@ func initDinv(hostName string) {
 	if useKV && varStore == nil {
 		varStore = make(map[string]logmerger.NameValuePair)
 		varStoreMx = &sync.Mutex{}
+		//genKVID = variableNamesID
+		genKVID = smearedDumpID
+		kvDumpIds = make([]string,0)
 	}
 
 	initialized = true
@@ -326,3 +417,10 @@ func CreatePoint(vars []interface{}, varNames []string, id string, logger *govec
 func Local(logger *govec.GoLog, id string) {
 	logger.LogLocalEvent(fmt.Sprintf("Dump @ id %s", id))
 }
+
+type ByName []logmerger.NameValuePair
+
+func (a ByName) Len() int { return len(a) }
+func (a ByName) Swap(i,j int) {a[i], a[j] = a[j], a[i]}
+func (a ByName) Less(i,j int) bool { return a[i].VarName < a[j].VarName}
+

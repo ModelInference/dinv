@@ -166,7 +166,7 @@ func InsturmentSource(program *programslicer.ProgramWrapper, pnum, snum int) {
 
 	affected := getAffectedVars(program)
 
-	if len(dumpNodes) > 0 {
+	if len(allNodes) > 0 {
 		addImports(program.Fset, program.Packages[pnum].Sources[snum].Comments)
 	}
 	for _, logNode := range allNodes {

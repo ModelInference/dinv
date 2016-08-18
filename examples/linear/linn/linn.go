@@ -9,7 +9,7 @@ import (
 
 //var debug = false
 
-//dump
+//track
 func main() {
 	conn, err := net.ListenPacket("udp", ":9090")
 	if err != nil {
@@ -36,7 +36,7 @@ func handleConn(conn net.PacketConn) {
 
 	_, addr, err := conn.ReadFrom(buf[0:])
 
-	//@dump
+	//@track
 	PrintErr(err)
 
 	uArgs := UnmarshallInts(buf)
@@ -47,7 +47,7 @@ func handleConn(conn net.PacketConn) {
 	//}
 	msg := MarshallInts([]int{lin})
 
-	//@dump
+	//@track
 	conn.WriteTo(msg, addr)
 }
 

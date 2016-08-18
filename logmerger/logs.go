@@ -216,7 +216,10 @@ func swapClockIds(oldClock *vclock.VClock, idMap map[string]string) *vclock.VClo
 //represented as an array of points
 func writeLogToFile(log []Point, filename string) {
 	filenameWithExtenstion := fmt.Sprintf("%s.dtrace", filename)
-	file, _ := os.Create(filenameWithExtenstion)
+	file, err := os.Create(filenameWithExtenstion)
+	if err != nil {
+		logger.Panic(err)
+	}
 	mapOfPoints := createMapOfLogsForEachPoint(log)
 	writeDeclaration(file, mapOfPoints)
 	writeValues(file, log)
@@ -296,6 +299,9 @@ type NameValuePair struct {
 func (nvp NameValuePair) String() string {
 	return fmt.Sprintf("%s=%s , ", nvp.VarName, nvp.value())
 }
+
+
+
 
 //returns the value of the Name value pair as a string
 //TODO catch and print all possible reflected types

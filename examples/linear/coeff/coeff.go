@@ -14,7 +14,7 @@ const (
 
 //var debug = false
 
-//dump
+//track
 func main() {
 	conn, err := net.ListenPacket("udp", ":8080")
 	PrintErr(err)
@@ -45,7 +45,7 @@ func handleConn(conn net.PacketConn, conn2 *net.UDPConn) {
 
 	//read from client
 	_, addr, err := conn.ReadFrom(buf[0:])
-	//@dump
+	//@track
 	PrintErr(err)
 	//unmarshall client arguments
 	uArgs := UnmarshallInts(buf)
@@ -58,11 +58,11 @@ func handleConn(conn net.PacketConn, conn2 *net.UDPConn) {
 	msg := MarshallInts([]int{term1, term2, coeff})
 	_, errWrite := conn2.Write(msg)
 	PrintErr(errWrite)
-	//@dump
+	//@track
 
 	//read response from linn server
 	_, errRead := conn2.Read(buf[0:])
-	//@dump
+	//@track
 	PrintErr(errRead)
 	//unmarshall response from linn server
 	uret := UnmarshallInts(buf)
@@ -72,7 +72,7 @@ func handleConn(conn net.PacketConn, conn2 *net.UDPConn) {
 	msg2 := MarshallInts([]int{lin})
 
 	conn.WriteTo(msg2, addr)
-	//@dump
+	//@track
 }
 
 const (
