@@ -9,16 +9,22 @@ Hosts=5
 BasePort=4000
 DINV=$GOPATH/src/bitbucket.org/bestchai/dinv
 testDir=$DINV/examples/diningPhil
-P1=phil
+P1=diningphilosopher.go
+Original=original
 
 function installDinv {
     echo "Install dinv"
     cd $DINV
-    go install
+    sudo -E go install
 }
 
 function instrument {
-    dinv -i -v -dir=$testDir/$1
+    cd $testDir
+    mkdir $Original
+    cp $P1 $Original/
+
+    dinv -i -v -file=$P1
+    GoVector -v -file=$P1
 }
 
 function runTestPrograms {
@@ -30,13 +36,13 @@ function runTestPrograms {
         let "neighbourPort= (i+1)%Hosts + BasePort"
         go run diningphilosopher.go -mP $hostPort -nP $neighbourPort &
     done
-    sleep 60
+    sleep 4
     kill `ps | pgrep dining | awk '{print $1}'`
 }
 
 function runLogMerger {
     cd $testDir/diningPhil
-    dinv -v -l -plan=NONE -name="philosophers" -shiviz *Encoded.txt *Log.txt
+    dinv -v -l -shiviz *Encoded.txt *Log.txt
 }
 
 function shivizMerge {
@@ -61,6 +67,15 @@ function fixModDir {
     mv $testDir/$1_orig $testDir/$1
 }
 
+function fixModDir {
+    cd $testDir
+    if [ -d $Original ]; then
+            rm $P1
+            mv $Original/* ./
+            rmdir $Original
+    fi
+}
+
 function cleanUp {
     cd $testDir
     kill `ps | pgrep dining | awk '{print $1}'`
@@ -77,11 +92,11 @@ then
     cleanUp
     exit
 fi
-#time installDinv
-#time instrument $P1
+installDinv
+instrument $P1
 runTestPrograms
-#time runLogMerger
-#time runDaikon
+runLogMerger
+time runDaikon
 if [ "$1" == "-d" ];
 then
     exit

@@ -44,6 +44,8 @@ var (
 	//should be analysed.
 	sampleRate     = 0
 	renamingScheme = ""
+
+	hosts int
 )
 
 func initalizeLogMerger(options map[string]string, inlogger *log.Logger) {
