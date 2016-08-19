@@ -46,7 +46,7 @@ func fixJsonEncodingTypeConversion(point *Point) {
 	for i := range point.Dump {
 		if point.Dump[i].Type == "int" {
 			point.Dump[i].Value = int(point.Dump[i].Value.(float64))
-			fmt.Printf("type :%s\t value: %s\n",reflect.TypeOf(point.Dump[i].Value).String(),point.Dump[i].value())
+			//fmt.Printf("type :%s\t value: %s\n",reflect.TypeOf(point.Dump[i].Value).String(),point.Dump[i].value())
 		}
 	}
 }
