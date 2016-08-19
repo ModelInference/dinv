@@ -2,8 +2,6 @@ package main
 
 import (
 	"flag"
-	"github.com/arcaneiceman/GoVector/capture"
-	"bitbucket.org/bestchai/dinv/dinvRT"
 	"fmt"
 	"math/rand"
 	"net"
@@ -36,7 +34,7 @@ func EatingState() {
 	Thinking = false
 	LeftChopstick = true
 	RightChopstick = true
-	dinvRT.Dump("main_diningphilosopher_37_", "main_diningphilosopher_37_Eating,main_diningphilosopher_37_Ack,main_diningphilosopher_37_ExcuseMe,main_diningphilosopher_37_RightChopstick,main_diningphilosopher_37_Excused,main_diningphilosopher_37_BUFF_SIZE,main_diningphilosopher_37_Thinking,main_diningphilosopher_37_LeftChopstick,main_diningphilosopher_37_SIZEOFINT,main_diningphilosopher_37_n,main_diningphilosopher_37_RequestStick,main_diningphilosopher_37_ReleaseStick", Eating, Ack, ExcuseMe, RightChopstick, Excused, BUFF_SIZE, Thinking, LeftChopstick, SIZEOFINT, n, RequestStick, ReleaseStick)
+			//@dump
 }
 
 //transition into the thinking state
@@ -45,7 +43,7 @@ func ThinkingState() {
 	Thinking = true
 	LeftChopstick = false
 	RightChopstick = false
-	dinvRT.Dump("main_diningphilosopher_46_", "main_diningphilosopher_46_Eating,main_diningphilosopher_46_Ack,main_diningphilosopher_46_ExcuseMe,main_diningphilosopher_46_RightChopstick,main_diningphilosopher_46_Excused,main_diningphilosopher_46_BUFF_SIZE,main_diningphilosopher_46_Thinking,main_diningphilosopher_46_LeftChopstick,main_diningphilosopher_46_SIZEOFINT,main_diningphilosopher_46_n,main_diningphilosopher_46_RequestStick,main_diningphilosopher_46_ReleaseStick", Eating, Ack, ExcuseMe, RightChopstick, Excused, BUFF_SIZE, Thinking, LeftChopstick, SIZEOFINT, n, RequestStick, ReleaseStick)
+			//@dump
 }
 
 //obtain the left chopstick
@@ -53,7 +51,7 @@ func LeftChopstickState() {
 	Eating = false
 	Thinking = true
 	LeftChopstick = true
-	dinvRT.Dump("main_diningphilosopher_54_", "main_diningphilosopher_54_Ack,main_diningphilosopher_54_ExcuseMe,main_diningphilosopher_54_Eating,main_diningphilosopher_54_BUFF_SIZE,main_diningphilosopher_54_Thinking,main_diningphilosopher_54_RightChopstick,main_diningphilosopher_54_Excused,main_diningphilosopher_54_LeftChopstick,main_diningphilosopher_54_RequestStick,main_diningphilosopher_54_ReleaseStick,main_diningphilosopher_54_SIZEOFINT,main_diningphilosopher_54_n", Ack, ExcuseMe, Eating, BUFF_SIZE, Thinking, RightChopstick, Excused, LeftChopstick, RequestStick, ReleaseStick, SIZEOFINT, n)
+			//@dump
 }
 
 //obtain the right chopstick
@@ -61,7 +59,7 @@ func RightChopstickState() {
 	Eating = false
 	Thinking = true
 	RightChopstick = true
-	dinvRT.Dump("main_diningphilosopher_62_", "main_diningphilosopher_62_Ack,main_diningphilosopher_62_ExcuseMe,main_diningphilosopher_62_Eating,main_diningphilosopher_62_BUFF_SIZE,main_diningphilosopher_62_Thinking,main_diningphilosopher_62_RightChopstick,main_diningphilosopher_62_Excused,main_diningphilosopher_62_LeftChopstick,main_diningphilosopher_62_RequestStick,main_diningphilosopher_62_ReleaseStick,main_diningphilosopher_62_SIZEOFINT,main_diningphilosopher_62_n", Ack, ExcuseMe, Eating, BUFF_SIZE, Thinking, RightChopstick, Excused, LeftChopstick, RequestStick, ReleaseStick, SIZEOFINT, n)
+			//@dump
 }
 
 //structure defining a philosopher
@@ -112,7 +110,7 @@ func makePhilosopher(port, neighbourPort int) *Philosopher {
 					<-chopstick
 					fmt.Printf("Giving stick on %d\n", port)
 					resp := MarshallInts([]int{Ack})
-					capture.WriteTo(conn.WriteTo,resp,addr)
+					conn.WriteTo(resp, addr)
 				case ExcuseMe:
 					if !Excused {
 						fmt.Printf("%d has been excused from the table\n", port)
@@ -129,7 +127,7 @@ func makePhilosopher(port, neighbourPort int) *Philosopher {
 //Read incomming udp messages and return the command code and sender address
 func getRequest(conn net.PacketConn) (int, net.Addr) {
 	var buf [BUFF_SIZE]byte
-	_, addr, err := capture.ReadFrom(conn.ReadFrom,buf[0:])
+	_, addr, err := conn.ReadFrom(buf[0:])
 	if err != nil {
 		panic(err)
 	}
@@ -168,11 +166,11 @@ func (phil *Philosopher) getChopsticks() {
 		var buf [BUFF_SIZE]byte
 		req := MarshallInts([]int{RequestStick})
 		conn := phil.neighbour
-		capture.Write(conn.Write,req)
+		conn.Write(req)
 
 		//Read response from Neighbour
 		//_, err := phil.neighbour.Read(buf[0:]) TODO cant auto inst
-		_, err := capture.Read(conn.Read,buf[0:])
+		_, err := conn.Read(buf[0:])
 		if err != nil {
 			//Connection most likely timed out, chopstick unatainable
 			fmt.Printf(err.Error())
@@ -204,7 +202,7 @@ func (phil *Philosopher) returnChopsticks() {
 	req := MarshallInts([]int{ReleaseStick})
 	fmt.Printf("Returning stick %d -> %d\n", phil.id, phil.neighbourId)
 	conn := phil.neighbour
-	capture.Write(conn.Write,req)
+	conn.Write(req)
 	ThinkingState()
 }
 
@@ -220,7 +218,7 @@ func (phil *Philosopher) leaveTable() {
 	for true {
 		req := MarshallInts([]int{ExcuseMe})
 		conn := phil.neighbour
-		capture.Write(conn.Write,req)
+		conn.Write(req)
 		if Excused == true {
 			break
 		}
