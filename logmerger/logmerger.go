@@ -297,11 +297,11 @@ func noMerge(states []State) [][]Point {
 }
 
 func singleCutMerge(states []State) [][]Point {
-	// sort states.Points.Id
 	mergedPoints := make([][]Point, len(states))
 	for i, state := range states {
 		mergedPoints[i] = make([]Point, 1)
 		mergedPoints[i] = state.Points
+		sort.Sort(ById(mergedPoints[i]))
 	}
 	logger.Printf("len of mergedPoints: %d", len(mergedPoints))
 	return mergedPoints

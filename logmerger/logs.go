@@ -46,11 +46,10 @@ func fixJsonEncodingTypeConversion(point *Point) {
 	for i := range point.Dump {
 		if point.Dump[i].Type == "int" {
 			point.Dump[i].Value = int(point.Dump[i].Value.(float64))
-			fmt.Printf("type :%s\t value: %s\n",reflect.TypeOf(point.Dump[i].Value).String(),point.Dump[i].value())
+			// fmt.Printf("type :%s\t value: %s\n",reflect.TypeOf(point.Dump[i].Value).String(),point.Dump[i].value())
 		}
 	}
 }
-
 
 //Inject missing points ensures that the log of points contains
 //incremental vector clocks.
@@ -78,7 +77,7 @@ func injectMissingPoints(points []Point, log *golog) []Point {
 			indexFound = false
 			//The point log did not contain the index, inject a
 			//supplementary one
-		} else if goLogIndex < len(log.clocks){
+		} else if goLogIndex < len(log.clocks) {
 			//fmt.Printf("Injecting Clock %s into log %s\n", log.clocks[goLogIndex].ReturnVCString(), log.id)
 			newPoint := new(Point)
 			newPoint.VectorClock = log.clocks[goLogIndex].Bytes()
@@ -300,9 +299,6 @@ func (nvp NameValuePair) String() string {
 	return fmt.Sprintf("%s=%s , ", nvp.VarName, nvp.value())
 }
 
-
-
-
 //returns the value of the Name value pair as a string
 //TODO catch and print all possible reflected types
 func (nvp NameValuePair) value() string {
@@ -326,7 +322,7 @@ func (nvp NameValuePair) value() string {
 //Point is a representation of a program point. Name value pair is the
 //variable values at that program point. LineNumber is the line the
 //variables were gathered on. VectorClock is byte valued vector clock
-//at that the time the program point was logged
+//at the time the program point was logged
 type Point struct {
 	Dump               []NameValuePair
 	Id                 string
@@ -343,6 +339,12 @@ func (p Point) String() string {
 	clock, _ := vclock.FromBytes(p.VectorClock)
 	return fmt.Sprintf("%s { %s } { %s }", p.Id, dumpstring, clock.ReturnVCString())
 }
+
+type ById []Point
+
+func (p ById) Len() int           { return len(p) }
+func (p ById) Swap(i, j int)      { p[i], p[j] = p[j], p[i] }
+func (p ById) Less(i, j int) bool { return p[i].Id < p[j].Id }
 
 type golog struct {
 	id       string
