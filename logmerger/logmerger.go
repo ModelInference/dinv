@@ -66,6 +66,9 @@ func initalizeLogMerger(options map[string]string, inlogger *log.Logger) {
 				mergePlan = entireCutMerge
 			case "SRM":
 				mergePlan = sendReceiveMerge
+			case "SCM":
+				logger.Println("using SCM plan")
+				mergePlan = singleCutMerge
 			case "NONE":
 				mergePlan = noMerge
 			default:
@@ -91,9 +94,9 @@ func initalizeLogMerger(options map[string]string, inlogger *log.Logger) {
 func Merge(logfiles []string, gologfiles []string, options map[string]string, inlogger *log.Logger) {
 	initalizeLogMerger(options, inlogger)
 	logs, goLogs := buildLogs(logfiles, gologfiles)
-	//jump to writing 
+	//jump to writing
 	if options["mergePlan"] == "NONE" {
-		writeUnmergedTraces(logfiles,logs)
+		writeUnmergedTraces(logfiles, logs)
 	} else {
 		states := mineStates(logs, goLogs)
 		writeTraceFiles(states)
@@ -102,8 +105,8 @@ func Merge(logfiles []string, gologfiles []string, options map[string]string, in
 
 //writeUnmergedTraces is used when daikon traces for individual hosts
 //are wanted. The point logs passed in should not be merged
-func writeUnmergedTraces(filenames []string, logs [][]Point){
-	for i , filename := range filenames {
+func writeUnmergedTraces(filenames []string, logs [][]Point) {
+	for i, filename := range filenames {
 		unmergedName := filename + "unmerged.log"
 		logger.Printf("New unmerged trace %s\n", unmergedName)
 		writeLogToFile(logs[i], unmergedName)
@@ -272,6 +275,7 @@ func filterTotalOrder(states []State) []State {
 func totalOrderLineNumberMerge(states []State) [][]Point {
 	logger.Println("Merging points by line number and total order")
 	mergedPoints := make([][]Point, len(states))
+
 	for i, state := range states {
 		fmt.Printf("\rMerging States %3.0f%%", float32(i)/float32(len(states))*100)
 		mergedPoints[i] = make([]Point, len(state.TotalOrdering))
@@ -288,10 +292,20 @@ func totalOrderLineNumberMerge(states []State) [][]Point {
 	return mergedPoints
 }
 
-
 func noMerge(states []State) [][]Point {
 	mergedPoints := make([][]Point, len(states))
 	fmt.Println("No Merging points")
+	return mergedPoints
+}
+
+func singleCutMerge(states []State) [][]Point {
+	// sort states.Points.Id
+	mergedPoints := make([][]Point, len(states))
+	for i, state := range states {
+		mergedPoints[i] = make([]Point, 1)
+		mergedPoints[i] = state.Points
+	}
+	logger.Printf("len of mergedPoints: %d", len(mergedPoints))
 	return mergedPoints
 }
 
