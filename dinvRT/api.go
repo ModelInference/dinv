@@ -13,29 +13,29 @@ import (
 
 	"bitbucket.org/bestchai/dinv/logmerger"
 	"github.com/arcaneiceman/GoVector/govec"
-	"sync"
 	"sort"
+	"sync"
 
 	"crypto/sha1"
 	"io"
 )
 
 var (
-	initialized = false                            //Boolean used to track the initalization of the logger
-	fast 		= true
-	id          string                             //Timestamp for identifiying loggers
-	goVecLogger *govec.GoLog                       //GoVec logger, used to track vector timestamps
-	packageName string                             // TODO packageName is not used -- can it be removed?
-	Encoder     *json.Encoder                        // global name value pair point encoder
-	eBuffer		*bytes.Buffer
-	logFile	*os.File
-	bufCounter	int
+	initialized = false //Boolean used to track the initalization of the logger
+	fast        = true
+	id          string        //Timestamp for identifiying loggers
+	goVecLogger *govec.GoLog  //GoVec logger, used to track vector timestamps
+	packageName string        // TODO packageName is not used -- can it be removed?
+	Encoder     *json.Encoder // global name value pair point encoder
+	eBuffer     *bytes.Buffer
+	logFile     *os.File
+	bufCounter  int
 
-	useKV       bool                               // set to true if $USE_KV is set to any value
-	varStore    map[string]logmerger.NameValuePair // used to store variable name/value pairs between multiple dumps
-	varStoreMx  *sync.Mutex                        // manages access to varStore map
-	kvDumpIds	[]string
-	genKVID 	func ([]logmerger.NameValuePair) string
+	useKV      bool                               // set to true if $USE_KV is set to any value
+	varStore   map[string]logmerger.NameValuePair // used to store variable name/value pairs between multiple dumps
+	varStoreMx *sync.Mutex                        // manages access to varStore map
+	kvDumpIds  []string
+	genKVID    func([]logmerger.NameValuePair) string
 )
 
 //The number of dump statements to be buffered before being written to
@@ -56,7 +56,7 @@ const BUFFLIMIT = 10
 //dinvRT.Dump("49-api.go-8080","counter,variable2,buffersize",counter,variable2,buffersize)
 func Dump(did, names string, values ...interface{}) {
 	initDinv("")
-	nameList := strings.Split(names,",")
+	nameList := strings.Split(names, ",")
 	if len(nameList) != len(values) {
 		panic(fmt.Errorf("dump at [%s] has unequal argument lengths"))
 	}
@@ -93,7 +93,7 @@ func Track(did, names string, values ...interface{}) {
 	for i := 0; i < len(values); i++ {
 		if values[i] != nil {
 			varStore[nameList[i]] = newPair(nameList[i], values[i])
-			kvDumpIds = append(kvDumpIds,did) // collect the id of the dump statement being tracked
+			kvDumpIds = append(kvDumpIds, did) // collect the id of the dump statement being tracked
 		}
 	}
 }
@@ -146,9 +146,9 @@ func logPairList(pairs []logmerger.NameValuePair, did string) {
 
 func hash(id string) string {
 	h := sha1.New()
-	io.WriteString(h,id)
-	bytes := fmt.Sprintf("%x",h.Sum(nil))
-	return strings.Trim(bytes," ")
+	io.WriteString(h, id)
+	bytes := fmt.Sprintf("%x", h.Sum(nil))
+	return strings.Trim(bytes, " ")
 }
 
 //variableNamesID merges the names of each variable present in the kv
@@ -156,7 +156,7 @@ func hash(id string) string {
 //ignores the control flow of a program which collected the variable
 //values, it concentrates on the collection of variables insted
 func variableNamesID(pairs []logmerger.NameValuePair) string {
-	names := make(sort.StringSlice,len(pairs))
+	names := make(sort.StringSlice, len(pairs))
 	for i := range pairs {
 		names[i] = pairs[i].VarName
 	}
@@ -170,33 +170,33 @@ func variableNamesID(pairs []logmerger.NameValuePair) string {
 //of the dumpID's appended together. Duplicates are removed from the
 //dumpID's
 func smearedDumpID(pairs []logmerger.NameValuePair) string {
-	names := make(sort.StringSlice,len(kvDumpIds))
+	names := make(sort.StringSlice, len(kvDumpIds))
 	for i := range kvDumpIds {
 		names[i] = kvDumpIds[i]
 	}
-	//sort the names of the dumps 
+	//sort the names of the dumps
 	names.Sort()
 	//remove any duplicate names
-	noDups := make(map[string]string,0)
-	for i:= range names {
-		noDups[names[i]]=names[i]
+	noDups := make(map[string]string, 0)
+	for i := range names {
+		noDups[names[i]] = names[i]
 	}
-	uniqueNames := make([]string,0)
+	uniqueNames := make([]string, 0)
 	for i := range noDups {
-		uniqueNames = append(uniqueNames,noDups[i])
+		uniqueNames = append(uniqueNames, noDups[i])
 	}
+	kvDumpIds = uniqueNames
 
 	return hash(concatStrings(names))
 }
 
 func concatStrings(a []string) string {
 	var id string
-	for i:=range a {
-		id += a[i] +"_"
+	for i := range a {
+		id += a[i] + "_"
 	}
 	return id
 }
-
 
 // called from (un)pack functions, so before every network request
 // if kv is enabled, all entries in varStore will be logged and the map will be emptied
@@ -214,8 +214,8 @@ func logVarStore() {
 	kvid := genKVID(pairs)
 	logPairList(pairs, kvid)
 	//reset the kv store
-	varStore = make(map[string]logmerger.NameValuePair)
-	kvDumpIds = make([]string,0)
+	// varStore = make(map[string]logmerger.NameValuePair)
+	// kvDumpIds = make([]string, 0)
 }
 
 //Pack takes an an argument a set of bytes msg, and returns that set
@@ -227,7 +227,7 @@ func Pack(msg interface{}) []byte {
 	initDinv("")
 	logVarStore()
 	if fast {
-		return goVecLogger.PrepareSend("Sending from "+id, msg) 
+		return goVecLogger.PrepareSend("Sending from "+id, msg)
 	} else {
 		return goVecLogger.PrepareSend("Sending from "+getCallingFunctionID()+" "+id, msg) // slow
 	}
@@ -334,7 +334,7 @@ func initDinv(hostName string) {
 		varStoreMx = &sync.Mutex{}
 		//genKVID = variableNamesID
 		genKVID = smearedDumpID
-		kvDumpIds = make([]string,0)
+		kvDumpIds = make([]string, 0)
 	}
 
 	initialized = true
@@ -420,7 +420,6 @@ func Local(logger *govec.GoLog, id string) {
 
 type ByName []logmerger.NameValuePair
 
-func (a ByName) Len() int { return len(a) }
-func (a ByName) Swap(i,j int) {a[i], a[j] = a[j], a[i]}
-func (a ByName) Less(i,j int) bool { return a[i].VarName < a[j].VarName}
-
+func (a ByName) Len() int           { return len(a) }
+func (a ByName) Swap(i, j int)      { a[i], a[j] = a[j], a[i] }
+func (a ByName) Less(i, j int) bool { return a[i].VarName < a[j].VarName }
