@@ -10,22 +10,22 @@ import (
 )
 
 const (
-	Ack          = 0xFF
-	RequestStick = 1
-	ReleaseStick = 2
-	ExcuseMe     = 3
-	SIZEOFINT    = 4
-	n            = 50
-	BUFF_SIZE    = 1024
+	Ack		= 0xFF
+	RequestStick	= 1
+	ReleaseStick	= 2
+	ExcuseMe	= 3
+	SIZEOFINT	= 4
+	n		= 50
+	BUFF_SIZE	= 1024
 )
 
 //global state variables
 var (
-	Eating         bool
-	Thinking       bool
-	LeftChopstick  bool
-	RightChopstick bool
-	Excused        bool
+	Eating		bool
+	Thinking	bool
+	LeftChopstick	bool
+	RightChopstick	bool
+	Excused		bool
 )
 
 //Transition into the eating state
@@ -34,6 +34,7 @@ func EatingState() {
 	Thinking = false
 	LeftChopstick = true
 	RightChopstick = true
+			//@dump
 }
 
 //transition into the thinking state
@@ -42,6 +43,7 @@ func ThinkingState() {
 	Thinking = true
 	LeftChopstick = false
 	RightChopstick = false
+			//@dump
 }
 
 //obtain the left chopstick
@@ -49,6 +51,7 @@ func LeftChopstickState() {
 	Eating = false
 	Thinking = true
 	LeftChopstick = true
+			//@dump
 }
 
 //obtain the right chopstick
@@ -56,13 +59,14 @@ func RightChopstickState() {
 	Eating = false
 	Thinking = true
 	RightChopstick = true
+			//@dump
 }
 
 //structure defining a philosopher
 type Philosopher struct {
-	id, neighbourId int
-	chopstick       chan bool // the left chopstick // inspired by the wikipedia page, left chopsticks should be used first
-	neighbour       *net.UDPConn
+	id, neighbourId	int
+	chopstick	chan bool	// the left chopstick // inspired by the wikipedia page, left chopsticks should be used first
+	neighbour	*net.UDPConn
 }
 
 func makePhilosopher(port, neighbourPort int) *Philosopher {
@@ -92,7 +96,7 @@ func makePhilosopher(port, neighbourPort int) *Philosopher {
 	chopstick <- true
 	fmt.Printf("launching chopstick server\n")
 	go func() {
-		defer fmt.Printf("Chopstick #%d\n is down", port) //attempt to show when the chopsticks are no longer available
+		defer fmt.Printf("Chopstick #%d\n is down", port)	//attempt to show when the chopsticks are no longer available
 		//Incomming request handler
 		for true {
 			req, addr := getRequest(conn)
@@ -120,7 +124,6 @@ func makePhilosopher(port, neighbourPort int) *Philosopher {
 	return &Philosopher{port, neighbourPort, chopstick, neighbour}
 }
 
-
 //Read incomming udp messages and return the command code and sender address
 func getRequest(conn net.PacketConn) (int, net.Addr) {
 	var buf [BUFF_SIZE]byte
@@ -136,14 +139,14 @@ func getRequest(conn net.PacketConn) (int, net.Addr) {
 func (phil *Philosopher) think() {
 	ThinkingState()
 	fmt.Printf("%d is thinking.\n", phil.id)
-	time.Sleep(time.Duration(rand.Int63n(1e9)))
+	time.Sleep(time.Duration(rand.Int63n(1e6)))
 }
 
 //Eat and then wait for a random amount of time
 func (phil *Philosopher) eat() {
 	EatingState()
 	fmt.Printf("%d is eating.\n", phil.id)
-	time.Sleep(time.Duration(rand.Int63n(1e9)))
+	time.Sleep(time.Duration(rand.Int63n(1e6)))
 }
 
 //Attemp to gain a chopstic from a neighbouring philosopher
@@ -151,7 +154,7 @@ func (phil *Philosopher) getChopsticks() {
 	fmt.Printf("request chopstick %d -> %d\n", phil.id, phil.neighbourId)
 	timeout := make(chan bool, 1)
 	neighbourChopstick := make(chan bool, 1)
-	go func() { time.Sleep(time.Duration(1e9)); timeout <- true }()
+	go func() { time.Sleep(time.Duration(1e6)); timeout <- true }()
 	<-phil.chopstick
 	LeftChopstickState()
 	//timeout function
@@ -162,10 +165,12 @@ func (phil *Philosopher) getChopsticks() {
 		//Send Request to Neighbour
 		var buf [BUFF_SIZE]byte
 		req := MarshallInts([]int{RequestStick})
-		phil.neighbour.Write(req)
+		conn := phil.neighbour
+		conn.Write(req)
 
 		//Read response from Neighbour
-		_, err := phil.neighbour.Read(buf[0:])
+		//_, err := phil.neighbour.Read(buf[0:]) TODO cant auto inst
+		_, err := conn.Read(buf[0:])
 		if err != nil {
 			//Connection most likely timed out, chopstick unatainable
 			fmt.Printf(err.Error())
@@ -196,7 +201,8 @@ func (phil *Philosopher) returnChopsticks() {
 	phil.chopstick <- true
 	req := MarshallInts([]int{ReleaseStick})
 	fmt.Printf("Returning stick %d -> %d\n", phil.id, phil.neighbourId)
-	phil.neighbour.Write(req)
+	conn := phil.neighbour
+	conn.Write(req)
 	ThinkingState()
 }
 
@@ -211,7 +217,8 @@ func (phil *Philosopher) dine() {
 func (phil *Philosopher) leaveTable() {
 	for true {
 		req := MarshallInts([]int{ExcuseMe})
-		phil.neighbour.Write(req)
+		conn := phil.neighbour
+		conn.Write(req)
 		if Excused == true {
 			break
 		}
@@ -266,4 +273,3 @@ func PrintErr(err error) {
 		os.Exit(1)
 	}
 }
-

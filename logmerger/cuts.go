@@ -28,6 +28,7 @@ func mineConsistentCuts(lattice [][]vclock.VClock, clocks [][]vclock.VClock, del
 	for i := range lattice {
 		for j := range lattice[i] {
 			communicationDelta := 0
+			// TODO preallocate by some heuristic?
 			var potentialCut Cut
 			for k := range ids {
 				ticks, found := lattice[i][j].FindTicks(ids[k])

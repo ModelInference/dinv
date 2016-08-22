@@ -44,6 +44,8 @@ var (
 	//should be analysed.
 	sampleRate     = 0
 	renamingScheme = ""
+
+	hosts int
 )
 
 func initalizeLogMerger(options map[string]string, inlogger *log.Logger) {
@@ -123,7 +125,7 @@ func buildLogs(logFiles []string, gologFiles []string) ([][]Point, []*golog) {
 		log := readLog(logFiles[i])
 		goLog, err := ParseGologFile(gologFiles[i])
 		if err != nil {
-			panic(err)
+			panic(fmt.Sprintf("Corresponding goLogfile for logfile '%s' missing: %s", logFiles[i], err.Error))
 		}
 		logs = append(logs, log)
 		goLogs = append(goLogs, goLog)
@@ -207,13 +209,17 @@ func statesFromCuts(cuts []Cut, clocks [][]vclock.VClock, logs [][]Point) []Stat
 //specifiations in the MergeSpec.
 func writeTraceFiles(states []State) {
 	totallyOrderedCuts = false
-	mergePlan = totalOrderLineNumberMerge
+	// mergePlan = totalOrderLineNumberMerge
 	sampleRate = 100
 
 	logger.Printf("Writing Traces\n")
 	if totallyOrderedCuts {
 		states = filterTotalOrder(states)
 	}
+	// fmt.Printf("lenght of states: %d", len(states))
+	// for _, state := range states {
+	// 	fmt.Println(state.String())
+	// }
 	mergedPoints := mergePlan(states)
 	written := make([][]bool, len(mergedPoints))
 	for i := range mergedPoints {
@@ -300,8 +306,9 @@ func singleCutMerge(states []State) [][]Point {
 	mergedPoints := make([][]Point, len(states))
 	for i, state := range states {
 		mergedPoints[i] = make([]Point, 1)
-		mergedPoints[i] = state.Points
-		sort.Sort(ById(mergedPoints[i]))
+		sort.Sort(ById(state.Points))
+		// fmt.Printf("SCM: len of state.Points: %d", len(state.Points))
+		mergedPoints[i][0] = mergePoints(state.Points)
 	}
 	logger.Printf("len of mergedPoints: %d", len(mergedPoints))
 	return mergedPoints
