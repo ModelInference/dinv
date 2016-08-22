@@ -305,6 +305,7 @@ func noMerge(states []State) [][]Point {
 func singleCutMerge(states []State) [][]Point {
 	mergedPoints := make([][]Point, len(states))
 	for i, state := range states {
+		fmt.Printf("\rMerging States %3.0f%%", float32(i)/float32(len(states))*100)
 		mergedPoints[i] = make([]Point, 1)
 		sort.Sort(ById(state.Points))
 		// fmt.Printf("SCM: len of state.Points: %d", len(state.Points))
