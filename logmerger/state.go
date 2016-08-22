@@ -27,11 +27,12 @@ type State struct {
 //ordering is represened as a string matching the host indexes in the
 //cut
 func (state State) String() string {
-	catString := fmt.Sprintf("%s\n[", state.Cut.String())
+	catString := fmt.Sprintf("@ Cut %s \\Cut \n[", state.Cut.String())
+	catString = fmt.Sprintf("%s States", catString)
 	for i := range state.Points {
 		catString = fmt.Sprintf("%s [%s]", catString, state.Points[i].String())
 	}
-	catString = fmt.Sprintf("%s]\n", catString)
+	catString = fmt.Sprintf("%s] \\State\n", catString)
 	for i := range state.TotalOrdering {
 		catString = fmt.Sprintf("%s[", catString)
 		for j := range state.TotalOrdering[i] {
@@ -39,6 +40,6 @@ func (state State) String() string {
 		}
 		catString = fmt.Sprintf("%s]", catString)
 	}
-	catString = fmt.Sprintf("%s]\n", catString)
+	catString = fmt.Sprintf("%s]@\n", catString)
 	return catString
 }

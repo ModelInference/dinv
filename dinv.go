@@ -32,7 +32,7 @@ var (
 	logmer bool
 
 	//options for instrumenting
-	clean 			 bool
+	clean            bool
 	dataflowAnalysis bool
 	dumpsLocalEvents bool
 	directory        string
@@ -111,7 +111,7 @@ func main() {
 				logger.Fatalf("Error: : %s\n", err.Error())
 			}
 
-			logger.Printf("Instrumenting File %s\n",file)
+			logger.Printf("Instrumenting File %s\n", file)
 			options["file"] = file
 		}
 
@@ -125,7 +125,7 @@ func main() {
 			logger.Printf("Insturmenting Directory :%s\n", directory)
 			options["directory"] = directory
 		}
-		
+
 		if clean {
 			options["clean"] = "on"
 		}

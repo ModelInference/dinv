@@ -39,7 +39,6 @@ func VectorClockArraysFromLogs(logs [][]Point) ([][]vclock.VClock, error) {
 	return clocks, nil
 }
 
-
 func VectorClockArraysFromGoVectorLogs(clockLogs []*golog) ([][]vclock.VClock, error) {
 	clocks := make([][]vclock.VClock, 0)
 	for i := range clockLogs {
@@ -104,7 +103,7 @@ func getEventsWithIdenticalHostTime(points []Point, hostId string, time int) []P
 func matchSendAndReceive(sender vclock.VClock, clocks [][]vclock.VClock, senderId string) (receiver int, receiverEvent int, matched bool) {
 	receiver, receiverEvent, matched = -1, -1, false
 	var receiveClock = vclock.New()
-	for i:= range clocks {
+	for i := range clocks {
 		if getClockId(clocks[i]) != senderId {
 			//logger.Printf(" Clock ID : %s -> sender Id %s\n", getClockId(clocks[i]), senderId)
 			found, event := searchClockById(clocks[i], &sender, senderId)
@@ -193,7 +192,6 @@ func ClockFromString(clock, regex string) (*vclock.VClock, error) {
 //idCLockMapper returns a set of id strings corresponding to the
 //owners of each array of vector clocks. ie if clocks[i] had the host id
 //HOST, the returned [i]string = "HOST"
-
 func idClockMapper(clocks [][]vclock.VClock) []string {
 	clockMap := make([]string, 0)
 	for _, clock := range clocks {
