@@ -161,14 +161,17 @@ func mineStates(logs [][]Point, clockLogs []*golog) []State {
 	clocks, _ := VectorClockArraysFromGoVectorLogs(clockLogs)
 	logger.Printf("Done\nBuilding Lattice... ")
 	//NOTE REVERT TESTING
-	lattice := BuildLattice3(clocks)
+	lattice := BuildLattice5(clocks)
+	//fmt.Println(ltest.Points)
+	//lattice := BuildLattice4(clocks)
 	//latticeB := BuildLattice(clocks)
 	//CompareLattice(lattice,latticeB)
 	//CompareLattice(latticeB,lattice)
 	logger.Printf("Done\nCalculating Delta... ")
 	deltaComm := enumerateCommunication(clocks)
 	logger.Printf("Done\nMining Consistent Cuts... ")
-	consistentCuts := mineConsistentCuts(lattice, clocks, deltaComm)
+	//consistentCuts := mineConsistentCuts(lattice, clocks, deltaComm)
+	consistentCuts := mineConsistentCuts2(lattice, clocks, deltaComm)
 	logger.Printf("Done\nExtracting States... ")
 	states := statesFromCuts(consistentCuts, clocks, logs)
 	logger.Printf("Done\n")
@@ -188,12 +191,13 @@ func statesFromCuts(cuts []Cut, clocks [][]vclock.VClock, logs [][]Point) []Stat
 		state := &State{}
 		state.Cut = cut
 		for i, clock := range state.Cut.Clocks {
-			found, index := searchClockById(clocks[i], &clock, ids[i])
+			found, index := searchClockById(clocks[i], clock, ids[i])
 			//TODO deal with local events, empty and local events are
 			if found {
 				state.Points = append(state.Points, logs[i][index])
 			} else {
 				logger.Fatalf("UNABLE TO LOCATE LOG %s entry %d\n", ids[i], index)
+				fmt.Printf("unfound log entry %s index %d\n",ids[i],index)
 			}
 		}
 		state.TotalOrdering = totalOrderFromCut(cut, clocks)
@@ -216,10 +220,12 @@ func writeTraceFiles(states []State) {
 	if totallyOrderedCuts {
 		states = filterTotalOrder(states)
 	}
-	// fmt.Printf("lenght of states: %d", len(states))
-	// for _, state := range states {
-	// 	fmt.Println(state.String())
-	// }
+	 fmt.Printf("lenght of states: %d", len(states))
+	 /*
+	 for _, state := range states {
+	 	fmt.Println(state.String())
+	 }
+	 */
 	mergedPoints := mergePlan(states)
 	written := make([][]bool, len(mergedPoints))
 	for i := range mergedPoints {
@@ -296,6 +302,16 @@ func totalOrderLineNumberMerge(states []State) [][]Point {
 	return mergedPoints
 }
 
+func isFullCut(points []Point) bool {
+	for _, p := range points {
+		if p.Id == "" {
+			return false
+		}
+	}
+	return true
+}
+
+
 func noMerge(states []State) [][]Point {
 	mergedPoints := make([][]Point, len(states))
 	fmt.Println("No Merging points")
@@ -306,6 +322,9 @@ func singleCutMerge(states []State) [][]Point {
 	mergedPoints := make([][]Point, len(states))
 	for i, state := range states {
 		fmt.Printf("\rMerging States %3.0f%%", float32(i)/float32(len(states))*100)
+		if !isFullCut(state.Points) {
+			continue
+		}
 		mergedPoints[i] = make([]Point, 1)
 		sort.Sort(ById(state.Points))
 		// fmt.Printf("SCM: len of state.Points: %d", len(state.Points))
@@ -349,7 +368,7 @@ func mergePoints(points []Point) Point {
 	var mergedPoint Point
 	for _, point := range points {
 		mergedPoint.Dump = append(mergedPoint.Dump, point.Dump...) //...
-		//logger.Printf("id:%s\n", point.Id)
+		logger.Printf("id:%s\n", point.Id)
 		mergedPoint.Id = mergedPoint.Id + "_" + point.Id
 		pVClock1, _ := vclock.FromBytes(mergedPoint.VectorClock)
 		pVClock2, _ := vclock.FromBytes(point.VectorClock)

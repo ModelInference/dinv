@@ -17,72 +17,234 @@ package logmerger
 
 import (
 	"fmt"
+	"runtime"
+	"bytes"
+	"os"
+	"encoding/json"
 
 	"github.com/arcaneiceman/GoVector/govec/vclock"
 	"gopkg.in/eapache/queue.v1"
 )
 
-//BuildLattice constructs a lattice based on an ordered set of vector clocks. The
-//computed lattice is represented as a 2-D array of vector clocks
-//[i][j] where the i is the level of the lattice, and j is a set of
-//events at that level
-func BuildLattice2(clocks [][]vclock.VClock) [][]vclock.VClock {
-	latticePoint := vclock.New()
-	//initalize lattice clock
-	ids := idClockMapper(clocks)
-	levels := sumTime(clocks)
-	for i := range clocks {
-		latticePoint.Update(ids[i], 0)
-	}
-	level, points := 0, 0
-	lattice := make([][]vclock.VClock, 0)
-	current, next := queue.New(), queue.New()
-	next.Add(latticePoint)
-	for next.Length() > 0 {
-		lattice = append(lattice, make([]vclock.VClock, 0))
-		current = next
-		nextMap := make(map[string]*vclock.VClock)
-		for current.Length() > 0 {
-			p := current.Peek().(*vclock.VClock)
-			current.Remove()
-			for i := range ids {
-				pu := p.Copy()
-				pu.Update(ids[i], 0)
-				vstring := pu.ReturnVCString()
-				_, ok := nextMap[vstring]
-				if !ok && correctLatticePoint(clocks[i], pu, ids[i]) {
-					//fmt.Println(vstring)
-					nextMap[vstring] = pu
-					points++
-				}
-			}
-			next = mapToQueue(nextMap)
-			fmt.Printf("\rComputing lattice  %3.0f%% \t point %d\t fanout %d", 100*float32(level)/float32(levels), points, len(lattice[level]))
-			lattice[len(lattice)-1] = append(lattice[len(lattice)-1], *p.Copy())
+const (
+	THREAD_BOOST = 1000
+	POINT_DISK_LIMIT = 10000000
+)
+
+
+type LatticeWrapper struct {
+	LatticeM [][]vclock.VClock //main memory lattice
+	LatticeD []string //wrapper for the disk
+	CurrentFile int
+	Points uint64
+	LevelM int
+	LevelD int
+	LevelEstimate int
+}
+
+//set the current level of the lattice back to the beginning
+func (lw *LatticeWrapper) Beginning() {
+	lw.LevelM = 0
+	lw.LevelD = 0
+	lw.CurrentFile = 0
+	lw.FetchDisk()
+}
+
+func (lw *LatticeWrapper) Push(layer []vclock.VClock) {
+	lw.LatticeM[lw.LevelM] = layer
+
+	//disk writing phase
+	if lw.Points  > POINT_DISK_LIMIT * (uint64(len(lw.LatticeD) + 1)) {
+		fmt.Printf("\rWriting to Disk   ")
+		lw.DiskDump()
+
+		temp := make([]vclock.VClock, len(lw.LatticeM[lw.LevelM]))
+		for i := range temp {
+			temp[i] = lw.LatticeM[lw.LevelM][i]
 		}
-		levelToString(&lattice[level])
-		level++
+		lw.LatticeM = make([][]vclock.VClock, lw.LevelEstimate)
+
+		lw.LatticeM[0] = make([]vclock.VClock,len(temp))
+		for i := range temp {
+			lw.LatticeM[0][i] = temp[i]
+		}
+		lw.LevelM = 0
+		lw.CurrentFile++
 	}
-	fmt.Println()
-	return lattice
+	lw.Points += uint64(len(lw.LatticeM[lw.LevelM]))
+	lw.LevelM++
+	lw.LevelD++
+
 
 }
 
+func (lw *LatticeWrapper) Pop( ) []vclock.VClock {
+	//nothing left to pop
+	if lw.CurrentFile == ( len(lw.LatticeD) - 1 ) && lw.LevelM == ( len(lw.LatticeM) - 1 ) {
+		return nil
+	} else if lw.LevelM == len(lw.LatticeM) - 1 {
+		//fetch from disk
+		lw.CurrentFile++
+		lw.FetchDisk()
+		lw.LevelM = 0
+	} 
+	ret := lw.LatticeM[lw.LevelM]
+	lw.LevelM++
+	lw.LevelD++
+	return ret
+}
+
+func (lw *LatticeWrapper) FetchDisk() {
+	fmt.Printf("\rRead From Disk")
+	latticeFile, err := os.Open(lw.LatticeD[lw.CurrentFile])
+	if err != nil {
+		panic(err)
+	}
+	decoder := json.NewDecoder(latticeFile)
+	lattice := make([][]vclock.VClock, 0)
+	var e error = nil
+	for e == nil {
+		var decodedLayer []vclock.VClock
+		e = decoder.Decode(&decodedLayer)
+		// Will probably have to do -- fixJsonEncodingTypeConversion(&decodedPoint)
+		if e == nil {
+			lattice = append(lattice, decodedLayer)
+		} else {
+			/*
+			fmt.Println(e)
+			fmt.Println(lw.LatticeD)
+			fmt.Println(decodedLayer)
+			*/
+		}
+	}
+	//fmt.Println(lattice)
+	lw.LatticeM = lattice
+
+}
+
+func (lw *LatticeWrapper) DiskDump() {
+	latticeFilename := fmt.Sprintf("L%d",len(lw.LatticeD))
+	latticeFile, err := os.Create(latticeFilename)
+	if err != nil {
+		panic(err)
+	}
+	buf := new(bytes.Buffer)
+	encoder := json.NewEncoder(buf)
+	for i := 0 ; i < lw.LevelM -1; i ++ {
+		encoder.Encode(lw.LatticeM[i])
+		latticeFile.Write(buf.Bytes())
+		buf.Reset()
+	}
+	err = latticeFile.Close()
+	if err != nil {
+		panic(err)
+	}
+	lw.LatticeD = append(lw.LatticeD,latticeFilename)
+}
+
+
+
+
 //BuildLattice constructs a lattice based on an ordered set of vector clocks. The
 //computed lattice is represented as a 2-D array of vector clocks
 //[i][j] where the i is the level of the lattice, and j is a set of
 //events at that level
-func BuildLattice3(clocks [][]vclock.VClock) [][]vclock.VClock {
+//Build lattice 4 is threaded
+func BuildLattice5(clocks [][]vclock.VClock) *LatticeWrapper {
 	latticePoint := vclock.New()
 	//initalize lattice clock
 	ids := idClockMapper(clocks)
 	mClocks := clocksToMaps(clocks) //clockWrapper
 	levels := sumTime(clocks)
 
+	var numCPU = runtime.NumCPU()
 	// add a common starting point to the lattice:
 	// for every host (the first level of the clocks array) a new clock tick at time 0 is inserted
 	for i := range clocks {
-		latticePoint.Update(ids[i], 0)
+		latticePoint.Tick(ids[i])
+	}
+
+	// 'points' and 'levelPoints' are only needed for progress output, not for the algorithm itself
+	// make the total lattice the number of levels squared for safty equal to the size of the ids
+	lw := &LatticeWrapper{nil,nil,0,0,0,0,0}
+	lw.LevelEstimate = levels*levels
+	lw.LatticeM = make([][]vclock.VClock, lw.LevelEstimate)
+	lw.LatticeM[lw.LevelM] = make([]vclock.VClock, 1)
+	l1 := make([]vclock.VClock,1)
+	l1[0] = latticePoint
+	lw.LatticeM[lw.LevelM][0] = latticePoint
+	lw.Push(l1)
+
+	// iterate over the levels, starting with level 1 as long as the lattice still has nodes on the next level
+	for len(lw.LatticeM[lw.LevelM-1]) > 0 {
+		// next lattice level = previous *num nodes (worst case)
+		nextMap := make(map[string]vclock.VClock, len(lw.LatticeM[lw.LevelM-1])*len(ids))
+		levelPoints := 0
+
+		var div int
+		//dont bother splitting if it's not worth it
+		if len(lw.LatticeM[lw.LevelM-1]) < THREAD_BOOST {
+			div = 1
+		} else {
+			div = numCPU
+		}
+		c := make(chan map[string]vclock.VClock, div)
+		
+		//divide up the creation of the lattice for a level
+		for core := 0; core <div; core++ {
+			go func (division int, comm chan map[string]vclock.VClock) {
+				subMap := make(map[string]vclock.VClock, len(lw.LatticeM[lw.LevelM-1])*len(ids)/div)
+				for j := len(lw.LatticeM[lw.LevelM-1]) / div * division; j < len(lw.LatticeM[lw.LevelM-1]) / div * (division + 1); j++ {
+					p := lw.LatticeM[lw.LevelM-1][j]
+					//fmt.Printf("Inital Point %s\n",p.ReturnVCString())
+					for i, id := range ids {
+						pu := p.Copy()
+						pu.Tick(ids[i])
+						vstring := pu.ReturnVCString()
+						_, ok := subMap[vstring]
+						if !ok && fastCorrectLatticePoint(mClocks, pu, id) {
+							//fmt.Println(vstring)
+							subMap[vstring] = pu
+							levelPoints++
+						}
+					}
+				}
+				comm <- subMap
+			}(core, c)
+		}
+		for i := 0; i < div; i++ {
+			sm := <-c // wait for everyone to finnish
+			for k, v := range sm {
+				nextMap[k] = v
+			}
+			//fmt.Printf("Thread %d complete\n",i)
+		}
+		fmt.Printf("\rComputing lattice  %3.0f%% \t points %d\t fanout %d Threads %d", 100*float32(lw.LevelD)/float32(levels), lw.Points, len(lw.LatticeM[lw.LevelM]), div)
+		lw.Push(mapToArray(nextMap))
+		//levelToString(&lattice[lw.Level])
+		
+	}
+	fmt.Println()
+	return lw
+}
+
+//BuildLattice constructs a lattice based on an ordered set of vector clocks. The
+//computed lattice is represented as a 2-D array of vector clocks
+//[i][j] where the i is the level of the lattice, and j is a set of
+//events at that level
+//Build lattice 4 is threaded
+func BuildLattice4(clocks [][]vclock.VClock) [][]vclock.VClock {
+	latticePoint := vclock.New()
+	//initalize lattice clock
+	ids := idClockMapper(clocks)
+	mClocks := clocksToMaps(clocks) //clockWrapper
+	levels := sumTime(clocks)
+
+	var numCPU = runtime.NumCPU()
+	// add a common starting point to the lattice:
+	// for every host (the first level of the clocks array) a new clock tick at time 0 is inserted
+	for i := range clocks {
+		latticePoint.Tick(ids[i])
 	}
 
 	// 'points' and 'levelPoints' are only needed for progress output, not for the algorithm itself
@@ -90,31 +252,54 @@ func BuildLattice3(clocks [][]vclock.VClock) [][]vclock.VClock {
 	// make the total lattice the number of levels squared for safty equal to the size of the ids
 	lattice := make([][]vclock.VClock, levels*levels)
 	lattice[level] = make([]vclock.VClock, 1)
-	lattice[level][0] = *latticePoint
+	lattice[level][0] = latticePoint
 
 	// iterate over the levels, starting with level 1 as long as the lattice still has nodes on the next level
 	for len(lattice[level]) > 0 {
 		level++
 		// next lattice level = previous *num nodes (worst case)
-		nextMap := make(map[string]*vclock.VClock, len(lattice[level-1])*len(ids))
+		nextMap := make(map[string]vclock.VClock, len(lattice[level-1])*len(ids))
 		levelPoints := 0
-		for j := range lattice[level-1] {
-			p := lattice[level-1][j]
-			//fmt.Printf("Inital Point %s\n",p.ReturnVCString())
-			for i, id := range ids {
-				pu := p.Copy()
-				pu.Update(ids[i], 0)
-				vstring := pu.ReturnVCString()
-				_, ok := nextMap[vstring]
-				if !ok && fastCorrectLatticePoint(mClocks, pu, id) {
-					//fmt.Println(vstring)
-					nextMap[vstring] = pu
-					levelPoints++
+
+		var div int
+		//dont bother splitting if it's not worth it
+		if len(lattice[level-1]) < 1000 {
+			div = 1
+		} else {
+			div = numCPU
+		}
+		c := make(chan map[string]vclock.VClock, div)
+
+		for core := 0; core <div; core++ {
+			go func (division int, comm chan map[string]vclock.VClock) {
+				subMap := make(map[string]vclock.VClock, len(lattice[level-1])*len(ids)/div)
+				for j := len(lattice[level-1]) / div * division; j < len(lattice[level-1]) / div * (division + 1); j++ {
+					p := lattice[level-1][j]
+					//fmt.Printf("Inital Point %s\n",p.ReturnVCString())
+					for i, id := range ids {
+						pu := p.Copy()
+						pu.Tick(ids[i])
+						vstring := pu.ReturnVCString()
+						_, ok := subMap[vstring]
+						if !ok && fastCorrectLatticePoint(mClocks, pu, id) {
+							//fmt.Println(vstring)
+							subMap[vstring] = pu
+							levelPoints++
+						}
+					}
 				}
+				comm <- subMap
+			}(core, c)
+		}
+		for i := 0; i < div; i++ {
+			sm := <-c // wait for everyone to finnish
+			for k, v := range sm {
+				nextMap[k] = v
 			}
+			//fmt.Printf("Thread %d complete\n",i)
 		}
 		lattice[level] = mapToArray(nextMap)
-		fmt.Printf("\rComputing lattice  %3.0f%% \t points %d\t fanout %d", 100*float32(level)/float32(levels), points, len(lattice[level]))
+		fmt.Printf("\rComputing lattice  %3.0f%% \t points %d\t fanout %d Threads %d", 100*float32(level)/float32(levels), points, len(lattice[level]), div)
 		//levelToString(&lattice[level])
 		points += levelPoints
 	}
@@ -127,7 +312,7 @@ func CompareLattice(a, b [][]vclock.VClock) {
 		for j := range a[i] {
 			found := false
 			for k := range b[i] {
-				if a[i][j].Compare(&b[i][k], vclock.Equal) {
+				if a[i][j].Compare(b[i][k], vclock.Equal) {
 					found = true
 				}
 			}
@@ -146,11 +331,11 @@ func levelToString(level *[]vclock.VClock) {
 	fmt.Println("-----------------------------------------------")
 }
 
-func mapToArray(vmap map[string]*vclock.VClock) []vclock.VClock {
+func mapToArray(vmap map[string]vclock.VClock) []vclock.VClock {
 	array := make([]vclock.VClock, len(vmap))
 	i := 0
 	for _, clock := range vmap {
-		array[i] = *clock
+		array[i] = clock
 		i++
 	}
 	return array[0:i]
@@ -165,6 +350,8 @@ func mapToQueue(vmap map[string]*vclock.VClock) *queue.Queue {
 }
 
 //return id -> clockValue -> vectorClock map
+//TODO clocks were updated to maps[string]uint this function can be
+//simplified
 func clocksToMaps(clocks [][]vclock.VClock) map[string]map[uint64]map[string]uint64 {
 	ids := idClockMapper(clocks)
 	mClocks := make(map[string]map[uint64]map[string]uint64, len(ids))
@@ -219,7 +406,7 @@ func BuildLattice(clocks [][]vclock.VClock) [][]vclock.VClock {
 	ids := idClockMapper(clocks)
 	levels := sumTime(clocks)
 	for i := range clocks {
-		latticePoint.Update(ids[i], 0)
+		latticePoint.Tick(ids[i])
 	}
 	level, points := 0, 0
 	lattice := make([][]vclock.VClock, 0)
@@ -234,14 +421,14 @@ func BuildLattice(clocks [][]vclock.VClock) [][]vclock.VClock {
 			current.Remove()
 			for i := range ids {
 				pu := p.Copy()
-				pu.Update(ids[i], 0)
+				pu.Tick(ids[i])
 				if !queueContainsClock(next, pu) && correctLatticePoint(clocks[i], pu, ids[i]) {
 					next.Add(pu)
 					points++
 				}
 			}
 			fmt.Printf("\rComputing lattice  %3.0f%% \t point %d\t fanout %d", 100*float32(level)/float32(levels), points, len(lattice[level]))
-			lattice[len(lattice)-1] = append(lattice[len(lattice)-1], *p.Copy())
+			lattice[len(lattice)-1] = append(lattice[len(lattice)-1], p.Copy())
 		}
 		level++
 	}
@@ -252,9 +439,9 @@ func BuildLattice(clocks [][]vclock.VClock) [][]vclock.VClock {
 //queueContainsClock searches a queue of unorded vector clocks q for a
 //match to the argument v. If v is in the queue return true, otherwise
 //false
-func queueContainsClock(q *queue.Queue, v *vclock.VClock) bool {
+func queueContainsClock(q *queue.Queue, v vclock.VClock) bool {
 	for i := 0; i < q.Length(); i++ {
-		check := q.Get(i).(*vclock.VClock)
+		check := q.Get(i).(vclock.VClock)
 		if v.Compare(check, vclock.Equal) {
 			return true
 		}
@@ -266,7 +453,7 @@ func queueContainsClock(q *queue.Queue, v *vclock.VClock) bool {
 //host specificed by id. The proposed clock is a set of clock values
 //which could have potentially happened with respect to the host. If
 //the set is possible return true, otherwise false.
-func correctLatticePoint(loggedClocks []vclock.VClock, latticePoint *vclock.VClock, id string) bool {
+func correctLatticePoint(loggedClocks []vclock.VClock, latticePoint vclock.VClock, id string) bool {
 	found, index := searchClockById(loggedClocks, latticePoint, id)
 	//if the exact value was not found, then it was a non logged local
 	//event, in this case the vector clock previous to the recieve is
@@ -275,18 +462,18 @@ func correctLatticePoint(loggedClocks []vclock.VClock, latticePoint *vclock.VClo
 		index, found = nearestPrecedingClock(loggedClocks, latticePoint, index, id)
 	}
 	hostClock := loggedClocks[index]
-	if LatticeValidWithLog(latticePoint, &hostClock) && found {
+	if LatticeValidWithLog(latticePoint, hostClock) && found {
 		return true
 	}
 	return false
 }
 
-func fastCorrectLatticePoint(mClocks map[string]map[uint64]map[string]uint64, point *vclock.VClock, id string) bool {
+func fastCorrectLatticePoint(mClocks map[string]map[uint64]map[string]uint64, point vclock.VClock, id string) bool {
 	//fmt.Printf("id match = %s\n",id)
 	clockValue, found := point.FindTicks(id)
 	clock, ok := mClocks[id][clockValue]
 	if !ok {
-		logger.Printf("Log does not contain a clock for %s val: %d\n", id, clockValue)
+		//logger.Printf("Log does not contain a clock for %s val: %d\n", id, clockValue)
 		return false
 	}
 	if !found {
@@ -312,7 +499,7 @@ func fastCorrectLatticePoint(mClocks map[string]map[uint64]map[string]uint64, po
 	return true
 }
 
-func LatticeValidWithLog(latticePoint, loggedClock *vclock.VClock) bool {
+func LatticeValidWithLog(latticePoint, loggedClock vclock.VClock) bool {
 	latticeIds := getClockIds(latticePoint)
 	for _, id := range latticeIds {
 		loggedTicks, _ := loggedClock.FindTicks(id)
@@ -332,7 +519,7 @@ func LatticeValidWithLog(latticePoint, loggedClock *vclock.VClock) bool {
 //used
 //if the indexed log happened after, the most recent preceding index
 //is returned
-func nearestPrecedingClock(clocks []vclock.VClock, proposedClock *vclock.VClock, index int, id string) (int, bool) {
+func nearestPrecedingClock(clocks []vclock.VClock, proposedClock vclock.VClock, index int, id string) (int, bool) {
 	loggedTicks, _ := clocks[index].FindTicks(id)
 	proposedTicks, _ := proposedClock.FindTicks(id)
 	if index == 0 && proposedTicks < loggedTicks {

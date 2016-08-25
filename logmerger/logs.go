@@ -80,6 +80,8 @@ func injectMissingPoints(points []Point, log *golog) []Point {
 		} else if goLogIndex < len(log.clocks) {
 			//fmt.Printf("Injecting Clock %s into log %s\n", log.clocks[goLogIndex].ReturnVCString(), log.id)
 			newPoint := new(Point)
+			//newPoint.Id = points[0].Id //this may be bad (attempt to fix output logs) BUG
+			
 			newPoint.VectorClock = log.clocks[goLogIndex].Bytes()
 			injectedPoints = append(injectedPoints, *newPoint)
 			goLogIndex++
@@ -103,7 +105,7 @@ func injectMissingPoints(points []Point, log *golog) []Point {
 //computations being done to the logs.
 func addBaseLog(name string, log []Point) []Point {
 	clock := vclock.New()
-	clock.Update(name, 0)
+	clock.Tick(name)
 	first := new(Point)
 	first.VectorClock = clock.Bytes()
 	baseLog := make([]Point, 0)
@@ -186,7 +188,7 @@ func GoLogFromString(clockLog, regex string) (*golog, error) {
 		messages = append(messages, matches[i][3])
 	}
 
-	vclocks := make([]*vclock.VClock, 0)
+	vclocks := make([]vclock.VClock, 0)
 	for i := range rawClocks {
 		clock, err := ClockFromString(rawClocks[i], "\"([A-Za-z0-9_]+)\":([0-9]+)")
 		if clock == nil || err != nil {
@@ -198,7 +200,7 @@ func GoLogFromString(clockLog, regex string) (*golog, error) {
 	return log, nil
 }
 
-func swapClockIds(oldClock *vclock.VClock, idMap map[string]string) *vclock.VClock {
+func swapClockIds(oldClock vclock.VClock, idMap map[string]string) vclock.VClock {
 	ids := make([]string, 0)
 	ticks := make([]int, 0)
 	for id := range idMap {
@@ -330,6 +332,8 @@ type Point struct {
 	CommunicationDelta int
 }
 
+type PointLogs map[string]map[uint64]Point
+
 //String representation of a program point
 func (p Point) String() string {
 	dumpstring := ""
@@ -348,7 +352,7 @@ func (p ById) Less(i, j int) bool { return p[i].Id < p[j].Id }
 
 type golog struct {
 	id       string
-	clocks   []*vclock.VClock
+	clocks   []vclock.VClock
 	messages []string
 }
 
