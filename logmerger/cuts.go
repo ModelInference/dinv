@@ -35,7 +35,7 @@ func mineConsistentCuts(lattice [][]vclock.VClock, clocks [][]vclock.VClock, del
 				if !found {
 					break
 				}
-				found, index := searchClockById(clocks[k], &lattice[i][j], ids[k])
+				found, index := searchClockById(clocks[k], lattice[i][j], ids[k])
 				if !found {
 					fmt.Printf("\rCant Find matching clock %s - %d -> %s \t insted found %s", ids[k], ticks, lattice[i][j].ReturnVCString(), clocks[k][index].ReturnVCString())
 					break
@@ -54,6 +54,48 @@ func mineConsistentCuts(lattice [][]vclock.VClock, clocks [][]vclock.VClock, del
 	fmt.Println()
 	return consistentCuts
 }
+
+//mineConsistentCuts determines every consistent cut occuring in a log
+//of vector clocks. lattice is the set of all potential event
+//orderings in the log. clocks is the logs of vector clocks. deltaComm
+//is an enumerated history of all sends and recieves on each host in
+//clocks.
+func mineConsistentCuts2(lw *LatticeWrapper, clocks [][]vclock.VClock, deltaComm [][]int) []Cut {
+	ids := idClockMapper(clocks)
+	consistentCuts := make([]Cut, 0)
+	lw.Beginning()
+	for level := lw.Pop(); level !=nil ; level = lw.Pop() {
+		//fmt.Println(level)
+		for j := range level {
+			//fmt.Println(j)
+			communicationDelta := 0
+			// TODO preallocate by some heuristic?
+			var potentialCut Cut
+			for k := range ids {
+				ticks, found := level[j].FindTicks(ids[k])
+				if !found {
+					break
+				}
+				found, index := searchClockById(clocks[k], level[j], ids[k])
+				if !found {
+					fmt.Printf("\rCant Find matching clock %s - %d -> %s \t insted found %s", ids[k], ticks, level[j].ReturnVCString(), clocks[k][index].ReturnVCString())
+					break
+				}
+				//fmt.Printf("%d", communicationDelta)
+				communicationDelta += deltaComm[k][index]
+				potentialCut.Clocks = append(potentialCut.Clocks, clocks[k][index])
+			}
+			if communicationDelta == 0 {
+				fmt.Printf("\rcomputing cuts %3.0f%%  \t[%d] found", 100*float32(lw.LevelM)/float32(len(level)), len(consistentCuts))
+				//logger.Printf("%s\n", potentialCut.String())
+				consistentCuts = append(consistentCuts, potentialCut)
+			}
+		}
+	}
+	fmt.Println()
+	return consistentCuts
+}
+
 
 //within a cut subsets of clocks can be totally ordered with one
 //another. These orderings are extracted from the log of clocks, are
@@ -128,7 +170,7 @@ func countAncestors(cut Cut) []int {
 	ancestors := make([]int, len(cut.Clocks))
 	for i := range cut.Clocks {
 		for j := range cut.Clocks {
-			if i != j && cut.Clocks[i].Compare(&cut.Clocks[j], vclock.Ancestor) {
+			if i != j && cut.Clocks[i].Compare(cut.Clocks[j], vclock.Ancestor) {
 				ancestors[i]++
 			}
 		}
@@ -167,7 +209,7 @@ func enumerateCommunication(clocks [][]vclock.VClock) [][]int {
 		commDelta[i] = make([]int, len(clocks[i]))
 	}
 	for i := range clocks {
-		var lastSend *vclock.VClock
+		var lastSend vclock.VClock
 		for j := range clocks[i] {
 			receiver, receiverEvent, matched := matchSendAndReceive(clocks[i][j], clocks, ids[i])
 			if matched {
@@ -199,7 +241,7 @@ func (c Cut) HappenedBefore(other Cut) bool {
 	for _, beforeClock := range c.Clocks {
 		for _, afterClock := range other.Clocks {
 			//print(afterClock.ReturnVCString, beforeClock.ReturnVCString)
-			if !beforeClock.Compare(&afterClock, vclock.Descendant) {
+			if !beforeClock.Compare(afterClock, vclock.Descendant) {
 				return false
 			}
 		}

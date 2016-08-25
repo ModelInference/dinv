@@ -78,7 +78,7 @@ func Track(did, names string, values ...interface{}) {
 	initDinv("")
 	nameList := strings.Split(names, ",")
 	if len(nameList) != len(values) {
-		panic(fmt.Errorf("%s: dump at [%s] has unequal argument lengths", GetId()))
+		panic(fmt.Errorf("track at [%s] has unequal argument lengths"))
 	}
 	varStoreMx.Lock()
 	defer varStoreMx.Unlock()

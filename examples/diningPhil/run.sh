@@ -23,8 +23,8 @@ function instrument {
     mkdir $Original
     cp $P1 $Original/
 
-    dinv -i -v -file=$P1
-    GoVector -v -file=$P1
+    dinv -i  -file=$P1
+    GoVector  -file=$P1
 }
 
 function runTestPrograms {
@@ -36,13 +36,13 @@ function runTestPrograms {
         let "neighbourPort= (i+1)%Hosts + BasePort"
         go run diningphilosopher.go -mP $hostPort -nP $neighbourPort &
     done
-    sleep 4
+    sleep 5
     kill `ps | pgrep dining | awk '{print $1}'`
 }
 
 function runLogMerger {
     cd $testDir/diningPhil
-    dinv -v -l -shiviz *Encoded.txt *Log.txt
+    dinv -v -l -plan="SCM" -shiviz *Encoded.txt *Log.txt
 }
 
 function shivizMerge {
@@ -83,6 +83,7 @@ function cleanUp {
     rm ./*.dtrace
     rm ./*.gz
     rm ./*.txt
+    rm L*
     
 }
 
