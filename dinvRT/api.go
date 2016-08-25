@@ -42,7 +42,7 @@ var (
 //disk. This is purely for the sake of speed and may result in the
 //loss of dumped variables near the end of execution. For precise
 //results set to 1.
-const BUFFLIMIT = 10
+const BUFFLIMIT = 1
 
 //Dump logs the values of variables passed in as a set of varadic
 //arguments. did is the dump id, it must be unique to the dump

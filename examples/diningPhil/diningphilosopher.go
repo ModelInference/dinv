@@ -2,6 +2,8 @@ package main
 
 import (
 	"flag"
+	"github.com/arcaneiceman/GoVector/capture"
+	"bitbucket.org/bestchai/dinv/dinvRT"
 	"fmt"
 	"math/rand"
 	"net"
@@ -17,6 +19,7 @@ const (
 	SIZEOFINT	= 4
 	n		= 50
 	BUFF_SIZE	= 1024
+	SLEEP_MAX	= 1e8
 )
 
 //global state variables
@@ -26,6 +29,7 @@ var (
 	LeftChopstick	bool
 	RightChopstick	bool
 	Excused		bool
+	ID			string
 )
 
 //Transition into the eating state
@@ -34,7 +38,6 @@ func EatingState() {
 	Thinking = false
 	LeftChopstick = true
 	RightChopstick = true
-			//@dump
 }
 
 //transition into the thinking state
@@ -43,7 +46,6 @@ func ThinkingState() {
 	Thinking = true
 	LeftChopstick = false
 	RightChopstick = false
-			//@dump
 }
 
 //obtain the left chopstick
@@ -51,7 +53,6 @@ func LeftChopstickState() {
 	Eating = false
 	Thinking = true
 	LeftChopstick = true
-			//@dump
 }
 
 //obtain the right chopstick
@@ -59,7 +60,6 @@ func RightChopstickState() {
 	Eating = false
 	Thinking = true
 	RightChopstick = true
-			//@dump
 }
 
 //structure defining a philosopher
@@ -75,6 +75,14 @@ func makePhilosopher(port, neighbourPort int) *Philosopher {
 	if err != nil {
 		panic(err)
 	}
+
+	//for general testing
+	if port == 4000 {
+		ID = fmt.Sprintf("%d",port) 
+	} else {
+		ID = "ALL"
+	}
+
 	fmt.Printf("listening on %d\n", port)
 	var neighbour *net.UDPConn
 	var errDial error
@@ -99,6 +107,7 @@ func makePhilosopher(port, neighbourPort int) *Philosopher {
 		defer fmt.Printf("Chopstick #%d\n is down", port)	//attempt to show when the chopsticks are no longer available
 		//Incomming request handler
 		for true {
+	dinvRT.Track(fmt.Sprintf("%d", ID), "Excused,Ack,ReleaseStick,ExcuseMe,SLEEP_MAX,Eating,RightChopstick,n,BUFF_SIZE,Thinking,RequestStick,SIZEOFINT,LeftChopstick", Excused, Ack, ReleaseStick, ExcuseMe, SLEEP_MAX, Eating, RightChopstick, n, BUFF_SIZE, Thinking, RequestStick, SIZEOFINT, LeftChopstick)
 			req, addr := getRequest(conn)
 			go func(request int) {
 				switch request {
@@ -110,7 +119,7 @@ func makePhilosopher(port, neighbourPort int) *Philosopher {
 					<-chopstick
 					fmt.Printf("Giving stick on %d\n", port)
 					resp := MarshallInts([]int{Ack})
-					conn.WriteTo(resp, addr)
+					capture.WriteTo(conn.WriteTo, resp, addr)
 				case ExcuseMe:
 					if !Excused {
 						fmt.Printf("%d has been excused from the table\n", port)
@@ -127,7 +136,7 @@ func makePhilosopher(port, neighbourPort int) *Philosopher {
 //Read incomming udp messages and return the command code and sender address
 func getRequest(conn net.PacketConn) (int, net.Addr) {
 	var buf [BUFF_SIZE]byte
-	_, addr, err := conn.ReadFrom(buf[0:])
+	_, addr, err := capture.ReadFrom(conn.ReadFrom, buf[0:])
 	if err != nil {
 		panic(err)
 	}
@@ -139,14 +148,14 @@ func getRequest(conn net.PacketConn) (int, net.Addr) {
 func (phil *Philosopher) think() {
 	ThinkingState()
 	fmt.Printf("%d is thinking.\n", phil.id)
-	time.Sleep(time.Duration(rand.Int63n(1e6)))
+	time.Sleep(time.Duration(rand.Int63n(SLEEP_MAX)))
 }
 
 //Eat and then wait for a random amount of time
 func (phil *Philosopher) eat() {
 	EatingState()
 	fmt.Printf("%d is eating.\n", phil.id)
-	time.Sleep(time.Duration(rand.Int63n(1e6)))
+	time.Sleep(time.Duration(rand.Int63n(SLEEP_MAX)))
 }
 
 //Attemp to gain a chopstic from a neighbouring philosopher
@@ -154,7 +163,7 @@ func (phil *Philosopher) getChopsticks() {
 	fmt.Printf("request chopstick %d -> %d\n", phil.id, phil.neighbourId)
 	timeout := make(chan bool, 1)
 	neighbourChopstick := make(chan bool, 1)
-	go func() { time.Sleep(time.Duration(1e6)); timeout <- true }()
+	go func() { time.Sleep(time.Duration(SLEEP_MAX)); timeout <- true }()
 	<-phil.chopstick
 	LeftChopstickState()
 	//timeout function
@@ -166,11 +175,11 @@ func (phil *Philosopher) getChopsticks() {
 		var buf [BUFF_SIZE]byte
 		req := MarshallInts([]int{RequestStick})
 		conn := phil.neighbour
-		conn.Write(req)
+		capture.Write(conn.Write, req)
 
 		//Read response from Neighbour
 		//_, err := phil.neighbour.Read(buf[0:]) TODO cant auto inst
-		_, err := conn.Read(buf[0:])
+		_, err := capture.Read(conn.Read, buf[0:])
 		if err != nil {
 			//Connection most likely timed out, chopstick unatainable
 			fmt.Printf(err.Error())
@@ -202,7 +211,7 @@ func (phil *Philosopher) returnChopsticks() {
 	req := MarshallInts([]int{ReleaseStick})
 	fmt.Printf("Returning stick %d -> %d\n", phil.id, phil.neighbourId)
 	conn := phil.neighbour
-	conn.Write(req)
+	capture.Write(conn.Write, req)
 	ThinkingState()
 }
 
@@ -218,7 +227,7 @@ func (phil *Philosopher) leaveTable() {
 	for true {
 		req := MarshallInts([]int{ExcuseMe})
 		conn := phil.neighbour
-		conn.Write(req)
+		capture.Write(conn.Write, req)
 		if Excused == true {
 			break
 		}

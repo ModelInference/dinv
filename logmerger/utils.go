@@ -31,7 +31,7 @@ func VectorClockArraysFromLogs(logs [][]Point) ([][]vclock.VClock, error) {
 			if err != nil {
 				return nil, err
 			} else {
-				clocks[i] = append(clocks[i], *vc)
+				clocks[i] = append(clocks[i], vc)
 			}
 			logger.Println(vc.ReturnVCString())
 		}
@@ -44,7 +44,7 @@ func VectorClockArraysFromGoVectorLogs(clockLogs []*golog) ([][]vclock.VClock, e
 	for i := range clockLogs {
 		clocks = append(clocks, make([]vclock.VClock, 0))
 		for j := range clockLogs[i].clocks {
-			clocks[i] = append(clocks[i], *clockLogs[i].clocks[j])
+			clocks[i] = append(clocks[i], clockLogs[i].clocks[j])
 			//logger.Println(clocks[i][j].ReturnVCString())
 		}
 	}
@@ -58,7 +58,7 @@ func VectorClockArraysFromGoVectorLogs(clockLogs []*golog) ([][]vclock.VClock, e
 //if such an index is found, the index is returned with a matching
 //true value, if no such index is found, the closest index is returned
 //with a false valuR
-func searchLogForClock(log []Point, keyClock *vclock.VClock, id string) (bool, int) {
+func searchLogForClock(log []Point, keyClock vclock.VClock, id string) (bool, int) {
 	min, max, mid := 0, len(log)-1, 0
 	for max >= min {
 		mid = min + ((max - min) / 2)
@@ -106,7 +106,7 @@ func matchSendAndReceive(sender vclock.VClock, clocks [][]vclock.VClock, senderI
 	for i := range clocks {
 		if getClockId(clocks[i]) != senderId {
 			//logger.Printf(" Clock ID : %s -> sender Id %s\n", getClockId(clocks[i]), senderId)
-			found, event := searchClockById(clocks[i], &sender, senderId)
+			found, event := searchClockById(clocks[i], sender, senderId)
 			if found {
 				//backtrack for earliest clock
 				//TODO this is ugly make it better
@@ -120,7 +120,7 @@ func matchSendAndReceive(sender vclock.VClock, clocks [][]vclock.VClock, senderI
 					}
 				}
 				//uses partial evaluation for protection, dont switch
-				if receiver < 0 || receiveClock.Compare(&clocks[i][event], vclock.Ancestor) {
+				if receiver < 0 || receiveClock.Compare(clocks[i][event], vclock.Ancestor) {
 					receiveClock = clocks[i][event].Copy()
 					receiver, receiverEvent, matched = i, event, true
 				}
@@ -135,7 +135,7 @@ func matchSendAndReceive(sender vclock.VClock, clocks [][]vclock.VClock, senderI
 //if such an index is found, the index is returned with a matching
 //true value, if no such index is found, the closest index is returned
 //with a false value
-func searchClockById(clocks []vclock.VClock, keyClock *vclock.VClock, id string) (bool, int) {
+func searchClockById(clocks []vclock.VClock, keyClock vclock.VClock, id string) (bool, int) {
 	min, max, mid := 0, len(clocks)-1, 0
 	for max >= min {
 		mid = min + ((max - min) / 2)
@@ -169,7 +169,7 @@ func sumTime(clockSet [][]vclock.VClock) int {
 	return max
 }
 
-func ClockFromString(clock, regex string) (*vclock.VClock, error) {
+func ClockFromString(clock, regex string) (vclock.VClock, error) {
 	re := regexp.MustCompile(regex)
 	matches := re.FindAllStringSubmatch(clock, -1)
 	ids := make([]string, 0)
@@ -217,7 +217,7 @@ func getClockId(clocks []vclock.VClock) string {
 	return match[1]
 }
 
-func ConstructVclock(ids []string, ticks []int) *vclock.VClock {
+func ConstructVclock(ids []string, ticks []int) vclock.VClock {
 	if len(ids) != len(ticks) {
 		return nil
 	}
@@ -226,20 +226,17 @@ func ConstructVclock(ids []string, ticks []int) *vclock.VClock {
 		if ticks[i] < 0 {
 			return nil
 		}
-		for j := 0; j < ticks[i]; j++ {
-			clock.Update(ids[i], 0)
-		}
+		clock.Set(ids[i],uint64(ticks[i]))
 	}
 	return clock
 }
 
-func getClockIds(clock *vclock.VClock) []string {
-	re := regexp.MustCompile("\"([A-Za-z0-9_]+)\"")
-	vString := clock.ReturnVCString()
-	matches := re.FindAllStringSubmatch(vString, -1)
-	ids := make([]string, 0)
-	for _, match := range matches {
-		ids = append(ids, match[1])
+func getClockIds(clock vclock.VClock) []string {
+	ids := make([]string, len(clock))
+	i := 0
+	for id := range clock {
+		ids[i] = id
+		i++
 	}
 	return ids
 }
