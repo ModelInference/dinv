@@ -21,6 +21,7 @@ import (
 	"bytes"
 	"os"
 	"encoding/json"
+	"unsafe"
 
 	"github.com/arcaneiceman/GoVector/govec/vclock"
 	"gopkg.in/eapache/queue.v1"
@@ -28,7 +29,7 @@ import (
 
 const (
 	THREAD_BOOST = 1000
-	POINT_DISK_LIMIT = 10000000
+	POINT_DISK_LIMIT = 5000000
 )
 
 
@@ -42,12 +43,26 @@ type LatticeWrapper struct {
 	LevelEstimate int
 }
 
+func New() *LatticeWrapper {
+	return &LatticeWrapper{nil,nil,0,0,0,0,0}
+
+}
+
+func (lw *LatticeWrapper) Delete() {
+	for i := range lw.LatticeD {
+		os.Remove(lw.LatticeD[i])
+	}
+}
+		
+
 //set the current level of the lattice back to the beginning
 func (lw *LatticeWrapper) Beginning() {
 	lw.LevelM = 0
 	lw.LevelD = 0
 	lw.CurrentFile = 0
-	lw.FetchDisk()
+	if len(lw.LatticeD) > 0 {
+		lw.FetchDisk()
+	}
 }
 
 func (lw *LatticeWrapper) Push(layer []vclock.VClock) {
@@ -55,7 +70,6 @@ func (lw *LatticeWrapper) Push(layer []vclock.VClock) {
 
 	//disk writing phase
 	if lw.Points  > POINT_DISK_LIMIT * (uint64(len(lw.LatticeD) + 1)) {
-		fmt.Printf("\rWriting to Disk   ")
 		lw.DiskDump()
 
 		temp := make([]vclock.VClock, len(lw.LatticeM[lw.LevelM]))
@@ -95,7 +109,7 @@ func (lw *LatticeWrapper) Pop( ) []vclock.VClock {
 }
 
 func (lw *LatticeWrapper) FetchDisk() {
-	fmt.Printf("\rRead From Disk")
+	fmt.Printf("%s",CLEAR_LINE)
 	latticeFile, err := os.Open(lw.LatticeD[lw.CurrentFile])
 	if err != nil {
 		panic(err)
@@ -103,26 +117,29 @@ func (lw *LatticeWrapper) FetchDisk() {
 	decoder := json.NewDecoder(latticeFile)
 	lattice := make([][]vclock.VClock, 0)
 	var e error = nil
+
+	stat ,_ := latticeFile.Stat()
+	var soFar uint64
+	size := stat.Size()
 	for e == nil {
 		var decodedLayer []vclock.VClock
 		e = decoder.Decode(&decodedLayer)
+		soFar += uint64(unsafe.Sizeof(&decodedLayer))
 		// Will probably have to do -- fixJsonEncodingTypeConversion(&decodedPoint)
 		if e == nil {
 			lattice = append(lattice, decodedLayer)
 		} else {
-			/*
 			fmt.Println(e)
-			fmt.Println(lw.LatticeD)
-			fmt.Println(decodedLayer)
-			*/
 		}
+		fmt.Printf("\rFetching lattice from Disk %3.0f%% ", 100*float64(soFar)/float64(size))
 	}
-	//fmt.Println(lattice)
+	latticeFile.Close()
 	lw.LatticeM = lattice
 
 }
 
 func (lw *LatticeWrapper) DiskDump() {
+	fmt.Printf("%s",CLEAR_LINE)
 	latticeFilename := fmt.Sprintf("L%d",len(lw.LatticeD))
 	latticeFile, err := os.Create(latticeFilename)
 	if err != nil {
@@ -134,6 +151,7 @@ func (lw *LatticeWrapper) DiskDump() {
 		encoder.Encode(lw.LatticeM[i])
 		latticeFile.Write(buf.Bytes())
 		buf.Reset()
+		fmt.Printf("\rWriting to Disk %3.0f%% ", 100*float32(i)/float32(lw.LevelM))
 	}
 	err = latticeFile.Close()
 	if err != nil {
@@ -157,7 +175,6 @@ func BuildLattice5(clocks [][]vclock.VClock) *LatticeWrapper {
 	mClocks := clocksToMaps(clocks) //clockWrapper
 	levels := sumTime(clocks)
 
-	var numCPU = runtime.NumCPU()
 	// add a common starting point to the lattice:
 	// for every host (the first level of the clocks array) a new clock tick at time 0 is inserted
 	for i := range clocks {
@@ -166,7 +183,7 @@ func BuildLattice5(clocks [][]vclock.VClock) *LatticeWrapper {
 
 	// 'points' and 'levelPoints' are only needed for progress output, not for the algorithm itself
 	// make the total lattice the number of levels squared for safty equal to the size of the ids
-	lw := &LatticeWrapper{nil,nil,0,0,0,0,0}
+	lw := New()
 	lw.LevelEstimate = levels*levels
 	lw.LatticeM = make([][]vclock.VClock, lw.LevelEstimate)
 	lw.LatticeM[lw.LevelM] = make([]vclock.VClock, 1)
@@ -181,13 +198,7 @@ func BuildLattice5(clocks [][]vclock.VClock) *LatticeWrapper {
 		nextMap := make(map[string]vclock.VClock, len(lw.LatticeM[lw.LevelM-1])*len(ids))
 		levelPoints := 0
 
-		var div int
-		//dont bother splitting if it's not worth it
-		if len(lw.LatticeM[lw.LevelM-1]) < THREAD_BOOST {
-			div = 1
-		} else {
-			div = numCPU
-		}
+		div := ThreadCount(len(lw.LatticeM[lw.LevelM-1]))
 		c := make(chan map[string]vclock.VClock, div)
 		
 		//divide up the creation of the lattice for a level

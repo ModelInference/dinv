@@ -64,33 +64,53 @@ func mineConsistentCuts2(lw *LatticeWrapper, clocks [][]vclock.VClock, deltaComm
 	ids := idClockMapper(clocks)
 	consistentCuts := make([]Cut, 0)
 	lw.Beginning()
+	defer lw.Delete()
+
 	for level := lw.Pop(); level !=nil ; level = lw.Pop() {
-		//fmt.Println(level)
-		for j := range level {
-			//fmt.Println(j)
-			communicationDelta := 0
-			// TODO preallocate by some heuristic?
-			var potentialCut Cut
-			for k := range ids {
-				ticks, found := level[j].FindTicks(ids[k])
-				if !found {
-					break
+
+
+		div := ThreadCount(len(lw.LatticeM[lw.LevelM-1]))
+		c := make(chan []Cut, div)
+		
+		//divide up the creation of the lattice for a level
+		for core := 0; core <div; core++ {
+			go func (division int, comm chan []Cut) {
+				cuts := make([]Cut, len(lw.LatticeM[lw.LevelM-1])/div)
+				cutsFound := 0
+				for j := len(level) / div * division; j < len(level) / div * (division + 1); j++ {
+					//fmt.Println(j)
+					communicationDelta := 0
+					// TODO preallocate by some heuristic?
+					var potentialCut Cut
+					for k := range ids {
+						ticks, found := level[j].FindTicks(ids[k])
+						if !found {
+							break
+						}
+						found, index := searchClockById(clocks[k], level[j], ids[k])
+						if !found {
+							fmt.Printf("\rCant Find matching clock %s - %d -> %s \t insted found %s", ids[k], ticks, level[j].ReturnVCString(), clocks[k][index].ReturnVCString())
+							break
+						}
+						//fmt.Printf("%d", communicationDelta)
+						communicationDelta += deltaComm[k][index]
+						potentialCut.Clocks = append(potentialCut.Clocks, clocks[k][index])
+					}
+					if communicationDelta == 0 {
+						cuts[cutsFound] = potentialCut
+						cutsFound++
+					}
 				}
-				found, index := searchClockById(clocks[k], level[j], ids[k])
-				if !found {
-					fmt.Printf("\rCant Find matching clock %s - %d -> %s \t insted found %s", ids[k], ticks, level[j].ReturnVCString(), clocks[k][index].ReturnVCString())
-					break
-				}
-				//fmt.Printf("%d", communicationDelta)
-				communicationDelta += deltaComm[k][index]
-				potentialCut.Clocks = append(potentialCut.Clocks, clocks[k][index])
-			}
-			if communicationDelta == 0 {
-				fmt.Printf("\rcomputing cuts %3.0f%%  \t[%d] found", 100*float32(lw.LevelM)/float32(len(level)), len(consistentCuts))
-				//logger.Printf("%s\n", potentialCut.String())
-				consistentCuts = append(consistentCuts, potentialCut)
-			}
+				comm <- cuts[0:cutsFound]
+			}(core, c)
 		}
+		for i := 0; i < div; i++ {
+			cuts := <-c // wait for everyone to finnish
+			consistentCuts = append(consistentCuts,cuts...)
+			//fmt.Printf("Thread %d complete\n",i)
+		}
+		fmt.Printf("\rcomputing cuts %3.0f%%  \t[%d] found Threads %d", 100*float32(lw.LevelM)/float32(len(level)), len(consistentCuts),div)
+		//logger.Printf("%s\n", potentialCut.String())
 	}
 	fmt.Println()
 	return consistentCuts

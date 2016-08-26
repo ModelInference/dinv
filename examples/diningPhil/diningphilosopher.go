@@ -29,7 +29,7 @@ var (
 	LeftChopstick	bool
 	RightChopstick	bool
 	Excused		bool
-	ID			string
+	ID		string
 )
 
 //Transition into the eating state
@@ -78,7 +78,7 @@ func makePhilosopher(port, neighbourPort int) *Philosopher {
 
 	//for general testing
 	if port == 4000 {
-		ID = fmt.Sprintf("%d",port) 
+		ID = fmt.Sprintf("%d", port)
 	} else {
 		ID = "ALL"
 	}
@@ -107,7 +107,7 @@ func makePhilosopher(port, neighbourPort int) *Philosopher {
 		defer fmt.Printf("Chopstick #%d\n is down", port)	//attempt to show when the chopsticks are no longer available
 		//Incomming request handler
 		for true {
-	dinvRT.Track(fmt.Sprintf("%d", ID), "Excused,Ack,ReleaseStick,ExcuseMe,SLEEP_MAX,Eating,RightChopstick,n,BUFF_SIZE,Thinking,RequestStick,SIZEOFINT,LeftChopstick", Excused, Ack, ReleaseStick, ExcuseMe, SLEEP_MAX, Eating, RightChopstick, n, BUFF_SIZE, Thinking, RequestStick, SIZEOFINT, LeftChopstick)
+			dinvRT.Track(fmt.Sprintf("%d", ID), "Excused,Ack,ReleaseStick,ExcuseMe,SLEEP_MAX,Eating,RightChopstick,n,BUFF_SIZE,Thinking,RequestStick,SIZEOFINT,LeftChopstick", Excused, Ack, ReleaseStick, ExcuseMe, SLEEP_MAX, Eating, RightChopstick, n, BUFF_SIZE, Thinking, RequestStick, SIZEOFINT, LeftChopstick)
 			req, addr := getRequest(conn)
 			go func(request int) {
 				switch request {
