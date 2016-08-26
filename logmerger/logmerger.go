@@ -19,6 +19,7 @@ import (
 	"os"
 	"sort"
 	"strconv"
+	"runtime"
 
 	"github.com/arcaneiceman/GoVector/govec/vclock"
 )
@@ -47,6 +48,9 @@ var (
 
 	hosts int
 )
+
+const (
+	CLEAR_LINE = "\r																															")
 
 func initalizeLogMerger(options map[string]string, inlogger *log.Logger) {
 	if inlogger == nil {
@@ -94,15 +98,69 @@ func initalizeLogMerger(options map[string]string, inlogger *log.Logger) {
 func Merge(logfiles []string, gologfiles []string, options map[string]string, inlogger *log.Logger) {
 	initalizeLogMerger(options, inlogger)
 	logs, goLogs := buildLogs(logfiles, gologfiles)
+	plogs, pgoLogs := partitionLogs(logs, goLogs)
 	//jump to writing
 	if options["mergePlan"] == "NONE" {
 		writeUnmergedTraces(logfiles, logs)
 	} else {
-		states := mineStates(logs, goLogs)
-		writeTraceFiles(states)
+		for i := range plogs {
+			fmt.Printf("Merging group %d\n",i)
+			states := mineStates(plogs[i], pgoLogs[i])
+			writeTraceFiles(states)
+		}
 	}
 }
 
+//partition logs seperates logs that do not communicate into seperate
+//arrays
+func partitionLogs(points [][]Point, gos []*golog) ([][][]Point, [][]*golog) {
+	seperatePoints := make([][][]Point,0)
+	seperategoLogs := make([][]*golog,0)
+	used := make([]bool,len(points))
+	var checked int
+	for checked < len(gos) {
+		found := true
+		ids := make(map[string]bool,0)
+		for found {
+			found = false
+			for i:=0; i<len(gos);i++ {
+				if !used[i] {
+					lastClock := gos[i].clocks[len(gos[i].clocks)-1]
+					if len(ids) == 0 {
+						for id := range lastClock {
+							ids[id] = true
+							found = true
+							used[i] = true
+							checked++
+						}
+					} else if ids[gos[i].id] {
+						for id := range lastClock {
+							ids[id] = true
+							found = true
+							used[i] = true
+							checked++
+						}
+					}
+				}
+			}
+			fmt.Println()
+		}
+		partLog := make ([][]Point,0)
+		partGoLog := make ([]*golog,0)
+		fmt.Printf("Group contains ")
+		for i, log := range gos {
+			if ids[log.id] {
+			fmt.Printf("%s ",log.id)
+				partLog = append(partLog,points[i])
+				partGoLog = append(partGoLog,gos[i])
+			}
+		}
+			fmt.Println()
+		seperatePoints = append(seperatePoints,partLog)
+		seperategoLogs = append(seperategoLogs,partGoLog)
+	}
+	return seperatePoints, seperategoLogs
+}
 //writeUnmergedTraces is used when daikon traces for individual hosts
 //are wanted. The point logs passed in should not be merged
 func writeUnmergedTraces(filenames []string, logs [][]Point) {
@@ -377,6 +435,18 @@ func mergePoints(points []Point) Point {
 		mergedPoint.VectorClock = temp.Bytes()
 	}
 	return mergedPoint
+}
+
+func ThreadCount(size int) int {
+	var numCPU = runtime.NumCPU()
+	var div int
+	//dont bother splitting if it's not worth it
+	if size < THREAD_BOOST {
+		div = 1
+	} else {
+		div = numCPU
+	}
+	return div
 }
 
 func printErr(err error) {
