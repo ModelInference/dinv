@@ -96,7 +96,7 @@ func (lw *LatticeWrapper) Pop( ) []vclock.VClock {
 	//nothing left to pop
 	if lw.CurrentFile == ( len(lw.LatticeD) - 1 ) && lw.LevelM == ( len(lw.LatticeM) - 1 ) {
 		return nil
-	} else if lw.LevelM == len(lw.LatticeM) - 1 {
+	} else if lw.LevelM == len(lw.LatticeM) - 1 && len(lw.LatticeD) > 0 {
 		//fetch from disk
 		lw.CurrentFile++
 		lw.FetchDisk()
@@ -184,7 +184,7 @@ func BuildLattice5(clocks [][]vclock.VClock) *LatticeWrapper {
 	// 'points' and 'levelPoints' are only needed for progress output, not for the algorithm itself
 	// make the total lattice the number of levels squared for safty equal to the size of the ids
 	lw := New()
-	lw.LevelEstimate = levels*levels
+	lw.LevelEstimate = int(levels)
 	lw.LatticeM = make([][]vclock.VClock, lw.LevelEstimate)
 	lw.LatticeM[lw.LevelM] = make([]vclock.VClock, 1)
 	l1 := make([]vclock.VClock,1)
@@ -230,7 +230,7 @@ func BuildLattice5(clocks [][]vclock.VClock) *LatticeWrapper {
 			}
 			//fmt.Printf("Thread %d complete\n",i)
 		}
-		fmt.Printf("\rComputing lattice  %3.0f%% \t points %d\t fanout %d Threads %d", 100*float32(lw.LevelD)/float32(levels), lw.Points, len(lw.LatticeM[lw.LevelM]), div)
+		fmt.Printf("\rComputing lattice  %3.0f%% \t points %d\t fanout %d Threads %d", 100*float32(lw.LevelD)/float32(levels), lw.Points, len(lw.LatticeM[lw.LevelM-1]), div)
 		lw.Push(mapToArray(nextMap))
 		//levelToString(&lattice[lw.Level])
 		
@@ -360,36 +360,7 @@ func mapToQueue(vmap map[string]*vclock.VClock) *queue.Queue {
 	return q
 }
 
-//return id -> clockValue -> vectorClock map
-//TODO clocks were updated to maps[string]uint this function can be
-//simplified
-func clocksToMaps(clocks [][]vclock.VClock) map[string]map[uint64]map[string]uint64 {
-	ids := idClockMapper(clocks)
-	mClocks := make(map[string]map[uint64]map[string]uint64, len(ids))
-	for i, id := range ids {
-		mClocks[id] = make(map[uint64]map[string]uint64, len(clocks[i]))
-		for j, _ := range clocks[i] {
-			selfIndex, foundSelf := clocks[i][j].FindTicks(id)
-			if foundSelf {
-				mClocks[id][selfIndex] = make(map[string]uint64, len(ids))
-				for _, cid := range ids {
-					value, found := clocks[i][j].FindTicks(cid)
-					if found {
-						//logger.Printf("id = %s, index %d, cid %s, val %d\n",id,selfIndex,cid,value)
-						mClocks[id][selfIndex][cid] = value
-					} else {
-						//logger.Printf("not found %s %d %s %d\n",id,selfIndex,cid,value)
-					}
-				}
-			} else {
-				fmt.Printf("cound not find self %s - %d\n", id, j+1)
-			}
-		}
-	}
-	fmt.Println("Done Mapping Clocks")
-	//PrintMaps(mClocks)
-	return mClocks
-}
+
 
 func PrintMaps(clocks map[string]map[uint64]map[string]uint64) {
 	for id := range clocks {
@@ -480,19 +451,8 @@ func correctLatticePoint(loggedClocks []vclock.VClock, latticePoint vclock.VCloc
 }
 
 func fastCorrectLatticePoint(mClocks map[string]map[uint64]map[string]uint64, point vclock.VClock, id string) bool {
-	//fmt.Printf("id match = %s\n",id)
-	clockValue, found := point.FindTicks(id)
-	clock, ok := mClocks[id][clockValue]
-	if !ok {
-		//logger.Printf("Log does not contain a clock for %s val: %d\n", id, clockValue)
-		return false
-	}
+	clock, found := fastSearchClockById(mClocks,point,id)
 	if !found {
-		logger.Printf("id %s not found in point\n", id)
-		return false
-	}
-	if clock[id] != clockValue {
-		logger.Printf("o shit what are you doing! %d != %d\n", clock[id], clockValue)
 		return false
 	}
 	//fmt.Printf("lattice Clock: %s len logged :%d\n",point.ReturnVCString(),len(clock))
