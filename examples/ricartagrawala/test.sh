@@ -10,9 +10,15 @@ function shutdown {
     kill `ps | pgrep ricart | awk '{print $1}'` > /dev/null
 }
 
+function install {
+    echo "installing dinv"
+    cd ~/go/src/bitbucket.org/bestchai/dinv
+    sudo -E go install 
+}
+
+
 function setup {
     for (( i=0; i<$1; i++))
-
     do
         go test $1 -id=$i -hosts=$2 &
     done
@@ -55,7 +61,6 @@ function testWrapper {
     echo testing $1
     echo testing $1 >> passfail.stext
     runTest $1 $2 $3
-    #runOneMutant $1 $2 $3
     mkdir $1-txt
     mv *.txt $1-txt
     shutdown
@@ -63,14 +68,14 @@ function testWrapper {
 
 
 function runTests {
-    cd "test"
-    testWrapper "hoststartup_test.go" $HOSTS $SLEEPTIME
-    testWrapper "onehostonecritical_test.go" $HOSTS $SLEEPTIME
-    testWrapper "onehostmanycritical_test.go" $HOSTS $SLEEPTIME
-    testWrapper "allhostsonecritical_test.go" $HOSTS $SLEEPTIME
+    cd $testdir/test
+    #testWrapper "hoststartup_test.go" $HOSTS $SLEEPTIME
+    #testWrapper "onehostonecritical_test.go" $HOSTS $SLEEPTIME
+    #testWrapper "onehostmanycritical_test.go" $HOSTS $SLEEPTIME
+    #testWrapper "allhostsonecritical_test.go" $HOSTS $SLEEPTIME
     testWrapper "allhostsmanycriticals_test.go" $HOSTS $SLEEPTIME
-    testWrapper "halfhostsonecritical_test.go" $HOSTS $SLEEPTIME
-    testWrapper "halfhostsmanycriticals_test.go" $HOSTS $SLEEPTIME
+    #testWrapper "halfhostsonecritical_test.go" $HOSTS $SLEEPTIME
+    #testWrapper "halfhostsmanycriticals_test.go" $HOSTS $SLEEPTIME
 }
 
 function instrument {
@@ -159,6 +164,7 @@ function runDaikon {
  
 function cleanup {
     cd $testDir/test
+    movelogs
     rm -r ./*-txt
     rm -r dinv*
     rm -r daikon*
@@ -167,15 +173,31 @@ function cleanup {
     rm *.stext
 }    
 
+function movelogs {
+    cd $testDir/test
+    shopt -s nullglob
+    set -- *[gd].txt
+    if [ "$#" -gt 0 ]
+    then
+        name=`date "+%m-%d-%y-%s"`
+        mkdir old/$name
+        mv *[gd].txt ../old/$name
+        mv *.dtrace ../old/$name
+        mv *.gz ../old/$name
+    fi
+}
+
+
 if [ "$1" == "-c" ];
 then
     cleanup
     exit
 fi
+install
 runTests
 runLogMerger
-sortOutput
-runDaikon
+#sortOutput
+#runDaikon
 if [ "$1" == "-d" ];
 then
     exit

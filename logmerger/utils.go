@@ -13,6 +13,9 @@ import (
 	"os"
 	"regexp"
 	"strconv"
+	"crypto/sha1"
+	"io"
+	"strings"
 
 	"github.com/arcaneiceman/GoVector/govec/vclock"
 )
@@ -130,6 +133,53 @@ func matchSendAndReceive(sender vclock.VClock, clocks [][]vclock.VClock, senderI
 	return receiver, receiverEvent, matched
 }
 
+
+func pointsToMaps(points [][]Point) map[string]map[uint64]Point {
+	pointMap := make(map[string]map[uint64]Point,len(points))
+	for i:= range points {
+		byteClock, _ := vclock.FromBytes(points[i][0].VectorClock)
+		id := getClockId([]vclock.VClock{byteClock})
+		pointMap[id] = make(map[uint64]Point,len(points[i]))
+		for j:= range points[i] {
+			inClock , _ := vclock.FromBytes(points[i][j].VectorClock)
+			value, _ := inClock.FindTicks(id)
+			pointMap[id][value]=points[i][j]
+		}
+	}
+	return pointMap
+}
+
+//return id -> clockValue -> vectorClock map
+//TODO clocks were updated to maps[string]uint this function can be
+//simplified
+func clocksToMaps(clocks [][]vclock.VClock) map[string]map[uint64]map[string]uint64 {
+	ids := idClockMapper(clocks)
+	mClocks := make(map[string]map[uint64]map[string]uint64, len(ids))
+	for i, id := range ids {
+		mClocks[id] = make(map[uint64]map[string]uint64, len(clocks[i]))
+		for j, _ := range clocks[i] {
+			selfIndex, foundSelf := clocks[i][j].FindTicks(id)
+			if foundSelf {
+				mClocks[id][selfIndex] = make(map[string]uint64, len(ids))
+				for _, cid := range ids {
+					value, found := clocks[i][j].FindTicks(cid)
+					if found {
+						//logger.Printf("id = %s, index %d, cid %s, val %d\n",id,selfIndex,cid,value)
+						mClocks[id][selfIndex][cid] = value
+					} else {
+						//logger.Printf("not found %s %d %s %d\n",id,selfIndex,cid,value)
+					}
+				}
+			} else {
+				fmt.Printf("cound not find self %s - %d\n", id, j+1)
+			}
+		}
+	}
+	fmt.Println("Done Mapping Clocks")
+	//PrintMaps(mClocks)
+	return mClocks
+}
+
 //searchLogForClock searches the log file for a clock value in key
 //clock with the specified id
 //if such an index is found, the index is returned with a matching
@@ -152,21 +202,44 @@ func searchClockById(clocks []vclock.VClock, keyClock vclock.VClock, id string) 
 	return false, mid
 }
 
-func sumTime(clockSet [][]vclock.VClock) int {
-	max := 0
+func fastSearchClockById(mClocks map[string]map[uint64]map[string]uint64, point vclock.VClock, id string) (map[string]uint64,bool) {
+	//fmt.Printf("id match = %s\n",id)
+	clockValue, found := point.FindTicks(id)
+	clock, ok := mClocks[id][clockValue]
+	if !ok {
+		//logger.Printf("Log does not contain a clock for %s val: %d\n", id, clockValue)
+		return nil, false
+	}
+	if !found {
+		logger.Printf("id %s not found in point\n", id)
+		return nil, false
+	}
+	if clock[id] != clockValue {
+		logger.Printf("o shit what are you doing! %d != %d\n", clock[id], clockValue)
+		return nil, false
+	}
+	return clock, ok
+}
+
+
+func sumTime(clockSet [][]vclock.VClock) uint64 {
 	ids := idClockMapper(clockSet)
+	maxMap := make(map[string]uint64,len(ids))
 	for _, clocks := range clockSet {
 		last := clocks[len(clocks)-1]
-		total := 0
 		for _, id := range ids {
 			ticks, _ := last.FindTicks(id)
-			total += int(ticks)
-		}
-		if total > max {
-			max = total
+			if ticks > maxMap[id] {
+				maxMap[id] = ticks
+			}
 		}
 	}
-	return max
+	var total uint64
+	for _, value := range maxMap {
+		total += value
+	}
+
+	return total
 }
 
 func ClockFromString(clock, regex string) (vclock.VClock, error) {
@@ -252,4 +325,11 @@ func fileExists(path string) (bool, error) {
 		return false, nil
 	}
 	return false, err
+}
+
+func Hash(id string) string {
+	h := sha1.New()
+	io.WriteString(h, id)
+	bytes := fmt.Sprintf("%x", h.Sum(nil))
+	return strings.Trim(bytes, " ")
 }

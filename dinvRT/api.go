@@ -16,8 +16,6 @@ import (
 	"sort"
 	"sync"
 
-	"crypto/sha1"
-	"io"
 )
 
 var (
@@ -132,12 +130,6 @@ func logPairList(pairs []logmerger.NameValuePair, did string) {
 	}
 }
 
-func hash(id string) string {
-	h := sha1.New()
-	io.WriteString(h, id)
-	bytes := fmt.Sprintf("%x", h.Sum(nil))
-	return strings.Trim(bytes, " ")
-}
 
 //variableNamesID merges the names of each variable present in the kv
 //store into a unique id based on their name. This merging strategy
@@ -149,7 +141,7 @@ func variableNamesID(pairs []logmerger.NameValuePair) string {
 		names[i] = pairs[i].VarName
 	}
 	names.Sort()
-	return hash(concatStrings(names))
+	return logmerger.Hash(concatStrings(names))
 
 }
 
@@ -175,7 +167,7 @@ func smearedDumpID(pairs []logmerger.NameValuePair) string {
 	}
 	kvDumpIds = uniqueNames
 
-	return hash(concatStrings(names))
+	return logmerger.Hash(concatStrings(names))
 }
 
 func concatStrings(a []string) string {

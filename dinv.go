@@ -63,7 +63,7 @@ func setFlags() {
 	flag.StringVar(&file, "file", defaultFilename, "-file=filename insturments a file")
 
 	flag.BoolVar(&shivizLog, "shiviz", false, "-shiviz adds shiviz log to output")
-	flag.StringVar(&mergePlan, "plan", defaultMergePlan, "-plan=TOLN merges based on total order, and line number")
+	flag.StringVar(&mergePlan, "plan", defaultMergePlan, "-plan=TOLN merges based on total order, and line number\nOptions\n"+planDiscription)
 	flag.IntVar(&sampleRate, "sample", defaultSampleRate, "-sample=50 % sample of consistant cuts to be analysed")
 	flag.BoolVar(&totallyOrderedCuts, "toc", false, "-toc overlapping cuts are not analysed")
 	flag.StringVar(&renamingScheme, "name", defaultRenameingScheme, "-name=color names hosts after colors includes color/fruit/philosopher")
@@ -286,3 +286,10 @@ func fileExists(path string) (bool, error) {
 	}
 	return false, err
 }
+
+var planDiscription = 
+`TOLN: Totally ordered line number merge, logs are grouped by both the uniqueness of communication pattern, and the dump statements encountered
+ETM: Entire cut merge, each cut is uniquely grouped by the total order of the communication within it (produces exponential files)
+SRM: Send-Receive merge, hosts are paired by sends and receives which have matching dumps
+SCM: Single Cut merge, every cut is grouped together, no totally ordering is considered (usefull for detecting invariants which are always present)
+NONE: Vanilla Daikon merge, the hosts of the system are analysed indepenedently`

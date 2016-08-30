@@ -191,15 +191,17 @@ func buildLogs(logFiles []string, gologFiles []string) ([][]Point, []*golog) {
 
 	for i := range logs {
 		//sort the log as a pre processesing step
+		fmt.Printf("\rSorting Logs %d/%d",i+1,len(logs))
 		sort.Sort(goLogs[i])
 		logs[i] = injectMissingPoints(logs[i], goLogs[i])
 	}
 
 	//create pointLogs executions with only gologs
-	for i := len(logFiles); i < len(gologFiles); i++ {
+	for i := len(logFiles); i < len(goLogs); i++ {
 		sort.Sort(goLogs[i])
 		logs = append(logs, injectMissingPoints(make([]Point, 0), goLogs[i]))
 	}
+	fmt.Println()
 
 	replaceIds(logs, goLogs, renamingScheme)
 
@@ -231,7 +233,7 @@ func mineStates(logs [][]Point, clockLogs []*golog) []State {
 	//consistentCuts := mineConsistentCuts(lattice, clocks, deltaComm)
 	consistentCuts := mineConsistentCuts2(lattice, clocks, deltaComm)
 	logger.Printf("Done\nExtracting States... ")
-	states := statesFromCuts(consistentCuts, clocks, logs)
+	states := statesFromCuts2(consistentCuts, clocks, logs)
 	logger.Printf("Done\n")
 	return states
 }
@@ -267,6 +269,40 @@ func statesFromCuts(cuts []Cut, clocks [][]vclock.VClock, logs [][]Point) []Stat
 	return states
 }
 
+//statesFromCuts constructs an array of ordered states, from a set of
+//ordered cuts. The corresponding log of vector clocks is used to
+//determing total ordering within a cut.
+func statesFromCuts2(cuts []Cut, clocks [][]vclock.VClock, logs [][]Point) []State {
+	states := make([]State, 0)
+	ids := idClockMapper(clocks)
+	//mClocks := clocksToMaps(clocks) //clockWrapper
+	mPoints := pointsToMaps(logs)
+	for _, id := range ids {
+		logger.Println(id)
+	}
+	for cutIndex, cut := range cuts {
+		state := &State{}
+		state.Cut = cut
+		for i, clock := range state.Cut.Clocks {
+			time, _ := clock.FindTicks(ids[i])
+			point, found := mPoints[ids[i]][time]
+			//TODO deal with local events, empty and local events are
+			if found {
+				state.Points = append(state.Points, point)
+			} else {
+				logger.Fatalf("UNABLE TO LOCATE LOG %s entry %s\n", ids[i], point.String())
+				fmt.Printf("unfound log entry %s index %s\n",ids[i],point.String())
+			}
+		}
+		state.TotalOrdering = totalOrderFromCut(cut, clocks) //SPEED UP
+		logger.Printf("%s\n", state.String())
+		fmt.Printf("\rExtracting states %3.0f%% \t[%d] found", 100*float32(cutIndex)/float32(len(cuts)), len(states))
+		states = append(states, *state)
+	}
+	fmt.Println()
+	return states
+}
+
 //writeTraceFiles constructs a set unique trace file based on several
 //specifiations in the MergeSpec.
 func writeTraceFiles(states []State) {
@@ -278,12 +314,7 @@ func writeTraceFiles(states []State) {
 	if totallyOrderedCuts {
 		states = filterTotalOrder(states)
 	}
-	 fmt.Printf("lenght of states: %d", len(states))
-	 /*
-	 for _, state := range states {
-	 	fmt.Println(state.String())
-	 }
-	 */
+	fmt.Printf("length of states: %d", len(states))
 	mergedPoints := mergePlan(states)
 	written := make([][]bool, len(mergedPoints))
 	for i := range mergedPoints {
@@ -353,7 +384,7 @@ func totalOrderLineNumberMerge(states []State) [][]Point {
 				points = append(points, state.Points[state.TotalOrdering[j][k]])
 			}
 			mergedPoints[i][j] = mergePoints(points)
-			//logger.Printf("Merged points id :%s\n\n===========\n", mergedPoints[i][j].Id)
+			logger.Printf("Merged points id :%s\n\n===========\n", mergedPoints[i][j].Id)
 		}
 	}
 	fmt.Println()
@@ -426,7 +457,7 @@ func mergePoints(points []Point) Point {
 	var mergedPoint Point
 	for _, point := range points {
 		mergedPoint.Dump = append(mergedPoint.Dump, point.Dump...) //...
-		logger.Printf("id:%s\n", point.Id)
+		//logger.Printf("id:%s\n", point.Id)
 		mergedPoint.Id = mergedPoint.Id + "_" + point.Id
 		pVClock1, _ := vclock.FromBytes(mergedPoint.VectorClock)
 		pVClock2, _ := vclock.FromBytes(point.VectorClock)
