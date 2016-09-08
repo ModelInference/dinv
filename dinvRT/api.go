@@ -32,6 +32,8 @@ var (
 	varStoreMx *sync.Mutex                        // manages access to varStore map
 	kvDumpIds  []string
 	genKVID    func([]logmerger.NameValuePair) string
+	
+	initMutex *sync.Mutex = &sync.Mutex{}
 )
 
 //Dump logs the values of variables passed in as a set of varadic
@@ -297,6 +299,8 @@ func CustomEncoderDecoder(encoder func(interface{}) ([]byte, error), decoder fun
 //an id for it. This method is called only once per logger, and
 //writes the first log.
 func initDinv(hostName string) {
+	initMutex.Lock()
+	defer initMutex.Unlock()
 	if !initialized {
 		if hostName == "" {
 			id = fmt.Sprintf("%d", time.Now().Nanosecond())

@@ -9,6 +9,7 @@ import (
 	"log"
 	"os"
 	"regexp"
+	"runtime/pprof"
 
 	"bitbucket.org/bestchai/dinv/instrumenter"
 	"bitbucket.org/bestchai/dinv/logmerger"
@@ -48,6 +49,7 @@ var (
 	//options for both
 	verbose bool
 	debug   bool
+	cpuprofile string
 
 	logger *log.Logger
 )
@@ -74,6 +76,8 @@ func setFlags() {
 	flag.BoolVar(&verbose, "verbose", false, "-verbose logs extensive output")
 	flag.BoolVar(&verbose, "v", false, "-v logs extensive output")
 	flag.BoolVar(&debug, "debug", false, "-debug adds pedantic level of logging")
+
+	flag.StringVar(&cpuprofile, "cpuprofile", "", "write cpu profile to file")
 	flag.Parse()
 }
 
@@ -92,6 +96,15 @@ func main() {
 	if debug {
 		options["debug"] = "on"
 	}
+
+	if cpuprofile != "" {
+        f, err := os.Create(cpuprofile)
+        if err != nil {
+            log.Fatal(err)
+        }
+        pprof.StartCPUProfile(f)
+        defer pprof.StopCPUProfile()
+    }
 
 	// Insturmenter option setting
 	if inst {

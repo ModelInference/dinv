@@ -165,11 +165,6 @@ function runDaikon {
 function cleanup {
     cd $testDir/test
     movelogs
-    rm -r ./*-txt
-    rm -r dinv*
-    rm -r daikon*
-    rm *.gz
-    rm *.txt
     rm *.stext
 }    
 
