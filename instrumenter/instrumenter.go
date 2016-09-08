@@ -38,6 +38,22 @@ var (
 	instFile         = ""
 )
 
+var (
+	globals map[*ast.File][]string
+	locals map[localScope][]string
+)
+
+type localScope struct {
+	start, end int
+}
+
+func (l localScope) Inside (pos int) bool {
+	if pos >= l.start && pos <= l.end {
+		return true
+	}
+	return false
+}
+
 //Instrument oversees the instrumentation of an entire package
 //for each file provided
 func Instrument(options map[string]string, inlogger *log.Logger) {
@@ -87,6 +103,8 @@ func initializeInstrumenter(options map[string]string, inlogger *log.Logger) {
 			continue
 		}
 	}
+	globals = make(map[*ast.File][]string)
+	locals = make(map[localScope][]string)
 }
 
 
@@ -169,7 +187,8 @@ func InsturmentSource(program *programslicer.ProgramWrapper, pnum, snum int) {
 	if len(allNodes) > 0 {
 		addImports(program.Fset, program.Packages[pnum].Sources[snum].Comments)
 	}
-	for _, logNode := range allNodes {
+	for i , logNode := range allNodes {
+		fmt.Printf("\r Insturmented %d/%d log nodes",i,len(allNodes))
 		lineNumber := program.Fset.Position(logNode.Pos()).Line
 		collectedVariables := getAccessedAffectedVars(logNode,affected,program)
 		logger.Printf("collected variables #%d\n",len(collectedVariables))
@@ -315,6 +334,13 @@ func GetAccessibleVarsInScope(dumpPosition int, file *ast.File, fset *token.File
 func GetGlobalVariables(file *ast.File, fset *token.FileSet) []string {
 	var results []string
 
+	//test if the globals for this ast file have allready been found
+	_ , ok := globals[file]
+	//return the given example if they are known
+	if ok {
+		return globals[file]
+	}
+
 	global_objs := file.Scope.Objects
 	for identifier, _ := range global_objs {
 		//get variables of type constant and Var
@@ -326,6 +352,9 @@ func GetGlobalVariables(file *ast.File, fset *token.FileSet) []string {
 	}
 	structVars := collectStructs(results, file)
 	results = append(results, structVars...)
+
+	//update globals
+	globals[file] = results
 	return results
 }
 
@@ -339,7 +368,18 @@ func GetLocalVariables(dumpPosition int, file *ast.File, fset *token.FileSet) []
 	if dumpPosition > filePos.Size() || dumpPosition+2 > filePos.Size() {
 		return make([]string, 0)
 	}
+
+	//check cache of local scopes to save a bit of time
+	for l := range locals {
+		if l.Inside(dumpPosition) {
+			return locals[l]
+		}
+	}
+
 	path, _ := astutil.PathEnclosingInterval(file, filePos.Pos(dumpPosition), filePos.Pos(dumpPosition+2)) // why +2
+	for _, n := range path {
+		fmt.Println(astutil.NodeDescription(n))
+	}
 	//collect the parameters to the function
 	if len(path) > 0 {
 		_, f := findFunction(path[0], file.Decls)
@@ -351,7 +391,7 @@ func GetLocalVariables(dumpPosition int, file *ast.File, fset *token.FileSet) []
 			}
 		}
 	}
-	fmt.Println("vars : %d\n",len(results))
+	//fmt.Println("vars : %d\n",len(results))
 	for _, astnode := range path {
 		logger.Println("%v", astutil.NodeDescription(astnode))
 		switch t := astnode.(type) {
@@ -389,6 +429,8 @@ func GetLocalVariables(dumpPosition int, file *ast.File, fset *token.FileSet) []
 	//Compute the closure of structures in the variables
 	structVars := collectStructs(results, file)
 	results = append(results, structVars...)
+	//cache local scope
+	locals[localScope{int(path[0].Pos()),int(path[0].End())}] = results
 	logger.Printf("local Vars: %s\n",results)
 	return results
 }
@@ -427,7 +469,7 @@ func collectStructs(varNames []string, file *ast.File) []string {
 		}
 		return true
 	})
-	fmt.Printf("Found %d structs\n",len(structs))
+	//fmt.Printf("Found %d structs\n",len(structs))
 	//add the named extensions to each struce itterativle
 	var structResults []string
 	ast.Inspect(file, func(n ast.Node) bool {
@@ -494,7 +536,7 @@ func GenerateDumpCode(vars []string, lineNumber int, annotation, path, packagena
 	annotationTypeRegex := regexp.MustCompile("//@([a-z]*)")
 	runtimeFunctionCall := strings.Title(annotationTypeRegex.FindStringSubmatch(annotation)[1])
 
-	fmt.Printf("Annotation %s, Function Call %s\n",annotation,runtimeFunctionCall)
+	//fmt.Printf("Annotation %s, Function Call %s\n",annotation,runtimeFunctionCall)
 	if len(vars) <= 0 {
 		return annotation + " (This line [" + strconv.Itoa(lineNumber) + "] contains no in-scope networking variables)"
 	}

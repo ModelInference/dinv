@@ -1,4 +1,4 @@
-package ricartagrawala
+package main
 
 import (
 	"bitbucket.org/bestchai/dinv/dinvRT"
@@ -10,6 +10,8 @@ import (
 	"bytes"
 	"encoding/gob"
 	"log"
+	"flag"
+	"io"
 )
 
 const BASEPORT = 10000
@@ -29,6 +31,7 @@ var (
 	report	Report
 
 	inCritical bool
+	logger *log.Logger
 )
 
 type Message struct {
@@ -70,22 +73,49 @@ func (r Report) ReportMatchesPlan(p Plan) bool {
 
 func critical() {
 	inCritical = true
-	dinvRT.Dump(fmt.Sprintf("%d",plan.Id),"crictical",inCritical)
+	dinvRT.Track(fmt.Sprintf("%dC",plan.Id),"crictical",inCritical)
 
 	report.Criticals++
-	//fmt.Printf("Running Critical Section on %d, run(%d/%d)  with Request time:%d \n", id, report.Criticals,plan.Criticals,RequestTime)
+	fmt.Printf("Running Critical Section on %d, run(%d/%d)  with Request time:%d \n", id, report.Criticals,plan.Criticals,RequestTime)
 	inCritical = false
 }
+
+var (
+	idInput int
+	hostsInput int
+	timeInput int
+)
+
+func main() {
+	fmt.Println("STARTING")
+	var idarg = flag.Int("id",0, "hosts id")
+	var hostsarg = flag.Int("hosts",0, "#of hosts")
+	var timearg = flag.Int("time",0,"timeout")
+	flag.Parse()
+	idInput = *idarg
+	hostsInput = *hostsarg
+	timeInput = *timearg
+	plan := Plan{idInput,10,timeInput}
+	fmt.Println(plan.Criticals)
+	report := Host(idInput,hostsInput,plan)
+	if !report.ReportMatchesPlan(plan) {
+		fmt.Println("FAILED")
+
+	} else {
+		fmt.Println("PASSED")
+	}
+}
+	
 
 func Host(idArg, hostsArg int, planArg Plan) Report {
 	id = idArg
 	hosts = hostsArg
 	plan = planArg
 	startTime = time.Now()
-	//fmt.Printf("Starting %d with plan to execute crit %d times\n", id+BASEPORT,planArg.Criticals)
+	fmt.Printf("Starting %d with plan to execute crit %d times\n", id+BASEPORT,planArg.Criticals)
 	initConnections(id, hosts)
-	//fmt.Printf("Connected to %d hosts on %d\n", len(nodes), id)
-	time.Sleep(100 * time.Millisecond)
+	fmt.Printf("Connected to %d hosts on %d\n", len(nodes), id)
+	time.Sleep(1000 * time.Millisecond)
 
 	//start the receving demon
 	go receive()
@@ -104,7 +134,6 @@ func Host(idArg, hostsArg int, planArg Plan) Report {
 	for true {
 		
 
-		dinvRT.Dump(fmt.Sprintf("%d",plan.Id),"crictical",inCritical)
 		//exit if the job is done, and everyone else is done too
 		if len(done) >= hosts && len(okays) >= (hosts-1) {
 			fmt.Printf("Host %d done\n", plan.Id)
@@ -128,7 +157,7 @@ func Host(idArg, hostsArg int, planArg Plan) Report {
 		}
 
 		if !crit && !finishing {
-			crit = (rand.Float64() > .99)
+			crit = (rand.Float64() > .8)
 			if crit {
 				RequestTime = Lamport
 				outstanding = make([]int, 0)
@@ -181,7 +210,7 @@ func checkUpdates(crit, finishing bool, timeouts *int, sentTime *time.Time, okay
 				}
 			}
 			trues += "]"
-			//fmt.Println(trues)
+			fmt.Println(trues)
 
 			break
 		case "critical":
@@ -192,12 +221,12 @@ func checkUpdates(crit, finishing bool, timeouts *int, sentTime *time.Time, okay
 				//fmt.Printf("sending ok to %d from %d Their Request Time:%d My Request Time: %d\n",m.Sender,id,m.Lamport,RequestTime)
 				send("ok", m.Sender)
 			} else {
-				//fmt.Printf("withholding ok (%d/%d) on %d from request id:%d lamport:%d Requesting Time :%d\n",len(outstanding),hosts-1,id,m.Sender,m.Lamport,RequestTime)
+				//fmt.Printf("withholding ok (%d/%d) on %d from request id:%d lamport:%d Requesting Time :%d\n",len(*outstanding),hosts-1,id,m.Sender,m.Lamport,RequestTime)
 				*outstanding = append(*outstanding, m.Sender)
 			}
 			break
 		case "death":
-			crashGracefully(fmt.Errorf("I %d Got the death message from %d now I die too\n", id, m.Sender))
+			//crashGracefully(fmt.Errorf("I %d Got the death message from %d now I die too\n", id, m.Sender))
 			break
 		case "done":
 			done[m.Sender] = true
@@ -239,13 +268,14 @@ func receive() {
 		buf := make([]byte, 1024)
 		m := new(Message)
 		//listen.SetDeadline(time.Now().Add(time.Second))
-		_, err := capture.Read(listen.Read,buf[0:])
+		n , err := capture.Read(listen.Read,buf)
+		//fmt.Printf("Received :%s\n%d\n",buf,n)
 		if err != nil {
 			crashGracefully(err)
-			break
+			//break
 		}
-		var network bytes.Buffer
-		dec := gob.NewDecoder(&network)
+		network := bytes.NewReader(buf[:n])
+		dec := gob.NewDecoder(network)
 		err = dec.Decode(&m)
 		if err != nil {
 			crashGracefully(err)
@@ -254,7 +284,7 @@ func receive() {
 		Lamport++
 
 		//dinvRT.Unpack(buf[:n], m)
-		//fmt.Printf("received %s [ %d <-- %d ]\n",m.String(),id,m.Sender)
+		//fmt.Printf("received %s [ %d --> %d ]\n",m.String(),m.Sender,id)
 		if m.Lamport > Lamport {
 			Lamport = m.Lamport
 		}
@@ -264,7 +294,7 @@ func receive() {
 }
 
 func broadcast(msg string) {
-	//fmt.Printf("broadcasting %s\n",msg)
+	fmt.Printf("broadcasting %s\n",msg)
 	for i := range nodes {
 		send(msg, i)
 	}
@@ -283,7 +313,13 @@ func send(msg string, host int) {
 	if err != nil {
 		log.Fatal("encode :", err)
 	}
-	capture.WriteToUDP(listen.WriteToUDP,network.Bytes(),nodes[host])
+	//fmt.Println(network.Bytes())
+	_, err = capture.WriteToUDP(listen.WriteToUDP,network.Bytes(),nodes[host])
+	dinvRT.Track(fmt.Sprintf("%dS",plan.Id),"crictical",inCritical)
+	if err != nil {
+		crashGracefully(err)
+	}
+
 }
 
 func initConnections(id, hosts int) {
@@ -300,6 +336,7 @@ func initConnections(id, hosts int) {
 			continue
 		} else {
 			nodes[i], err = net.ResolveUDPAddr("udp4", ":"+fmt.Sprintf("%d", BASEPORT+i))
+			fmt.Println(nodes[i])
 			crashGracefully(err)
 		}
 	}
@@ -307,6 +344,10 @@ func initConnections(id, hosts int) {
 
 func crashGracefully(err error) {
 	if err != nil {
+		if err == io.EOF {
+			fmt.Println("dont worry about eof")
+			return
+		}
 		fmt.Println(err)
 		report.ErrorMessage = err
 		report.Crashed = true

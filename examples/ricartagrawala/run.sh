@@ -3,7 +3,7 @@
 
 #!/bin/bash
 
-HOSTS=3
+HOSTS=5
 SLEEPTIME=20
 
 DINV=$GOPATH/src/bitbucket.org/bestchai/dinv
@@ -21,18 +21,17 @@ function install {
 
 
 function runTest {
-    cd $testDir/test
+    cd $testDir
     pids=()
     for (( i=0; i<$HOSTS; i++))
     do
-        go test "allhostsmanycriticals_test.go" -id=$i -hosts=$HOSTS -time=$SLEEPTIME &
-        pids[$i]=$!
+        echo $i
+        go run ricartagrawala.go -id=$i -hosts=$HOSTS -time=$SLEEPTIME &
     done
 
-    for (( i=0; i<$2; i++))
-    do
-        wait ${pids[$i]}
-    done
+    sleep 15
+    cat out.txt
+    shutdown
 }
 
 
@@ -41,34 +40,42 @@ function instrument {
 }
 
 function runLogMerger {
-    cd $testDir/test
-    dinv -l *d.txt *g.txt
+    cd $testDir
+    dinv -l -plan=SCM *d.txt *g.txt
 }
     
 
 function cleanup {
-    cd $testDir/test
+    cd $testDir
     movelogs
-    rm -r ./*-txt
-    rm -r dinv*
-    rm -r daikon*
-    rm *.gz
-    rm *.txt
-    rm *.stext
+    shutdown
 }    
 
 function movelogs {
-    cd $testDir/test
+    cd $testDir
     shopt -s nullglob
     set -- *[gd].txt
     if [ "$#" -gt 0 ]
     then
         name=`date "+%m-%d-%y-%s"`
         mkdir old/$name
-        mv *[gd].txt ../old/$name
-        mv *.dtrace ../old/$name
-        mv *.gz ../old/$name
+        mv *[gdt].txt old/$name
+        mv *.dtrace old/$name
+        mv *.gz old/$name
     fi
+}
+
+#runDaikon first preforms work on the trace files, then prints out the invareints detected.
+function runDaikon {
+ cd $testDir
+ for file in ./*.dtrace; do
+        java daikon.Daikon $file
+ done
+ rm output.txt
+for trace in ./*.gz; do
+    java daikon.PrintInvariants $trace >> output.txt
+done
+cat output.txt
 }
 
 
@@ -80,13 +87,12 @@ fi
 install
 runTest
 runLogMerger
-#sortOutput
-#runDaikon
+runDaikon
 if [ "$1" == "-d" ];
 then
     exit
 fi
-#cleanup
+cleanup
 
 
 
