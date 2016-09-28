@@ -1,13 +1,14 @@
 #!/bin/bash
-# sum/run.sh controls the execution of the sum client server program.
-# client sends two random integers to server, and server responds with
-# the sum.
+# sum/run.sh controls the execution of the sum client server program. client
+# sends two random integers to server, and server responds with the sum.
 
-#This script mannages the instrumentation and execution of these programs, as well as the merging of their generated logs, and execution of daikon on their generated trace files.
+# This script mannages the instrumentation and execution of these programs, as
+# well as the merging of their generated logs, and execution of daikon on their
+# generated trace files.
 
-#The detected data invarients should include term1 + term2 = sum
+# The detected data invarients should include term1 + term2 = sum
 
-#Options 
+#Options
 #   -d : dirty run, all generated files are left after execution for
 #   inspection
 #   -c : cleanup, removes generated files created during the run
@@ -38,12 +39,11 @@ function fixModDir {
 }
 
 function runTestPrograms {
-    cd $testDir/server
-    go run serverEntry.go &
-    cd $testDir/client
-    go run clientEntry.go &
-    ClientPID=$!
-    wait $ClientPID
+    cd $testDir
+    go run server/server.go &
+    go run client/client.go &
+    wait $!
+    killall server
 }
 
 
@@ -69,7 +69,6 @@ function runDaikon {
 
 function shivizMerge {
     cat $DINV/slog.log-Log.txt $DINV/testclient.log-Log.txt > ~/Research/expr/dinv_T2/shiviz.txt
-    
 }
 
 function cleanUp {
