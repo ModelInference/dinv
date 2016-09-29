@@ -27,7 +27,7 @@ var (
 	Encoder     *json.Encoder // global name value pair point encoder
 
 	useKV      = true
-	resetKV    = true                             // determines if the KV is emptied after the values were written to the log
+	resetKV    = false                             // determines if the KV is emptied after the values were written to the log
 	varStore   map[string]logmerger.NameValuePair // used to store variable name/value pairs between multiple dumps
 	varStoreMx *sync.Mutex                        // manages access to varStore map
 	kvDumpIds  []string
