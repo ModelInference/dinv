@@ -506,3 +506,8 @@ func writeShiVizLog(pointLog [][]Point, goLogs []*golog) {
 		}
 	}
 }
+
+func writeProgress(output string) {
+	fmt.Printf("\r%s",CLEAR_LINE)
+	fmt.Printf("\r%s",output)
+}
