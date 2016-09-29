@@ -131,7 +131,7 @@ func (lw *LatticeWrapper) FetchDisk() {
 		} else {
 			fmt.Println(e)
 		}
-		fmt.Printf("\rFetching lattice from Disk %3.0f%% ", 100*float64(soFar)/float64(size))
+		writeProgress(fmt.Sprintf("Fetching lattice from Disk %3.0f%% ", 100*float64(soFar)/float64(size)))
 	}
 	latticeFile.Close()
 	lw.LatticeM = lattice
@@ -151,7 +151,7 @@ func (lw *LatticeWrapper) DiskDump() {
 		encoder.Encode(lw.LatticeM[i])
 		latticeFile.Write(buf.Bytes())
 		buf.Reset()
-		fmt.Printf("\rWriting to Disk %3.0f%% ", 100*float32(i)/float32(lw.LevelM))
+		writeProgress(fmt.Sprintf("Writing to Disk %3.0f%% ", 100*float32(i)/float32(lw.LevelM)))
 	}
 	err = latticeFile.Close()
 	if err != nil {
