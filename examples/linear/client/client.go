@@ -1,18 +1,18 @@
 package main
 
 import (
+	"bitbucket.org/bestchai/dinv/dinvRT"
 	"fmt"
 	"github.com/arcaneiceman/GoVector/capture"
-	"bitbucket.org/bestchai/dinv/dinvRT"
 	"math/rand"
 	"net"
 	"os"
 )
 
 const (
-	ADDITION_ARGS	= 2
-	LARGEST_TERM	= 100
-	RUNS		= 50
+	ADDITION_ARGS = 2
+	LARGEST_TERM  = 100
+	RUNS          = 50
 )
 
 var debug = false
@@ -26,8 +26,8 @@ func main() {
 	PrintErr(errDial)
 
 	var (
-		buf			[1024]byte
-		term1, term2, sum	int
+		buf               [1024]byte
+		term1, term2, sum int
 	)
 	fmt.Println()
 	for t := 0; t <= RUNS; t++ {
@@ -37,14 +37,14 @@ func main() {
 
 		msg := MarshallInts([]int{term1, term2})
 		// sending UDP packet to specified address and port
-		_, errWrite := capture.Write(conn.Write,msg)
+		_, errWrite := capture.Write(conn.Write, msg)
 
 		PrintErr(errWrite)
 
 		dinvRT.Track("main_client_42_", "main_client_42_SIZEOFINT,main_client_42_RUNS,main_client_42_LARGEST_TERM,main_client_42_debug,main_client_42_ADDITION_ARGS,main_client_42_rAddr,main_client_42_errR,main_client_42_lAddr,main_client_42_errL,main_client_42_conn,main_client_42_errDial,main_client_42_buf", SIZEOFINT, RUNS, LARGEST_TERM, debug, ADDITION_ARGS, rAddr, errR, lAddr, errL, conn, errDial, buf)
 		// Reading the response message
 
-		_, errRead := capture.Read(conn.Read,buf[0:])
+		_, errRead := capture.Read(conn.Read, buf[0:])
 		dinvRT.Track("main_client_46_", "main_client_46_SIZEOFINT,main_client_46_RUNS,main_client_46_LARGEST_TERM,main_client_46_debug,main_client_46_ADDITION_ARGS,main_client_46_rAddr,main_client_46_errR,main_client_46_lAddr,main_client_46_errL,main_client_46_conn,main_client_46_errDial,main_client_46_buf", SIZEOFINT, RUNS, LARGEST_TERM, debug, ADDITION_ARGS, rAddr, errR, lAddr, errL, conn, errDial, buf)
 		PrintErr(errRead)
 

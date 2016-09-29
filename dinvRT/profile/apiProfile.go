@@ -3,15 +3,15 @@ package main
 import (
 	"bitbucket.org/bestchai/dinv/dinvRT"
 	"flag"
-	"runtime/pprof"
 	"log"
 	"os"
+	"runtime/pprof"
 )
 
 var (
-	i int
-	s string
-	b bool
+	i          int
+	s          string
+	b          bool
 	cpuprofile = flag.String("cpuprofile", "", "write cpu profile to file")
 )
 
@@ -28,9 +28,7 @@ func main() {
 		defer pprof.StopCPUProfile()
 	}
 
-	for i:= 0; i<RUNS; i++ {
-		dinvRT.Dump("id","int,string,bool",i,s,b)
+	for i := 0; i < RUNS; i++ {
+		dinvRT.Dump("id", "int,string,bool", i, s, b)
 	}
 }
-	
-

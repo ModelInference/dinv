@@ -26,7 +26,7 @@ func main() {
 	instrumenter.Unpack(buf[:n], &recMessage)
 	//typeAssertedMessage := unpackedMessage.(string)
 	fmt.Println(">>>" + recMessage)
-	instrumenter.Dump("n,msg",n,msg)
+	instrumenter.Dump("n,msg", n, msg)
 	os.Exit(0)
 }
 

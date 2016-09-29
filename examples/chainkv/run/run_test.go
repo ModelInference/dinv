@@ -1,24 +1,24 @@
 package chainkv_test
 
 import (
-	"testing"
+	"bitbucket.org/bestchai/dinv/examples/chainkv"
 	"flag"
 	"fmt"
-	"bitbucket.org/bestchai/dinv/examples/chainkv"
+	"testing"
 )
 
 const BASEPORT = 8080
 
 var (
-	idInput int
+	idInput    int
 	hostsInput int
-	endInput int
+	endInput   int
 )
 
 func TestMain(m *testing.M) {
-	var idarg = flag.Int("id",0, "hosts id")
-	var hostsarg = flag.Int("hosts",0, "#of hosts")
-	var endarg = flag.Int("end",0, "-------")
+	var idarg = flag.Int("id", 0, "hosts id")
+	var hostsarg = flag.Int("hosts", 0, "#of hosts")
+	var endarg = flag.Int("end", 0, "-------")
 	flag.Parse()
 	idInput = *idarg
 	hostsInput = *hostsarg
@@ -26,17 +26,17 @@ func TestMain(m *testing.M) {
 	m.Run()
 }
 
-func TestChain(t *testing.T){
+func TestChain(t *testing.T) {
 	if idInput == 0 {
 		//start the client
-		chainkv.Client(fmt.Sprintf("%d",BASEPORT),fmt.Sprintf("%d",BASEPORT + 1), fmt.Sprintf("%d",BASEPORT + hostsInput))
+		chainkv.Client(fmt.Sprintf("%d", BASEPORT), fmt.Sprintf("%d", BASEPORT+1), fmt.Sprintf("%d", BASEPORT+hostsInput))
 		// change endInput to 0 for normal execution and 1 for skipped
 		// last node
 	} else if idInput < (hostsInput - 1) {
 		//start a middle node
-		chainkv.Node(fmt.Sprintf("%d",BASEPORT + idInput),fmt.Sprintf("%d",BASEPORT + idInput + 1), fmt.Sprintf("%d",BASEPORT + hostsInput))
+		chainkv.Node(fmt.Sprintf("%d", BASEPORT+idInput), fmt.Sprintf("%d", BASEPORT+idInput+1), fmt.Sprintf("%d", BASEPORT+hostsInput))
 	} else {
 		//start the last node
-		chainkv.Node(fmt.Sprintf("%d",BASEPORT + idInput),fmt.Sprintf("%d",BASEPORT), fmt.Sprintf("%d",BASEPORT + hostsInput))
+		chainkv.Node(fmt.Sprintf("%d", BASEPORT+idInput), fmt.Sprintf("%d", BASEPORT), fmt.Sprintf("%d", BASEPORT+hostsInput))
 	}
 }

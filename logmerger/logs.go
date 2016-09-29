@@ -81,7 +81,7 @@ func injectMissingPoints(points []Point, log *golog) []Point {
 			//fmt.Printf("Injecting Clock %s into log %s\n", log.clocks[goLogIndex].ReturnVCString(), log.id)
 			newPoint := new(Point)
 			//newPoint.Id = points[0].Id //this may be bad (attempt to fix output logs) BUG
-			
+
 			newPoint.VectorClock = log.clocks[goLogIndex].Bytes()
 			injectedPoints = append(injectedPoints, *newPoint)
 			goLogIndex++

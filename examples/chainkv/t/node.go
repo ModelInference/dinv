@@ -3,8 +3,8 @@ package chainkv
 import (
 	"fmt"
 	"net"
-	"strconv"
 	"os"
+	"strconv"
 	"time"
 
 	"sync"
@@ -13,27 +13,27 @@ import (
 )
 
 type KVNode struct {
-	kvmap	map[string]KeyValInfo
-	mapMutex	*sync.Mutex
+	kvmap    map[string]KeyValInfo
+	mapMutex *sync.Mutex
 }
 
 type KeyValInfo struct {
-	Key		string
-	Val		string
-	Unavailable	bool
+	Key         string
+	Val         string
+	Unavailable bool
 }
 
 type Message struct {
-	Request		string
-	Key		string
-	Val		string
-	Unavailable	int
-	err		error
+	Request     string
+	Key         string
+	Val         string
+	Unavailable int
+	err         error
 }
 
 var me KVNode
 var nextNode *net.UDPAddr
-var listen *net.UDPConn		
+var listen *net.UDPConn
 var id int
 var storeSize int
 var last bool
@@ -43,12 +43,12 @@ var myLog *os.File
 //+@# Automatic Documentation by Dovid, Generated (Sun Apr 24 13:43:44 PDT 2016)
 // >>> 	 err (error), n (int), buf ([512]byte), errWrite (error), out ([]byte),
 // >>> 	 m (*testing.Message), err (error)
-// >>> sent on line:97 by listen 
+// >>> sent on line:97 by listen
 //       instrumenter.Dump("err,n,buf,errWrite,out,m.Request,m.Key,m.Val,m.Unavailable,m.err",err,n,buf,errWrite,out,m.Request,m.Key,m.Val,m.Unavailable,m.err)
 // <<< 	 err (error), storeSize (int),
 // <<< 	 m (*testing.Message), err (error), key (int), errWrite (error),
 // <<< 	 n (int), err (error), out ([]byte), keyValInfo (*testing.KeyValInfo)
-// <<< received on line:61 by listen 
+// <<< received on line:61 by listen
 //       instrumenter.Dump("err,storeSize,m.Request,m.Key,m.Val,m.Unavailable,m.err,err,errWrite,n,out,keyValInfo.Key,keyValInfo.Val,keyValInfo.Unavailable" ,err,storeSize,m.Request,m.Key,m.Val,m.Unavailable,m.err,errWrite,n,out,keyValInfo.Key,keyValInfo.Val,keyValInfo.Unavailable)
 //-@# End Auto Documentation
 func Node(idArg, nextArg, lastArg string) {
@@ -92,7 +92,6 @@ func Node(idArg, nextArg, lastArg string) {
 			break
 		}
 
-
 		out := instrumenter.Pack(m)
 		_, errWrite := listen.WriteToUDP(out, nextNode)
 		errPrint(errWrite)
@@ -124,7 +123,7 @@ func initNode(idArg, next, lastArg string) {
 }
 
 func nLog(message string) {
-	message = message + " ("+time.Now().String()+ ") "
+	message = message + " (" + time.Now().String() + ") "
 	fmt.Println(message)
 	myLog.WriteString(message + "\n")
 }
@@ -137,9 +136,9 @@ func errPrint(err error) {
 }
 
 var idMap = map[string]string{
-	"8081":	"A",
-	"8082":	"B",
-	"8083":	"C",
-	"8084":	"D",
-	"8085":	"E",
+	"8081": "A",
+	"8082": "B",
+	"8083": "C",
+	"8084": "D",
+	"8085": "E",
 }

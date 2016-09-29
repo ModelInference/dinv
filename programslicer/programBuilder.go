@@ -7,21 +7,20 @@
 package programslicer
 
 import (
-	"os"
 	"bufio"
+	"bytes"
+	"fmt"
 	"go/ast"
 	"go/parser"
 	"go/token"
-	"bytes"
-	"fmt"
+	"os"
 
 	"go/printer"
 
 	"bitbucket.org/bestchai/dinv/programslicer/cfg"
-	"golang.org/x/tools/go/loader"
 	"go/types"
+	"golang.org/x/tools/go/loader"
 )
-
 
 //Program wrapper is a wrapper for an entire package, the Source code
 //of every file in the package is found in Source.
@@ -69,8 +68,6 @@ func LoadProgram(SourceFiles []*ast.File, config loader.Config) (*loader.Program
 	return Prog, nil
 }
 
-
-
 func GetWrapperFromString(SourceString string) (*ProgramWrapper, error) {
 	var config loader.Config
 	Fset := token.NewFileSet()
@@ -100,23 +97,23 @@ func GetWrapperFromString(SourceString string) (*ProgramWrapper, error) {
 }
 
 func GetProgramWrapperFile(path string) (*ProgramWrapper, error) {
-	  file, err := os.Open(path)
-	  if err != nil {
+	file, err := os.Open(path)
+	if err != nil {
 		return nil, err
-	  }
-	  defer file.Close()
+	}
+	defer file.Close()
 
-	  var Source string
-	  scanner := bufio.NewScanner(file)
-	  for scanner.Scan() {
+	var Source string
+	scanner := bufio.NewScanner(file)
+	for scanner.Scan() {
 		Source = Source + scanner.Text() + "\n"
-	  }
-	  p, err := GetWrapperFromString(Source)
-	  if err != nil {
-		  return nil, err
-	  }
-	  p.Packages[0].Sources[0].Filename = path
-	  return p, nil
+	}
+	p, err := GetWrapperFromString(Source)
+	if err != nil {
+		return nil, err
+	}
+	p.Packages[0].Sources[0].Filename = path
+	return p, nil
 }
 
 func GetProgramWrapperDirectory(dir string) (*ProgramWrapper, error) {
@@ -167,17 +164,17 @@ func (p *ProgramWrapper) Refresh() error {
 		for _, source := range pack.Sources {
 			//get the source ast
 			var buf bytes.Buffer
-			printer.Fprint(&buf,fset,source.Source)
+			printer.Fprint(&buf, fset, source.Source)
 			src := buf.String()
 			s, _ := parser.ParseFile(fset, source.Filename, src, 0)
-			sourceFiles[pack.PackageName] = append(sourceFiles[pack.PackageName],s)
+			sourceFiles[pack.PackageName] = append(sourceFiles[pack.PackageName], s)
 			buf.Reset()
-			printer.Fprint(&buf,fset,source.Comments)
+			printer.Fprint(&buf, fset, source.Comments)
 			src = buf.String()
 			//fmt.Println(src)
 			c, _ := parser.ParseFile(fset, source.Filename, src, parser.ParseComments)
-			commentFiles[pack.PackageName] = append(commentFiles[pack.PackageName],c)
-			filenames[pack.PackageName] = append(filenames[pack.PackageName],source.Filename)
+			commentFiles[pack.PackageName] = append(commentFiles[pack.PackageName], c)
+			filenames[pack.PackageName] = append(filenames[pack.PackageName], source.Filename)
 		}
 	}
 	aggergateSources := make([]*ast.File, 0)
@@ -245,19 +242,23 @@ func genPackageWrapper(SourceFiles []*ast.File, commentFiles []*ast.File, Filena
 						}
 					})
 					//fmt.Println(buf.String())
-				//	fmt.Println(invC.BlockSlice)
+					//	fmt.Println(invC.BlockSlice)
 				}
-							Cfgs = append(Cfgs, wrap)
-						}
+				Cfgs = append(Cfgs, wrap)
+			}
 		}
-		if debug {fmt.Println("Source Built")}
+		if debug {
+			fmt.Println("Source Built")
+		}
 		Sources = append(Sources, &SourceWrapper{
 			Comments: commentFiles[i],
 			Source:   SourceFiles[i],
 			Filename: Filenames[i],
 			Cfgs:     Cfgs})
 	}
-	if debug {fmt.Println("Wrappers Built")}
+	if debug {
+		fmt.Println("Wrappers Built")
+	}
 	return &PackageWrapper{
 		PackageName: pName,
 		Sources:     Sources,
@@ -317,12 +318,12 @@ func (p *ProgramWrapper) FindFile(n ast.Node) (pnum, snum int) {
 	for pindex := range p.Packages {
 		for sindex := range p.Packages[pindex].Sources {
 			if (p.Packages[pindex].Sources[sindex].Comments.Pos() <= n.Pos() &&
-				p.Packages[pindex].Sources[sindex].Comments.End() >= n.End())||
-			   (p.Packages[pindex].Sources[sindex].Source.Pos() <= n.Pos() &&
-				p.Packages[pindex].Sources[sindex].Source.End() >= n.End()) {
-					return pnum, snum
+				p.Packages[pindex].Sources[sindex].Comments.End() >= n.End()) ||
+				(p.Packages[pindex].Sources[sindex].Source.Pos() <= n.Pos() &&
+					p.Packages[pindex].Sources[sindex].Source.End() >= n.End()) {
+				return pnum, snum
 			}
-		}	
+		}
 	}
 	return -1, -1
 }

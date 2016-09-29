@@ -1,10 +1,10 @@
 package main
 
 import (
-	"flag"
-	"github.com/arcaneiceman/GoVector/capture"
 	"bitbucket.org/bestchai/dinv/dinvRT"
+	"flag"
 	"fmt"
+	"github.com/arcaneiceman/GoVector/capture"
 	"math/rand"
 	"net"
 	"os"
@@ -12,24 +12,24 @@ import (
 )
 
 const (
-	Ack		= 0xFF
-	RequestStick	= 1
-	ReleaseStick	= 2
-	ExcuseMe	= 3
-	SIZEOFINT	= 4
-	n		= 50
-	BUFF_SIZE	= 1024
-	SLEEP_MAX	= 1e8
+	Ack          = 0xFF
+	RequestStick = 1
+	ReleaseStick = 2
+	ExcuseMe     = 3
+	SIZEOFINT    = 4
+	n            = 50
+	BUFF_SIZE    = 1024
+	SLEEP_MAX    = 1e8
 )
 
 //global state variables
 var (
-	Eating		bool
-	Thinking	bool
-	LeftChopstick	bool
-	RightChopstick	bool
-	Excused		bool
-	ID		string
+	Eating         bool
+	Thinking       bool
+	LeftChopstick  bool
+	RightChopstick bool
+	Excused        bool
+	ID             string
 )
 
 //Transition into the eating state
@@ -64,9 +64,9 @@ func RightChopstickState() {
 
 //structure defining a philosopher
 type Philosopher struct {
-	id, neighbourId	int
-	chopstick	chan bool	// the left chopstick // inspired by the wikipedia page, left chopsticks should be used first
-	neighbour	*net.UDPConn
+	id, neighbourId int
+	chopstick       chan bool // the left chopstick // inspired by the wikipedia page, left chopsticks should be used first
+	neighbour       *net.UDPConn
 }
 
 func makePhilosopher(port, neighbourPort int) *Philosopher {
@@ -104,7 +104,7 @@ func makePhilosopher(port, neighbourPort int) *Philosopher {
 	chopstick <- true
 	fmt.Printf("launching chopstick server\n")
 	go func() {
-		defer fmt.Printf("Chopstick #%d\n is down", port)	//attempt to show when the chopsticks are no longer available
+		defer fmt.Printf("Chopstick #%d\n is down", port) //attempt to show when the chopsticks are no longer available
 		//Incomming request handler
 		for true {
 			dinvRT.Track(fmt.Sprintf("%d", ID), "Excused,Ack,ReleaseStick,ExcuseMe,SLEEP_MAX,Eating,RightChopstick,n,BUFF_SIZE,Thinking,RequestStick,SIZEOFINT,LeftChopstick", Excused, Ack, ReleaseStick, ExcuseMe, SLEEP_MAX, Eating, RightChopstick, n, BUFF_SIZE, Thinking, RequestStick, SIZEOFINT, LeftChopstick)

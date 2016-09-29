@@ -2,42 +2,42 @@ package main
 
 import (
 	"bitbucket.org/bestchai/dinv/dinvRT"
-	"github.com/arcaneiceman/GoVector/capture"
+	"bytes"
+	"encoding/gob"
+	"flag"
 	"fmt"
+	"github.com/arcaneiceman/GoVector/capture"
+	"io"
+	"log"
 	"math/rand"
 	"net"
 	"time"
-	"bytes"
-	"encoding/gob"
-	"log"
-	"flag"
-	"io"
 )
 
 const BASEPORT = 10000
 
 var (
-	nodes		map[int]*net.UDPAddr	//List of all nodes in the group
-	listen		*net.UDPConn		//Listening Port
-	Lamport		int			//Lamport logical clock
-	RequestTime	int			//Clock Time request was sent at
-	id		int			//Id of this host
-	hosts		int			//number of hosts in the group
-	lastMessage	Message			//The last message sent out
-	updated		bool			//true if the host has received an message and not processed it
-	startTime	time.Time		//The startup time of the node
+	nodes       map[int]*net.UDPAddr //List of all nodes in the group
+	listen      *net.UDPConn         //Listening Port
+	Lamport     int                  //Lamport logical clock
+	RequestTime int                  //Clock Time request was sent at
+	id          int                  //Id of this host
+	hosts       int                  //number of hosts in the group
+	lastMessage Message              //The last message sent out
+	updated     bool                 //true if the host has received an message and not processed it
+	startTime   time.Time            //The startup time of the node
 
-	plan	Plan
-	report	Report
+	plan   Plan
+	report Report
 
 	inCritical bool
-	logger *log.Logger
+	logger     *log.Logger
 )
 
 type Message struct {
-	Lamport	int
-	Body	string
-	Sender	int
+	Lamport int
+	Body    string
+	Sender  int
 }
 
 func (m *Message) String() string {
@@ -45,17 +45,17 @@ func (m *Message) String() string {
 }
 
 type Plan struct {
-	Id		int
-	Criticals	int
-	GlobalTimeout	int
+	Id            int
+	Criticals     int
+	GlobalTimeout int
 }
 
 type Report struct {
-	Starved		bool
-	Crashed		bool
-	ErrorMessage	error
-	OtherDied	bool
-	Criticals	int
+	Starved      bool
+	Crashed      bool
+	ErrorMessage error
+	OtherDied    bool
+	Criticals    int
 }
 
 func (r Report) ReportMatchesPlan(p Plan) bool {
@@ -73,31 +73,31 @@ func (r Report) ReportMatchesPlan(p Plan) bool {
 
 func critical() {
 	inCritical = true
-	dinvRT.Track(fmt.Sprintf("%dC",plan.Id),"crictical",inCritical)
+	dinvRT.Track(fmt.Sprintf("%dC", plan.Id), "crictical", inCritical)
 
 	report.Criticals++
-	fmt.Printf("Running Critical Section on %d, run(%d/%d)  with Request time:%d \n", id, report.Criticals,plan.Criticals,RequestTime)
+	fmt.Printf("Running Critical Section on %d, run(%d/%d)  with Request time:%d \n", id, report.Criticals, plan.Criticals, RequestTime)
 	inCritical = false
 }
 
 var (
-	idInput int
+	idInput    int
 	hostsInput int
-	timeInput int
+	timeInput  int
 )
 
 func main() {
 	fmt.Println("STARTING")
-	var idarg = flag.Int("id",0, "hosts id")
-	var hostsarg = flag.Int("hosts",0, "#of hosts")
-	var timearg = flag.Int("time",0,"timeout")
+	var idarg = flag.Int("id", 0, "hosts id")
+	var hostsarg = flag.Int("hosts", 0, "#of hosts")
+	var timearg = flag.Int("time", 0, "timeout")
 	flag.Parse()
 	idInput = *idarg
 	hostsInput = *hostsarg
 	timeInput = *timearg
-	plan := Plan{idInput,10,timeInput}
+	plan := Plan{idInput, 10, timeInput}
 	fmt.Println(plan.Criticals)
-	report := Host(idInput,hostsInput,plan)
+	report := Host(idInput, hostsInput, plan)
 	if !report.ReportMatchesPlan(plan) {
 		fmt.Println("FAILED")
 
@@ -105,14 +105,13 @@ func main() {
 		fmt.Println("PASSED")
 	}
 }
-	
 
 func Host(idArg, hostsArg int, planArg Plan) Report {
 	id = idArg
 	hosts = hostsArg
 	plan = planArg
 	startTime = time.Now()
-	fmt.Printf("Starting %d with plan to execute crit %d times\n", id+BASEPORT,planArg.Criticals)
+	fmt.Printf("Starting %d with plan to execute crit %d times\n", id+BASEPORT, planArg.Criticals)
 	initConnections(id, hosts)
 	fmt.Printf("Connected to %d hosts on %d\n", len(nodes), id)
 	time.Sleep(1000 * time.Millisecond)
@@ -123,16 +122,15 @@ func Host(idArg, hostsArg int, planArg Plan) Report {
 	broadcast(fmt.Sprintf("Hello from %d", id))
 
 	//local variables to track outstanding critical requests
-	crit := false	//true if critical section is requested
+	crit := false //true if critical section is requested
 	finishing := false
-	outstanding := make([]int, 0)	//messages being witheld
+	outstanding := make([]int, 0) //messages being witheld
 	okays := make(map[int]bool)
 	done := make(map[int]bool, 0)
 	sentTime := time.Now()
 	starving := make(map[int]bool)
 	timeouts := 0
 	for true {
-		
 
 		//exit if the job is done, and everyone else is done too
 		if len(done) >= hosts && len(okays) >= (hosts-1) {
@@ -268,7 +266,7 @@ func receive() {
 		buf := make([]byte, 1024)
 		m := new(Message)
 		//listen.SetDeadline(time.Now().Add(time.Second))
-		n , err := capture.Read(listen.Read,buf)
+		n, err := capture.Read(listen.Read, buf)
 		//fmt.Printf("Received :%s\n%d\n",buf,n)
 		if err != nil {
 			crashGracefully(err)
@@ -294,7 +292,7 @@ func receive() {
 }
 
 func broadcast(msg string) {
-	fmt.Printf("broadcasting %s\n",msg)
+	fmt.Printf("broadcasting %s\n", msg)
 	for i := range nodes {
 		send(msg, i)
 	}
@@ -314,8 +312,8 @@ func send(msg string, host int) {
 		log.Fatal("encode :", err)
 	}
 	//fmt.Println(network.Bytes())
-	_, err = capture.WriteToUDP(listen.WriteToUDP,network.Bytes(),nodes[host])
-	dinvRT.Track(fmt.Sprintf("%dS",plan.Id),"crictical",inCritical)
+	_, err = capture.WriteToUDP(listen.WriteToUDP, network.Bytes(), nodes[host])
+	dinvRT.Track(fmt.Sprintf("%dS", plan.Id), "crictical", inCritical)
 	if err != nil {
 		crashGracefully(err)
 	}

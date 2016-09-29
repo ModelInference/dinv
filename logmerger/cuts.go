@@ -66,18 +66,17 @@ func mineConsistentCuts2(lw *LatticeWrapper, clocks [][]vclock.VClock, deltaComm
 	lw.Beginning()
 	defer lw.Delete()
 
-	for level := lw.Pop(); level !=nil ; level = lw.Pop() {
-
+	for level := lw.Pop(); level != nil; level = lw.Pop() {
 
 		div := ThreadCount(len(lw.LatticeM[lw.LevelM-1]))
 		c := make(chan []Cut, div)
-		
+
 		//divide up the creation of the lattice for a level
-		for core := 0; core <div; core++ {
-			go func (division int, comm chan []Cut) {
+		for core := 0; core < div; core++ {
+			go func(division int, comm chan []Cut) {
 				cuts := make([]Cut, len(lw.LatticeM[lw.LevelM-1])/div)
 				cutsFound := 0
-				for j := len(level) / div * division; j < len(level) / div * (division + 1); j++ {
+				for j := len(level) / div * division; j < len(level)/div*(division+1); j++ {
 					//fmt.Println(j)
 					communicationDelta := 0
 					// TODO preallocate by some heuristic?
@@ -106,16 +105,15 @@ func mineConsistentCuts2(lw *LatticeWrapper, clocks [][]vclock.VClock, deltaComm
 		}
 		for i := 0; i < div; i++ {
 			cuts := <-c // wait for everyone to finnish
-			consistentCuts = append(consistentCuts,cuts...)
+			consistentCuts = append(consistentCuts, cuts...)
 			//fmt.Printf("Thread %d complete\n",i)
 		}
-		fmt.Printf("\rcomputing cuts %3.0f%%  \t[%d] found Threads %d", 100*float32(lw.LevelM)/float32(len(level)), len(consistentCuts),div)
+		fmt.Printf("\rcomputing cuts %3.0f%%  \t[%d] found Threads %d", 100*float32(lw.LevelM)/float32(len(level)), len(consistentCuts), div)
 		//logger.Printf("%s\n", potentialCut.String())
 	}
 	fmt.Println()
 	return consistentCuts
 }
-
 
 //within a cut subsets of clocks can be totally ordered with one
 //another. These orderings are extracted from the log of clocks, are

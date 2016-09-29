@@ -47,8 +47,8 @@ var (
 	renamingScheme     string
 
 	//options for both
-	verbose bool
-	debug   bool
+	verbose    bool
+	debug      bool
 	cpuprofile string
 
 	logger *log.Logger
@@ -98,13 +98,13 @@ func main() {
 	}
 
 	if cpuprofile != "" {
-        f, err := os.Create(cpuprofile)
-        if err != nil {
-            log.Fatal(err)
-        }
-        pprof.StartCPUProfile(f)
-        defer pprof.StopCPUProfile()
-    }
+		f, err := os.Create(cpuprofile)
+		if err != nil {
+			log.Fatal(err)
+		}
+		pprof.StartCPUProfile(f)
+		defer pprof.StopCPUProfile()
+	}
 
 	// Insturmenter option setting
 	if inst {
@@ -300,8 +300,7 @@ func fileExists(path string) (bool, error) {
 	return false, err
 }
 
-var planDiscription = 
-`TOLN: Totally ordered line number merge, logs are grouped by both the uniqueness of communication pattern, and the dump statements encountered
+var planDiscription = `TOLN: Totally ordered line number merge, logs are grouped by both the uniqueness of communication pattern, and the dump statements encountered
 ETM: Entire cut merge, each cut is uniquely grouped by the total order of the communication within it (produces exponential files)
 SRM: Send-Receive merge, hosts are paired by sends and receives which have matching dumps
 SCM: Single Cut merge, every cut is grouped together, no totally ordering is considered (usefull for detecting invariants which are always present)

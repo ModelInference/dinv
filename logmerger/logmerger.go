@@ -17,9 +17,9 @@ import (
 	"log"
 	"math/rand"
 	"os"
+	"runtime"
 	"sort"
 	"strconv"
-	"runtime"
 
 	"github.com/arcaneiceman/GoVector/govec/vclock"
 )
@@ -50,7 +50,8 @@ var (
 )
 
 const (
-	CLEAR_LINE = "\r																															")
+	CLEAR_LINE = "\r																															"
+)
 
 func initalizeLogMerger(options map[string]string, inlogger *log.Logger) {
 	if inlogger == nil {
@@ -104,7 +105,7 @@ func Merge(logfiles []string, gologfiles []string, options map[string]string, in
 		writeUnmergedTraces(logfiles, logs)
 	} else {
 		for i := range plogs {
-			fmt.Printf("Merging group %d\n",i)
+			fmt.Printf("Merging group %d\n", i)
 			states := mineStates(plogs[i], pgoLogs[i])
 			writeTraceFiles(states)
 		}
@@ -114,16 +115,16 @@ func Merge(logfiles []string, gologfiles []string, options map[string]string, in
 //partition logs seperates logs that do not communicate into seperate
 //arrays
 func partitionLogs(points [][]Point, gos []*golog) ([][][]Point, [][]*golog) {
-	seperatePoints := make([][][]Point,0)
-	seperategoLogs := make([][]*golog,0)
-	used := make([]bool,len(points))
+	seperatePoints := make([][][]Point, 0)
+	seperategoLogs := make([][]*golog, 0)
+	used := make([]bool, len(points))
 	var checked int
 	for checked < len(gos) {
 		found := true
-		ids := make(map[string]bool,0)
+		ids := make(map[string]bool, 0)
 		for found {
 			found = false
-			for i:=0; i<len(gos);i++ {
+			for i := 0; i < len(gos); i++ {
 				if !used[i] {
 					lastClock := gos[i].clocks[len(gos[i].clocks)-1]
 					if len(ids) == 0 {
@@ -145,22 +146,23 @@ func partitionLogs(points [][]Point, gos []*golog) ([][][]Point, [][]*golog) {
 			}
 			fmt.Println()
 		}
-		partLog := make ([][]Point,0)
-		partGoLog := make ([]*golog,0)
+		partLog := make([][]Point, 0)
+		partGoLog := make([]*golog, 0)
 		fmt.Printf("Group contains ")
 		for i, log := range gos {
 			if ids[log.id] {
-			fmt.Printf("%s ",log.id)
-				partLog = append(partLog,points[i])
-				partGoLog = append(partGoLog,gos[i])
+				fmt.Printf("%s ", log.id)
+				partLog = append(partLog, points[i])
+				partGoLog = append(partGoLog, gos[i])
 			}
 		}
-			fmt.Println()
-		seperatePoints = append(seperatePoints,partLog)
-		seperategoLogs = append(seperategoLogs,partGoLog)
+		fmt.Println()
+		seperatePoints = append(seperatePoints, partLog)
+		seperategoLogs = append(seperategoLogs, partGoLog)
 	}
 	return seperatePoints, seperategoLogs
 }
+
 //writeUnmergedTraces is used when daikon traces for individual hosts
 //are wanted. The point logs passed in should not be merged
 func writeUnmergedTraces(filenames []string, logs [][]Point) {
@@ -191,7 +193,7 @@ func buildLogs(logFiles []string, gologFiles []string) ([][]Point, []*golog) {
 
 	for i := range logs {
 		//sort the log as a pre processesing step
-		fmt.Printf("\rSorting Logs %d/%d",i+1,len(logs))
+		fmt.Printf("\rSorting Logs %d/%d", i+1, len(logs))
 		sort.Sort(goLogs[i])
 		logs[i] = injectMissingPoints(logs[i], goLogs[i])
 	}
@@ -257,7 +259,7 @@ func statesFromCuts(cuts []Cut, clocks [][]vclock.VClock, logs [][]Point) []Stat
 				state.Points = append(state.Points, logs[i][index])
 			} else {
 				logger.Fatalf("UNABLE TO LOCATE LOG %s entry %d\n", ids[i], index)
-				fmt.Printf("unfound log entry %s index %d\n",ids[i],index)
+				fmt.Printf("unfound log entry %s index %d\n", ids[i], index)
 			}
 		}
 		state.TotalOrdering = totalOrderFromCut(cut, clocks)
@@ -291,7 +293,7 @@ func statesFromCuts2(cuts []Cut, clocks [][]vclock.VClock, logs [][]Point) []Sta
 				state.Points = append(state.Points, point)
 			} else {
 				logger.Fatalf("UNABLE TO LOCATE LOG %s entry %s\n", ids[i], point.String())
-				fmt.Printf("unfound log entry %s index %s\n",ids[i],point.String())
+				fmt.Printf("unfound log entry %s index %s\n", ids[i], point.String())
 			}
 		}
 		state.TotalOrdering = totalOrderFromCut(cut, clocks) //SPEED UP
@@ -400,7 +402,6 @@ func isFullCut(points []Point) bool {
 	return true
 }
 
-
 func noMerge(states []State) [][]Point {
 	mergedPoints := make([][]Point, len(states))
 	fmt.Println("No Merging points")
@@ -508,6 +509,6 @@ func writeShiVizLog(pointLog [][]Point, goLogs []*golog) {
 }
 
 func writeProgress(output string) {
-	fmt.Printf("\r%s",CLEAR_LINE)
-	fmt.Printf("\r%s",output)
+	fmt.Printf("\r%s", CLEAR_LINE)
+	fmt.Printf("\r%s", output)
 }
