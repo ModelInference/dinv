@@ -211,7 +211,7 @@ func getAccessedAffectedVars(dump *ast.Comment, affectedFuncs map[*ast.FuncDecl]
 		fmt.Println("Package or Source does not exist")
 		return nil
 	}
-	_, f := findFunction(dump,program.Packages[pnum].Sources[snum].Source.Decls) //NOTE changed from comments.decls for debugging july 4
+	_, f := FindFunction(dump,program.Packages[pnum].Sources[snum].Source.Decls) //NOTE changed from comments.decls for debugging july 4
 	if f == nil {
 		fmt.Println("Function Not found")
 		return nil
@@ -262,10 +262,10 @@ func removedups (slice []string) []string {
 	return noDups
 }
 
-//findFunction searches through a set of declaractions decls, for the
+//FindFunction searches through a set of declaractions decls, for the
 //statement stmt, the number of the function, which contains the stmt
 //is returned
-func findFunction(n ast.Node, decls []ast.Decl) (int, *ast.FuncDecl) {
+func FindFunction(n ast.Node, decls []ast.Decl) (int, *ast.FuncDecl) {
 	fcount := -1
 	for dcl := 0; dcl < len(decls)-1; dcl++ {
 		_ , ok := decls[dcl].(*ast.FuncDecl)
@@ -382,7 +382,7 @@ func GetLocalVariables(dumpPosition int, file *ast.File, fset *token.FileSet) []
 	}
 	//collect the parameters to the function
 	if len(path) > 0 {
-		_, f := findFunction(path[0], file.Decls)
+		_, f := FindFunction(path[0], file.Decls)
 		if f != nil {
 			for _, feilds := range f.Type.Params.List {
 				for _, param := range feilds.Names {

@@ -31,7 +31,7 @@ func main() {
 	)
 	fmt.Println()
 	for t := 0; t <= RUNS; t++ {
-		dinvRT.Track("main_client_32_", "main_client_32_ADDITION_ARGS,main_client_32_RUNS,main_client_32_debug,main_client_32_SIZEOFINT,main_client_32_LARGEST_TERM,main_client_32_rAddr,main_client_32_errR,main_client_32_lAddr,main_client_32_errL,main_client_32_conn,main_client_32_errDial,main_client_32_buf", ADDITION_ARGS, RUNS, debug, SIZEOFINT, LARGEST_TERM, rAddr, errR, lAddr, errL, conn, errDial, buf)
+		dinvRT.Track("main_client_32_", "main_client_32_SIZEOFINT,main_client_32_RUNS,main_client_32_LARGEST_TERM,main_client_32_debug,main_client_32_ADDITION_ARGS,main_client_32_rAddr,main_client_32_errR,main_client_32_lAddr,main_client_32_errL,main_client_32_conn,main_client_32_errDial,main_client_32_buf", SIZEOFINT, RUNS, LARGEST_TERM, debug, ADDITION_ARGS, rAddr, errR, lAddr, errL, conn, errDial, buf)
 		fmt.Printf("\rExecuting[%2.0f]", float32(t)/float32(RUNS)*100)
 		term1, term2 = rand.Int()%LARGEST_TERM, rand.Int()%LARGEST_TERM
 
@@ -41,11 +41,11 @@ func main() {
 
 		PrintErr(errWrite)
 
-		dinvRT.Track("main_client_42_", "main_client_42_ADDITION_ARGS,main_client_42_RUNS,main_client_42_debug,main_client_42_SIZEOFINT,main_client_42_LARGEST_TERM,main_client_42_rAddr,main_client_42_errR,main_client_42_lAddr,main_client_42_errL,main_client_42_conn,main_client_42_errDial,main_client_42_buf", ADDITION_ARGS, RUNS, debug, SIZEOFINT, LARGEST_TERM, rAddr, errR, lAddr, errL, conn, errDial, buf)
+		dinvRT.Track("main_client_42_", "main_client_42_SIZEOFINT,main_client_42_RUNS,main_client_42_LARGEST_TERM,main_client_42_debug,main_client_42_ADDITION_ARGS,main_client_42_rAddr,main_client_42_errR,main_client_42_lAddr,main_client_42_errL,main_client_42_conn,main_client_42_errDial,main_client_42_buf", SIZEOFINT, RUNS, LARGEST_TERM, debug, ADDITION_ARGS, rAddr, errR, lAddr, errL, conn, errDial, buf)
 		// Reading the response message
 
 		_, errRead := capture.Read(conn.Read,buf[0:])
-		dinvRT.Track("main_client_46_", "main_client_46_ADDITION_ARGS,main_client_46_RUNS,main_client_46_debug,main_client_46_SIZEOFINT,main_client_46_LARGEST_TERM,main_client_46_rAddr,main_client_46_errR,main_client_46_lAddr,main_client_46_errL,main_client_46_conn,main_client_46_errDial,main_client_46_buf", ADDITION_ARGS, RUNS, debug, SIZEOFINT, LARGEST_TERM, rAddr, errR, lAddr, errL, conn, errDial, buf)
+		dinvRT.Track("main_client_46_", "main_client_46_SIZEOFINT,main_client_46_RUNS,main_client_46_LARGEST_TERM,main_client_46_debug,main_client_46_ADDITION_ARGS,main_client_46_rAddr,main_client_46_errR,main_client_46_lAddr,main_client_46_errL,main_client_46_conn,main_client_46_errDial,main_client_46_buf", SIZEOFINT, RUNS, LARGEST_TERM, debug, ADDITION_ARGS, rAddr, errR, lAddr, errL, conn, errDial, buf)
 		PrintErr(errRead)
 
 		uret := UnmarshallInts(buf)
