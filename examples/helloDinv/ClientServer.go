@@ -1,8 +1,8 @@
 package main
 
 import (
-	"fmt"
 	"bitbucket.org/bestchai/dinv/dinvRT"
+	"fmt"
 	"net"
 	"os"
 	"time"
@@ -10,14 +10,14 @@ import (
 	"github.com/arcaneiceman/GoVector/govec"
 
 	"flag"
-	"runtime/pprof"
 	"log"
+	"runtime/pprof"
 )
 
 const (
-	SERVERPORT	= "8080"
-	CLIENTPORT	= "8081"
-	MESSAGES	= 1000
+	SERVERPORT = "8080"
+	CLIENTPORT = "8081"
+	MESSAGES   = 1000
 )
 
 var done chan int = make(chan int, 2)
@@ -64,7 +64,7 @@ func client(listen, send string) {
 }
 
 func server(listen string) {
-	dinvRT.Dump("main_ClientServer_67_","main_ClientServer_67_SERVERPORT,main_ClientServer_67_CLIENTPORT,main_ClientServer_67_MESSAGES,main_ClientServer_67_done,main_ClientServer_67_cpuprofile,main_ClientServer_67_listen",SERVERPORT,CLIENTPORT,MESSAGES,done,cpuprofile,listen)
+	dinvRT.Dump("main_ClientServer_67_", "main_ClientServer_67_SERVERPORT,main_ClientServer_67_CLIENTPORT,main_ClientServer_67_MESSAGES,main_ClientServer_67_done,main_ClientServer_67_cpuprofile,main_ClientServer_67_listen", SERVERPORT, CLIENTPORT, MESSAGES, done, cpuprofile, listen)
 	Logger := govec.Initialize("server", "server")
 	conn, err := net.ListenPacket("udp", ":"+listen)
 	printErr(err)

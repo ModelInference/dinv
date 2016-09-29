@@ -8,13 +8,13 @@ Edited: July 6 2015
 package logmerger
 
 import (
+	"crypto/sha1"
 	"errors"
 	"fmt"
+	"io"
 	"os"
 	"regexp"
 	"strconv"
-	"crypto/sha1"
-	"io"
 	"strings"
 
 	"github.com/arcaneiceman/GoVector/govec/vclock"
@@ -133,17 +133,16 @@ func matchSendAndReceive(sender vclock.VClock, clocks [][]vclock.VClock, senderI
 	return receiver, receiverEvent, matched
 }
 
-
 func pointsToMaps(points [][]Point) map[string]map[uint64]Point {
-	pointMap := make(map[string]map[uint64]Point,len(points))
-	for i:= range points {
+	pointMap := make(map[string]map[uint64]Point, len(points))
+	for i := range points {
 		byteClock, _ := vclock.FromBytes(points[i][0].VectorClock)
 		id := getClockId([]vclock.VClock{byteClock})
-		pointMap[id] = make(map[uint64]Point,len(points[i]))
-		for j:= range points[i] {
-			inClock , _ := vclock.FromBytes(points[i][j].VectorClock)
+		pointMap[id] = make(map[uint64]Point, len(points[i]))
+		for j := range points[i] {
+			inClock, _ := vclock.FromBytes(points[i][j].VectorClock)
 			value, _ := inClock.FindTicks(id)
-			pointMap[id][value]=points[i][j]
+			pointMap[id][value] = points[i][j]
 		}
 	}
 	return pointMap
@@ -202,7 +201,7 @@ func searchClockById(clocks []vclock.VClock, keyClock vclock.VClock, id string) 
 	return false, mid
 }
 
-func fastSearchClockById(mClocks map[string]map[uint64]map[string]uint64, point vclock.VClock, id string) (map[string]uint64,bool) {
+func fastSearchClockById(mClocks map[string]map[uint64]map[string]uint64, point vclock.VClock, id string) (map[string]uint64, bool) {
 	//fmt.Printf("id match = %s\n",id)
 	clockValue, found := point.FindTicks(id)
 	clock, ok := mClocks[id][clockValue]
@@ -221,10 +220,9 @@ func fastSearchClockById(mClocks map[string]map[uint64]map[string]uint64, point 
 	return clock, ok
 }
 
-
 func sumTime(clockSet [][]vclock.VClock) uint64 {
 	ids := idClockMapper(clockSet)
-	maxMap := make(map[string]uint64,len(ids))
+	maxMap := make(map[string]uint64, len(ids))
 	for _, clocks := range clockSet {
 		last := clocks[len(clocks)-1]
 		for _, id := range ids {
@@ -299,7 +297,7 @@ func ConstructVclock(ids []string, ticks []int) vclock.VClock {
 		if ticks[i] < 0 {
 			return nil
 		}
-		clock.Set(ids[i],uint64(ticks[i]))
+		clock.Set(ids[i], uint64(ticks[i]))
 	}
 	return clock
 }

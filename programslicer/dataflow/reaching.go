@@ -9,8 +9,8 @@ import (
 
 	"bitbucket.org/bestchai/dinv/programslicer/cfg"
 	"github.com/willf/bitset"
-	"golang.org/x/tools/go/loader"
 	"go/types"
+	"golang.org/x/tools/go/loader"
 )
 
 // File defines reaching definitions for a statement level

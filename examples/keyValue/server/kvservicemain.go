@@ -27,6 +27,7 @@
 package main
 
 import (
+	"bitbucket.org/wantonsolutions/dovid/detect"
 	"fmt"
 	"log"
 	"math/rand"
@@ -36,35 +37,34 @@ import (
 	"strconv"
 	"sync"
 	"time"
-	"bitbucket.org/wantonsolutions/dovid/detect"
 )
 
 // args in get(args)
 type GetArgs struct {
-	Key string	// key to look up
+	Key string // key to look up
 }
 
 // args in put(args)
 type PutArgs struct {
-	Key	string	// key to associate value with
-	Val	string	// value
+	Key string // key to associate value with
+	Val string // value
 }
 
 // args in testset(args)
 type TestSetArgs struct {
-	Key	string	// key to test
-	TestVal	string	// value to test against actual value
-	NewVal	string	// value to use if testval equals to actual value
+	Key     string // key to test
+	TestVal string // value to test against actual value
+	NewVal  string // value to use if testval equals to actual value
 }
 
 // Reply from service for all three API calls above.
 type ValReply struct {
-	Val string	// value; depends on the call
+	Val string // value; depends on the call
 }
 
 // Value in the key-val store.
 type MapVal struct {
-	value string	// the underlying value representation
+	value string // the underlying value representation
 }
 
 // Map implementing the key-value store.
@@ -104,7 +104,7 @@ func CheckKeyFail(val *MapVal) bool {
 		return true
 	}
 	if rand.Float64() < failProb {
-		val.value = unavail	// permanent unavailability
+		val.value = unavail // permanent unavailability
 		return true
 	}
 	return false
@@ -125,7 +125,7 @@ func (kvs *KeyValService) Get(args *GetArgs, reply *ValReply) error {
 		return nil
 	}
 
-	reply.Val = val.value	// execute the get
+	reply.Val = val.value // execute the get
 	return nil
 }
 
@@ -143,7 +143,7 @@ func (kvs *KeyValService) Put(args *PutArgs, reply *ValReply) error {
 		return nil
 	}
 
-	val.value = args.Val	// execute the put
+	val.value = args.Val // execute the put
 	reply.Val = ""
 	return nil
 }
@@ -210,7 +210,7 @@ func main() {
 	for {
 		conn, _ := l.Accept()
 		fmt.Println("Client")
-		go dovid.ServeConn(dovid.ServeConn,rpc.ServeConn,conn)
+		go dovid.ServeConn(dovid.ServeConn, rpc.ServeConn, conn)
 		//go rpc.ServeCodec(dovid.NewServerCodec(conn))
 	}
 }

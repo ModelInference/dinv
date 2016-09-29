@@ -4,8 +4,7 @@ import (
 	"net"
 )
 
-
-func main (){
+func main() {
 	capture(5)
 	capture(test)
 
@@ -15,8 +14,8 @@ func test() {
 	print("blegh")
 }
 
-func capture(i interface{}){
-	switch f := i.(type){
+func capture(i interface{}) {
+	switch f := i.(type) {
 	case int:
 		print(f)
 		break
@@ -24,6 +23,5 @@ func capture(i interface{}){
 		f()
 		break
 	}
-
 
 }

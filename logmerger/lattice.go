@@ -16,11 +16,11 @@ Edited: July 6 2015
 package logmerger
 
 import (
-	"fmt"
-	"runtime"
 	"bytes"
-	"os"
 	"encoding/json"
+	"fmt"
+	"os"
+	"runtime"
 	"unsafe"
 
 	"github.com/arcaneiceman/GoVector/govec/vclock"
@@ -28,23 +28,22 @@ import (
 )
 
 const (
-	THREAD_BOOST = 1000
+	THREAD_BOOST     = 1000
 	POINT_DISK_LIMIT = 5000000
 )
 
-
 type LatticeWrapper struct {
-	LatticeM [][]vclock.VClock //main memory lattice
-	LatticeD []string //wrapper for the disk
-	CurrentFile int
-	Points uint64
-	LevelM int
-	LevelD int
+	LatticeM      [][]vclock.VClock //main memory lattice
+	LatticeD      []string          //wrapper for the disk
+	CurrentFile   int
+	Points        uint64
+	LevelM        int
+	LevelD        int
 	LevelEstimate int
 }
 
 func New() *LatticeWrapper {
-	return &LatticeWrapper{nil,nil,0,0,0,0,0}
+	return &LatticeWrapper{nil, nil, 0, 0, 0, 0, 0}
 
 }
 
@@ -53,7 +52,6 @@ func (lw *LatticeWrapper) Delete() {
 		os.Remove(lw.LatticeD[i])
 	}
 }
-		
 
 //set the current level of the lattice back to the beginning
 func (lw *LatticeWrapper) Beginning() {
@@ -69,7 +67,7 @@ func (lw *LatticeWrapper) Push(layer []vclock.VClock) {
 	lw.LatticeM[lw.LevelM] = layer
 
 	//disk writing phase
-	if lw.Points  > POINT_DISK_LIMIT * (uint64(len(lw.LatticeD) + 1)) {
+	if lw.Points > POINT_DISK_LIMIT*(uint64(len(lw.LatticeD)+1)) {
 		lw.DiskDump()
 
 		temp := make([]vclock.VClock, len(lw.LatticeM[lw.LevelM]))
@@ -78,7 +76,7 @@ func (lw *LatticeWrapper) Push(layer []vclock.VClock) {
 		}
 		lw.LatticeM = make([][]vclock.VClock, lw.LevelEstimate)
 
-		lw.LatticeM[0] = make([]vclock.VClock,len(temp))
+		lw.LatticeM[0] = make([]vclock.VClock, len(temp))
 		for i := range temp {
 			lw.LatticeM[0][i] = temp[i]
 		}
@@ -89,19 +87,18 @@ func (lw *LatticeWrapper) Push(layer []vclock.VClock) {
 	lw.LevelM++
 	lw.LevelD++
 
-
 }
 
-func (lw *LatticeWrapper) Pop( ) []vclock.VClock {
+func (lw *LatticeWrapper) Pop() []vclock.VClock {
 	//nothing left to pop
-	if lw.CurrentFile == ( len(lw.LatticeD) - 1 ) && lw.LevelM == ( len(lw.LatticeM) - 1 ) {
+	if lw.CurrentFile == (len(lw.LatticeD)-1) && lw.LevelM == (len(lw.LatticeM)-1) {
 		return nil
-	} else if lw.LevelM == len(lw.LatticeM) - 1 && len(lw.LatticeD) > 0 {
+	} else if lw.LevelM == len(lw.LatticeM)-1 && len(lw.LatticeD) > 0 {
 		//fetch from disk
 		lw.CurrentFile++
 		lw.FetchDisk()
 		lw.LevelM = 0
-	} 
+	}
 	ret := lw.LatticeM[lw.LevelM]
 	lw.LevelM++
 	lw.LevelD++
@@ -109,7 +106,7 @@ func (lw *LatticeWrapper) Pop( ) []vclock.VClock {
 }
 
 func (lw *LatticeWrapper) FetchDisk() {
-	fmt.Printf("%s",CLEAR_LINE)
+	fmt.Printf("%s", CLEAR_LINE)
 	latticeFile, err := os.Open(lw.LatticeD[lw.CurrentFile])
 	if err != nil {
 		panic(err)
@@ -118,7 +115,7 @@ func (lw *LatticeWrapper) FetchDisk() {
 	lattice := make([][]vclock.VClock, 0)
 	var e error = nil
 
-	stat ,_ := latticeFile.Stat()
+	stat, _ := latticeFile.Stat()
 	var soFar uint64
 	size := stat.Size()
 	for e == nil {
@@ -139,15 +136,15 @@ func (lw *LatticeWrapper) FetchDisk() {
 }
 
 func (lw *LatticeWrapper) DiskDump() {
-	fmt.Printf("%s",CLEAR_LINE)
-	latticeFilename := fmt.Sprintf("L%d",len(lw.LatticeD))
+	fmt.Printf("%s", CLEAR_LINE)
+	latticeFilename := fmt.Sprintf("L%d", len(lw.LatticeD))
 	latticeFile, err := os.Create(latticeFilename)
 	if err != nil {
 		panic(err)
 	}
 	buf := new(bytes.Buffer)
 	encoder := json.NewEncoder(buf)
-	for i := 0 ; i < lw.LevelM -1; i ++ {
+	for i := 0; i < lw.LevelM-1; i++ {
 		encoder.Encode(lw.LatticeM[i])
 		latticeFile.Write(buf.Bytes())
 		buf.Reset()
@@ -157,11 +154,8 @@ func (lw *LatticeWrapper) DiskDump() {
 	if err != nil {
 		panic(err)
 	}
-	lw.LatticeD = append(lw.LatticeD,latticeFilename)
+	lw.LatticeD = append(lw.LatticeD, latticeFilename)
 }
-
-
-
 
 //BuildLattice constructs a lattice based on an ordered set of vector clocks. The
 //computed lattice is represented as a 2-D array of vector clocks
@@ -187,7 +181,7 @@ func BuildLattice5(clocks [][]vclock.VClock) *LatticeWrapper {
 	lw.LevelEstimate = int(levels)
 	lw.LatticeM = make([][]vclock.VClock, lw.LevelEstimate)
 	lw.LatticeM[lw.LevelM] = make([]vclock.VClock, 1)
-	l1 := make([]vclock.VClock,1)
+	l1 := make([]vclock.VClock, 1)
 	l1[0] = latticePoint
 	lw.LatticeM[lw.LevelM][0] = latticePoint
 	lw.Push(l1)
@@ -200,12 +194,12 @@ func BuildLattice5(clocks [][]vclock.VClock) *LatticeWrapper {
 
 		div := ThreadCount(len(lw.LatticeM[lw.LevelM-1]))
 		c := make(chan map[string]vclock.VClock, div)
-		
+
 		//divide up the creation of the lattice for a level
-		for core := 0; core <div; core++ {
-			go func (division int, comm chan map[string]vclock.VClock) {
+		for core := 0; core < div; core++ {
+			go func(division int, comm chan map[string]vclock.VClock) {
 				subMap := make(map[string]vclock.VClock, len(lw.LatticeM[lw.LevelM-1])*len(ids)/div)
-				for j := len(lw.LatticeM[lw.LevelM-1]) / div * division; j < len(lw.LatticeM[lw.LevelM-1]) / div * (division + 1); j++ {
+				for j := len(lw.LatticeM[lw.LevelM-1]) / div * division; j < len(lw.LatticeM[lw.LevelM-1])/div*(division+1); j++ {
 					p := lw.LatticeM[lw.LevelM-1][j]
 					//fmt.Printf("Inital Point %s\n",p.ReturnVCString())
 					for i, id := range ids {
@@ -233,7 +227,7 @@ func BuildLattice5(clocks [][]vclock.VClock) *LatticeWrapper {
 		fmt.Printf("\rComputing lattice  %3.0f%% \t points %d\t fanout %d Threads %d", 100*float32(lw.LevelD)/float32(levels), lw.Points, len(lw.LatticeM[lw.LevelM-1]), div)
 		lw.Push(mapToArray(nextMap))
 		//levelToString(&lattice[lw.Level])
-		
+
 	}
 	fmt.Println()
 	return lw
@@ -281,10 +275,10 @@ func BuildLattice4(clocks [][]vclock.VClock) [][]vclock.VClock {
 		}
 		c := make(chan map[string]vclock.VClock, div)
 
-		for core := 0; core <div; core++ {
-			go func (division int, comm chan map[string]vclock.VClock) {
+		for core := 0; core < div; core++ {
+			go func(division int, comm chan map[string]vclock.VClock) {
 				subMap := make(map[string]vclock.VClock, len(lattice[level-1])*len(ids)/div)
-				for j := len(lattice[level-1]) / div * division; j < len(lattice[level-1]) / div * (division + 1); j++ {
+				for j := len(lattice[level-1]) / div * division; j < len(lattice[level-1])/div*(division+1); j++ {
 					p := lattice[level-1][j]
 					//fmt.Printf("Inital Point %s\n",p.ReturnVCString())
 					for i, id := range ids {
@@ -359,8 +353,6 @@ func mapToQueue(vmap map[string]*vclock.VClock) *queue.Queue {
 	}
 	return q
 }
-
-
 
 func PrintMaps(clocks map[string]map[uint64]map[string]uint64) {
 	for id := range clocks {
@@ -451,7 +443,7 @@ func correctLatticePoint(loggedClocks []vclock.VClock, latticePoint vclock.VCloc
 }
 
 func fastCorrectLatticePoint(mClocks map[string]map[uint64]map[string]uint64, point vclock.VClock, id string) bool {
-	clock, found := fastSearchClockById(mClocks,point,id)
+	clock, found := fastSearchClockById(mClocks, point, id)
 	if !found {
 		return false
 	}

@@ -2,16 +2,15 @@
 package programslicer
 
 import (
-	"testing"
 	"bitbucket.org/bestchai/dinv/programslicer/dataflow"
-	"go/types"
-	"strings"
 	"bytes"
 	"fmt"
-	"go/token"
 	"go/printer"
+	"go/token"
+	"go/types"
+	"strings"
+	"testing"
 	//"go/ast"
-
 )
 
 // Create CFG
@@ -21,23 +20,23 @@ import (
 // Create Program Dependence Graph
 
 func TestForwardIPC(t *testing.T) {
-	program, err := GetWrapperFromString(source1);
+	program, err := GetWrapperFromString(source1)
 	if err != nil {
-		t.Errorf("Error: %s",err.Error())
+		t.Errorf("Error: %s", err.Error())
 	}
-	
+
 	node := program.Packages[0].Sources[0].Cfgs[1].Exp[2] //e++
 	//ast.Print(program.Fset,program.Packages[0].Sources[0].Source);
-	funcStatements := ComputeSliceIP(node,program,ComputeForwardSlice,GetTaintedPointsForward)
+	funcStatements := ComputeSliceIP(node, program, ComputeForwardSlice, GetTaintedPointsForward)
 	//after slicing print vars
 	var affectedVars []*types.Var
-	expected := []string {
-		"e","touchMe","a","b","p","b","c","win","smile","f",
+	expected := []string{
+		"e", "touchMe", "a", "b", "p", "b", "c", "win", "smile", "f",
 	}
 	for _, stmts := range funcStatements {
 		fset := token.NewFileSet()
 		var buf bytes.Buffer
-		printer.Fprint(&buf,fset,stmts.Slice)
+		printer.Fprint(&buf, fset, stmts.Slice)
 		fmt.Println(buf.String())
 		println()
 
@@ -47,22 +46,22 @@ func TestForwardIPC(t *testing.T) {
 			affectedVars = append(affectedVars, def)
 		}
 	}
-	matchCheck(expected,affectedVars,t)
+	matchCheck(expected, affectedVars, t)
 }
 
 func TestBackwardsIPCBasic(t *testing.T) {
-	program, err := GetWrapperFromString(source2);
+	program, err := GetWrapperFromString(source2)
 	if err != nil {
-		t.Errorf("Error: %s",err.Error())
+		t.Errorf("Error: %s", err.Error())
 	}
-	
+
 	node := program.Packages[0].Sources[0].Cfgs[0].Exp[1] //a := bar()
 	//ast.Print(program.Fset,program.Packages[0].Sources[0].Source);
-	funcStatements := ComputeSliceIP(node,program,ComputeBackwardSlice,GetTaintedPointsBackwards)
+	funcStatements := ComputeSliceIP(node, program, ComputeBackwardSlice, GetTaintedPointsBackwards)
 	//after slicing print vars
 	var affectedVars []*types.Var
-	expected := []string {
-		"a","b",
+	expected := []string{
+		"a", "b",
 	}
 	for _, stmts := range funcStatements {
 		defs, _ := dataflow.ReferencedVars(stmts.Slice, program.Prog.Created[0])
@@ -72,22 +71,22 @@ func TestBackwardsIPCBasic(t *testing.T) {
 		}
 		//should print a, b
 	}
-	matchCheck(expected,affectedVars,t)
+	matchCheck(expected, affectedVars, t)
 }
 
 func TestBackwardsIPCDontTouchCoo(t *testing.T) {
-	program, err := GetWrapperFromString(source3);
+	program, err := GetWrapperFromString(source3)
 	if err != nil {
-		t.Errorf("Error: %s",err.Error())
+		t.Errorf("Error: %s", err.Error())
 	}
-	
+
 	node := program.Packages[0].Sources[0].Cfgs[0].Exp[1] //a := bar()
 	//ast.Print(program.Fset,program.Packages[0].Sources[0].Source);
-	funcStatements := ComputeSliceIP(node,program,ComputeBackwardSlice,GetTaintedPointsBackwards)
+	funcStatements := ComputeSliceIP(node, program, ComputeBackwardSlice, GetTaintedPointsBackwards)
 	//after slicing print vars
 	var affectedVars []*types.Var
-	expected := []string {
-		"a","b",
+	expected := []string{
+		"a", "b",
 	}
 	for _, stmts := range funcStatements {
 		defs, _ := dataflow.ReferencedVars(stmts.Slice, program.Prog.Created[0])
@@ -96,15 +95,16 @@ func TestBackwardsIPCDontTouchCoo(t *testing.T) {
 			affectedVars = append(affectedVars, def)
 		}
 	}
-	matchCheck(expected,affectedVars,t)
+	matchCheck(expected, affectedVars, t)
 }
+
 /*
 func TestBackwardsIPCPassByReference(t *testing.T) {
 	program, err := GetWrapperFromString(source4);
 	if err != nil {
 		t.Errorf("Error: %s",err.Error())
 	}
-	
+
 	node := program.Packages[0].Sources[0].Cfgs[1].Exp[1] //f := b
 	ast.Print(program.Fset,program.Packages[0].Sources[0].Source);
 	funcStatements := ComputeSliceIP(node,program,ComputeBackwardSlice,GetTaintedPointsBackwards)
@@ -122,31 +122,31 @@ func TestBackwardsIPCPassByReference(t *testing.T) {
 }
 */
 
-func matchCheck (expected []string, found []*types.Var, t *testing.T) {
-	for i:= range expected {
+func matchCheck(expected []string, found []*types.Var, t *testing.T) {
+	for i := range expected {
 		present := false
-		for j:= range found {
+		for j := range found {
 			//print(strings.Compare(expected[i],found[j].Name()))
-			if strings.Compare(expected[i],found[j].Name()) == 0 {
+			if strings.Compare(expected[i], found[j].Name()) == 0 {
 				present = true
 			}
 		}
 		if !present {
-			for j:= range found {
-				print(found[j].Name()+"\n")
+			for j := range found {
+				print(found[j].Name() + "\n")
 			}
-			t.Errorf("variable %s not found when expected\nFound%s\n",expected[i],)
+			t.Errorf("variable %s not found when expected\nFound%s\n", expected[i])
 		}
 	}
 	for i := range found {
 		included := false
-		for j:= range expected {
-			if found[i].Name() == expected[j]{
+		for j := range expected {
+			if found[i].Name() == expected[j] {
 				included = true
 			}
 		}
 		if !included {
-			t.Errorf("variable %s found, but not expected\n",found[i].Name())
+			t.Errorf("variable %s found, but not expected\n", found[i].Name())
 		}
 	}
 }
@@ -211,8 +211,7 @@ const source1 = `
   
   `
 
-  const source2 = 
-  `package main		//1
+const source2 = `package main		//1
 					//2
 	func foo() {	//3
 		a := bar()	//4
@@ -225,8 +224,8 @@ const source1 = `
 	}				//11
   `
 
-  //V shapped call graph foo()--->bar()<----coo()
-  const source3 = `
+//V shapped call graph foo()--->bar()<----coo()
+const source3 = `
 	package main
 
 	func foo() {
@@ -245,7 +244,7 @@ const source1 = `
 	}
 `
 
- const source4 = `
+const source4 = `
 	package main
 
  	func foo() {

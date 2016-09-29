@@ -12,33 +12,33 @@
 package main
 
 import (
-	"fmt"
-	"os"
-	"net/rpc"
 	"bitbucket.org/wantonsolutions/dovid/detect"
+	"fmt"
+	"net/rpc"
+	"os"
 )
 
 // args in get(args)
 type GetArgs struct {
-	Key string	// key to look up
+	Key string // key to look up
 }
 
 // args in put(args)
 type PutArgs struct {
-	Key	string	// key to associate value with
-	Val	string	// value
+	Key string // key to associate value with
+	Val string // value
 }
 
 // args in testset(args)
 type TestSetArgs struct {
-	Key	string	// key to test
-	TestVal	string	// value to test against actual value
-	NewVal	string	// value to use if testval equals to actual value
+	Key     string // key to test
+	TestVal string // value to test against actual value
+	NewVal  string // value to use if testval equals to actual value
 }
 
 // Reply from service for all three API calls above.
 type ValReply struct {
-	Val string	// value; depends on the call
+	Val string // value; depends on the call
 }
 
 type KeyValService int
@@ -55,7 +55,7 @@ func main() {
 	kvAddr := os.Args[1]
 
 	// Connect to the KV-service via RPC.
-	kvService, err := dovid.Dial(rpc.Dial,"tcp",kvAddr)
+	kvService, err := dovid.Dial(rpc.Dial, "tcp", kvAddr)
 	checkError(err)
 
 	// Use kvVal for all RPC replies.
@@ -69,8 +69,8 @@ func main() {
 
 	// Put("my-key", 2016)
 	putArgs := PutArgs{
-		Key:	"my-key",
-		Val:	"party-like-its-416"}
+		Key: "my-key",
+		Val: "party-like-its-416"}
 	err = kvService.Call("KeyValService.Put", putArgs, &kvVal)
 	checkError(err)
 	fmt.Println("KV.put(" + putArgs.Key + "," + putArgs.Val + ") = " + kvVal.Val)
@@ -84,18 +84,18 @@ func main() {
 
 	// TestSet("my-key", "foo", "bar")
 	tsArgs := TestSetArgs{
-		Key:		"my-key",
-		TestVal:	"foo",
-		NewVal:		"bar"}
+		Key:     "my-key",
+		TestVal: "foo",
+		NewVal:  "bar"}
 	err = kvService.Call("KeyValService.TestSet", tsArgs, &kvVal)
 	checkError(err)
 	fmt.Println("KV.get(" + tsArgs.Key + "," + tsArgs.TestVal + "," + tsArgs.NewVal + ") = " + kvVal.Val)
 
 	// TestSet("my-key", "party-like-its-416", "bar")
 	tsArgs = TestSetArgs{
-		Key:		"my-key",
-		TestVal:	"party-like-its-416",
-		NewVal:		"bar"}
+		Key:     "my-key",
+		TestVal: "party-like-its-416",
+		NewVal:  "bar"}
 	err = kvService.Call("KeyValService.Get", tsArgs, &kvVal)
 	checkError(err)
 	fmt.Println("KV.get(" + tsArgs.Key + "," + tsArgs.TestVal + "," + tsArgs.NewVal + ") = " + kvVal.Val)

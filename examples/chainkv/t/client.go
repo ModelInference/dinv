@@ -1,19 +1,19 @@
 package chainkv
 
 import (
+	"bitbucket.org/bestchai/dinv/instrumenter"
 	"fmt"
 	"net"
 	"os"
 	"time"
-	"bitbucket.org/bestchai/dinv/instrumenter"
 )
 
 type Cmessage struct {
-	Request		string
-	Key		string
-	Val		string
-	Unavailable	int
-	err		error
+	Request     string
+	Key         string
+	Val         string
+	Unavailable int
+	err         error
 }
 
 var conn *net.UDPConn
@@ -22,13 +22,12 @@ var tail *net.UDPAddr
 
 var clientLog *os.File
 
-
 //+@# Automatic Documentation by Dovid, Generated (Sun Apr 24 13:44:25 PDT 2016)
 // >>> out ([]byte), i (int), m (*testing.Cmessage)
-// >>> sent on line:47 by conn 
+// >>> sent on line:47 by conn
 //       instrumenter.Dump("m.Request,m.Key,m.Val,m.Unavailable,m.err,out,i,m,Val",Key,out,i,m,Val)
 // <<< 	 err (error), n (int)
-// <<< received on line:51 by conn 
+// <<< received on line:51 by conn
 //       instrumenter.Dump("err,n",err,n)
 //-@# End Auto Documentation
 func Client(myPort, headPort, tailPort string) {
@@ -72,7 +71,6 @@ func initializeClient(myPort, headPort, tailPort string) {
 	printErr(err)
 }
 
-
 func shutdown() {
 	m := new(Cmessage)
 	m.Request = "DIE"
@@ -83,7 +81,7 @@ func shutdown() {
 }
 
 func cLog(message string) {
-	message = message + " ("+time.Now().String()+ ") "
+	message = message + " (" + time.Now().String() + ") "
 	fmt.Println(message)
 	clientLog.WriteString(message + "\n")
 }
@@ -97,4 +95,3 @@ func printErr(err error) {
 
 var messages = []string{
 	"It", "was", "the", "best", "of", "times,", "it", "was", "the", "worst", "of", "times,", "it", "was", "the", "age", "of", "wisdom,", "it", "was", "the", "age", "of", "foolishness,", "it", "was", "the", "epoch", "of", "belief,", "it", "was", "the", "epoch", "of", "incredulity,", "it", "was", "the", "season", "of", "Light,", "it", "was", "the", "season", "of", "Darkness,", "it", "was", "the", "spring", "of", "hope,", "it", "was", "the", "winter", "of", "despair,", "we", "had", "everything", "before", "us,", "we", "had", "nothing", "before", "us,", "we", "were", "all", "going", "direct", "to", "Heaven,", "we", "were", "all", "going", "direct", "the", "other", "way--in", "short,", "the", "period", "was", "so", "far", "like", "the", "present", "period,", "that", "some", "of", "its", "noisiest", "authorities", "insisted", "on", "its", "being", "received,", "for", "good", "or", "for", "evil,", "in", "the", "superlative", "degree", "of", "comparison", "only."}
-

@@ -1,11 +1,11 @@
 package main
 
 import (
-	"math/rand"
-	"github.com/arcaneiceman/GoVector/capture"
 	"bitbucket.org/bestchai/dinv/dinvRT"
-	"net"
 	"fmt"
+	"github.com/arcaneiceman/GoVector/capture"
+	"math/rand"
+	"net"
 	"os"
 )
 
@@ -45,7 +45,7 @@ func handleConn(conn net.PacketConn, conn2 *net.UDPConn) {
 	var term1, term2, coeff int
 
 	//read from client
-	_, addr, err := capture.ReadFrom(conn.ReadFrom,buf[0:])
+	_, addr, err := capture.ReadFrom(conn.ReadFrom, buf[0:])
 	dinvRT.Track("main_coeff_48_", "main_coeff_48_LARGEST_COEFF,main_coeff_48_SIZEOFINT,main_coeff_48_conn,main_coeff_48_conn2,main_coeff_48_buf,main_coeff_48_term1,main_coeff_48_term2,main_coeff_48_coeff,main_coeff_48_addr,main_coeff_48_err", LARGEST_COEFF, SIZEOFINT, conn, conn2, buf, term1, term2, coeff, addr, err)
 	PrintErr(err)
 	//unmarshall client arguments
@@ -57,12 +57,12 @@ func handleConn(conn net.PacketConn, conn2 *net.UDPConn) {
 	//	fmt.Printf("Coeff: T1:%d\tT2:%d\tCoeff:%d\n", term1, term2, coeff)
 	//}
 	msg := MarshallInts([]int{term1, term2, coeff})
-	_, errWrite := capture.Write(conn2.Write,msg)
+	_, errWrite := capture.Write(conn2.Write, msg)
 	PrintErr(errWrite)
 	dinvRT.Track("main_coeff_61_", "main_coeff_61_LARGEST_COEFF,main_coeff_61_SIZEOFINT,main_coeff_61_conn,main_coeff_61_conn2,main_coeff_61_buf,main_coeff_61_term1,main_coeff_61_term2,main_coeff_61_coeff,main_coeff_61_addr,main_coeff_61_err", LARGEST_COEFF, SIZEOFINT, conn, conn2, buf, term1, term2, coeff, addr, err)
 
 	//read response from linn server
-	_, errRead := capture.Read(conn2.Read,buf[0:])
+	_, errRead := capture.Read(conn2.Read, buf[0:])
 	dinvRT.Track("main_coeff_65_", "main_coeff_65_LARGEST_COEFF,main_coeff_65_SIZEOFINT,main_coeff_65_conn,main_coeff_65_conn2,main_coeff_65_buf,main_coeff_65_term1,main_coeff_65_term2,main_coeff_65_coeff,main_coeff_65_addr,main_coeff_65_err", LARGEST_COEFF, SIZEOFINT, conn, conn2, buf, term1, term2, coeff, addr, err)
 	PrintErr(errRead)
 	//unmarshall response from linn server
@@ -71,7 +71,7 @@ func handleConn(conn net.PacketConn, conn2 *net.UDPConn) {
 	//fmt.Printf("C: %d*%d + %d = %d\n", coeff, term1, term2, lin)
 	//marshall response and send back to client
 	msg2 := MarshallInts([]int{lin})
-	capture.WriteTo(conn.WriteTo,msg2,addr)
+	capture.WriteTo(conn.WriteTo, msg2, addr)
 	dinvRT.Track("main_coeff_75_", "main_coeff_75_LARGEST_COEFF,main_coeff_75_SIZEOFINT,main_coeff_75_conn,main_coeff_75_conn2,main_coeff_75_buf,main_coeff_75_term1,main_coeff_75_term2,main_coeff_75_coeff,main_coeff_75_addr,main_coeff_75_err", LARGEST_COEFF, SIZEOFINT, conn, conn2, buf, term1, term2, coeff, addr, err)
 }
 

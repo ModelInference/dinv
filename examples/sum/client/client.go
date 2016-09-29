@@ -9,8 +9,8 @@ import (
 )
 
 const (
-	LARGEST_TERM	= 100
-	RUNS		= 500
+	LARGEST_TERM = 100
+	RUNS         = 500
 )
 
 func main() {
