@@ -3,6 +3,7 @@ package main
 import (
 	"encoding/binary"
 	"fmt"
+	"github.com/arcaneiceman/GoVector/capture"
 	"net"
 	"os"
 )
@@ -33,27 +34,33 @@ func listenAndRespond(conn net.PacketConn) (err error) {
 	buf := make([]byte, 16)
 
 	// after instrumentation:
-	// _, addr, err := capture.ReadFrom(conn.ReadFrom, buf[0:])
-	_, addr, err := conn.ReadFrom(buf)
+	_, addr, err := capture.ReadFrom(conn.ReadFrom, buf[0:])
+	// _, addr, err := conn.ReadFrom(buf)
 	if err != nil {
 		return
 	}
 
 	//@dump
 
-	a, _ := binary.Varint(buf[:8])
-	b, _ := binary.Varint(buf[8:])
+	a, readA := binary.Varint(buf[:8])
+	b, readB := binary.Varint(buf[8:])
 
 	sum := a + b
+
+	fmt.Println(buf)
+	fmt.Println(buf[:8], a, readA)
+	fmt.Println(buf[8:], b, readB)
 
 	fmt.Printf("[SERVER] %d + %d = %d\n", a, b, sum)
 
 	msg := make([]byte, 8)
-	binary.PutVarint(msg, sum)
+	putN := binary.PutVarint(msg, sum)
+
+	fmt.Println(putN, msg)
 
 	// after instrumentation:
-	// capture.WriteTo(conn.WriteTo, msg, addr)
-	conn.WriteTo(msg, addr)
+	capture.WriteTo(conn.WriteTo, msg, addr)
+	// conn.WriteTo(msg, addr)
 
 	//@dump
 
