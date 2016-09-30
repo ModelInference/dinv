@@ -1,3 +1,5 @@
+TODO document PackM -> makes shiviz output more usable
+
 # Setup
 Before getting started, install Go, Dinv, GoVector, and Daikon. Refer
 to the README for detailed instructions. In addition, access to the
@@ -95,20 +97,82 @@ the receiving side, `dinvRT.Unpack` must be used to ingest the update.
     // dinv will have logged the new vector clock
     // dummy will contain no data; it's only used to satisfy the type system 
 
-### TODO example: transport using HTTP headers
-### TODO example: custom decoding
+### Example: vector clock transportation using HTTP headers
+Dinv does not automatically instrument HTTP communication. A common
+approach is to transport the vector clock in a custom HTTP header. The
+following example demonstrates how to get the current vector clock,
+and insert the base64 representation into a header field named
+"VectorClock" .
+
+```go
+func handleHTTP(w http.ResponseWriter, r *http.Request) {
+  vc := dinvRT.Pack(nil)
+  w.Header().Set("VectorClock", base64.URLEncoding.EncodeToString(vc))
+  w.Write(getReponse(r))
+}
+```
+
+The code handling an HTTP response is not quite as compact due to
+error handling. In essence however it performs the steps backwards:
+reading the encoded vector clock from the header, decode it, and pass
+it to Dinv. Remember that the byte array `dummy` passed to
+`dinvRT.Unpack` can be ignored.
+
+```go
+vcHeader := header.Get("VectorClock")
+if vcHeader == "" {
+    return fmt.Errorf("no vector clock header attached")
+}
+
+vc, err := base64.URLEncoding.DecodeString(vcHeader)
+if err != nil {
+    return fmt.Errorf("error base64-decoding vcHeader: %s", err.Error())
+}
+
+var dummy []byte
+dinvRT.Unpack(vc, &dummy)
+```
+
+### TODO Example: custom decoding
 ## Verifying instrumentation
 After instrumenting network calls, a run of the system should yield
 log files containing JSON encoded vector clocks for each process in
-the current working directory. Filenames look like `1475088947.log-Log.txt`
-(`${timestamp}.log-Log.txt`).
+the current working directory. Log files are named by the schema
+`${timestamp at Dinv initialization}.log-Log.txt`. Each host is
+uniquely defined by the time it was started.
+
+Each log file starts with the host initializing. Over time you can see
+the host receiving messages from different hosts for the first time.
+ `810724201.log-log.txt` could look like this: 
+
+```
+810724201 {"810724201":1}
+Initialization Complete
+810724201 {"810724201":2}
+Sending from 810724201
+810724201 {"810724201":3}
+Sending from 810724201
+810724201 {"810724201":4, "814645650":2}
+Received on 810724201
+810724201 {"810724201":5, "811635838":5, "814645650":2}
+Received on 810724201
+810724201 {"810724201":6, "811635838":5, "812001880":3, "812296886":7, "814645650":2}
+Received on 810724201
+810724201 {"810724201":7, "811635838":5, "812001880":3, "812296886":7, "814645650":2}
+Sending from 810724201
+```
+
+Look at each `*.log-Log.txt` file and check that every node included
+the vector clocks from all other nodes. Often, when somethings not
+working as expected you will find that only the local node's vector
+clock is included.
 
 TODO custom hostnames
 
 # Logging variables 
-Now that Dinv can make use of vector clocks to reason about the order
-of events happing at different host, we can think about which values
-to log at which program points. In our experience, an iterative
+Now that Dinv is able to make use of vector clocks to reason about the
+order of events happing at different nodes, we can think about which
+values to log at which program points. In our experience, an iterative
 narrowing approach is most effective.
 
 Pick which step to start on, depending on how familiar you are with
@@ -121,24 +185,57 @@ selected variables.
 2. logging all variables in scope at specific program points
 3. logging specific variables at specific program points
 
+TODO how do I invoke the first approach?
+
 ## dinvRT.Dump
-`Dump` is one of two constructs to log variables during execution.
-Dinv analyses those values when looking for invariants. The function
-signature `Dump(dumpID, variableNames string, variableValues
-...interface{})` reveals that three arguments are expected.
+Dump is one of two constructs to log variables during execution.
+When a Dump statement is encountered, the variables' values are
+immediately logged. Dinv analyses those values when looking
+for invariants. The function signature `Dump(dumpID, variableNames
+string, variableValues ...interface{})` reveals that three arguments
+are expected.
 
-The first one, `dumpID string`, must uniquely identify a dump
-statement in a execution across all hosts. While no specific format is
-enforced, it's usually a good idea to include a processes' hostname,
-port number or IP address in the dump ID. Mind that the variables
-included in a Dump statement must always be the same over the course
-of an execution, e.g., the must not be dynamic. Example:
+The first one, `dumpID string`, must *uniquely identify* a dump
+statement in a execution *across all hosts*. While no specific format
+is enforced, it's usually a good idea to include a process's
+hostname, port number or IP address in the dump ID. Mind that the
+number of variables and their names included in a Dump statement must
+stay the same over the course of an execution, e.g., they must not be
+dynamic. Example:
 
-    Code at all nodes:
-        dinvRT.Dump("node" + port + ":MemberStateDump, staticVariableList, ...)
+```
+Code at all nodes:
+    dinvRT.Dump("node" + port + ":MemberStateDump, "var1,var2", var1.String(), var2.String())
 
-    DumpID at node listening on port 8000: node8000:MemberStateDump
-    DumpID at node listening on port 8001: node8001:MemberStateDump
+DumpID at node listening on port 8000: node8000:MemberStateDump
+DumpID at node listening on port 8001: node8001:MemberStateDump
+```
+
+From our experience it's usually a good idea to use Dump instead of
+Track statements, when instrumenting a system for the first time.
+Experiment with Track when the generated invariants don't match your
+expectations.
+
+## Track
+Track expects the same arguments as Dump and behaves in general
+similarly. The big difference is that Track doesn't immediately log
+the values, but cumulates them and only *logs them at the next
+send/receive* event. Only the latest value of a variable is logged.
+
+```go
+s := "dlrow_olleh"
+n := 0
+dinvRT.Track(port+"Track1", "s,n", s, n)
+
+s = "hello_world"
+m := 5
+dinvRT.Track(port+"Track2", "s,m", s, m)
+
+// send or receive happens
+// logged values: "s=hello_world, n=0, m=5"
+```
+
+TODO talk about option to not reset kv store?
 
 ## Advanced state encoding
 Often a system's state is not directly represented in a form that Dinv
@@ -159,10 +256,8 @@ for _, member := range members {
 dinvRT.Dump(hostname + ":MemberState", "MemberState", state.String())
 ```
 
-Notice that `members` is sorted before the string is built -- this is
+Notice that `members` is sorted before the string is built; this is
 needed to make the comparison independent of insertion order.
-
-TODO how does automatic placement on each start/end of function work?
 
 # Running the instrumented system
 When trying out Dinv for the first time, spin up your system and let
@@ -176,32 +271,104 @@ analyzing these files with Dinv.
 
 Manually starting and stopping executions by hand gets tiring.
 Furthermore it's desirable to make executions as deterministic as
-possible to attribute changes in invariant output to changed
-instrumentation and analysis settings. When setting up a run script,
-consider the invariants you are interested in and the causes that
-result in the execution of instrumented code paths: Request keys from
-a load-balanced key-value store to check for consistency or partition
-a leader-election system to observe re-elections.
+possible to attribute changes in invariant output to instrumentation
+and analysis settings. When setting up a run environment, consider the
+invariants you are interested in and the causes that result in the
+execution of instrumented code paths: Request keys from a
+load-balanced key-value store to check for consistency or partition a
+leader-election system to observe re-elections.
 
 # Merging execution logs
 After executing an instrumented system, your working directory
-includes a `Log.txt` and `Encoded.txt` file for each node. Dinv can
+includes a `Log.txt` and `Encoded.txt` file for every node. Dinv can
 now connect the individual host states based on the information
-provided by vector time. The decision about which points to group
-together is made by a pluggable merging strategy. We identified three
-useful strategies: Whole cut merge, send-receive merge and total
-ordering merge. TODO Consult the README for further information.
-
-TODO use cases for different merging strategies
-
-To start the merging process, move to the folder containing the log
-files and run `dinv -logmerger *Encoded.txt *Log.txt`. Advisable
-options are `-shiviz` to visualize the execution
+provided by vector time. To start the merging process, run `dinv
+-logmerger *Encoded.txt *Log.txt` to pass all log files to Dinv.
+Advisable options are `-shiviz` to visualize the execution
 using [Shiviz](http://bestchai.bitbucket.org/shiviz/) and
-`-name="fruits"` to produce a more readable output. TODO explain
+`-name="fruits"` to produce more readable output.
 
 When Dinv terminates, the directory contains multiple dtrace files,
-each for a distributed program point, that can be analyzed by Daikon.
+each for a distributed program point, that can next be analyzed by
+Daikon.
+
+## Merging strategies
+The decision about which points to group together is made by a
+pluggable merging strategy. We identified three useful strategies:
+Whole cut merge, send-receive merge and total ordering merge. TODO
+Consult the README for further information about their algorithmic
+implementation.
+
+Which merging strategy to use depends on the type of invariant you're
+after. When analyzing the system for the first time, stick with the
+default total ordering merge strategy for now. Try one of the others,
+if the output doesn't match your expectation.
+
+**Total ordering merge** groups points that happened as the result of
+a "message chain". TODO example
+
+**Whole cut merge** is applicable when you want to find an invariant
+that is not invalidated *at any point* during execution. Imagine that
+each node is supposed to talk to only two specific other nodes.
+Checking that property using Dinv can be done by always logging a
+message's target address before sending it, and merging the logs using
+the whole cut merging strategy.
+
+**Send-receive merge** relates the program point at the sender
+immediately before sending a message, with the program point at the
+receiving node immediately after receiving the message. This strategy
+is most useful when trying to check properties based on state updates
+which are spread through the network from node to node.
+
+Imagine a system with a shared counter. The nodes are arranged in a
+ring and linked one way. Every node can increase the counter and
+propagate the new value by passing it along to the next node. When a
+node receives a value and the value is greater then its' current one,
+it applies the update and forwards it; if the value is less or equal
+to the current one, no action is taken.
+
+```
+state 1:           state 2:           state 3:           state 4:           state 5:
+node1 ---> node2   node1 ---> node2   node1 ---> node2   node1 ---> node2   node1 ---> node2
+ (1)        (1)     (2)   2    (1)     (2)        (2)     (2)        (2)     (2)        (2)
+  ^          |       ^          |       ^          |       ^          |       ^          |
+  |          |       |          |       |          |       | 2        |       |          |
+  |          |       |          |       |        2 |       |          |       |          |
+node3 <-------     node3 <-------     node3 <-------     node3 <-------     node3 <-------
+ (1)                (1)                (1)                (2)                (2)
+``` 
+
+We want to check that the counter eventually converges across all
+nodes. This can be expressed as `node1.counter == node2.counter ==
+node3.counter`.
+
+To allow Dinv to compare the counter between nodes, we have to log the
+new value after every update: `dinvRT.Dump(nodename+".counter",
+"counter", counter)`. Note, that the counter is *not logged* when a message
+didn't result in the counter being updated (as in state 5).
+
+Merging the run traces with whole cut merge is not expedient, since
+there are temporal states which invalidate the invariant (state 2 and
+3). Looking at the execution reveals that the invariant is never
+invalidated on the granularity of a send-receive interaction. Using
+send-receive merge, we gather three useful invariants:
+
+```
+p-_node1.counter_node2.counter
+node1.counter == node2.counter
+
+p-_node2.counter_node3.counter
+node2.counter == node3.counter
+
+p-_node3.counter_node1.counter
+node3.counter == node1.counter
+```
+
+Formulating the first invariant, Dinv never observed a message from
+node 1 to node 2, after which node2's counter wasn't at least as big
+as node1's (`node1.counter <= node2.counter). Since all message
+exchanges are covered, we can be assured that counter updates are
+correctly dispersed.
 
 # Running Daikon
 It's time for some invariants! Assuming you are in a directory
@@ -209,5 +376,5 @@ containing dtrace files generated by Dinv, run `java daikon.daikon
 *.dtrace`. Daikon prints the results to the console and additionally
 saves them in files ending with ".inv.gz".
 
-# Interpreting invariants
-- depends on file (distributed program point) they are gather from
+TODO: interpreting invariants
+- need to be seen in context of distributed program point they are gather from
