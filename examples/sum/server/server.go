@@ -1,7 +1,7 @@
 package main
 
 import (
-	"bitbucket.org/bestchai/dinv/examples/sum/marshall"
+	"encoding/binary"
 	"fmt"
 	"net"
 	"os"
@@ -28,28 +28,34 @@ func main() {
 	}
 }
 
+// expects messages with two 64 bit integers (2 * 8 bytes)
 func listenAndRespond(conn net.PacketConn) (err error) {
-	var buf [2 * marshall.IntSize]byte
+	buf := make([]byte, 16)
 
 	// after instrumentation:
 	// _, addr, err := capture.ReadFrom(conn.ReadFrom, buf[0:])
-	_, addr, err := conn.ReadFrom(buf[0:])
+	_, addr, err := conn.ReadFrom(buf)
 	if err != nil {
 		return
 	}
 
 	//@dump
 
-	summands := marshall.UnmarshallInts(buf[0:])
-	sum := summands[0] + summands[1]
+	a, _ := binary.Varint(buf[:8])
+	b, _ := binary.Varint(buf[8:])
 
-	msg := marshall.MarshallInts([]int{sum})
+	sum := a + b
+
+	fmt.Printf("[SERVER] %d + %d = %d\n", a, b, sum)
+
+	msg := make([]byte, 8)
+	binary.PutVarint(msg, sum)
 
 	// after instrumentation:
 	// capture.WriteTo(conn.WriteTo, msg, addr)
 	conn.WriteTo(msg, addr)
 
-	//@dump sending to client
+	//@dump
 
 	return nil
 }

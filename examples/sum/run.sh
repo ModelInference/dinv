@@ -8,28 +8,10 @@
 
 # The detected data invarients should include term1 + term2 = sum
 
-#Options
-#   -d : dirty run, all generated files are left after execution for
-#   inspection
-#   -c : cleanup, removes generated files created during the run
+set -e
 
-P1="server"
-P2="client"
-TEST=""
-DINV=$GOPATH/src/bitbucket.org/bestchai/dinv
-testDir=$DINV/examples/sum
-
-
-function installDinv {
-    echo "Install dinv"
-    cd $DINV
-    go install
-}
-
-function instrument {
-    dinv -i  -dir=$testDir/$1/lib
-}
-
+# http://unix.stackexchange.com/a/145654
+exec &> >(tee -a "run.output")
 
 function fixModDir {
     if [ -d "$testDir/$1/"lib_orig ]; then
@@ -39,68 +21,24 @@ function fixModDir {
 }
 
 function runTestPrograms {
-    cd $testDir
     go run server/server.go &
+    sleep 1
     go run client/client.go &
     wait $!
     killall server
 }
 
+pushd "$(dirname "$0")"
 
-function runLogMerger {
- cd $testDir
- mv $1/*.txt ./
- mv $2/*.txt ./
- dinv  -logmerger -shiviz *Encoded.txt *Log.txt
-}
-
-
-function runDaikon {
-    cd $testDir
-    for file in ./*.dtrace; do
-        java daikon.Daikon $file
-    done
-    for trace in ./*.gz; do
-        java daikon.PrintInvariants $trace >> output.txt
-    done
-    clear
-    cat output.txt
-}
-
-function shivizMerge {
-    cat $DINV/slog.log-Log.txt $DINV/testclient.log-Log.txt > ~/Research/expr/dinv_T2/shiviz.txt
-}
-
-function cleanUp {
-    rmCreated
-    kill `ps | pgrep Entry | awk '{print $1}'`
-    fixModDir client
-    fixModDir server
-    cd $testDir
-    rm *.dtrace
-    rm *.inv.gz
-    rm *.txt
-}
-
-
-function rmCreated {
- cd $testDir
- rm *.txt
-}
-
-if [ "$1" == "-c" ];
-then
-    cleanUp
-    exit
-fi
-installDinv
-instrument client
-instrument server
+../lib.sh clean "failed"
+# ../lib.sh installDinv
+# GoVector -dir "client"
+# dinv -i -file "client/client.go"
+# GoVector -dir "server"
+# dinv -i -file "server/server.go"
 runTestPrograms
-runLogMerger client server
-runDaikon
-if [ "$1" == "-d" ];
-then
-    exit
-fi
-cleanUp
+../lib.sh runLogMerger
+../lib.sh runDaikon
+../lib.sh clean
+
+popd

@@ -1,7 +1,7 @@
 package main
 
 import (
-	"bitbucket.org/bestchai/dinv/examples/sum/marshall"
+	"encoding/binary"
 	"fmt"
 	"math/rand"
 	"net"
@@ -30,27 +30,32 @@ func main() {
 		}
 		fmt.Printf("[CLIENT] %d/%d: %d + %d = %d\n", t, RUNS, n, m, sum)
 	}
-	fmt.Println()
 	os.Exit(0)
 }
 
-func reqSum(conn *net.UDPConn, n, m int) (sum int, err error) {
-	msg := marshall.MarshallInts([]int{n, m})
+func reqSum(conn *net.UDPConn, n, m int) (sum int64, err error) {
+	msg := make([]byte, 16)
+	binary.PutVarint(msg[:8], int64(n))
+	binary.PutVarint(msg[8:], int64(m))
 
+	// after instrumentation
+	// _, err = capture.Write(conn.Write, msg[:])
 	_, err = conn.Write(msg)
 	if err != nil {
 		return
 	}
+
 	//@dump
 
-	var buf [1 * marshall.IntSize]byte
-	_, err = conn.Read(buf[0:])
+	buf := make([]byte, 8)
+	// after instrumentation
+	// _, err = capture.Read(conn.Read, buf[:])
+	_, err = conn.Read(buf)
 	if err != nil {
 		return
 	}
 
-	ret := marshall.UnmarshallInts(buf[0:])
-	sum = ret[0]
+	sum, _ = binary.Varint(buf[0:])
 
 	//@dump
 
