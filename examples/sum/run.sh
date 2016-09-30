@@ -31,7 +31,7 @@ function runTestPrograms {
 pushd "$(dirname "$0")"
 
 ../lib.sh clean "failed"
-# ../lib.sh installDinv
+../lib.sh installDinv
 # GoVector -dir "client"
 # dinv -i -file "client/client.go"
 # GoVector -dir "server"

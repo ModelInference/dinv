@@ -3,6 +3,7 @@ package main
 import (
 	"encoding/binary"
 	"fmt"
+	"github.com/arcaneiceman/GoVector/capture"
 	"math/rand"
 	"net"
 	"os"
@@ -21,7 +22,7 @@ func main() {
 	conn, err := net.DialUDP("udp", localAddr, remoteAddr)
 	printErrAndExit(err)
 
-	for t := 0; t < RUNS; t++ {
+	for t := 1; t <= RUNS; t++ {
 		n, m := rand.Int()%LARGEST_TERM, rand.Int()%LARGEST_TERM
 		sum, err := reqSum(conn, n, m)
 		if err != nil {
@@ -30,6 +31,7 @@ func main() {
 		}
 		fmt.Printf("[CLIENT] %d/%d: %d + %d = %d\n", t, RUNS, n, m, sum)
 	}
+	fmt.Println()
 	os.Exit(0)
 }
 
@@ -38,9 +40,11 @@ func reqSum(conn *net.UDPConn, n, m int) (sum int64, err error) {
 	binary.PutVarint(msg[:8], int64(n))
 	binary.PutVarint(msg[8:], int64(m))
 
+	fmt.Println(msg)
+
 	// after instrumentation
-	// _, err = capture.Write(conn.Write, msg[:])
-	_, err = conn.Write(msg)
+	_, err = capture.Write(conn.Write, msg[:])
+	// _, err = conn.Write(msg)
 	if err != nil {
 		return
 	}
@@ -49,13 +53,15 @@ func reqSum(conn *net.UDPConn, n, m int) (sum int64, err error) {
 
 	buf := make([]byte, 8)
 	// after instrumentation
-	// _, err = capture.Read(conn.Read, buf[:])
-	_, err = conn.Read(buf)
+	_, err = capture.Read(conn.Read, buf[:])
+	// _, err = conn.Read(buf)
 	if err != nil {
 		return
 	}
 
 	sum, _ = binary.Varint(buf[0:])
+
+	fmt.Println(sum, buf)
 
 	//@dump
 
