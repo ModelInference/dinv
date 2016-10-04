@@ -1,108 +1,151 @@
-TODO document PackM -> makes shiviz output more usable
+# Analyzing distributed systems using Dinv
+TODO include fig 1 (overview of steps) from dinv paper
+TODO links in paragraphs to corresponding sections
+
+Dinv is a tool to infer likely invariants of a system by analyzing
+logs generated from the system's execution.
+
+Dinv's approach to observe network communication and variables is to
+augment a system's source code. Network calls need to be instrumented
+and variables need to be recorded at specific program points.
+
+The execution of an instrumented system results in artifacts that
+describe communication paths and variable's values at specific times.
+The execution environment should focus on triggering behavior that you
+are interested in analyzing; often the system's execution is scripted.
+
+Dinv analyses the execution traces to arrive at "distributed program
+points"; points in times at which the state of multiple hosts is
+comparable. 
+
+Multiple occurrences of the same distributed program point are grouped
+and analyzed by the invariant
+detector [Daikon](http://plse.cs.washington.edu/daikon/). Daikon will
+produce invariants for each distributed program point.
+
+Eventually the user must evaluated the meaning of invariants for the
+correctness of the analyzed system, while considering logging
+instrumentation, the execution environment and analysis settings.
 
 # Setup
-Before getting started, install Go, Dinv, GoVector, and Daikon. Refer
-to the README for detailed instructions. In addition, access to the
-source code of the system you want to analyze is needed.
+Before getting started,
+install
+[Go](https://golang.org/),
+[Dinv](https://bitbucket.org/bestchai/dinv),
+[GoVector](https://bitbucket.org/bestchai/dinv),
+and [Daikon](http://plse.cs.washington.edu/daikon/). Refer to
+the [README](../README.md) for detailed instructions. You also need
+access to the source of the system that you want to analyze.
 
-# Instrumenting Network Calls
-Dinv establishes relationships between events at different hosts by
-attaching Vector Clocks to messages. Each clock update is permanently
-written to a log on disk.
+# TODO smallish end-to-end example
+Maybe integrate with sum readme?
 
-Instrumenting message can be done in multiple ways. You should first
-try to use Dinv's automatic instrumentation feature and only manually
-intervene in case of failure.
+# Network Instrumentation
+Dinv establishes a temporal precedence relationship between program
+points at different hosts using vector time. 
 
-## Auto instrumentation with GoVector
-Dinv uses a tool called GoVector to manage Vector Clocks at runtime.
-GoVector must somehow attach the clock to every outgoing message and
-strip it off before the message's data is passed back to the
-application. To help developers preparing their code, GoVector
-provides pre-defined wrappers for common networking functions; TODO
-reference the README for a full list of supported methods.
+Vector clocks are attached to messages by wrapping network read/write
+calls with functions provided by a library called GoVector. 
 
-GoVector provides a command line tool to automatically find and
-instrument networking calls. For instance, to instrument the sum
-example, run
+<!-- Specifically, instrumenting `n, err := conn.Write(msg)` results
+in `n, err := capture.Write(conn.Write, msg)` (`capture` is a
+sub-module of -->
+<!-- GoVector). The vector clock is prepended to the outgoing message
+and -->
+<!-- passed to `conn.Write`. -->
 
-    GoVector -dir="$GOPATH/src/bitbucket.org/bestchai/dinv/examples/sum"
+<!-- On the receiving side `n, err := conn.Read(buf)` is turned into
+`n, err := capture.Read(conn.Read, buf)`. The vector clock is stripped
+-->
+<!-- from the received message, before the message is passed to the
+-->
+<!-- application. -->
 
-This will yield the following output:
+<!-- The rest of the program is untouched. GoVector transparently
+attaches -->
+<!-- and strips vector clocks without changing the program's
+semantics. -->
 
-    Source Built
-    Source Built
-    Wrappers Built
-    var conn net.PacketConn
-    var conn net.PacketConn
+Identifying and instrumenting send and receive functions can either be
+done automatically or manually. Automatic instrumentation does only
+work for a limited set of standard network functions; it does not work
+for custom decoders (i.e. protobuf). *Try the automatic approach first
+and instrument not processed functions manually.*
 
-The last two lines reveal that two network calls have been
+## Automatic instrumentation using GoVector
+GoVector provides both the library that Dinv uses to manage vector
+clocks at runtime and a command-line tool to automatically identify
+and instrument networking functions in Go code. 
+
+Assuming that GoVector is correctly installed, the following command
+will instrument the [sum example](examples/sum) provided along this
+document.
+
+```bash
+$ GoVector -dir="$GOPATH/src/bitbucket.org/bestchai/dinv/examples/sum" 
+
+Source Built
+Source Built
+Wrappers Built
+var conn net.PacketConn
+var conn net.PacketConn
+```
+
+GoVector's output reveals that two network calls have been
 instrumented. GoVector has injected a new import
 (`github.com/arcaneiceman/GoVector/capture`) in
 `server/lib/server.go`, and wrapped `ReadFrom` and `WriteTo`:
 
-    _, addr, err := conn.ReadFrom(buf[0:])
-    [...]
-	conn.WriteTo(msg, addr)
+```go
+_, addr, err := conn.ReadFrom(buf[0:])
+[...]
+conn.WriteTo(msg, addr)
+```
     
 has been replaced by
 
-    _, addr, err := capture.ReadFrom(conn.ReadFrom, buf[0:])
-    [...]
-	capture.WriteTo(conn.WriteTo, msg, addr)
+```go
+_, addr, err := capture.ReadFrom(conn.ReadFrom, buf[0:])
+[...]
+capture.WriteTo(conn.WriteTo, msg, addr)
+```
     
 The rest of the program is untouched. GoVector transparently attaches
 and strips clocks without changing the program's semantics.
 
-If GoVector doesn't work as expected, the capture functions must be
-added manually. If the examined system uses not supported net
-functions or has a custom en/decoding strategy, a system-specific
-strategy has to be applied. 
-
 ## Manual transport of vector clocks
 If GoVector failed to instrument your code, you need to manually
-attach vector clocks to messages. It's helpful to take a look at
-the predefined functions, in this case `capture.WriteTo`:
+attach vector clocks to messages. 
 
 ```go
-func WriteTo(writeTo func([]byte, net.Addr) (int, error), b []byte, addr net.Addr) (int, error) {
-    buf := dinvRT.Pack(b)
-    n, err := writeTo(buf, addr)
-    return n, err
-}
+vc := dinvRT.Pack(nil)
+// vc is a byte array ([]byte) containing only the vector clock
+// without additional information
+
 ```
-    
-First, the unmodified message buffer is passed to `dinvRT.Pack()` and
-the return value assigned to `buf`. `dinvRT.Pack()` writes the current
-vector clock to disk, and returns the message buffer with the vector
-clock attached to it.
 
-Following that, the modified buffer is passed to the user-specified
-networking function (i.e., `conn.WriteTo`) and the result is returned.
+The function `dinvRT.Pack(msg interface{}) []byte` performs a clock
+tick and returns the encoded vector clock. `capture` functions pass a
+message buffer to `dinvRT.Pack`, which returns th buffer with the vector
+clock timestamp attached to it. To only retrieve the vector clock
+without additional information, invoke `dinvRT.Pack` with `nil`.
 
-When implementing a custom vector clock solution `dinvRT.Pack` has to
-be used to initiate a clock tick and get the encoded vector clock. On
-the receiving side, `dinvRT.Unpack` must be used to ingest the update.
+```go 
+var dummy []byte
+dinvRT.Unpack(vc, &dummy)
+// dinv will have processed the received vector clock timestamp
+// dummy will contain no data; it's only used to satisfy the type system 
+```
 
-    // sending
-    vc := dinvRT.Pack(nil)
-    // vc is a byte array ([]byte) containing only the vector clock
-    // without additional information
+The function `dinvRT.Unpack(msg []byte, pack interface{})` processes
+the vector clock timestamp included in `msg` and writes any additional
+information to `pack`. When `dinvRT.Pack` was invoked with `nil`,
+`dummy` will be empty.
 
-    ...
-
-    // receiving
-    var dummy []byte
-    dinvRT.Unpack(vc, &dummy)
-    // dinv will have logged the new vector clock
-    // dummy will contain no data; it's only used to satisfy the type system 
-
-### Example: vector clock transportation using HTTP headers
-Dinv does not automatically instrument HTTP communication. A common
-approach is to transport the vector clock in a custom HTTP header. The
-following example demonstrates how to get the current vector clock,
-and insert the base64 representation into a header field named
-"VectorClock" .
+### Application: Vector clock transportation using HTTP headers
+A custom HTTP header can be used to transport vector clocks when
+GoVector's pre-defined functions are not applicable. The following
+two code snippets will demonstrate this approach:
 
 ```go
 func handleHTTP(w http.ResponseWriter, r *http.Request) {
@@ -112,11 +155,8 @@ func handleHTTP(w http.ResponseWriter, r *http.Request) {
 }
 ```
 
-The code handling an HTTP response is not quite as compact due to
-error handling. In essence however it performs the steps backwards:
-reading the encoded vector clock from the header, decode it, and pass
-it to Dinv. Remember that the byte array `dummy` passed to
-`dinvRT.Unpack` can be ignored.
+The current vector clock is retrieved using `dinvRT.Pack` and its' base64
+representation is inserted into a "VectorClock" header field.
 
 ```go
 vcHeader := header.Get("VectorClock")
@@ -133,16 +173,23 @@ var dummy []byte
 dinvRT.Unpack(vc, &dummy)
 ```
 
-### TODO Example: custom decoding
+The code handling an HTTP response is not quite as compact due to
+error handling. In essence however it performs the steps backwards:
+The encoded vector clock is read from the header, decoded, and passed
+to `dinvRT.Unpack`. Remember that the byte array `dummy` is only
+needed to satisfy Go's type system; it will be empty since `nil` has
+been passed to `dinvRT.Pack`.
+
+### TODO Application: custom decoding
 ## Verifying instrumentation
 After instrumenting network calls, a run of the system should yield
 log files containing JSON encoded vector clocks for each process in
 the current working directory. Log files are named by the schema
-`${timestamp at Dinv initialization}.log-Log.txt`. Each host is
+`${timestamp at Dinv initialization}.log-Log.txt`. Each node is
 uniquely defined by the time it was started.
 
-Each log file starts with the host initializing. Over time you can see
-the host receiving messages from different hosts for the first time.
+Each log file starts with the node initializing. Over time you can see
+the node receiving messages from different nodes for the first time.
  `810724201.log-log.txt` could look like this: 
 
 ```
@@ -162,65 +209,77 @@ Received on 810724201
 Sending from 810724201
 ```
 
-Look at each `*.log-Log.txt` file and check that every node included
-the vector clocks from all other nodes. Often, when somethings not
-working as expected you will find that only the local node's vector
-clock is included.
+Look at each `*.log-Log.txt` file and check that all of them include
+the vector clocks from all other nodes. If not all other nodes are
+included (often it is only the node that wrote to the log file), at
+least one communication channel is not properly instrumented.
 
 TODO custom hostnames
 
 # Logging variables 
 Now that Dinv is able to make use of vector clocks to reason about the
-order of events happing at different nodes, we can think about which
-values to log at which program points. In our experience, an iterative
-narrowing approach is most effective.
+order of events happening at different nodes, we can think about which
+values to capture at which program points. Dinv analyses those values
+to infer invariants. In our experience, an iterative narrowing
+approach is most effective.
 
 Pick which step to start on, depending on how familiar you are with
-the system, if you already have specific invariants in mind and how
-big the system is. Start by instrumenting the system in some way and
-move on to a first execution and analysis before reconsidering the
-selected variables.
+the system, if you already have specific invariants in mind and
+understand how big the system is. Start by instrumenting the system in
+some way and move on to a first execution and analysis before
+reconsidering the selected variables.
+
+TODO example of these steps for one of the programs in the repository
+TODO how do I invoke the first approach?
 
 1. logging all variables in scope at each function entry and return
 2. logging all variables in scope at specific program points
 3. logging specific variables at specific program points
 
-TODO how do I invoke the first approach?
+Dinv distinguishes capturing values (recording a variable's value)
+from logging values (writing values to disk). Dinv exposes two
+structures that capture a variables value when encountered: **Dump**
+and **Track**. Dump immediately logs after capturing a value. Track
+however, cumulates the values and only *logs them at the next
+send/receive* event. Read on for application examples.
 
-## dinvRT.Dump
-Dump is one of two constructs to log variables during execution.
+*From our experience it's usually a good idea to use Dump instead of
+Track statements, when instrumenting a system for the first time.
+Experiment with Track when the generated invariants don't match your
+expectations.*
+
+During execution of a system with instrumented networking and logging
+statements, every process writes to two files: One file (i.e.,
+`1475088947.Encoded.txt`) containes the specified variables, the
+other one (i.e., `810724201.log-log.txt` vector clock timestamps.
+
+## Using Dump to simultaneously record and log variables
 When a Dump statement is encountered, the variables' values are
-immediately logged. Dinv analyses those values when looking
-for invariants. The function signature `Dump(dumpID, variableNames
-string, variableValues ...interface{})` reveals that three arguments
-are expected.
+captured and immediately logged. The function signature `Dump(dumpID,
+variableNames string, variableValues ...interface{})` reveals that
+three arguments are expected.
 
 The first one, `dumpID string`, must *uniquely identify* a dump
 statement in a execution *across all hosts*. While no specific format
 is enforced, it's usually a good idea to include a process's
-hostname, port number or IP address in the dump ID. Mind that the
+hostname, port number or IP address in the dump ID. Note that the
 number of variables and their names included in a Dump statement must
 stay the same over the course of an execution, e.g., they must not be
 dynamic. Example:
 
+```go
+// Code at all nodes:
+dinvRT.Dump("node" + port + ":MemberStateDump, "var1,var2", var1.String(), var2.String())
+
+// DumpID at node listening on port 8000: node8000:MemberStateDump
+// DumpID at node listening on port 8001: node8001:MemberStateDump
 ```
-Code at all nodes:
-    dinvRT.Dump("node" + port + ":MemberStateDump, "var1,var2", var1.String(), var2.String())
 
-DumpID at node listening on port 8000: node8000:MemberStateDump
-DumpID at node listening on port 8001: node8001:MemberStateDump
-```
-
-From our experience it's usually a good idea to use Dump instead of
-Track statements, when instrumenting a system for the first time.
-Experiment with Track when the generated invariants don't match your
-expectations.
-
-## Track
+## Using Track to accumulate state before logging
 Track expects the same arguments as Dump and behaves in general
-similarly. The big difference is that Track doesn't immediately log
-the values, but cumulates them and only *logs them at the next
-send/receive* event. Only the latest value of a variable is logged.
+similarly. Unlike Dump, Track does not immediately log values, but
+cumulates them and only *logs them at the next send/receive* event.
+Only the latest value of a variable is logged.
 
 ```go
 s := "dlrow_olleh"
@@ -236,6 +295,12 @@ dinvRT.Track(port+"Track2", "s,m", s, m)
 ```
 
 TODO talk about option to not reset kv store?
+TODO concrete example where this is useful
+
+Track can provide a more complete view of a node’s state since
+variables from multiple captures can be analyzed together. This comes
+at the cost of precision, since intermediate state transitions are not
+reflected during a single vector time.
 
 ## Advanced state encoding
 Often a system's state is not directly represented in a form that Dinv
@@ -253,21 +318,29 @@ var state bytes.Buffer
 for _, member := range members {
     state.WriteString(member + ",") 
 }
-dinvRT.Dump(hostname + ":MemberState", "MemberState", state.String())
+dinvRT.Dump(hostname+":MemberState", "MemberState", state.String())
 ```
 
 Notice that `members` is sorted before the string is built; this is
 needed to make the comparison independent of insertion order.
 
-# Running the instrumented system
+TODO replace the example used here with example actually present in
+repo and end with invariants produced
+
+# System execution
+Even though some systems differ substantively, in our experience the
+approach to instrumentation, execution and analysis revealed patterns
+applicable to all systems. This section gives recommendations based on
+our experiences.
+
 When trying out Dinv for the first time, spin up your system and let
 it work for some time. If the number of nodes is dynamic, start with
 2-4 nodes and let the system run between 10 and 30 seconds. You need
 to make sure that the instrumented code paths are used and message are
 exchanged to generate enough data that Dinv can analyze. During
-execution, every process should have created and wrote the specified
-variables to a log file, i.e., `1475088947.Encoded.txt`. Continue by
-analyzing these files with Dinv.
+execution, every process should have created and wrote two log files,
+one containing vector clock timestamps, the other one containing
+logged variables. Continue by analyzing these files with Dinv.
 
 Manually starting and stopping executions by hand gets tiring.
 Furthermore it's desirable to make executions as deterministic as
@@ -278,7 +351,10 @@ execution of instrumented code paths: Request keys from a
 load-balanced key-value store to check for consistency or partition a
 leader-election system to observe re-elections.
 
-# Merging execution logs
+TODO mention lib.sh, maybe how to integrate it or how a typical run
+script looks like
+
+# Mining distributed state
 After executing an instrumented system, your working directory
 includes a `Log.txt` and `Encoded.txt` file for every node. Dinv can
 now connect the individual host states based on the information
@@ -370,7 +446,7 @@ as node1's (`node1.counter <= node2.counter). Since all message
 exchanges are covered, we can be assured that counter updates are
 correctly dispersed.
 
-# Running Daikon
+# Detecting invariants using Daikon
 It's time for some invariants! Assuming you are in a directory
 containing dtrace files generated by Dinv, run `java daikon.daikon
 *.dtrace`. Daikon prints the results to the console and additionally
@@ -378,3 +454,5 @@ saves them in files ending with ".inv.gz".
 
 TODO: interpreting invariants
 - need to be seen in context of distributed program point they are gather from
+
+TODO document PackM -> makes shiviz output more usable
