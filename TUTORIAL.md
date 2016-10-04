@@ -47,25 +47,6 @@ points at different hosts using vector time.
 Vector clocks are attached to messages by wrapping network read/write
 calls with functions provided by a library called GoVector. 
 
-<!-- Specifically, instrumenting `n, err := conn.Write(msg)` results
-in `n, err := capture.Write(conn.Write, msg)` (`capture` is a
-sub-module of -->
-<!-- GoVector). The vector clock is prepended to the outgoing message
-and -->
-<!-- passed to `conn.Write`. -->
-
-<!-- On the receiving side `n, err := conn.Read(buf)` is turned into
-`n, err := capture.Read(conn.Read, buf)`. The vector clock is stripped
--->
-<!-- from the received message, before the message is passed to the
--->
-<!-- application. -->
-
-<!-- The rest of the program is untouched. GoVector transparently
-attaches -->
-<!-- and strips vector clocks without changing the program's
-semantics. -->
-
 Identifying and instrumenting send and receive functions can either be
 done automatically or manually. Automatic instrumentation does only
 work for a limited set of standard network functions; it does not work
@@ -396,55 +377,8 @@ receiving node immediately after receiving the message. This strategy
 is most useful when trying to check properties based on state updates
 which are spread through the network from node to node.
 
-Imagine a system with a shared counter. The nodes are arranged in a
-ring and linked one way. Every node can increase the counter and
-propagate the new value by passing it along to the next node. When a
-node receives a value and the value is greater then its' current one,
-it applies the update and forwards it; if the value is less or equal
-to the current one, no action is taken.
-
-```
-state 1:           state 2:           state 3:           state 4:           state 5:
-node1 ---> node2   node1 ---> node2   node1 ---> node2   node1 ---> node2   node1 ---> node2
- (1)        (1)     (2)   2    (1)     (2)        (2)     (2)        (2)     (2)        (2)
-  ^          |       ^          |       ^          |       ^          |       ^          |
-  |          |       |          |       |          |       | 2        |       |          |
-  |          |       |          |       |        2 |       |          |       |          |
-node3 <-------     node3 <-------     node3 <-------     node3 <-------     node3 <-------
- (1)                (1)                (1)                (2)                (2)
-``` 
-
-We want to check that the counter eventually converges across all
-nodes. This can be expressed as `node1.counter == node2.counter ==
-node3.counter`.
-
-To allow Dinv to compare the counter between nodes, we have to log the
-new value after every update: `dinvRT.Dump(nodename+".counter",
-"counter", counter)`. Note, that the counter is *not logged* when a message
-didn't result in the counter being updated (as in state 5).
-
-Merging the run traces with whole cut merge is not expedient, since
-there are temporal states which invalidate the invariant (state 2 and
-3). Looking at the execution reveals that the invariant is never
-invalidated on the granularity of a send-receive interaction. Using
-send-receive merge, we gather three useful invariants:
-
-```
-p-_node1.counter_node2.counter
-node1.counter == node2.counter
-
-p-_node2.counter_node3.counter
-node2.counter == node3.counter
-
-p-_node3.counter_node1.counter
-node3.counter == node1.counter
-```
-
-Formulating the first invariant, Dinv never observed a message from
-node 1 to node 2, after which node2's counter wasn't at least as big
-as node1's (`node1.counter <= node2.counter). Since all message
-exchanges are covered, we can be assured that counter updates are
-correctly dispersed.
+The ring example provided along this document uses send-receive merge.
+The processes is described in the [example's README](examples/ring/README.md).
 
 # Detecting invariants using Daikon
 It's time for some invariants! Assuming you are in a directory

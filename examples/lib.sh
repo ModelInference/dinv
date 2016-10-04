@@ -4,7 +4,7 @@ set -e
 
 function clean {
     baseDir="log_archive"
-    if [ "$1" == "" ]; then
+    if [ "$1" != "" ]; then
         baseDir=$1
     fi
     dir="./$baseDir/$(date +%m-%d_%H-%M-%S)/"
@@ -15,7 +15,7 @@ function clean {
     mv ./*{Log,Encoded}.txt Shiviz.log ./*.dtrace ./*.gz ./*.output output.txt $2 \
        -t "$dir" 2>/dev/null || true
 
-    if [ "$(ls -A $dir)" ]; then
+    if [ $(find "$dir" -mindepth 1 -maxdepth 1 | wc -l) -eq 0 ]; then
         echo "nothing to clean up"
         rm -r $dir
     else

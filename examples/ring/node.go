@@ -16,7 +16,7 @@ import (
 )
 
 var (
-	counter  int64 = 0
+	counter  int64
 	neighbor net.Conn
 	logger   *log.Logger
 )
@@ -34,7 +34,7 @@ func main() {
 
 	nodeID := "[N" + strconv.Itoa(*port) + "]"
 
-	logger = log.New(os.Stdout, nodeID, log.Lshortfile)
+	logger = log.New(os.Stdout, nodeID+" ", log.Lshortfile)
 
 	listenAddr, err := net.ResolveUDPAddr("udp", ":"+strconv.Itoa(*port))
 	printErrAndExit(err)
@@ -59,12 +59,12 @@ func main() {
 				fmt.Println(err)
 				continue
 			}
-			val, _ := binary.Varint(buf)
+			update, _ := binary.Varint(buf)
 
-			logger.Printf("received %v (%d)\n", buf, val)
+			logger.Printf("received %v (%d)\n", buf, update)
 
-			if val > counter {
-				atomic.StoreInt64(&counter, val)
+			if update > atomic.LoadInt64(&counter) {
+				atomic.StoreInt64(&counter, update)
 				logger.Printf("received update: counter now at %d", atomic.LoadInt64(&counter))
 
 				dinvRT.Dump(nodeID, "counter", atomic.LoadInt64(&counter))
@@ -73,7 +73,7 @@ func main() {
 					continue
 				}
 			} else {
-				logger.Printf("received update %d, but counter already at %d\n", val,
+				logger.Printf("received update %d, but counter already at %d\n", update,
 					atomic.LoadInt64(&counter))
 			}
 		}
@@ -87,15 +87,18 @@ func main() {
 		<-sigusr1
 		atomic.AddInt64(&counter, 1)
 		logger.Printf("signal received: counter increased to %d", atomic.LoadInt64(&counter))
+		// when Dump is before forward, invariant N8003-counter - N8002-counter == 0 shows up
 		if err := forward(); err != nil {
 			logger.Println(err)
 		}
+		// when Dump is after forward, invariant N8003-counter == N8002-counter shows up
+		dinvRT.Dump(nodeID, "counter", atomic.LoadInt64(&counter))
 	}
 }
 
 func forward() (err error) {
 	msg := make([]byte, 8)
-	binary.PutVarint(msg, counter)
+	binary.PutVarint(msg, atomic.LoadInt64(&counter))
 	_, err = capture.Write(neighbor.Write, msg)
 	return
 }
