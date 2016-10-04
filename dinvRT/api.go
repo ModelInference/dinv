@@ -25,7 +25,7 @@ var (
 	packageName string        // TODO packageName is not used -- can it be removed?
 	Encoder     *json.Encoder // global name value pair point encoder
 
-	useKV      = true
+	useKV      = false
 	resetKV    = false                            // determines if the KV is emptied after the values were written to the log
 	varStore   map[string]logmerger.NameValuePair // used to store variable name/value pairs between multiple dumps
 	varStoreMx *sync.Mutex                        // manages access to varStore map
@@ -300,10 +300,12 @@ func initDinv(hostName string) {
 	initMutex.Lock()
 	defer initMutex.Unlock()
 	if !initialized {
-		if hostName == "" {
-			id = fmt.Sprintf("%d", time.Now().Nanosecond())
-		} else {
+		if hostName != "" {
 			id = hostName
+		} else if os.Getenv("DINV_HOSTNAME") != "" {
+			id = os.Getenv("DINV_HOSTNAME")
+		} else {
+			id = fmt.Sprintf("%d", time.Now().Nanosecond())
 		}
 		goVecLogger = govec.Initialize(id, id+".log")
 
