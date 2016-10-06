@@ -15,6 +15,7 @@ import (
 	"github.com/arcaneiceman/GoVector/govec"
 	"sort"
 	"sync"
+
 )
 
 var (
@@ -25,13 +26,13 @@ var (
 	packageName string        // TODO packageName is not used -- can it be removed?
 	Encoder     *json.Encoder // global name value pair point encoder
 
-	useKV      = false
-	resetKV    = false                            // determines if the KV is emptied after the values were written to the log
+	useKV      = true
+	resetKV    = true                             // determines if the KV is emptied after the values were written to the log
 	varStore   map[string]logmerger.NameValuePair // used to store variable name/value pairs between multiple dumps
 	varStoreMx *sync.Mutex                        // manages access to varStore map
 	kvDumpIds  []string
 	genKVID    func([]logmerger.NameValuePair) string
-
+	
 	initMutex *sync.Mutex = &sync.Mutex{}
 )
 
@@ -130,6 +131,7 @@ func logPairList(pairs []logmerger.NameValuePair, did string) {
 		return
 	}
 }
+
 
 //variableNamesID merges the names of each variable present in the kv
 //store into a unique id based on their name. This merging strategy
@@ -306,6 +308,8 @@ func initDinv(hostName string) {
 			id = os.Getenv("DINV_HOSTNAME")
 		} else {
 			id = fmt.Sprintf("%d", time.Now().Nanosecond())
+		} else {
+			id = hostName
 		}
 		goVecLogger = govec.Initialize(id, id+".log")
 
