@@ -34,6 +34,8 @@ var (
 	debug  = false
 	//produce a shiviz readable log
 	shiviz = false
+	//output distributed program points as json
+	jsonDPP = false
 	//specifies how program points should be merged. The merging plan
 	//translates the set of states into a 2D array of program points.
 	mergePlan = func(states []State) [][]Point { return nil }
@@ -87,6 +89,8 @@ func initalizeLogMerger(options map[string]string, inlogger *log.Logger) {
 			renamingScheme = options[setting]
 		case "shiviz":
 			shiviz = true
+		case "json":
+			jsonDPP = true
 		default:
 			continue
 		}
@@ -107,7 +111,11 @@ func Merge(logfiles []string, gologfiles []string, options map[string]string, in
 		for i := range plogs {
 			fmt.Printf("Merging group %d\n", i)
 			states := mineStates(plogs[i], pgoLogs[i])
-			writeTraceFiles(states)
+			if jsonDPP {
+				writeLogToJson(states)
+			} else {
+				writeTraceFiles(states)
+			}
 		}
 	}
 }
@@ -169,7 +177,7 @@ func writeUnmergedTraces(filenames []string, logs [][]Point) {
 	for i, filename := range filenames {
 		unmergedName := filename + "unmerged.log"
 		logger.Printf("New unmerged trace %s\n", unmergedName)
-		writeLogToFile(logs[i], unmergedName)
+		writeLogToTrace(logs[i], unmergedName)
 	}
 
 }
@@ -305,6 +313,7 @@ func statesFromCuts2(cuts []Cut, clocks [][]vclock.VClock, logs [][]Point) []Sta
 	return states
 }
 
+
 //writeTraceFiles constructs a set unique trace file based on several
 //specifiations in the MergeSpec.
 func writeTraceFiles(states []State) {
@@ -346,8 +355,8 @@ func writeTraceFiles(states []State) {
 			}
 		}
 		if newFile {
-			logger.Printf("New trace file %s\n", filename)
-			writeLogToFile(pointLog, filename)
+			logger.Printf("New file %s\n", filename)
+			writeLogToTrace(pointLog, filename)
 		}
 	}
 }

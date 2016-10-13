@@ -69,7 +69,7 @@ function runTestPrograms {
 
 function runLogMerger {
     cd $testDir
-    dinv -v -l -name="fruits" -plan="SCM" -shiviz *Encoded.txt *Log.txt
+    dinv -v -l -name="fruits" -plan="SCM" -shiviz -json *Encoded.txt *Log.txt
 }
 
 function runDaikon {
@@ -96,6 +96,7 @@ function cleanUp {
     rm ./*.dtrace
     rm ./*.gz
     rm ./*.txt
+    rm ./*.json
     fixModDir $P1
     fixModDir $P2
     fixModDir $P3

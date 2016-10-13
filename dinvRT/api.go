@@ -169,7 +169,7 @@ func smearedDumpID(pairs []logmerger.NameValuePair) string {
 	}
 	kvDumpIds = uniqueNames
 
-	return logmerger.Hash(concatStrings(names))
+	return logmerger.Hash(concatStrings(uniqueNames))
 }
 
 func concatStrings(a []string) string {
@@ -308,8 +308,6 @@ func initDinv(hostName string) {
 			id = os.Getenv("DINV_HOSTNAME")
 		} else {
 			id = fmt.Sprintf("%d", time.Now().Nanosecond())
-		} else {
-			id = hostName
 		}
 		goVecLogger = govec.Initialize(id, id+".log")
 

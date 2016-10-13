@@ -213,20 +213,52 @@ func swapClockIds(oldClock vclock.VClock, idMap map[string]string) vclock.VClock
 	return ConstructVclock(ids, ticks)
 }
 
+
 //writeLogToFile produces a daikon dtrace file based on a log
 //represented as an array of points
-func writeLogToFile(log []Point, filename string) {
+func writeLogToTrace(log []Point, filename string) {
+	file := newFile(filename,"trace")
+	mapOfPoints := createMapOfLogsForEachPoint(log)
+	writeDeclaration(file, mapOfPoints)
+	writeValues(file, log)
+}
+
+func writeLogToJson(log []State){
+	mstates := createMapOfLogsForEachState(log)
+	for id := range mstates {
+		file := newFile(id,"json")
+		enc := json.NewEncoder(file)
+		for _, state := range mstates[id] {
+			if err := enc.Encode(state); err != nil {
+				logger.Panic("Error encoding state: %s", err.Error())
+				return
+			}
+		}
+	}
+}
+
+func newFile(filename, extension string) *os.File {
 	if len(filename) > 50 {
 		filename = Hash(filename)
 	}
-	filenameWithExtenstion := fmt.Sprintf("%s.dtrace", filename)
+	filenameWithExtenstion := fmt.Sprintf("%s.%s", filename,extension)
 	file, err := os.Create(filenameWithExtenstion)
 	if err != nil {
 		logger.Panic(err)
 	}
-	mapOfPoints := createMapOfLogsForEachPoint(log)
-	writeDeclaration(file, mapOfPoints)
-	writeValues(file, log)
+	return file
+}
+
+func createMapOfLogsForEachState(log []State) map[string][]State {
+	mapOfStates := make(map[string][]State, 0)
+	for _, state := range log {
+		id := ""
+		for _, point := range state.Points {
+			id += point.Id
+		}
+		mapOfStates[id] = append(mapOfStates[id],state)
+	}
+	return mapOfStates
 }
 
 //createMapOfLogsForEachPoint buckets points based on the line number
