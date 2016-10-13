@@ -45,6 +45,7 @@ var (
 	sampleRate         int
 	totallyOrderedCuts bool
 	renamingScheme     string
+	json 			   bool
 
 	//options for both
 	verbose    bool
@@ -69,6 +70,7 @@ func setFlags() {
 	flag.IntVar(&sampleRate, "sample", defaultSampleRate, "-sample=50 % sample of consistant cuts to be analysed")
 	flag.BoolVar(&totallyOrderedCuts, "toc", false, "-toc overlapping cuts are not analysed")
 	flag.StringVar(&renamingScheme, "name", defaultRenameingScheme, "-name=color names hosts after colors includes color/fruit/philosopher")
+	flag.BoolVar(&json, "json", false, "-json distributed program poins output as json rather than dtrace")
 
 	flag.BoolVar(&logmer, "logmerger", false, "go run dinv -logmerger file1 file2 ...")
 	flag.BoolVar(&logmer, "l", false, "go run dinv -l file1 file2 ...")
@@ -197,6 +199,10 @@ func main() {
 
 		if shivizLog {
 			options["shiviz"] = "on"
+		}
+
+		if json {
+			options["json"] = "on"
 		}
 
 		logmerger.Merge(pointLogs, govecLogs, options, logger)
