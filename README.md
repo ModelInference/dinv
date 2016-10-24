@@ -59,6 +59,8 @@ To clone the repository run the following commands
 
 `hg clone https://bitbucket.org/bestchai/dinv`
 
+For a quick start to using Dinv check out out [tutorial](./Tutorial.md)
+
 ## Dependencies
 
 Dinv depends on a number of remote repositories, you can install these by running `dependencies.sh`:
