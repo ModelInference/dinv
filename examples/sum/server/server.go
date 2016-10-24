@@ -31,7 +31,7 @@ func main() {
 
 // expects messages with two 64 bit integers (2 * 8 bytes)
 func listenAndRespond(conn net.PacketConn) (err error) {
-	buf := make([]byte, 16)
+	buf := make([]byte, 256)
 
 	// after instrumentation:
 	_, addr, err := capture.ReadFrom(conn.ReadFrom, buf[0:])
@@ -53,7 +53,7 @@ func listenAndRespond(conn net.PacketConn) (err error) {
 
 	fmt.Printf("[SERVER] %d + %d = %d\n", a, b, sum)
 
-	msg := make([]byte, 8)
+	msg := make([]byte, 256)
 	putN := binary.PutVarint(msg, sum)
 
 	fmt.Println(putN, msg)
