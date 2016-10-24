@@ -59,7 +59,7 @@ To clone the repository run the following commands
 
 `hg clone https://bitbucket.org/bestchai/dinv`
 
-For a quick start to using Dinv check out out [tutorial](./Tutorial.md)
+For a quick start to using Dinv check out out [tutorial](./TUTORIAL.md)
 
 ## Dependencies
 
