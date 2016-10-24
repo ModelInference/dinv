@@ -216,7 +216,7 @@ func buildLogs(logFiles []string, gologFiles []string) ([][]Point, []*golog) {
 	replaceIds(logs, goLogs, renamingScheme)
 
 	if shiviz {
-		writeShiVizLog(logs, goLogs)
+		WriteShiVizLog(logs, goLogs)
 	}
 
 	return logs, goLogs
@@ -496,7 +496,7 @@ func printErr(err error) {
 	}
 }
 
-func writeShiVizLog(pointLog [][]Point, goLogs []*golog) {
+func WriteShiVizLog(pointLog [][]Point, goLogs []*golog) {
 	file, _ := os.Create("Shiviz.log")
 	shivizRegex := "(?<host>\\S*) (?<clock>{.*})\\n(?<event>.*)\\n(?<dump>.*)"
 	file.WriteString(shivizRegex)
