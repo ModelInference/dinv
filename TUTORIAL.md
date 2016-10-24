@@ -1,6 +1,5 @@
 # Analyzing distributed systems using Dinv
 ![Dinv at a high level](./figs/dinv-flow-page-001.jpg)
-TODO links in paragraphs to corresponding sections
 
 Dinv is a tool to infer likely invariants of a system by analyzing
 logs generated from the system's execution.
@@ -10,13 +9,16 @@ augment a system's source code. Network calls need to be instrumented
 and variables need to be recorded at specific program points.
 
 The execution of an instrumented system results in artifacts that
-describe communication paths and variable's values at specific times.
+describe communication paths and variable's values when they are logged.
 The execution environment should focus on triggering behavior that you
 are interested in analyzing; often the system's execution is scripted.
 
 Dinv analyses the execution traces to arrive at "distributed program
 points"; points in times at which the state of multiple hosts is
-comparable. 
+comparable. Distributed program points are similar to [distributed snapshots](http://research.microsoft.com/en-us/um/people/lamport/pubs/chandy.pdf). 
+Like snapshots, distributed program points are an aggregation of distributed state. 
+Unlike snapshots they correspond to the state of a system which corresponds to 
+specific lines of code on seperate hosts.
 
 Multiple occurrences of the same distributed program point are grouped
 and analyzed by the invariant
@@ -37,20 +39,29 @@ and [Daikon](http://plse.cs.washington.edu/daikon/). Refer to
 the [README](../README.md) for detailed instructions. You also need
 access to the source of the system that you want to analyze.
 
-# TODO smallish end-to-end example
-Maybe integrate with sum readme?
+Throughout this tutorial we reference the [sum server](./examples/sum),
+found in our [example](./examples) directory.
+
+# Initalizing Dinv
+Dinv maintains a small runtime during a systems execution. The runtime logs variables, and maintians vector clocks.
+Any call to Dinv's api be it a network read/write, or variable logging will automaticall initalize the Dinv runtime.
+When the runtime is initalize it will automatically generate a 32 bit unique id for the node it is running on.
+
+To manually set the name of the host machine call ```dinvRT.Initalize("unique-node-name")``` before any other calls to Dinvs api.
 
 # Network Instrumentation
-Dinv establishes a temporal precedence relationship between program
-points at different hosts using vector time. 
+Dinv uses vector clocks to reason about distributed executions. 
+Vector clocks provide a partial ordering on a systems exeuction. 
+Dinv uses this partial ordering to combine the states of different nodes.
 
 Vector clocks are attached to messages by wrapping network read/write
 calls with functions provided by a library called GoVector. 
 
 Identifying and instrumenting send and receive functions can either be
 done automatically or manually. Automatic instrumentation does only
-work for a limited set of standard network functions; it does not work
-for custom decoders (i.e. protobuf). *Try the automatic approach first
+work for a limited set of [standard network functions](https://golang.org/pkg/net/); 
+it does not work for network reads and writes wrapped by encoders.
+*Try the automatic approach first
 and instrument not processed functions manually.*
 
 ## Automatic instrumentation using GoVector
@@ -161,7 +172,6 @@ to `dinvRT.Unpack`. Remember that the byte array `dummy` is only
 needed to satisfy Go's type system; it will be empty since `nil` has
 been passed to `dinvRT.Pack`.
 
-### TODO Application: custom decoding
 ## Verifying instrumentation
 After instrumenting network calls, a run of the system should yield
 log files containing JSON encoded vector clocks for each process in
@@ -195,7 +205,6 @@ the vector clocks from all other nodes. If not all other nodes are
 included (often it is only the node that wrote to the log file), at
 least one communication channel is not properly instrumented.
 
-TODO custom hostnames
 
 # Logging variables 
 Now that Dinv is able to make use of vector clocks to reason about the
@@ -210,12 +219,8 @@ understand how big the system is. Start by instrumenting the system in
 some way and move on to a first execution and analysis before
 reconsidering the selected variables.
 
-TODO example of these steps for one of the programs in the repository
-TODO how do I invoke the first approach?
-
-1. logging all variables in scope at each function entry and return
-2. logging all variables in scope at specific program points
-3. logging specific variables at specific program points
+1. logging all variables in scope at specific program points
+2. logging specific variables at specific program points
 
 Dinv distinguishes capturing values (recording a variable's value)
 from logging values (writing values to disk). Dinv exposes two
@@ -278,10 +283,17 @@ dinvRT.Track(port+"Track2", "s,m", s, m)
 TODO talk about option to not reset kv store?
 TODO concrete example where this is useful
 
-Track can provide a more complete view of a nodeâ€™s state since
+Track can provide a more complete view of a node’s state since
 variables from multiple captures can be analyzed together. This comes
 at the cost of precision, since intermediate state transitions are not
-reflected during a single vector time.
+reflected during a single vector time. This is usefull when invariants 
+between variabeles of different scopes are wanted.
+
+The key-value store has the option to persist the values of variables stored over vector time transitions or reset them.
+Resetting the key-value store provides a full view of a nodes state at a single vector time, which is a precise view.
+Alternativly values can be persisted across vector times. This is particularly usefull in low connectivty systems.
+In cases where communication in a cluster is not highly connected the probability of nodes executing wanted logging statements at matching vector times 
+is low.
 
 ## Advanced state encoding
 Often a system's state is not directly represented in a form that Dinv
@@ -304,9 +316,6 @@ dinvRT.Dump(hostname+":MemberState", "MemberState", state.String())
 
 Notice that `members` is sorted before the string is built; this is
 needed to make the comparison independent of insertion order.
-
-TODO replace the example used here with example actually present in
-repo and end with invariants produced
 
 # System execution
 Even though some systems differ substantively, in our experience the
@@ -386,7 +395,27 @@ containing dtrace files generated by Dinv, run `java daikon.daikon
 *.dtrace`. Daikon prints the results to the console and additionally
 saves them in files ending with ".inv.gz".
 
-TODO: interpreting invariants
-- need to be seen in context of distributed program point they are gather from
+# Interpreting invariants
 
-TODO document PackM -> makes shiviz output more usable
+Daikon output is composed of invariant relationships between variables. 
+All relationships on variables of the same type are transitive. Dinv names variables 
+based on the node they ran on, the package they are from, the name of the source code, 
+line number of the logging statement, and the variables name. This nameing scheme may seem pedantic, but 
+it is nessisary to prevent variables from different scopes but with the same name being confused. An example of 
+Dinv's output taken from our [sum server](./examples/sum) is as follows.
+
+```
+clientNode_main_client_66-serverNode_main_server_65
+
+clientNode_main_client_66_n == serverNode_main_server_65_a
+clientNode_main_client_66_m == serverNode_main_server_65_b
+clientNode_main_client_66_sum == serverNode_main_server_65_sum
+clientNode_main_client_66_n + clientNode_main_client_66_m == clientNode_main_client_66_sum
+```
+The first line of the file corresponds to the name of the distributed program point on which
+the invariants in the output hold. In this example the distributed program point is composed of line 66 on the client
+and line 65 on the server. The invariants show that the varible ```n``` on the client, and ```a``` on the server are identical. The same is 
+true for variables ```m``` and ```b```, and the ```sum``` on both nodes. The last invariant shows the sum relationship between the 
+client ```n```, ```m```, and ```sum```. By transitivy the same relationship holds between client and server variables.
+
+
