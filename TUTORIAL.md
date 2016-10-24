@@ -1,5 +1,5 @@
 # Analyzing distributed systems using Dinv
-TODO include fig 1 (overview of steps) from dinv paper
+![Dinv at a high level](./figs/dinv-flow-page-001.jpg)
 TODO links in paragraphs to corresponding sections
 
 Dinv is a tool to infer likely invariants of a system by analyzing

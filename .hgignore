@@ -5,6 +5,11 @@ syntax: glob
 *.dtrace
 *.sw[a-z]
 *.txt
+*.trace
+*.orig
+*.json
+*.stext
+*out.text
 savedtest*
 mod_*
 TestPrograms/*.txt
