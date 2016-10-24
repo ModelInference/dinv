@@ -36,7 +36,7 @@ func main() {
 }
 
 func reqSum(conn *net.UDPConn, n, m int) (sum int64, err error) {
-	msg := make([]byte, 16)
+	msg := make([]byte, 256)
 	binary.PutVarint(msg[:8], int64(n))
 	binary.PutVarint(msg[8:], int64(m))
 
@@ -51,7 +51,7 @@ func reqSum(conn *net.UDPConn, n, m int) (sum int64, err error) {
 
 	//@dump
 
-	buf := make([]byte, 8)
+	buf := make([]byte, 256)
 	// after instrumentation
 	_, err = capture.Read(conn.Read, buf[:])
 	// _, err = conn.Read(buf)
