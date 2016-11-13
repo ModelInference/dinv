@@ -79,9 +79,11 @@ To infer invariants on the trace files produced by DInv
 
 ## Installing DInv
 
-After you install the above dependencies, install DInv by running. The binary will be placed in `$GOPATH/bin` and can be run with `$GOPATH/bin/dinv`.
-
+After you install the above dependencies, install DInv by running:
 `go install bitbucket.org/bestchai/dinv`
+
+The dinv binary will be generated at `$GOPATH/bin/dinv`.
+
 
 
 # Usage
