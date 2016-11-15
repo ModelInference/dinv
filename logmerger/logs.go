@@ -217,7 +217,7 @@ func swapClockIds(oldClock vclock.VClock, idMap map[string]string) vclock.VClock
 //writeLogToFile produces a daikon dtrace file based on a log
 //represented as an array of points
 func writeLogToTrace(log []Point, filename string) {
-	file := newFile(filename,"trace")
+	file := newFile(filename,"dtrace")
 	mapOfPoints := createMapOfLogsForEachPoint(log)
 	writeDeclaration(file, mapOfPoints)
 	writeValues(file, log)
