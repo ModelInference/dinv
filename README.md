@@ -1,3 +1,8 @@
+[![Screenshot](https://bitbucket.org/bestchai/dinv/raw/default/figs/play-demo-video.jpg)](https://www.youtube.com/watch?v=n9fH9ABJ6S4)
+
+A demo video explaining Dinv.
+
+
 # DInv is a distributed system data invariant detector
 
 Distributed system state is not easily accessible and must be pieced together from the state at the individual hosts. Developers have few tools to help them extract, check, and reason about distributed state.
