@@ -18,6 +18,7 @@ import (
 	"go/printer"
 
 	"bitbucket.org/bestchai/dinv/programslicer/cfg"
+	"bitbucket.org/bestchai/dinv/programslicer/dataflow"
 	"go/types"
 	"golang.org/x/tools/go/loader"
 )
@@ -72,6 +73,8 @@ func GetWrapperFromString(SourceString string) (*ProgramWrapper, error) {
 	var config loader.Config
 	Fset := token.NewFileSet()
 	Comments, err := parser.ParseFile(Fset, "single", SourceString, parser.ParseComments)
+
+	ast.Print(Fset, Comments)
 	if err != nil {
 		return nil, err
 	}
@@ -273,6 +276,9 @@ const (
 //getWrapper creates a wrapper for a control flow graph
 func getWrapper(functionDec *ast.FuncDecl, Prog *loader.Program) *CFGWrapper {
 	Cfg := cfg.FromFunc(functionDec)
+	dataflow.CreateDataDepGraph(Cfg, Prog.InitialPackages()[0])
+	Cfg.InitializeBlocks()
+	cfg.BuildDomTree(Cfg)
 	v := make(map[int]ast.Stmt)
 	Stmts := make(map[ast.Stmt]int)
 	Objs := make(map[string]*types.Var)

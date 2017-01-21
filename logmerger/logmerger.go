@@ -122,9 +122,24 @@ func Merge(logfiles []string, gologfiles []string, options map[string]string, in
 
 //partition logs seperates logs that do not communicate into seperate
 //arrays
+
+//TODO fix this freaking function
 func partitionLogs(points [][]Point, gos []*golog) ([][][]Point, [][]*golog) {
 	seperatePoints := make([][][]Point, 0)
 	seperategoLogs := make([][]*golog, 0)
+	//this is a breaking function to just get everything working
+	partLog := make([][]Point, 0)
+	partGoLog := make([]*golog, 0)
+	for i := range gos {
+		partLog = append(partLog, points[i])
+		partGoLog = append(partGoLog, gos[i])
+		fmt.Println(gos[i])
+	}
+	seperatePoints = append(seperatePoints, partLog)
+	seperategoLogs = append(seperategoLogs, partGoLog)
+	return seperatePoints, seperategoLogs
+	//TODO TODO this is where the function should continue
+
 	used := make([]bool, len(points))
 	var checked int
 	for checked < len(gos) {
@@ -216,7 +231,7 @@ func buildLogs(logFiles []string, gologFiles []string) ([][]Point, []*golog) {
 	replaceIds(logs, goLogs, renamingScheme)
 
 	if shiviz {
-		WriteShiVizLog(logs, goLogs)
+		WriteShiVizLogFast(logs, goLogs)
 	}
 
 	return logs, goLogs
@@ -493,6 +508,23 @@ func ThreadCount(size int) int {
 func printErr(err error) {
 	if err != nil {
 		fmt.Println(err)
+	}
+}
+
+
+func WriteShiVizLogFast(pointLog [][]Point, goLogs []*golog) {
+	file, _ := os.Create("Shiviz.log")
+	shivizRegex := "(?<host>\\S*) (?<clock>{.*})\\n(?<event>.*)"
+	file.WriteString(shivizRegex)
+	file.WriteString("\n\n")
+	//TODO add in information about dump statements to logs will look
+	//something like the (matchSendAndReceive) function in utils,
+	//involving the backtracking through duplicate clock valued events
+	for _, goLog := range goLogs {
+		for j := range goLog.clocks {
+			log := fmt.Sprintf("%s %s\n%s\n", goLog.id, goLog.clocks[j].ReturnVCString(), goLog.messages[j])
+			file.WriteString(log)
+		}
 	}
 }
 

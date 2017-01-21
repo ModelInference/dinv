@@ -45,8 +45,8 @@ func readLog(filePath string) []Point {
 func fixJsonEncodingTypeConversion(point *Point) {
 	for i := range point.Dump {
 		if point.Dump[i].Type == "int" {
+			//fmt.Printf("type :%s\t value: %s\n", reflect.TypeOf(point.Dump[i].Value).String(), point.Dump[i].value())
 			point.Dump[i].Value = int(point.Dump[i].Value.(float64))
-			// fmt.Printf("type :%s\t value: %s\n",reflect.TypeOf(point.Dump[i].Value).String(),point.Dump[i].value())
 		}
 	}
 }
@@ -154,6 +154,8 @@ func replaceIds(pointLog [][]Point, goLogs []*golog, scheme string) {
 	}
 }
 
+//func replaceIds(pointLog [][]Point, goLogs []*golog, scheme string) {
+
 /* reading govec logs */
 func ParseGologFile(filename string) (*golog, error) {
 	var govecRegex string = "(\\S*) ({.*})\n(.*)"
@@ -190,7 +192,7 @@ func GoLogFromString(clockLog, regex string) (*golog, error) {
 
 	vclocks := make([]vclock.VClock, 0)
 	for i := range rawClocks {
-		clock, err := ClockFromString(rawClocks[i], "\"([A-Za-z0-9_]+)\":([0-9]+)")
+		clock, err := ClockFromString(rawClocks[i], "\"([A-Za-z0-9_:]+)\":([0-9]+)")
 		if clock == nil || err != nil {
 			return nil, err
 		}
@@ -213,20 +215,19 @@ func swapClockIds(oldClock vclock.VClock, idMap map[string]string) vclock.VClock
 	return ConstructVclock(ids, ticks)
 }
 
-
 //writeLogToFile produces a daikon dtrace file based on a log
 //represented as an array of points
 func writeLogToTrace(log []Point, filename string) {
-	file := newFile(filename,"dtrace")
+	file := newFile(filename, "dtrace")
 	mapOfPoints := createMapOfLogsForEachPoint(log)
 	writeDeclaration(file, mapOfPoints)
 	writeValues(file, log)
 }
 
-func writeLogToJson(log []State){
+func writeLogToJson(log []State) {
 	mstates := createMapOfLogsForEachState(log)
 	for id := range mstates {
-		file := newFile(id,"json")
+		file := newFile(id, "json")
 		enc := json.NewEncoder(file)
 		for _, state := range mstates[id] {
 			if err := enc.Encode(state); err != nil {
@@ -241,7 +242,7 @@ func newFile(filename, extension string) *os.File {
 	if len(filename) > 50 {
 		filename = Hash(filename)
 	}
-	filenameWithExtenstion := fmt.Sprintf("%s.%s", filename,extension)
+	filenameWithExtenstion := fmt.Sprintf("%s.%s", filename, extension)
 	file, err := os.Create(filenameWithExtenstion)
 	if err != nil {
 		logger.Panic(err)
@@ -256,7 +257,7 @@ func createMapOfLogsForEachState(log []State) map[string][]State {
 		for _, point := range state.Points {
 			id += point.Id
 		}
-		mapOfStates[id] = append(mapOfStates[id],state)
+		mapOfStates[id] = append(mapOfStates[id], state)
 	}
 	return mapOfStates
 }
@@ -424,6 +425,7 @@ var namingSchemes = map[string][]string{
 		"blue", "red", "green", "purple", "black", "orange", "yellow", "gold", "white", "pink", "azure", "brown", "cobalt", "cyan", "grey", "indigo", "jade"},
 	"fruits":       []string{"Apple", "Banana", "Apricot", "Strawberry", "Orange", "Grape", "Raspberry", "Blackberry", "Blueberry", "WaterMelon", "Rambutan", "Lanzones", "Pears", "Plums", "Peaches", "Pineapple", "Cantaloupe", "Papaya", "Jackfruit", "Durian"},
 	"philosophers": []string{"Aristotle", "Chomsky", "Locke", "Nietzsche", "Plato"},
+	"letters":      []string{"A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N"},
 }
 
 //"philosophers": []string{"Abelard", "Adorno", "Aquinas", "Arendt", "Aristotle", "Augustine", "Bacon", "Barthes", "Bataille", "Baudrillard", "Beauvoir", "Benjamin", "Berkeley", "Butler", "Camus", "Chomsky", "Cixous", "Deleuze", "Derrida", "Descartes", "Dewey", "Foucault", "Gadamer", "Habermas", "Haraway", "Hegel", "Heidegger", "Hobbes", "Hume", "Husserl", "Irigaray", "James", "Immanuel", "Kristeva", "Tzu", "Levinas", "Locke", "Lyotard", "Merleau-Ponty", "Mill", "Moore", "Nietzsche", "Plato", "Quine", "Rand", "Rousseau", "Sartre", "Schopenhauer", "Spinoza", "Wittgenstein"},

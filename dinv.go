@@ -69,7 +69,7 @@ func setFlags() {
 	flag.StringVar(&mergePlan, "plan", defaultMergePlan, "-plan=TOLN merges based on total order, and line number\nOptions\n"+planDiscription)
 	flag.IntVar(&sampleRate, "sample", defaultSampleRate, "-sample=50 % sample of consistant cuts to be analysed")
 	flag.BoolVar(&totallyOrderedCuts, "toc", false, "-toc overlapping cuts are not analysed")
-	flag.StringVar(&renamingScheme, "name", defaultRenameingScheme, "-name=color names hosts after colors includes color/fruit/philosopher")
+	flag.StringVar(&renamingScheme, "name", defaultRenameingScheme, "-name=color names hosts after colors includes color/fruit/philosopher/letter")
 	flag.BoolVar(&json, "json", false, "-json distributed program poins output as json rather than dtrace")
 
 	flag.BoolVar(&logmer, "logmerger", false, "go run dinv -logmerger file1 file2 ...")
