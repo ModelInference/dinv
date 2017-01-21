@@ -192,6 +192,20 @@ splines="ortho";
 	fmt.Fprintf(f, "}\n")
 }
 
+//gets the string representation of a cfg
+func (c *CFG) String(fset *token.FileSet, addl func(n ast.Stmt) string) string {
+	var cfgstring string
+	for _, v := range c.Blocks {
+		for _, a := range v.DataDep {
+			cfgstring += fmt.Sprintf("\t\"%s\" -> \"%s\"\n",
+				c.printVertex(v, fset, addl(v.Stmt)),
+				c.printVertex(a, fset, addl(a.Stmt)))
+		}
+	}
+	cfgstring += fmt.Sprintf("}\n")
+	return cfgstring
+}
+
 func (c *CFG) printVertex(v *Block, fset *token.FileSet, addl string) string {
 	switch v.Stmt {
 	case c.Entry:

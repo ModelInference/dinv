@@ -15,7 +15,6 @@ import (
 	"github.com/arcaneiceman/GoVector/govec"
 	"sort"
 	"sync"
-
 )
 
 var (
@@ -32,7 +31,7 @@ var (
 	varStoreMx *sync.Mutex                        // manages access to varStore map
 	kvDumpIds  []string
 	genKVID    func([]logmerger.NameValuePair) string
-	
+
 	initMutex *sync.Mutex = &sync.Mutex{}
 )
 
@@ -131,7 +130,6 @@ func logPairList(pairs []logmerger.NameValuePair, did string) {
 		return
 	}
 }
-
 
 //variableNamesID merges the names of each variable present in the kv
 //store into a unique id based on their name. This merging strategy
@@ -403,8 +401,8 @@ func CreatePoint(vars []interface{}, varNames []string, id string, logger *govec
 	return point
 }
 
-func Local(logger *govec.GoLog, id string) {
-	logger.LogLocalEvent(fmt.Sprintf("Dump @ id %s", id))
+func Local(msg string) {
+	goVecLogger.LogLocalEvent(msg)
 }
 
 type ByName []logmerger.NameValuePair
