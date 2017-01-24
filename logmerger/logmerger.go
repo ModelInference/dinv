@@ -113,9 +113,8 @@ func Merge(logfiles []string, gologfiles []string, options map[string]string, in
 			states := mineStates(plogs[i], pgoLogs[i])
 			if jsonDPP {
 				writeLogToJson(states)
-			} else {
-				writeTraceFiles(states)
 			}
+			writeTraceFiles(states)
 		}
 	}
 }
@@ -328,7 +327,6 @@ func statesFromCuts2(cuts []Cut, clocks [][]vclock.VClock, logs [][]Point) []Sta
 	return states
 }
 
-
 //writeTraceFiles constructs a set unique trace file based on several
 //specifiations in the MergeSpec.
 func writeTraceFiles(states []State) {
@@ -510,7 +508,6 @@ func printErr(err error) {
 		fmt.Println(err)
 	}
 }
-
 
 func WriteShiVizLogFast(pointLog [][]Point, goLogs []*golog) {
 	file, _ := os.Create("Shiviz.log")
