@@ -125,6 +125,7 @@ func getProgramWrapper() (*programslicer.ProgramWrapper, error) {
 		if err != nil {
 			return program, err
 		}
+
 	}
 	//TODO write functionality for piping
 	return program, nil
@@ -330,7 +331,7 @@ func GetAccessibleVarsInScope(dumpPosition int, program *programslicer.ProgramWr
 	globals := GetGlobalVariables(program)
 	locals := GetLocalVariables(dumpPosition, program.Packages[pnum].Sources[snum].Source, program.Fset)
 	return append(globals, locals...)
-return nil
+	return nil
 }
 
 /*
@@ -344,12 +345,11 @@ func GetGlobalVariables(program *programslicer.ProgramWrapper) []string {
 	var results []string
 	for pnum := range program.Packages {
 		for snum := range program.Packages[pnum].Sources {
-			results = append(results,GetGlobalVariablesFromFile(program.Packages[pnum].Sources[snum].Source,program.Fset)...)
+			results = append(results, GetGlobalVariablesFromFile(program.Packages[pnum].Sources[snum].Source, program.Fset)...)
 		}
 	}
 	return results
 }
-
 
 func GetGlobalVariablesFromFile(file *ast.File, fset *token.FileSet) []string {
 	var results []string
@@ -368,7 +368,7 @@ func GetGlobalVariablesFromFile(file *ast.File, fset *token.FileSet) []string {
 		case ast.Var, ast.Con: //|| global_objs[identifier].Kind == ast.Typ { //can be used for diving into structs
 			logger.Printf("Global Found :%s\n", fmt.Sprintf("%v", identifier))
 			results = append(results, fmt.Sprintf("%v", identifier))
-		default: 
+		default:
 			fmt.Println(identifier)
 		}
 	}
