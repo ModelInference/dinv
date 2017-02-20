@@ -318,7 +318,7 @@ func statesFromCuts2(cuts []Cut, clocks [][]vclock.VClock, logs [][]Point) []Sta
 				fmt.Printf("unfound log entry %s index %s\n", ids[i], point.String())
 			}
 		}
-		state.TotalOrdering = totalOrderFromCut(cut, clocks) //SPEED UP
+		state.TotalOrdering = totalOrderFromCut(cut, clocks) //TODO SPEED UP
 		logger.Printf("%s\n", state.String())
 		fmt.Printf("\rExtracting states %3.0f%% \t[%d] found", 100*float32(cutIndex)/float32(len(cuts)), len(states))
 		states = append(states, *state)

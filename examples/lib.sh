@@ -12,7 +12,7 @@ function clean {
     echo "moving left-overs to $dir"
 
     mkdir -p "$dir"
-    mv ./*{Log,Encoded}.txt Shiviz.log ./*.dtrace ./*.gz ./*.output output.txt $2 \
+    mv ./*{Log,Encoded}.txt Shiviz.log ./*.dtrace ./*.gz ./*.output ./*.json output.txt $2 \
        -t "$dir" 2>/dev/null || true
 
     if [ $(find "$dir" -mindepth 1 -maxdepth 1 | wc -l) -eq 0 ]; then
