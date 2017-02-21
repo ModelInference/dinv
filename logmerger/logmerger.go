@@ -319,7 +319,6 @@ func statesFromCuts2(cuts []Cut, clocks [][]vclock.VClock, logs [][]Point) []Sta
 			}
 		}
 		state.TotalOrdering = totalOrderFromCut(cut, clocks) //TODO SPEED UP
-		logger.Printf("%s\n", state.String())
 		fmt.Printf("\rExtracting states %3.0f%% \t[%d] found", 100*float32(cutIndex)/float32(len(cuts)), len(states))
 		states = append(states, *state)
 	}
@@ -408,7 +407,7 @@ func totalOrderLineNumberMerge(states []State) [][]Point {
 				points = append(points, state.Points[state.TotalOrdering[j][k]])
 			}
 			mergedPoints[i][j] = mergePoints(points)
-			logger.Printf("Merged points id :%s\n\n===========\n", mergedPoints[i][j].Id)
+			//logger.Printf("Merged points id :%s\n\n===========\n", mergedPoints[i][j].Id)
 		}
 	}
 	fmt.Println()

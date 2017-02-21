@@ -13,17 +13,10 @@ import (
 
 const (
 	LARGEST_TERM = 100
-	RUNS         = 500
+	RUNS         = 5
 )
 
 func main() {
-
-	a := 1
-	if a > 0 {
-		b := 2
-		b = a
-		print(a)
-	}
 
 	localAddr, err := net.ResolveUDPAddr("udp4", ":18585")
 	printErrAndExit(err)
@@ -49,12 +42,11 @@ func reqSum(conn *net.UDPConn, n, m int) (sum int64, err error) {
 	msg := make([]byte, 256)
 	binary.PutVarint(msg[:8], int64(n))
 	binary.PutVarint(msg[8:], int64(m))
-
 	fmt.Println(msg)
 
 	// after instrumentation
 	_, err = capture.Write(conn.Write, msg[:])
-	// _, err = conn.Write(msg)
+	_, err = conn.Write(msg)
 	if err != nil {
 		return
 	}
@@ -71,7 +63,7 @@ func reqSum(conn *net.UDPConn, n, m int) (sum int64, err error) {
 
 	sum, _ = binary.Varint(buf[0:])
 
-	fmt.Println(sum, buf)
+	//fmt.Println(sum, buf)
 
 	dinvRT.Dump("main_client_66_", "main_client_66_LARGEST_TERM,main_client_66_RUNS,main_client_66_conn,main_client_66_n,main_client_66_m,main_client_66_msg", LARGEST_TERM, RUNS, conn, n, m, msg)
 

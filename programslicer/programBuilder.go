@@ -12,14 +12,15 @@ import (
 	"fmt"
 	"go/ast"
 	"go/parser"
+	"go/printer"
 	"go/token"
+	"log"
 	"os"
 
-	"go/printer"
+	"go/types"
 
 	"bitbucket.org/bestchai/dinv/programslicer/cfg"
 	"bitbucket.org/bestchai/dinv/programslicer/dataflow"
-	"go/types"
 	"golang.org/x/tools/go/loader"
 )
 
@@ -59,9 +60,9 @@ type CFGWrapper struct {
 	ObjNames map[*types.Var]string
 }
 
-func LoadProgram(SourceFiles []*ast.File, config loader.Config) (*loader.Program, error) {
+func LoadProgram(path string, SourceFiles []*ast.File, config loader.Config) (*loader.Program, error) {
 	//fmt.Println("Loading Packages")
-	config.CreateFromFiles("testing", SourceFiles...)
+	config.CreateFromFiles(path, SourceFiles...)
 	Prog, err := config.Load()
 	if err != nil {
 		return nil, err
@@ -86,7 +87,7 @@ func GetWrapperFromString(SourceString string) (*ProgramWrapper, error) {
 	Filename := Comments.Name.String()
 	//make the single files the head of a list
 	Sources := append(make([]*ast.File, 0), Source)
-	Prog, err := LoadProgram(Sources, config)
+	Prog, err := LoadProgram("string", Sources, config)
 	if err != nil {
 		return nil, err
 	}
@@ -137,7 +138,8 @@ func GetProgramWrapperDirectory(dir string) (*ProgramWrapper, error) {
 	for i := range SourceFiles {
 		aggergateSources = append(aggergateSources, SourceFiles[i]...)
 	}
-	Prog, err := LoadProgram(aggergateSources, config)
+	log.Printf("Instrumenting %d sources", len(aggergateSources))
+	Prog, err := LoadProgram(dir, aggergateSources, config)
 	if err != nil {
 		return nil, err
 	}
@@ -184,7 +186,7 @@ func (p *ProgramWrapper) Refresh() error {
 	for i := range sourceFiles {
 		aggergateSources = append(aggergateSources, sourceFiles[i]...)
 	}
-	prog, err := LoadProgram(aggergateSources, config)
+	prog, err := LoadProgram("", aggergateSources, config)
 	if err != nil {
 		return err
 	}

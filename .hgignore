@@ -18,4 +18,5 @@ TestPrograms/t3/*.txt
 
 examples/ricartagrawala/gonadoresults/*
 examples/chainkv/results/*
+examples/sum/failed
 userstudy/*
