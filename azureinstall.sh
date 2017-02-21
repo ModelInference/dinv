@@ -77,3 +77,8 @@ source $DAIKONDIR/scripts/daikon.bashrc
 sudo apt-get install make
 
 make -C $DAIKONDIR rebuild-everything
+
+#get etcd
+go get github.com/wantonsolutions/dinv-etcd
+
+echo "alias godir='cd ~/go/src/bitbucket.org/bestchai/dinv'" >> ~/.bashrc
