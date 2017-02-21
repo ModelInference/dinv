@@ -34,7 +34,7 @@ function installDinv {
 }
 
 function instrument {
-    dinv -i -v -dir=$testDir/$1
+    dinv -i -dir=$testDir/$1
     GoVector -v -dir=$testDir/$1
 }
 
@@ -69,7 +69,7 @@ function runTestPrograms {
 
 function runLogMerger {
     cd $testDir
-    dinv -v -l -name="fruits" -plan="SCM" -shiviz -json *Encoded.txt *Log.txt
+    dinv  -l -name="fruits" -plan="SCM" -shiviz -json *Encoded.txt *Log.txt
 }
 
 function runDaikon {
@@ -97,9 +97,9 @@ function cleanUp {
     rm ./*.gz
     rm ./*.txt
     rm ./*.json
-    fixModDir $P1
-    fixModDir $P2
-    fixModDir $P3
+    #fixModDir $P1
+    #fixModDir $P2
+    #fixModDir $P3
     
 }
 
@@ -111,9 +111,9 @@ then
     exit
 fi
 installDinv
-instrument $P1
-instrument $P2
-instrument $P3
+#instrument $P1
+#instrument $P2
+#instrument $P3
 runTestPrograms
 runLogMerger
 shivizMerge

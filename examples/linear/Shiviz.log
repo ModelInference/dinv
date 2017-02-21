@@ -1,1235 +1,830 @@
-(?<host>\S*) (?<clock>{.*})\n(?<event>.*)\n(?<dump>.*)
+(?<host>\S*) (?<clock>{.*})\n(?<event>.*)
 
 Apple {"Apple":1}
 Initialization Complete
-
 Apple {"Apple":2}
 Sending from Apple
-2945ccf8d11fcc335831a0ceafafc6c7d3d670ed { Apple-main_client_32_ADDITION_ARGS=2 , Apple-main_client_32_LARGEST_TERM=100 , Apple-main_client_32_RUNS=50 , Apple-main_client_32_SIZEOFINT=4 , Apple-main_client_32_buf= , Apple-main_client_32_conn= , Apple-main_client_32_debug=false , Apple-main_client_32_lAddr= , Apple-main_client_32_rAddr= ,  } { {"Apple":1} }
 Apple {"Apple":3, "Apricot":3, "Banana":5}
 Received on Apple
-ff51e4bbf83253d92ba1bace6b4aaa379a3214fd { Apple-main_client_42_ADDITION_ARGS=2 , Apple-main_client_42_LARGEST_TERM=100 , Apple-main_client_42_RUNS=50 , Apple-main_client_42_SIZEOFINT=4 , Apple-main_client_42_buf= , Apple-main_client_42_conn= , Apple-main_client_42_debug=false , Apple-main_client_42_lAddr= , Apple-main_client_42_rAddr= ,  } { {"Apple":2} }
 Apple {"Apple":4, "Apricot":3, "Banana":5}
 Sending from Apple
-66f23f2defe9f4708d9dd343c47a7a23e97b0e80 { Apple-main_client_32_ADDITION_ARGS=2 , Apple-main_client_32_LARGEST_TERM=100 , Apple-main_client_32_RUNS=50 , Apple-main_client_32_SIZEOFINT=4 , Apple-main_client_32_buf= , Apple-main_client_32_conn= , Apple-main_client_32_debug=false , Apple-main_client_32_lAddr= , Apple-main_client_32_rAddr= , Apple-main_client_46_ADDITION_ARGS=2 , Apple-main_client_46_LARGEST_TERM=100 , Apple-main_client_46_RUNS=50 , Apple-main_client_46_SIZEOFINT=4 , Apple-main_client_46_buf= , Apple-main_client_46_conn= , Apple-main_client_46_debug=false , Apple-main_client_46_lAddr= , Apple-main_client_46_rAddr= ,  } { {"Apple":3, "Apricot":3, "Banana":5} }
 Apple {"Apple":5, "Apricot":5, "Banana":9}
 Received on Apple
-ff51e4bbf83253d92ba1bace6b4aaa379a3214fd { Apple-main_client_42_ADDITION_ARGS=2 , Apple-main_client_42_LARGEST_TERM=100 , Apple-main_client_42_RUNS=50 , Apple-main_client_42_SIZEOFINT=4 , Apple-main_client_42_buf= , Apple-main_client_42_conn= , Apple-main_client_42_debug=false , Apple-main_client_42_lAddr= , Apple-main_client_42_rAddr= ,  } { {"Apple":4, "Apricot":3, "Banana":5} }
 Apple {"Apple":6, "Apricot":5, "Banana":9}
 Sending from Apple
-66f23f2defe9f4708d9dd343c47a7a23e97b0e80 { Apple-main_client_32_ADDITION_ARGS=2 , Apple-main_client_32_LARGEST_TERM=100 , Apple-main_client_32_RUNS=50 , Apple-main_client_32_SIZEOFINT=4 , Apple-main_client_32_buf= , Apple-main_client_32_conn= , Apple-main_client_32_debug=false , Apple-main_client_32_lAddr= , Apple-main_client_32_rAddr= , Apple-main_client_46_ADDITION_ARGS=2 , Apple-main_client_46_LARGEST_TERM=100 , Apple-main_client_46_RUNS=50 , Apple-main_client_46_SIZEOFINT=4 , Apple-main_client_46_buf= , Apple-main_client_46_conn= , Apple-main_client_46_debug=false , Apple-main_client_46_lAddr= , Apple-main_client_46_rAddr= ,  } { {"Apple":5, "Apricot":5, "Banana":9} }
 Apple {"Apple":7, "Apricot":7, "Banana":13}
 Received on Apple
-ff51e4bbf83253d92ba1bace6b4aaa379a3214fd { Apple-main_client_42_ADDITION_ARGS=2 , Apple-main_client_42_LARGEST_TERM=100 , Apple-main_client_42_RUNS=50 , Apple-main_client_42_SIZEOFINT=4 , Apple-main_client_42_buf= , Apple-main_client_42_conn= , Apple-main_client_42_debug=false , Apple-main_client_42_lAddr= , Apple-main_client_42_rAddr= ,  } { {"Apple":6, "Apricot":5, "Banana":9} }
 Apple {"Apple":8, "Apricot":7, "Banana":13}
 Sending from Apple
-66f23f2defe9f4708d9dd343c47a7a23e97b0e80 { Apple-main_client_32_ADDITION_ARGS=2 , Apple-main_client_32_LARGEST_TERM=100 , Apple-main_client_32_RUNS=50 , Apple-main_client_32_SIZEOFINT=4 , Apple-main_client_32_buf= , Apple-main_client_32_conn= , Apple-main_client_32_debug=false , Apple-main_client_32_lAddr= , Apple-main_client_32_rAddr= , Apple-main_client_46_ADDITION_ARGS=2 , Apple-main_client_46_LARGEST_TERM=100 , Apple-main_client_46_RUNS=50 , Apple-main_client_46_SIZEOFINT=4 , Apple-main_client_46_buf= , Apple-main_client_46_conn= , Apple-main_client_46_debug=false , Apple-main_client_46_lAddr= , Apple-main_client_46_rAddr= ,  } { {"Apple":7, "Apricot":7, "Banana":13} }
 Apple {"Apple":9, "Apricot":9, "Banana":17}
 Received on Apple
-ff51e4bbf83253d92ba1bace6b4aaa379a3214fd { Apple-main_client_42_ADDITION_ARGS=2 , Apple-main_client_42_LARGEST_TERM=100 , Apple-main_client_42_RUNS=50 , Apple-main_client_42_SIZEOFINT=4 , Apple-main_client_42_buf= , Apple-main_client_42_conn= , Apple-main_client_42_debug=false , Apple-main_client_42_lAddr= , Apple-main_client_42_rAddr= ,  } { {"Apple":8, "Apricot":7, "Banana":13} }
 Apple {"Apple":10, "Apricot":9, "Banana":17}
 Sending from Apple
-66f23f2defe9f4708d9dd343c47a7a23e97b0e80 { Apple-main_client_32_ADDITION_ARGS=2 , Apple-main_client_32_LARGEST_TERM=100 , Apple-main_client_32_RUNS=50 , Apple-main_client_32_SIZEOFINT=4 , Apple-main_client_32_buf= , Apple-main_client_32_conn= , Apple-main_client_32_debug=false , Apple-main_client_32_lAddr= , Apple-main_client_32_rAddr= , Apple-main_client_46_ADDITION_ARGS=2 , Apple-main_client_46_LARGEST_TERM=100 , Apple-main_client_46_RUNS=50 , Apple-main_client_46_SIZEOFINT=4 , Apple-main_client_46_buf= , Apple-main_client_46_conn= , Apple-main_client_46_debug=false , Apple-main_client_46_lAddr= , Apple-main_client_46_rAddr= ,  } { {"Apple":9, "Apricot":9, "Banana":17} }
 Apple {"Apple":11, "Apricot":11, "Banana":21}
 Received on Apple
-ff51e4bbf83253d92ba1bace6b4aaa379a3214fd { Apple-main_client_42_ADDITION_ARGS=2 , Apple-main_client_42_LARGEST_TERM=100 , Apple-main_client_42_RUNS=50 , Apple-main_client_42_SIZEOFINT=4 , Apple-main_client_42_buf= , Apple-main_client_42_conn= , Apple-main_client_42_debug=false , Apple-main_client_42_lAddr= , Apple-main_client_42_rAddr= ,  } { {"Apple":10, "Apricot":9, "Banana":17} }
 Apple {"Apple":12, "Apricot":11, "Banana":21}
 Sending from Apple
-08905e4d98c9c7c1c5a97962e7e05d2ed1271560 { Apple-main_client_32_ADDITION_ARGS=2 , Apple-main_client_32_LARGEST_TERM=100 , Apple-main_client_32_RUNS=50 , Apple-main_client_32_SIZEOFINT=4 , Apple-main_client_32_buf= , Apple-main_client_32_conn= , Apple-main_client_32_debug=false , Apple-main_client_32_lAddr= , Apple-main_client_32_rAddr= , Apple-main_client_46_ADDITION_ARGS=2 , Apple-main_client_46_LARGEST_TERM=100 , Apple-main_client_46_RUNS=50 , Apple-main_client_46_SIZEOFINT=4 , Apple-main_client_46_buf= , Apple-main_client_46_conn= , Apple-main_client_46_debug=false , Apple-main_client_46_lAddr= , Apple-main_client_46_rAddr= ,  } { {"Apple":11, "Apricot":11, "Banana":21} }
 Apple {"Apple":13, "Apricot":13, "Banana":25}
 Received on Apple
-ff51e4bbf83253d92ba1bace6b4aaa379a3214fd { Apple-main_client_42_ADDITION_ARGS=2 , Apple-main_client_42_LARGEST_TERM=100 , Apple-main_client_42_RUNS=50 , Apple-main_client_42_SIZEOFINT=4 , Apple-main_client_42_buf= , Apple-main_client_42_conn= , Apple-main_client_42_debug=false , Apple-main_client_42_lAddr= , Apple-main_client_42_rAddr= ,  } { {"Apple":12, "Apricot":11, "Banana":21} }
 Apple {"Apple":14, "Apricot":13, "Banana":25}
 Sending from Apple
-66f23f2defe9f4708d9dd343c47a7a23e97b0e80 { Apple-main_client_32_ADDITION_ARGS=2 , Apple-main_client_32_LARGEST_TERM=100 , Apple-main_client_32_RUNS=50 , Apple-main_client_32_SIZEOFINT=4 , Apple-main_client_32_buf= , Apple-main_client_32_conn= , Apple-main_client_32_debug=false , Apple-main_client_32_lAddr= , Apple-main_client_32_rAddr= , Apple-main_client_46_ADDITION_ARGS=2 , Apple-main_client_46_LARGEST_TERM=100 , Apple-main_client_46_RUNS=50 , Apple-main_client_46_SIZEOFINT=4 , Apple-main_client_46_buf= , Apple-main_client_46_conn= , Apple-main_client_46_debug=false , Apple-main_client_46_lAddr= , Apple-main_client_46_rAddr= ,  } { {"Apple":13, "Apricot":13, "Banana":25} }
 Apple {"Apple":15, "Apricot":15, "Banana":29}
 Received on Apple
-ff51e4bbf83253d92ba1bace6b4aaa379a3214fd { Apple-main_client_42_ADDITION_ARGS=2 , Apple-main_client_42_LARGEST_TERM=100 , Apple-main_client_42_RUNS=50 , Apple-main_client_42_SIZEOFINT=4 , Apple-main_client_42_buf= , Apple-main_client_42_conn= , Apple-main_client_42_debug=false , Apple-main_client_42_lAddr= , Apple-main_client_42_rAddr= ,  } { {"Apple":14, "Apricot":13, "Banana":25} }
 Apple {"Apple":16, "Apricot":15, "Banana":29}
 Sending from Apple
-66f23f2defe9f4708d9dd343c47a7a23e97b0e80 { Apple-main_client_32_ADDITION_ARGS=2 , Apple-main_client_32_LARGEST_TERM=100 , Apple-main_client_32_RUNS=50 , Apple-main_client_32_SIZEOFINT=4 , Apple-main_client_32_buf= , Apple-main_client_32_conn= , Apple-main_client_32_debug=false , Apple-main_client_32_lAddr= , Apple-main_client_32_rAddr= , Apple-main_client_46_ADDITION_ARGS=2 , Apple-main_client_46_LARGEST_TERM=100 , Apple-main_client_46_RUNS=50 , Apple-main_client_46_SIZEOFINT=4 , Apple-main_client_46_buf= , Apple-main_client_46_conn= , Apple-main_client_46_debug=false , Apple-main_client_46_lAddr= , Apple-main_client_46_rAddr= ,  } { {"Apple":15, "Apricot":15, "Banana":29} }
 Apple {"Apple":17, "Apricot":17, "Banana":33}
 Received on Apple
-ff51e4bbf83253d92ba1bace6b4aaa379a3214fd { Apple-main_client_42_ADDITION_ARGS=2 , Apple-main_client_42_LARGEST_TERM=100 , Apple-main_client_42_RUNS=50 , Apple-main_client_42_SIZEOFINT=4 , Apple-main_client_42_buf= , Apple-main_client_42_conn= , Apple-main_client_42_debug=false , Apple-main_client_42_lAddr= , Apple-main_client_42_rAddr= ,  } { {"Apple":16, "Apricot":15, "Banana":29} }
 Apple {"Apple":18, "Apricot":17, "Banana":33}
 Sending from Apple
-66f23f2defe9f4708d9dd343c47a7a23e97b0e80 { Apple-main_client_32_ADDITION_ARGS=2 , Apple-main_client_32_LARGEST_TERM=100 , Apple-main_client_32_RUNS=50 , Apple-main_client_32_SIZEOFINT=4 , Apple-main_client_32_buf= , Apple-main_client_32_conn= , Apple-main_client_32_debug=false , Apple-main_client_32_lAddr= , Apple-main_client_32_rAddr= , Apple-main_client_46_ADDITION_ARGS=2 , Apple-main_client_46_LARGEST_TERM=100 , Apple-main_client_46_RUNS=50 , Apple-main_client_46_SIZEOFINT=4 , Apple-main_client_46_buf= , Apple-main_client_46_conn= , Apple-main_client_46_debug=false , Apple-main_client_46_lAddr= , Apple-main_client_46_rAddr= ,  } { {"Apple":17, "Apricot":17, "Banana":33} }
 Apple {"Apple":19, "Apricot":19, "Banana":37}
 Received on Apple
-ff51e4bbf83253d92ba1bace6b4aaa379a3214fd { Apple-main_client_42_ADDITION_ARGS=2 , Apple-main_client_42_LARGEST_TERM=100 , Apple-main_client_42_RUNS=50 , Apple-main_client_42_SIZEOFINT=4 , Apple-main_client_42_buf= , Apple-main_client_42_conn= , Apple-main_client_42_debug=false , Apple-main_client_42_lAddr= , Apple-main_client_42_rAddr= ,  } { {"Apple":18, "Apricot":17, "Banana":33} }
 Apple {"Apple":20, "Apricot":19, "Banana":37}
 Sending from Apple
-66f23f2defe9f4708d9dd343c47a7a23e97b0e80 { Apple-main_client_32_ADDITION_ARGS=2 , Apple-main_client_32_LARGEST_TERM=100 , Apple-main_client_32_RUNS=50 , Apple-main_client_32_SIZEOFINT=4 , Apple-main_client_32_buf= , Apple-main_client_32_conn= , Apple-main_client_32_debug=false , Apple-main_client_32_lAddr= , Apple-main_client_32_rAddr= , Apple-main_client_46_ADDITION_ARGS=2 , Apple-main_client_46_LARGEST_TERM=100 , Apple-main_client_46_RUNS=50 , Apple-main_client_46_SIZEOFINT=4 , Apple-main_client_46_buf= , Apple-main_client_46_conn= , Apple-main_client_46_debug=false , Apple-main_client_46_lAddr= , Apple-main_client_46_rAddr= ,  } { {"Apple":19, "Apricot":19, "Banana":37} }
 Apple {"Apple":21, "Apricot":21, "Banana":41}
 Received on Apple
-ff51e4bbf83253d92ba1bace6b4aaa379a3214fd { Apple-main_client_42_ADDITION_ARGS=2 , Apple-main_client_42_LARGEST_TERM=100 , Apple-main_client_42_RUNS=50 , Apple-main_client_42_SIZEOFINT=4 , Apple-main_client_42_buf= , Apple-main_client_42_conn= , Apple-main_client_42_debug=false , Apple-main_client_42_lAddr= , Apple-main_client_42_rAddr= ,  } { {"Apple":20, "Apricot":19, "Banana":37} }
 Apple {"Apple":22, "Apricot":21, "Banana":41}
 Sending from Apple
-66f23f2defe9f4708d9dd343c47a7a23e97b0e80 { Apple-main_client_32_ADDITION_ARGS=2 , Apple-main_client_32_LARGEST_TERM=100 , Apple-main_client_32_RUNS=50 , Apple-main_client_32_SIZEOFINT=4 , Apple-main_client_32_buf= , Apple-main_client_32_conn= , Apple-main_client_32_debug=false , Apple-main_client_32_lAddr= , Apple-main_client_32_rAddr= , Apple-main_client_46_ADDITION_ARGS=2 , Apple-main_client_46_LARGEST_TERM=100 , Apple-main_client_46_RUNS=50 , Apple-main_client_46_SIZEOFINT=4 , Apple-main_client_46_buf= , Apple-main_client_46_conn= , Apple-main_client_46_debug=false , Apple-main_client_46_lAddr= , Apple-main_client_46_rAddr= ,  } { {"Apple":21, "Apricot":21, "Banana":41} }
 Apple {"Apple":23, "Apricot":23, "Banana":45}
 Received on Apple
-ff51e4bbf83253d92ba1bace6b4aaa379a3214fd { Apple-main_client_42_ADDITION_ARGS=2 , Apple-main_client_42_LARGEST_TERM=100 , Apple-main_client_42_RUNS=50 , Apple-main_client_42_SIZEOFINT=4 , Apple-main_client_42_buf= , Apple-main_client_42_conn= , Apple-main_client_42_debug=false , Apple-main_client_42_lAddr= , Apple-main_client_42_rAddr= ,  } { {"Apple":22, "Apricot":21, "Banana":41} }
 Apple {"Apple":24, "Apricot":23, "Banana":45}
 Sending from Apple
-66f23f2defe9f4708d9dd343c47a7a23e97b0e80 { Apple-main_client_32_ADDITION_ARGS=2 , Apple-main_client_32_LARGEST_TERM=100 , Apple-main_client_32_RUNS=50 , Apple-main_client_32_SIZEOFINT=4 , Apple-main_client_32_buf= , Apple-main_client_32_conn= , Apple-main_client_32_debug=false , Apple-main_client_32_lAddr= , Apple-main_client_32_rAddr= , Apple-main_client_46_ADDITION_ARGS=2 , Apple-main_client_46_LARGEST_TERM=100 , Apple-main_client_46_RUNS=50 , Apple-main_client_46_SIZEOFINT=4 , Apple-main_client_46_buf= , Apple-main_client_46_conn= , Apple-main_client_46_debug=false , Apple-main_client_46_lAddr= , Apple-main_client_46_rAddr= ,  } { {"Apple":23, "Apricot":23, "Banana":45} }
 Apple {"Apple":25, "Apricot":25, "Banana":49}
 Received on Apple
-ff51e4bbf83253d92ba1bace6b4aaa379a3214fd { Apple-main_client_42_ADDITION_ARGS=2 , Apple-main_client_42_LARGEST_TERM=100 , Apple-main_client_42_RUNS=50 , Apple-main_client_42_SIZEOFINT=4 , Apple-main_client_42_buf= , Apple-main_client_42_conn= , Apple-main_client_42_debug=false , Apple-main_client_42_lAddr= , Apple-main_client_42_rAddr= ,  } { {"Apple":24, "Apricot":23, "Banana":45} }
 Apple {"Apple":26, "Apricot":25, "Banana":49}
 Sending from Apple
-66f23f2defe9f4708d9dd343c47a7a23e97b0e80 { Apple-main_client_32_ADDITION_ARGS=2 , Apple-main_client_32_LARGEST_TERM=100 , Apple-main_client_32_RUNS=50 , Apple-main_client_32_SIZEOFINT=4 , Apple-main_client_32_buf= , Apple-main_client_32_conn= , Apple-main_client_32_debug=false , Apple-main_client_32_lAddr= , Apple-main_client_32_rAddr= , Apple-main_client_46_ADDITION_ARGS=2 , Apple-main_client_46_LARGEST_TERM=100 , Apple-main_client_46_RUNS=50 , Apple-main_client_46_SIZEOFINT=4 , Apple-main_client_46_buf= , Apple-main_client_46_conn= , Apple-main_client_46_debug=false , Apple-main_client_46_lAddr= , Apple-main_client_46_rAddr= ,  } { {"Apple":25, "Apricot":25, "Banana":49} }
 Apple {"Apple":27, "Apricot":27, "Banana":53}
 Received on Apple
-ff51e4bbf83253d92ba1bace6b4aaa379a3214fd { Apple-main_client_42_ADDITION_ARGS=2 , Apple-main_client_42_LARGEST_TERM=100 , Apple-main_client_42_RUNS=50 , Apple-main_client_42_SIZEOFINT=4 , Apple-main_client_42_buf= , Apple-main_client_42_conn= , Apple-main_client_42_debug=false , Apple-main_client_42_lAddr= , Apple-main_client_42_rAddr= ,  } { {"Apple":26, "Apricot":25, "Banana":49} }
 Apple {"Apple":28, "Apricot":27, "Banana":53}
 Sending from Apple
-66f23f2defe9f4708d9dd343c47a7a23e97b0e80 { Apple-main_client_32_ADDITION_ARGS=2 , Apple-main_client_32_LARGEST_TERM=100 , Apple-main_client_32_RUNS=50 , Apple-main_client_32_SIZEOFINT=4 , Apple-main_client_32_buf= , Apple-main_client_32_conn= , Apple-main_client_32_debug=false , Apple-main_client_32_lAddr= , Apple-main_client_32_rAddr= , Apple-main_client_46_ADDITION_ARGS=2 , Apple-main_client_46_LARGEST_TERM=100 , Apple-main_client_46_RUNS=50 , Apple-main_client_46_SIZEOFINT=4 , Apple-main_client_46_buf= , Apple-main_client_46_conn= , Apple-main_client_46_debug=false , Apple-main_client_46_lAddr= , Apple-main_client_46_rAddr= ,  } { {"Apple":27, "Apricot":27, "Banana":53} }
 Apple {"Apple":29, "Apricot":29, "Banana":57}
 Received on Apple
-ff51e4bbf83253d92ba1bace6b4aaa379a3214fd { Apple-main_client_42_ADDITION_ARGS=2 , Apple-main_client_42_LARGEST_TERM=100 , Apple-main_client_42_RUNS=50 , Apple-main_client_42_SIZEOFINT=4 , Apple-main_client_42_buf= , Apple-main_client_42_conn= , Apple-main_client_42_debug=false , Apple-main_client_42_lAddr= , Apple-main_client_42_rAddr= ,  } { {"Apple":28, "Apricot":27, "Banana":53} }
 Apple {"Apple":30, "Apricot":29, "Banana":57}
 Sending from Apple
-66f23f2defe9f4708d9dd343c47a7a23e97b0e80 { Apple-main_client_32_ADDITION_ARGS=2 , Apple-main_client_32_LARGEST_TERM=100 , Apple-main_client_32_RUNS=50 , Apple-main_client_32_SIZEOFINT=4 , Apple-main_client_32_buf= , Apple-main_client_32_conn= , Apple-main_client_32_debug=false , Apple-main_client_32_lAddr= , Apple-main_client_32_rAddr= , Apple-main_client_46_ADDITION_ARGS=2 , Apple-main_client_46_LARGEST_TERM=100 , Apple-main_client_46_RUNS=50 , Apple-main_client_46_SIZEOFINT=4 , Apple-main_client_46_buf= , Apple-main_client_46_conn= , Apple-main_client_46_debug=false , Apple-main_client_46_lAddr= , Apple-main_client_46_rAddr= ,  } { {"Apple":29, "Apricot":29, "Banana":57} }
 Apple {"Apple":31, "Apricot":31, "Banana":61}
 Received on Apple
-ff51e4bbf83253d92ba1bace6b4aaa379a3214fd { Apple-main_client_42_ADDITION_ARGS=2 , Apple-main_client_42_LARGEST_TERM=100 , Apple-main_client_42_RUNS=50 , Apple-main_client_42_SIZEOFINT=4 , Apple-main_client_42_buf= , Apple-main_client_42_conn= , Apple-main_client_42_debug=false , Apple-main_client_42_lAddr= , Apple-main_client_42_rAddr= ,  } { {"Apple":30, "Apricot":29, "Banana":57} }
 Apple {"Apple":32, "Apricot":31, "Banana":61}
 Sending from Apple
-66f23f2defe9f4708d9dd343c47a7a23e97b0e80 { Apple-main_client_32_ADDITION_ARGS=2 , Apple-main_client_32_LARGEST_TERM=100 , Apple-main_client_32_RUNS=50 , Apple-main_client_32_SIZEOFINT=4 , Apple-main_client_32_buf= , Apple-main_client_32_conn= , Apple-main_client_32_debug=false , Apple-main_client_32_lAddr= , Apple-main_client_32_rAddr= , Apple-main_client_46_ADDITION_ARGS=2 , Apple-main_client_46_LARGEST_TERM=100 , Apple-main_client_46_RUNS=50 , Apple-main_client_46_SIZEOFINT=4 , Apple-main_client_46_buf= , Apple-main_client_46_conn= , Apple-main_client_46_debug=false , Apple-main_client_46_lAddr= , Apple-main_client_46_rAddr= ,  } { {"Apple":31, "Apricot":31, "Banana":61} }
 Apple {"Apple":33, "Apricot":33, "Banana":65}
 Received on Apple
-ff51e4bbf83253d92ba1bace6b4aaa379a3214fd { Apple-main_client_42_ADDITION_ARGS=2 , Apple-main_client_42_LARGEST_TERM=100 , Apple-main_client_42_RUNS=50 , Apple-main_client_42_SIZEOFINT=4 , Apple-main_client_42_buf= , Apple-main_client_42_conn= , Apple-main_client_42_debug=false , Apple-main_client_42_lAddr= , Apple-main_client_42_rAddr= ,  } { {"Apple":32, "Apricot":31, "Banana":61} }
 Apple {"Apple":34, "Apricot":33, "Banana":65}
 Sending from Apple
-66f23f2defe9f4708d9dd343c47a7a23e97b0e80 { Apple-main_client_32_ADDITION_ARGS=2 , Apple-main_client_32_LARGEST_TERM=100 , Apple-main_client_32_RUNS=50 , Apple-main_client_32_SIZEOFINT=4 , Apple-main_client_32_buf= , Apple-main_client_32_conn= , Apple-main_client_32_debug=false , Apple-main_client_32_lAddr= , Apple-main_client_32_rAddr= , Apple-main_client_46_ADDITION_ARGS=2 , Apple-main_client_46_LARGEST_TERM=100 , Apple-main_client_46_RUNS=50 , Apple-main_client_46_SIZEOFINT=4 , Apple-main_client_46_buf= , Apple-main_client_46_conn= , Apple-main_client_46_debug=false , Apple-main_client_46_lAddr= , Apple-main_client_46_rAddr= ,  } { {"Apple":33, "Apricot":33, "Banana":65} }
 Apple {"Apple":35, "Apricot":35, "Banana":69}
 Received on Apple
-ff51e4bbf83253d92ba1bace6b4aaa379a3214fd { Apple-main_client_42_ADDITION_ARGS=2 , Apple-main_client_42_LARGEST_TERM=100 , Apple-main_client_42_RUNS=50 , Apple-main_client_42_SIZEOFINT=4 , Apple-main_client_42_buf= , Apple-main_client_42_conn= , Apple-main_client_42_debug=false , Apple-main_client_42_lAddr= , Apple-main_client_42_rAddr= ,  } { {"Apple":34, "Apricot":33, "Banana":65} }
 Apple {"Apple":36, "Apricot":35, "Banana":69}
 Sending from Apple
-66f23f2defe9f4708d9dd343c47a7a23e97b0e80 { Apple-main_client_32_ADDITION_ARGS=2 , Apple-main_client_32_LARGEST_TERM=100 , Apple-main_client_32_RUNS=50 , Apple-main_client_32_SIZEOFINT=4 , Apple-main_client_32_buf= , Apple-main_client_32_conn= , Apple-main_client_32_debug=false , Apple-main_client_32_lAddr= , Apple-main_client_32_rAddr= , Apple-main_client_46_ADDITION_ARGS=2 , Apple-main_client_46_LARGEST_TERM=100 , Apple-main_client_46_RUNS=50 , Apple-main_client_46_SIZEOFINT=4 , Apple-main_client_46_buf= , Apple-main_client_46_conn= , Apple-main_client_46_debug=false , Apple-main_client_46_lAddr= , Apple-main_client_46_rAddr= ,  } { {"Apple":35, "Apricot":35, "Banana":69} }
 Apple {"Apple":37, "Apricot":37, "Banana":73}
 Received on Apple
-ff51e4bbf83253d92ba1bace6b4aaa379a3214fd { Apple-main_client_42_ADDITION_ARGS=2 , Apple-main_client_42_LARGEST_TERM=100 , Apple-main_client_42_RUNS=50 , Apple-main_client_42_SIZEOFINT=4 , Apple-main_client_42_buf= , Apple-main_client_42_conn= , Apple-main_client_42_debug=false , Apple-main_client_42_lAddr= , Apple-main_client_42_rAddr= ,  } { {"Apple":36, "Apricot":35, "Banana":69} }
 Apple {"Apple":38, "Apricot":37, "Banana":73}
 Sending from Apple
-66f23f2defe9f4708d9dd343c47a7a23e97b0e80 { Apple-main_client_32_ADDITION_ARGS=2 , Apple-main_client_32_LARGEST_TERM=100 , Apple-main_client_32_RUNS=50 , Apple-main_client_32_SIZEOFINT=4 , Apple-main_client_32_buf= , Apple-main_client_32_conn= , Apple-main_client_32_debug=false , Apple-main_client_32_lAddr= , Apple-main_client_32_rAddr= , Apple-main_client_46_ADDITION_ARGS=2 , Apple-main_client_46_LARGEST_TERM=100 , Apple-main_client_46_RUNS=50 , Apple-main_client_46_SIZEOFINT=4 , Apple-main_client_46_buf= , Apple-main_client_46_conn= , Apple-main_client_46_debug=false , Apple-main_client_46_lAddr= , Apple-main_client_46_rAddr= ,  } { {"Apple":37, "Apricot":37, "Banana":73} }
 Apple {"Apple":39, "Apricot":39, "Banana":77}
 Received on Apple
-ff51e4bbf83253d92ba1bace6b4aaa379a3214fd { Apple-main_client_42_ADDITION_ARGS=2 , Apple-main_client_42_LARGEST_TERM=100 , Apple-main_client_42_RUNS=50 , Apple-main_client_42_SIZEOFINT=4 , Apple-main_client_42_buf= , Apple-main_client_42_conn= , Apple-main_client_42_debug=false , Apple-main_client_42_lAddr= , Apple-main_client_42_rAddr= ,  } { {"Apple":38, "Apricot":37, "Banana":73} }
 Apple {"Apple":40, "Apricot":39, "Banana":77}
 Sending from Apple
-66f23f2defe9f4708d9dd343c47a7a23e97b0e80 { Apple-main_client_32_ADDITION_ARGS=2 , Apple-main_client_32_LARGEST_TERM=100 , Apple-main_client_32_RUNS=50 , Apple-main_client_32_SIZEOFINT=4 , Apple-main_client_32_buf= , Apple-main_client_32_conn= , Apple-main_client_32_debug=false , Apple-main_client_32_lAddr= , Apple-main_client_32_rAddr= , Apple-main_client_46_ADDITION_ARGS=2 , Apple-main_client_46_LARGEST_TERM=100 , Apple-main_client_46_RUNS=50 , Apple-main_client_46_SIZEOFINT=4 , Apple-main_client_46_buf= , Apple-main_client_46_conn= , Apple-main_client_46_debug=false , Apple-main_client_46_lAddr= , Apple-main_client_46_rAddr= ,  } { {"Apple":39, "Apricot":39, "Banana":77} }
 Apple {"Apple":41, "Apricot":41, "Banana":81}
 Received on Apple
-ff51e4bbf83253d92ba1bace6b4aaa379a3214fd { Apple-main_client_42_ADDITION_ARGS=2 , Apple-main_client_42_LARGEST_TERM=100 , Apple-main_client_42_RUNS=50 , Apple-main_client_42_SIZEOFINT=4 , Apple-main_client_42_buf= , Apple-main_client_42_conn= , Apple-main_client_42_debug=false , Apple-main_client_42_lAddr= , Apple-main_client_42_rAddr= ,  } { {"Apple":40, "Apricot":39, "Banana":77} }
 Apple {"Apple":42, "Apricot":41, "Banana":81}
 Sending from Apple
-08905e4d98c9c7c1c5a97962e7e05d2ed1271560 { Apple-main_client_32_ADDITION_ARGS=2 , Apple-main_client_32_LARGEST_TERM=100 , Apple-main_client_32_RUNS=50 , Apple-main_client_32_SIZEOFINT=4 , Apple-main_client_32_buf= , Apple-main_client_32_conn= , Apple-main_client_32_debug=false , Apple-main_client_32_lAddr= , Apple-main_client_32_rAddr= , Apple-main_client_46_ADDITION_ARGS=2 , Apple-main_client_46_LARGEST_TERM=100 , Apple-main_client_46_RUNS=50 , Apple-main_client_46_SIZEOFINT=4 , Apple-main_client_46_buf= , Apple-main_client_46_conn= , Apple-main_client_46_debug=false , Apple-main_client_46_lAddr= , Apple-main_client_46_rAddr= ,  } { {"Apple":41, "Apricot":41, "Banana":81} }
 Apple {"Apple":43, "Apricot":43, "Banana":85}
 Received on Apple
-ff51e4bbf83253d92ba1bace6b4aaa379a3214fd { Apple-main_client_42_ADDITION_ARGS=2 , Apple-main_client_42_LARGEST_TERM=100 , Apple-main_client_42_RUNS=50 , Apple-main_client_42_SIZEOFINT=4 , Apple-main_client_42_buf= , Apple-main_client_42_conn= , Apple-main_client_42_debug=false , Apple-main_client_42_lAddr= , Apple-main_client_42_rAddr= ,  } { {"Apple":42, "Apricot":41, "Banana":81} }
 Apple {"Apple":44, "Apricot":43, "Banana":85}
 Sending from Apple
-66f23f2defe9f4708d9dd343c47a7a23e97b0e80 { Apple-main_client_32_ADDITION_ARGS=2 , Apple-main_client_32_LARGEST_TERM=100 , Apple-main_client_32_RUNS=50 , Apple-main_client_32_SIZEOFINT=4 , Apple-main_client_32_buf= , Apple-main_client_32_conn= , Apple-main_client_32_debug=false , Apple-main_client_32_lAddr= , Apple-main_client_32_rAddr= , Apple-main_client_46_ADDITION_ARGS=2 , Apple-main_client_46_LARGEST_TERM=100 , Apple-main_client_46_RUNS=50 , Apple-main_client_46_SIZEOFINT=4 , Apple-main_client_46_buf= , Apple-main_client_46_conn= , Apple-main_client_46_debug=false , Apple-main_client_46_lAddr= , Apple-main_client_46_rAddr= ,  } { {"Apple":43, "Apricot":43, "Banana":85} }
 Apple {"Apple":45, "Apricot":45, "Banana":89}
 Received on Apple
-ff51e4bbf83253d92ba1bace6b4aaa379a3214fd { Apple-main_client_42_ADDITION_ARGS=2 , Apple-main_client_42_LARGEST_TERM=100 , Apple-main_client_42_RUNS=50 , Apple-main_client_42_SIZEOFINT=4 , Apple-main_client_42_buf= , Apple-main_client_42_conn= , Apple-main_client_42_debug=false , Apple-main_client_42_lAddr= , Apple-main_client_42_rAddr= ,  } { {"Apple":44, "Apricot":43, "Banana":85} }
 Apple {"Apple":46, "Apricot":45, "Banana":89}
 Sending from Apple
-66f23f2defe9f4708d9dd343c47a7a23e97b0e80 { Apple-main_client_32_ADDITION_ARGS=2 , Apple-main_client_32_LARGEST_TERM=100 , Apple-main_client_32_RUNS=50 , Apple-main_client_32_SIZEOFINT=4 , Apple-main_client_32_buf= , Apple-main_client_32_conn= , Apple-main_client_32_debug=false , Apple-main_client_32_lAddr= , Apple-main_client_32_rAddr= , Apple-main_client_46_ADDITION_ARGS=2 , Apple-main_client_46_LARGEST_TERM=100 , Apple-main_client_46_RUNS=50 , Apple-main_client_46_SIZEOFINT=4 , Apple-main_client_46_buf= , Apple-main_client_46_conn= , Apple-main_client_46_debug=false , Apple-main_client_46_lAddr= , Apple-main_client_46_rAddr= ,  } { {"Apple":45, "Apricot":45, "Banana":89} }
 Apple {"Apple":47, "Apricot":47, "Banana":93}
 Received on Apple
-ff51e4bbf83253d92ba1bace6b4aaa379a3214fd { Apple-main_client_42_ADDITION_ARGS=2 , Apple-main_client_42_LARGEST_TERM=100 , Apple-main_client_42_RUNS=50 , Apple-main_client_42_SIZEOFINT=4 , Apple-main_client_42_buf= , Apple-main_client_42_conn= , Apple-main_client_42_debug=false , Apple-main_client_42_lAddr= , Apple-main_client_42_rAddr= ,  } { {"Apple":46, "Apricot":45, "Banana":89} }
 Apple {"Apple":48, "Apricot":47, "Banana":93}
 Sending from Apple
-66f23f2defe9f4708d9dd343c47a7a23e97b0e80 { Apple-main_client_32_ADDITION_ARGS=2 , Apple-main_client_32_LARGEST_TERM=100 , Apple-main_client_32_RUNS=50 , Apple-main_client_32_SIZEOFINT=4 , Apple-main_client_32_buf= , Apple-main_client_32_conn= , Apple-main_client_32_debug=false , Apple-main_client_32_lAddr= , Apple-main_client_32_rAddr= , Apple-main_client_46_ADDITION_ARGS=2 , Apple-main_client_46_LARGEST_TERM=100 , Apple-main_client_46_RUNS=50 , Apple-main_client_46_SIZEOFINT=4 , Apple-main_client_46_buf= , Apple-main_client_46_conn= , Apple-main_client_46_debug=false , Apple-main_client_46_lAddr= , Apple-main_client_46_rAddr= ,  } { {"Apple":47, "Apricot":47, "Banana":93} }
 Apple {"Apple":49, "Apricot":49, "Banana":97}
 Received on Apple
-ff51e4bbf83253d92ba1bace6b4aaa379a3214fd { Apple-main_client_42_ADDITION_ARGS=2 , Apple-main_client_42_LARGEST_TERM=100 , Apple-main_client_42_RUNS=50 , Apple-main_client_42_SIZEOFINT=4 , Apple-main_client_42_buf= , Apple-main_client_42_conn= , Apple-main_client_42_debug=false , Apple-main_client_42_lAddr= , Apple-main_client_42_rAddr= ,  } { {"Apple":48, "Apricot":47, "Banana":93} }
 Apple {"Apple":50, "Apricot":49, "Banana":97}
 Sending from Apple
-66f23f2defe9f4708d9dd343c47a7a23e97b0e80 { Apple-main_client_32_ADDITION_ARGS=2 , Apple-main_client_32_LARGEST_TERM=100 , Apple-main_client_32_RUNS=50 , Apple-main_client_32_SIZEOFINT=4 , Apple-main_client_32_buf= , Apple-main_client_32_conn= , Apple-main_client_32_debug=false , Apple-main_client_32_lAddr= , Apple-main_client_32_rAddr= , Apple-main_client_46_ADDITION_ARGS=2 , Apple-main_client_46_LARGEST_TERM=100 , Apple-main_client_46_RUNS=50 , Apple-main_client_46_SIZEOFINT=4 , Apple-main_client_46_buf= , Apple-main_client_46_conn= , Apple-main_client_46_debug=false , Apple-main_client_46_lAddr= , Apple-main_client_46_rAddr= ,  } { {"Apple":49, "Apricot":49, "Banana":97} }
 Apple {"Apple":51, "Apricot":51, "Banana":101}
 Received on Apple
-ff51e4bbf83253d92ba1bace6b4aaa379a3214fd { Apple-main_client_42_ADDITION_ARGS=2 , Apple-main_client_42_LARGEST_TERM=100 , Apple-main_client_42_RUNS=50 , Apple-main_client_42_SIZEOFINT=4 , Apple-main_client_42_buf= , Apple-main_client_42_conn= , Apple-main_client_42_debug=false , Apple-main_client_42_lAddr= , Apple-main_client_42_rAddr= ,  } { {"Apple":50, "Apricot":49, "Banana":97} }
 Apple {"Apple":52, "Apricot":51, "Banana":101}
 Sending from Apple
-66f23f2defe9f4708d9dd343c47a7a23e97b0e80 { Apple-main_client_32_ADDITION_ARGS=2 , Apple-main_client_32_LARGEST_TERM=100 , Apple-main_client_32_RUNS=50 , Apple-main_client_32_SIZEOFINT=4 , Apple-main_client_32_buf= , Apple-main_client_32_conn= , Apple-main_client_32_debug=false , Apple-main_client_32_lAddr= , Apple-main_client_32_rAddr= , Apple-main_client_46_ADDITION_ARGS=2 , Apple-main_client_46_LARGEST_TERM=100 , Apple-main_client_46_RUNS=50 , Apple-main_client_46_SIZEOFINT=4 , Apple-main_client_46_buf= , Apple-main_client_46_conn= , Apple-main_client_46_debug=false , Apple-main_client_46_lAddr= , Apple-main_client_46_rAddr= ,  } { {"Apple":51, "Apricot":51, "Banana":101} }
 Apple {"Apple":53, "Apricot":53, "Banana":105}
 Received on Apple
-ff51e4bbf83253d92ba1bace6b4aaa379a3214fd { Apple-main_client_42_ADDITION_ARGS=2 , Apple-main_client_42_LARGEST_TERM=100 , Apple-main_client_42_RUNS=50 , Apple-main_client_42_SIZEOFINT=4 , Apple-main_client_42_buf= , Apple-main_client_42_conn= , Apple-main_client_42_debug=false , Apple-main_client_42_lAddr= , Apple-main_client_42_rAddr= ,  } { {"Apple":52, "Apricot":51, "Banana":101} }
 Apple {"Apple":54, "Apricot":53, "Banana":105}
 Sending from Apple
-66f23f2defe9f4708d9dd343c47a7a23e97b0e80 { Apple-main_client_32_ADDITION_ARGS=2 , Apple-main_client_32_LARGEST_TERM=100 , Apple-main_client_32_RUNS=50 , Apple-main_client_32_SIZEOFINT=4 , Apple-main_client_32_buf= , Apple-main_client_32_conn= , Apple-main_client_32_debug=false , Apple-main_client_32_lAddr= , Apple-main_client_32_rAddr= , Apple-main_client_46_ADDITION_ARGS=2 , Apple-main_client_46_LARGEST_TERM=100 , Apple-main_client_46_RUNS=50 , Apple-main_client_46_SIZEOFINT=4 , Apple-main_client_46_buf= , Apple-main_client_46_conn= , Apple-main_client_46_debug=false , Apple-main_client_46_lAddr= , Apple-main_client_46_rAddr= ,  } { {"Apple":53, "Apricot":53, "Banana":105} }
 Apple {"Apple":55, "Apricot":55, "Banana":109}
 Received on Apple
-ff51e4bbf83253d92ba1bace6b4aaa379a3214fd { Apple-main_client_42_ADDITION_ARGS=2 , Apple-main_client_42_LARGEST_TERM=100 , Apple-main_client_42_RUNS=50 , Apple-main_client_42_SIZEOFINT=4 , Apple-main_client_42_buf= , Apple-main_client_42_conn= , Apple-main_client_42_debug=false , Apple-main_client_42_lAddr= , Apple-main_client_42_rAddr= ,  } { {"Apple":54, "Apricot":53, "Banana":105} }
 Apple {"Apple":56, "Apricot":55, "Banana":109}
 Sending from Apple
-66f23f2defe9f4708d9dd343c47a7a23e97b0e80 { Apple-main_client_32_ADDITION_ARGS=2 , Apple-main_client_32_LARGEST_TERM=100 , Apple-main_client_32_RUNS=50 , Apple-main_client_32_SIZEOFINT=4 , Apple-main_client_32_buf= , Apple-main_client_32_conn= , Apple-main_client_32_debug=false , Apple-main_client_32_lAddr= , Apple-main_client_32_rAddr= , Apple-main_client_46_ADDITION_ARGS=2 , Apple-main_client_46_LARGEST_TERM=100 , Apple-main_client_46_RUNS=50 , Apple-main_client_46_SIZEOFINT=4 , Apple-main_client_46_buf= , Apple-main_client_46_conn= , Apple-main_client_46_debug=false , Apple-main_client_46_lAddr= , Apple-main_client_46_rAddr= ,  } { {"Apple":55, "Apricot":55, "Banana":109} }
 Apple {"Apple":57, "Apricot":57, "Banana":113}
 Received on Apple
-ff51e4bbf83253d92ba1bace6b4aaa379a3214fd { Apple-main_client_42_ADDITION_ARGS=2 , Apple-main_client_42_LARGEST_TERM=100 , Apple-main_client_42_RUNS=50 , Apple-main_client_42_SIZEOFINT=4 , Apple-main_client_42_buf= , Apple-main_client_42_conn= , Apple-main_client_42_debug=false , Apple-main_client_42_lAddr= , Apple-main_client_42_rAddr= ,  } { {"Apple":56, "Apricot":55, "Banana":109} }
 Apple {"Apple":58, "Apricot":57, "Banana":113}
 Sending from Apple
-66f23f2defe9f4708d9dd343c47a7a23e97b0e80 { Apple-main_client_32_ADDITION_ARGS=2 , Apple-main_client_32_LARGEST_TERM=100 , Apple-main_client_32_RUNS=50 , Apple-main_client_32_SIZEOFINT=4 , Apple-main_client_32_buf= , Apple-main_client_32_conn= , Apple-main_client_32_debug=false , Apple-main_client_32_lAddr= , Apple-main_client_32_rAddr= , Apple-main_client_46_ADDITION_ARGS=2 , Apple-main_client_46_LARGEST_TERM=100 , Apple-main_client_46_RUNS=50 , Apple-main_client_46_SIZEOFINT=4 , Apple-main_client_46_buf= , Apple-main_client_46_conn= , Apple-main_client_46_debug=false , Apple-main_client_46_lAddr= , Apple-main_client_46_rAddr= ,  } { {"Apple":57, "Apricot":57, "Banana":113} }
 Apple {"Apple":59, "Apricot":59, "Banana":117}
 Received on Apple
-ff51e4bbf83253d92ba1bace6b4aaa379a3214fd { Apple-main_client_42_ADDITION_ARGS=2 , Apple-main_client_42_LARGEST_TERM=100 , Apple-main_client_42_RUNS=50 , Apple-main_client_42_SIZEOFINT=4 , Apple-main_client_42_buf= , Apple-main_client_42_conn= , Apple-main_client_42_debug=false , Apple-main_client_42_lAddr= , Apple-main_client_42_rAddr= ,  } { {"Apple":58, "Apricot":57, "Banana":113} }
 Apple {"Apple":60, "Apricot":59, "Banana":117}
 Sending from Apple
-66f23f2defe9f4708d9dd343c47a7a23e97b0e80 { Apple-main_client_32_ADDITION_ARGS=2 , Apple-main_client_32_LARGEST_TERM=100 , Apple-main_client_32_RUNS=50 , Apple-main_client_32_SIZEOFINT=4 , Apple-main_client_32_buf= , Apple-main_client_32_conn= , Apple-main_client_32_debug=false , Apple-main_client_32_lAddr= , Apple-main_client_32_rAddr= , Apple-main_client_46_ADDITION_ARGS=2 , Apple-main_client_46_LARGEST_TERM=100 , Apple-main_client_46_RUNS=50 , Apple-main_client_46_SIZEOFINT=4 , Apple-main_client_46_buf= , Apple-main_client_46_conn= , Apple-main_client_46_debug=false , Apple-main_client_46_lAddr= , Apple-main_client_46_rAddr= ,  } { {"Apple":59, "Apricot":59, "Banana":117} }
 Apple {"Apple":61, "Apricot":61, "Banana":121}
 Received on Apple
-ff51e4bbf83253d92ba1bace6b4aaa379a3214fd { Apple-main_client_42_ADDITION_ARGS=2 , Apple-main_client_42_LARGEST_TERM=100 , Apple-main_client_42_RUNS=50 , Apple-main_client_42_SIZEOFINT=4 , Apple-main_client_42_buf= , Apple-main_client_42_conn= , Apple-main_client_42_debug=false , Apple-main_client_42_lAddr= , Apple-main_client_42_rAddr= ,  } { {"Apple":60, "Apricot":59, "Banana":117} }
 Apple {"Apple":62, "Apricot":61, "Banana":121}
 Sending from Apple
-66f23f2defe9f4708d9dd343c47a7a23e97b0e80 { Apple-main_client_32_ADDITION_ARGS=2 , Apple-main_client_32_LARGEST_TERM=100 , Apple-main_client_32_RUNS=50 , Apple-main_client_32_SIZEOFINT=4 , Apple-main_client_32_buf= , Apple-main_client_32_conn= , Apple-main_client_32_debug=false , Apple-main_client_32_lAddr= , Apple-main_client_32_rAddr= , Apple-main_client_46_ADDITION_ARGS=2 , Apple-main_client_46_LARGEST_TERM=100 , Apple-main_client_46_RUNS=50 , Apple-main_client_46_SIZEOFINT=4 , Apple-main_client_46_buf= , Apple-main_client_46_conn= , Apple-main_client_46_debug=false , Apple-main_client_46_lAddr= , Apple-main_client_46_rAddr= ,  } { {"Apple":61, "Apricot":61, "Banana":121} }
 Apple {"Apple":63, "Apricot":63, "Banana":125}
 Received on Apple
-ff51e4bbf83253d92ba1bace6b4aaa379a3214fd { Apple-main_client_42_ADDITION_ARGS=2 , Apple-main_client_42_LARGEST_TERM=100 , Apple-main_client_42_RUNS=50 , Apple-main_client_42_SIZEOFINT=4 , Apple-main_client_42_buf= , Apple-main_client_42_conn= , Apple-main_client_42_debug=false , Apple-main_client_42_lAddr= , Apple-main_client_42_rAddr= ,  } { {"Apple":62, "Apricot":61, "Banana":121} }
 Apple {"Apple":64, "Apricot":63, "Banana":125}
 Sending from Apple
-66f23f2defe9f4708d9dd343c47a7a23e97b0e80 { Apple-main_client_32_ADDITION_ARGS=2 , Apple-main_client_32_LARGEST_TERM=100 , Apple-main_client_32_RUNS=50 , Apple-main_client_32_SIZEOFINT=4 , Apple-main_client_32_buf= , Apple-main_client_32_conn= , Apple-main_client_32_debug=false , Apple-main_client_32_lAddr= , Apple-main_client_32_rAddr= , Apple-main_client_46_ADDITION_ARGS=2 , Apple-main_client_46_LARGEST_TERM=100 , Apple-main_client_46_RUNS=50 , Apple-main_client_46_SIZEOFINT=4 , Apple-main_client_46_buf= , Apple-main_client_46_conn= , Apple-main_client_46_debug=false , Apple-main_client_46_lAddr= , Apple-main_client_46_rAddr= ,  } { {"Apple":63, "Apricot":63, "Banana":125} }
 Apple {"Apple":65, "Apricot":65, "Banana":129}
 Received on Apple
-ff51e4bbf83253d92ba1bace6b4aaa379a3214fd { Apple-main_client_42_ADDITION_ARGS=2 , Apple-main_client_42_LARGEST_TERM=100 , Apple-main_client_42_RUNS=50 , Apple-main_client_42_SIZEOFINT=4 , Apple-main_client_42_buf= , Apple-main_client_42_conn= , Apple-main_client_42_debug=false , Apple-main_client_42_lAddr= , Apple-main_client_42_rAddr= ,  } { {"Apple":64, "Apricot":63, "Banana":125} }
 Apple {"Apple":66, "Apricot":65, "Banana":129}
 Sending from Apple
-66f23f2defe9f4708d9dd343c47a7a23e97b0e80 { Apple-main_client_32_ADDITION_ARGS=2 , Apple-main_client_32_LARGEST_TERM=100 , Apple-main_client_32_RUNS=50 , Apple-main_client_32_SIZEOFINT=4 , Apple-main_client_32_buf= , Apple-main_client_32_conn= , Apple-main_client_32_debug=false , Apple-main_client_32_lAddr= , Apple-main_client_32_rAddr= , Apple-main_client_46_ADDITION_ARGS=2 , Apple-main_client_46_LARGEST_TERM=100 , Apple-main_client_46_RUNS=50 , Apple-main_client_46_SIZEOFINT=4 , Apple-main_client_46_buf= , Apple-main_client_46_conn= , Apple-main_client_46_debug=false , Apple-main_client_46_lAddr= , Apple-main_client_46_rAddr= ,  } { {"Apple":65, "Apricot":65, "Banana":129} }
 Apple {"Apple":67, "Apricot":67, "Banana":133}
 Received on Apple
-ff51e4bbf83253d92ba1bace6b4aaa379a3214fd { Apple-main_client_42_ADDITION_ARGS=2 , Apple-main_client_42_LARGEST_TERM=100 , Apple-main_client_42_RUNS=50 , Apple-main_client_42_SIZEOFINT=4 , Apple-main_client_42_buf= , Apple-main_client_42_conn= , Apple-main_client_42_debug=false , Apple-main_client_42_lAddr= , Apple-main_client_42_rAddr= ,  } { {"Apple":66, "Apricot":65, "Banana":129} }
 Apple {"Apple":68, "Apricot":67, "Banana":133}
 Sending from Apple
-66f23f2defe9f4708d9dd343c47a7a23e97b0e80 { Apple-main_client_32_ADDITION_ARGS=2 , Apple-main_client_32_LARGEST_TERM=100 , Apple-main_client_32_RUNS=50 , Apple-main_client_32_SIZEOFINT=4 , Apple-main_client_32_buf= , Apple-main_client_32_conn= , Apple-main_client_32_debug=false , Apple-main_client_32_lAddr= , Apple-main_client_32_rAddr= , Apple-main_client_46_ADDITION_ARGS=2 , Apple-main_client_46_LARGEST_TERM=100 , Apple-main_client_46_RUNS=50 , Apple-main_client_46_SIZEOFINT=4 , Apple-main_client_46_buf= , Apple-main_client_46_conn= , Apple-main_client_46_debug=false , Apple-main_client_46_lAddr= , Apple-main_client_46_rAddr= ,  } { {"Apple":67, "Apricot":67, "Banana":133} }
 Apple {"Apple":69, "Apricot":69, "Banana":137}
 Received on Apple
-ff51e4bbf83253d92ba1bace6b4aaa379a3214fd { Apple-main_client_42_ADDITION_ARGS=2 , Apple-main_client_42_LARGEST_TERM=100 , Apple-main_client_42_RUNS=50 , Apple-main_client_42_SIZEOFINT=4 , Apple-main_client_42_buf= , Apple-main_client_42_conn= , Apple-main_client_42_debug=false , Apple-main_client_42_lAddr= , Apple-main_client_42_rAddr= ,  } { {"Apple":68, "Apricot":67, "Banana":133} }
 Apple {"Apple":70, "Apricot":69, "Banana":137}
 Sending from Apple
-66f23f2defe9f4708d9dd343c47a7a23e97b0e80 { Apple-main_client_32_ADDITION_ARGS=2 , Apple-main_client_32_LARGEST_TERM=100 , Apple-main_client_32_RUNS=50 , Apple-main_client_32_SIZEOFINT=4 , Apple-main_client_32_buf= , Apple-main_client_32_conn= , Apple-main_client_32_debug=false , Apple-main_client_32_lAddr= , Apple-main_client_32_rAddr= , Apple-main_client_46_ADDITION_ARGS=2 , Apple-main_client_46_LARGEST_TERM=100 , Apple-main_client_46_RUNS=50 , Apple-main_client_46_SIZEOFINT=4 , Apple-main_client_46_buf= , Apple-main_client_46_conn= , Apple-main_client_46_debug=false , Apple-main_client_46_lAddr= , Apple-main_client_46_rAddr= ,  } { {"Apple":69, "Apricot":69, "Banana":137} }
 Apple {"Apple":71, "Apricot":71, "Banana":141}
 Received on Apple
-ff51e4bbf83253d92ba1bace6b4aaa379a3214fd { Apple-main_client_42_ADDITION_ARGS=2 , Apple-main_client_42_LARGEST_TERM=100 , Apple-main_client_42_RUNS=50 , Apple-main_client_42_SIZEOFINT=4 , Apple-main_client_42_buf= , Apple-main_client_42_conn= , Apple-main_client_42_debug=false , Apple-main_client_42_lAddr= , Apple-main_client_42_rAddr= ,  } { {"Apple":70, "Apricot":69, "Banana":137} }
 Apple {"Apple":72, "Apricot":71, "Banana":141}
 Sending from Apple
-66f23f2defe9f4708d9dd343c47a7a23e97b0e80 { Apple-main_client_32_ADDITION_ARGS=2 , Apple-main_client_32_LARGEST_TERM=100 , Apple-main_client_32_RUNS=50 , Apple-main_client_32_SIZEOFINT=4 , Apple-main_client_32_buf= , Apple-main_client_32_conn= , Apple-main_client_32_debug=false , Apple-main_client_32_lAddr= , Apple-main_client_32_rAddr= , Apple-main_client_46_ADDITION_ARGS=2 , Apple-main_client_46_LARGEST_TERM=100 , Apple-main_client_46_RUNS=50 , Apple-main_client_46_SIZEOFINT=4 , Apple-main_client_46_buf= , Apple-main_client_46_conn= , Apple-main_client_46_debug=false , Apple-main_client_46_lAddr= , Apple-main_client_46_rAddr= ,  } { {"Apple":71, "Apricot":71, "Banana":141} }
 Apple {"Apple":73, "Apricot":73, "Banana":145}
 Received on Apple
-ff51e4bbf83253d92ba1bace6b4aaa379a3214fd { Apple-main_client_42_ADDITION_ARGS=2 , Apple-main_client_42_LARGEST_TERM=100 , Apple-main_client_42_RUNS=50 , Apple-main_client_42_SIZEOFINT=4 , Apple-main_client_42_buf= , Apple-main_client_42_conn= , Apple-main_client_42_debug=false , Apple-main_client_42_lAddr= , Apple-main_client_42_rAddr= ,  } { {"Apple":72, "Apricot":71, "Banana":141} }
 Apple {"Apple":74, "Apricot":73, "Banana":145}
 Sending from Apple
-08905e4d98c9c7c1c5a97962e7e05d2ed1271560 { Apple-main_client_32_ADDITION_ARGS=2 , Apple-main_client_32_LARGEST_TERM=100 , Apple-main_client_32_RUNS=50 , Apple-main_client_32_SIZEOFINT=4 , Apple-main_client_32_buf= , Apple-main_client_32_conn= , Apple-main_client_32_debug=false , Apple-main_client_32_lAddr= , Apple-main_client_32_rAddr= , Apple-main_client_46_ADDITION_ARGS=2 , Apple-main_client_46_LARGEST_TERM=100 , Apple-main_client_46_RUNS=50 , Apple-main_client_46_SIZEOFINT=4 , Apple-main_client_46_buf= , Apple-main_client_46_conn= , Apple-main_client_46_debug=false , Apple-main_client_46_lAddr= , Apple-main_client_46_rAddr= ,  } { {"Apple":73, "Apricot":73, "Banana":145} }
 Apple {"Apple":75, "Apricot":75, "Banana":149}
 Received on Apple
-ff51e4bbf83253d92ba1bace6b4aaa379a3214fd { Apple-main_client_42_ADDITION_ARGS=2 , Apple-main_client_42_LARGEST_TERM=100 , Apple-main_client_42_RUNS=50 , Apple-main_client_42_SIZEOFINT=4 , Apple-main_client_42_buf= , Apple-main_client_42_conn= , Apple-main_client_42_debug=false , Apple-main_client_42_lAddr= , Apple-main_client_42_rAddr= ,  } { {"Apple":74, "Apricot":73, "Banana":145} }
 Apple {"Apple":76, "Apricot":75, "Banana":149}
 Sending from Apple
-66f23f2defe9f4708d9dd343c47a7a23e97b0e80 { Apple-main_client_32_ADDITION_ARGS=2 , Apple-main_client_32_LARGEST_TERM=100 , Apple-main_client_32_RUNS=50 , Apple-main_client_32_SIZEOFINT=4 , Apple-main_client_32_buf= , Apple-main_client_32_conn= , Apple-main_client_32_debug=false , Apple-main_client_32_lAddr= , Apple-main_client_32_rAddr= , Apple-main_client_46_ADDITION_ARGS=2 , Apple-main_client_46_LARGEST_TERM=100 , Apple-main_client_46_RUNS=50 , Apple-main_client_46_SIZEOFINT=4 , Apple-main_client_46_buf= , Apple-main_client_46_conn= , Apple-main_client_46_debug=false , Apple-main_client_46_lAddr= , Apple-main_client_46_rAddr= ,  } { {"Apple":75, "Apricot":75, "Banana":149} }
 Apple {"Apple":77, "Apricot":77, "Banana":153}
 Received on Apple
-ff51e4bbf83253d92ba1bace6b4aaa379a3214fd { Apple-main_client_42_ADDITION_ARGS=2 , Apple-main_client_42_LARGEST_TERM=100 , Apple-main_client_42_RUNS=50 , Apple-main_client_42_SIZEOFINT=4 , Apple-main_client_42_buf= , Apple-main_client_42_conn= , Apple-main_client_42_debug=false , Apple-main_client_42_lAddr= , Apple-main_client_42_rAddr= ,  } { {"Apple":76, "Apricot":75, "Banana":149} }
 Apple {"Apple":78, "Apricot":77, "Banana":153}
 Sending from Apple
-66f23f2defe9f4708d9dd343c47a7a23e97b0e80 { Apple-main_client_32_ADDITION_ARGS=2 , Apple-main_client_32_LARGEST_TERM=100 , Apple-main_client_32_RUNS=50 , Apple-main_client_32_SIZEOFINT=4 , Apple-main_client_32_buf= , Apple-main_client_32_conn= , Apple-main_client_32_debug=false , Apple-main_client_32_lAddr= , Apple-main_client_32_rAddr= , Apple-main_client_46_ADDITION_ARGS=2 , Apple-main_client_46_LARGEST_TERM=100 , Apple-main_client_46_RUNS=50 , Apple-main_client_46_SIZEOFINT=4 , Apple-main_client_46_buf= , Apple-main_client_46_conn= , Apple-main_client_46_debug=false , Apple-main_client_46_lAddr= , Apple-main_client_46_rAddr= ,  } { {"Apple":77, "Apricot":77, "Banana":153} }
 Apple {"Apple":79, "Apricot":79, "Banana":157}
 Received on Apple
-ff51e4bbf83253d92ba1bace6b4aaa379a3214fd { Apple-main_client_42_ADDITION_ARGS=2 , Apple-main_client_42_LARGEST_TERM=100 , Apple-main_client_42_RUNS=50 , Apple-main_client_42_SIZEOFINT=4 , Apple-main_client_42_buf= , Apple-main_client_42_conn= , Apple-main_client_42_debug=false , Apple-main_client_42_lAddr= , Apple-main_client_42_rAddr= ,  } { {"Apple":78, "Apricot":77, "Banana":153} }
 Apple {"Apple":80, "Apricot":79, "Banana":157}
 Sending from Apple
-66f23f2defe9f4708d9dd343c47a7a23e97b0e80 { Apple-main_client_32_ADDITION_ARGS=2 , Apple-main_client_32_LARGEST_TERM=100 , Apple-main_client_32_RUNS=50 , Apple-main_client_32_SIZEOFINT=4 , Apple-main_client_32_buf= , Apple-main_client_32_conn= , Apple-main_client_32_debug=false , Apple-main_client_32_lAddr= , Apple-main_client_32_rAddr= , Apple-main_client_46_ADDITION_ARGS=2 , Apple-main_client_46_LARGEST_TERM=100 , Apple-main_client_46_RUNS=50 , Apple-main_client_46_SIZEOFINT=4 , Apple-main_client_46_buf= , Apple-main_client_46_conn= , Apple-main_client_46_debug=false , Apple-main_client_46_lAddr= , Apple-main_client_46_rAddr= ,  } { {"Apple":79, "Apricot":79, "Banana":157} }
 Apple {"Apple":81, "Apricot":81, "Banana":161}
 Received on Apple
-ff51e4bbf83253d92ba1bace6b4aaa379a3214fd { Apple-main_client_42_ADDITION_ARGS=2 , Apple-main_client_42_LARGEST_TERM=100 , Apple-main_client_42_RUNS=50 , Apple-main_client_42_SIZEOFINT=4 , Apple-main_client_42_buf= , Apple-main_client_42_conn= , Apple-main_client_42_debug=false , Apple-main_client_42_lAddr= , Apple-main_client_42_rAddr= ,  } { {"Apple":80, "Apricot":79, "Banana":157} }
 Apple {"Apple":82, "Apricot":81, "Banana":161}
 Sending from Apple
-66f23f2defe9f4708d9dd343c47a7a23e97b0e80 { Apple-main_client_32_ADDITION_ARGS=2 , Apple-main_client_32_LARGEST_TERM=100 , Apple-main_client_32_RUNS=50 , Apple-main_client_32_SIZEOFINT=4 , Apple-main_client_32_buf= , Apple-main_client_32_conn= , Apple-main_client_32_debug=false , Apple-main_client_32_lAddr= , Apple-main_client_32_rAddr= , Apple-main_client_46_ADDITION_ARGS=2 , Apple-main_client_46_LARGEST_TERM=100 , Apple-main_client_46_RUNS=50 , Apple-main_client_46_SIZEOFINT=4 , Apple-main_client_46_buf= , Apple-main_client_46_conn= , Apple-main_client_46_debug=false , Apple-main_client_46_lAddr= , Apple-main_client_46_rAddr= ,  } { {"Apple":81, "Apricot":81, "Banana":161} }
 Apple {"Apple":83, "Apricot":83, "Banana":165}
 Received on Apple
-ff51e4bbf83253d92ba1bace6b4aaa379a3214fd { Apple-main_client_42_ADDITION_ARGS=2 , Apple-main_client_42_LARGEST_TERM=100 , Apple-main_client_42_RUNS=50 , Apple-main_client_42_SIZEOFINT=4 , Apple-main_client_42_buf= , Apple-main_client_42_conn= , Apple-main_client_42_debug=false , Apple-main_client_42_lAddr= , Apple-main_client_42_rAddr= ,  } { {"Apple":82, "Apricot":81, "Banana":161} }
 Apple {"Apple":84, "Apricot":83, "Banana":165}
 Sending from Apple
-66f23f2defe9f4708d9dd343c47a7a23e97b0e80 { Apple-main_client_32_ADDITION_ARGS=2 , Apple-main_client_32_LARGEST_TERM=100 , Apple-main_client_32_RUNS=50 , Apple-main_client_32_SIZEOFINT=4 , Apple-main_client_32_buf= , Apple-main_client_32_conn= , Apple-main_client_32_debug=false , Apple-main_client_32_lAddr= , Apple-main_client_32_rAddr= , Apple-main_client_46_ADDITION_ARGS=2 , Apple-main_client_46_LARGEST_TERM=100 , Apple-main_client_46_RUNS=50 , Apple-main_client_46_SIZEOFINT=4 , Apple-main_client_46_buf= , Apple-main_client_46_conn= , Apple-main_client_46_debug=false , Apple-main_client_46_lAddr= , Apple-main_client_46_rAddr= ,  } { {"Apple":83, "Apricot":83, "Banana":165} }
 Apple {"Apple":85, "Apricot":85, "Banana":169}
 Received on Apple
-ff51e4bbf83253d92ba1bace6b4aaa379a3214fd { Apple-main_client_42_ADDITION_ARGS=2 , Apple-main_client_42_LARGEST_TERM=100 , Apple-main_client_42_RUNS=50 , Apple-main_client_42_SIZEOFINT=4 , Apple-main_client_42_buf= , Apple-main_client_42_conn= , Apple-main_client_42_debug=false , Apple-main_client_42_lAddr= , Apple-main_client_42_rAddr= ,  } { {"Apple":84, "Apricot":83, "Banana":165} }
 Apple {"Apple":86, "Apricot":85, "Banana":169}
 Sending from Apple
-66f23f2defe9f4708d9dd343c47a7a23e97b0e80 { Apple-main_client_32_ADDITION_ARGS=2 , Apple-main_client_32_LARGEST_TERM=100 , Apple-main_client_32_RUNS=50 , Apple-main_client_32_SIZEOFINT=4 , Apple-main_client_32_buf= , Apple-main_client_32_conn= , Apple-main_client_32_debug=false , Apple-main_client_32_lAddr= , Apple-main_client_32_rAddr= , Apple-main_client_46_ADDITION_ARGS=2 , Apple-main_client_46_LARGEST_TERM=100 , Apple-main_client_46_RUNS=50 , Apple-main_client_46_SIZEOFINT=4 , Apple-main_client_46_buf= , Apple-main_client_46_conn= , Apple-main_client_46_debug=false , Apple-main_client_46_lAddr= , Apple-main_client_46_rAddr= ,  } { {"Apple":85, "Apricot":85, "Banana":169} }
 Apple {"Apple":87, "Apricot":87, "Banana":173}
 Received on Apple
-ff51e4bbf83253d92ba1bace6b4aaa379a3214fd { Apple-main_client_42_ADDITION_ARGS=2 , Apple-main_client_42_LARGEST_TERM=100 , Apple-main_client_42_RUNS=50 , Apple-main_client_42_SIZEOFINT=4 , Apple-main_client_42_buf= , Apple-main_client_42_conn= , Apple-main_client_42_debug=false , Apple-main_client_42_lAddr= , Apple-main_client_42_rAddr= ,  } { {"Apple":86, "Apricot":85, "Banana":169} }
 Apple {"Apple":88, "Apricot":87, "Banana":173}
 Sending from Apple
-66f23f2defe9f4708d9dd343c47a7a23e97b0e80 { Apple-main_client_32_ADDITION_ARGS=2 , Apple-main_client_32_LARGEST_TERM=100 , Apple-main_client_32_RUNS=50 , Apple-main_client_32_SIZEOFINT=4 , Apple-main_client_32_buf= , Apple-main_client_32_conn= , Apple-main_client_32_debug=false , Apple-main_client_32_lAddr= , Apple-main_client_32_rAddr= , Apple-main_client_46_ADDITION_ARGS=2 , Apple-main_client_46_LARGEST_TERM=100 , Apple-main_client_46_RUNS=50 , Apple-main_client_46_SIZEOFINT=4 , Apple-main_client_46_buf= , Apple-main_client_46_conn= , Apple-main_client_46_debug=false , Apple-main_client_46_lAddr= , Apple-main_client_46_rAddr= ,  } { {"Apple":87, "Apricot":87, "Banana":173} }
 Apple {"Apple":89, "Apricot":89, "Banana":177}
 Received on Apple
-ff51e4bbf83253d92ba1bace6b4aaa379a3214fd { Apple-main_client_42_ADDITION_ARGS=2 , Apple-main_client_42_LARGEST_TERM=100 , Apple-main_client_42_RUNS=50 , Apple-main_client_42_SIZEOFINT=4 , Apple-main_client_42_buf= , Apple-main_client_42_conn= , Apple-main_client_42_debug=false , Apple-main_client_42_lAddr= , Apple-main_client_42_rAddr= ,  } { {"Apple":88, "Apricot":87, "Banana":173} }
 Apple {"Apple":90, "Apricot":89, "Banana":177}
 Sending from Apple
-66f23f2defe9f4708d9dd343c47a7a23e97b0e80 { Apple-main_client_32_ADDITION_ARGS=2 , Apple-main_client_32_LARGEST_TERM=100 , Apple-main_client_32_RUNS=50 , Apple-main_client_32_SIZEOFINT=4 , Apple-main_client_32_buf= , Apple-main_client_32_conn= , Apple-main_client_32_debug=false , Apple-main_client_32_lAddr= , Apple-main_client_32_rAddr= , Apple-main_client_46_ADDITION_ARGS=2 , Apple-main_client_46_LARGEST_TERM=100 , Apple-main_client_46_RUNS=50 , Apple-main_client_46_SIZEOFINT=4 , Apple-main_client_46_buf= , Apple-main_client_46_conn= , Apple-main_client_46_debug=false , Apple-main_client_46_lAddr= , Apple-main_client_46_rAddr= ,  } { {"Apple":89, "Apricot":89, "Banana":177} }
 Apple {"Apple":91, "Apricot":91, "Banana":181}
 Received on Apple
-ff51e4bbf83253d92ba1bace6b4aaa379a3214fd { Apple-main_client_42_ADDITION_ARGS=2 , Apple-main_client_42_LARGEST_TERM=100 , Apple-main_client_42_RUNS=50 , Apple-main_client_42_SIZEOFINT=4 , Apple-main_client_42_buf= , Apple-main_client_42_conn= , Apple-main_client_42_debug=false , Apple-main_client_42_lAddr= , Apple-main_client_42_rAddr= ,  } { {"Apple":90, "Apricot":89, "Banana":177} }
 Apple {"Apple":92, "Apricot":91, "Banana":181}
 Sending from Apple
-66f23f2defe9f4708d9dd343c47a7a23e97b0e80 { Apple-main_client_32_ADDITION_ARGS=2 , Apple-main_client_32_LARGEST_TERM=100 , Apple-main_client_32_RUNS=50 , Apple-main_client_32_SIZEOFINT=4 , Apple-main_client_32_buf= , Apple-main_client_32_conn= , Apple-main_client_32_debug=false , Apple-main_client_32_lAddr= , Apple-main_client_32_rAddr= , Apple-main_client_46_ADDITION_ARGS=2 , Apple-main_client_46_LARGEST_TERM=100 , Apple-main_client_46_RUNS=50 , Apple-main_client_46_SIZEOFINT=4 , Apple-main_client_46_buf= , Apple-main_client_46_conn= , Apple-main_client_46_debug=false , Apple-main_client_46_lAddr= , Apple-main_client_46_rAddr= ,  } { {"Apple":91, "Apricot":91, "Banana":181} }
 Apple {"Apple":93, "Apricot":93, "Banana":185}
 Received on Apple
-ff51e4bbf83253d92ba1bace6b4aaa379a3214fd { Apple-main_client_42_ADDITION_ARGS=2 , Apple-main_client_42_LARGEST_TERM=100 , Apple-main_client_42_RUNS=50 , Apple-main_client_42_SIZEOFINT=4 , Apple-main_client_42_buf= , Apple-main_client_42_conn= , Apple-main_client_42_debug=false , Apple-main_client_42_lAddr= , Apple-main_client_42_rAddr= ,  } { {"Apple":92, "Apricot":91, "Banana":181} }
 Apple {"Apple":94, "Apricot":93, "Banana":185}
 Sending from Apple
-66f23f2defe9f4708d9dd343c47a7a23e97b0e80 { Apple-main_client_32_ADDITION_ARGS=2 , Apple-main_client_32_LARGEST_TERM=100 , Apple-main_client_32_RUNS=50 , Apple-main_client_32_SIZEOFINT=4 , Apple-main_client_32_buf= , Apple-main_client_32_conn= , Apple-main_client_32_debug=false , Apple-main_client_32_lAddr= , Apple-main_client_32_rAddr= , Apple-main_client_46_ADDITION_ARGS=2 , Apple-main_client_46_LARGEST_TERM=100 , Apple-main_client_46_RUNS=50 , Apple-main_client_46_SIZEOFINT=4 , Apple-main_client_46_buf= , Apple-main_client_46_conn= , Apple-main_client_46_debug=false , Apple-main_client_46_lAddr= , Apple-main_client_46_rAddr= ,  } { {"Apple":93, "Apricot":93, "Banana":185} }
 Apple {"Apple":95, "Apricot":95, "Banana":189}
 Received on Apple
-ff51e4bbf83253d92ba1bace6b4aaa379a3214fd { Apple-main_client_42_ADDITION_ARGS=2 , Apple-main_client_42_LARGEST_TERM=100 , Apple-main_client_42_RUNS=50 , Apple-main_client_42_SIZEOFINT=4 , Apple-main_client_42_buf= , Apple-main_client_42_conn= , Apple-main_client_42_debug=false , Apple-main_client_42_lAddr= , Apple-main_client_42_rAddr= ,  } { {"Apple":94, "Apricot":93, "Banana":185} }
 Apple {"Apple":96, "Apricot":95, "Banana":189}
 Sending from Apple
-66f23f2defe9f4708d9dd343c47a7a23e97b0e80 { Apple-main_client_32_ADDITION_ARGS=2 , Apple-main_client_32_LARGEST_TERM=100 , Apple-main_client_32_RUNS=50 , Apple-main_client_32_SIZEOFINT=4 , Apple-main_client_32_buf= , Apple-main_client_32_conn= , Apple-main_client_32_debug=false , Apple-main_client_32_lAddr= , Apple-main_client_32_rAddr= , Apple-main_client_46_ADDITION_ARGS=2 , Apple-main_client_46_LARGEST_TERM=100 , Apple-main_client_46_RUNS=50 , Apple-main_client_46_SIZEOFINT=4 , Apple-main_client_46_buf= , Apple-main_client_46_conn= , Apple-main_client_46_debug=false , Apple-main_client_46_lAddr= , Apple-main_client_46_rAddr= ,  } { {"Apple":95, "Apricot":95, "Banana":189} }
 Apple {"Apple":97, "Apricot":97, "Banana":193}
 Received on Apple
-ff51e4bbf83253d92ba1bace6b4aaa379a3214fd { Apple-main_client_42_ADDITION_ARGS=2 , Apple-main_client_42_LARGEST_TERM=100 , Apple-main_client_42_RUNS=50 , Apple-main_client_42_SIZEOFINT=4 , Apple-main_client_42_buf= , Apple-main_client_42_conn= , Apple-main_client_42_debug=false , Apple-main_client_42_lAddr= , Apple-main_client_42_rAddr= ,  } { {"Apple":96, "Apricot":95, "Banana":189} }
 Apple {"Apple":98, "Apricot":97, "Banana":193}
 Sending from Apple
-66f23f2defe9f4708d9dd343c47a7a23e97b0e80 { Apple-main_client_32_ADDITION_ARGS=2 , Apple-main_client_32_LARGEST_TERM=100 , Apple-main_client_32_RUNS=50 , Apple-main_client_32_SIZEOFINT=4 , Apple-main_client_32_buf= , Apple-main_client_32_conn= , Apple-main_client_32_debug=false , Apple-main_client_32_lAddr= , Apple-main_client_32_rAddr= , Apple-main_client_46_ADDITION_ARGS=2 , Apple-main_client_46_LARGEST_TERM=100 , Apple-main_client_46_RUNS=50 , Apple-main_client_46_SIZEOFINT=4 , Apple-main_client_46_buf= , Apple-main_client_46_conn= , Apple-main_client_46_debug=false , Apple-main_client_46_lAddr= , Apple-main_client_46_rAddr= ,  } { {"Apple":97, "Apricot":97, "Banana":193} }
 Apple {"Apple":99, "Apricot":99, "Banana":197}
 Received on Apple
-ff51e4bbf83253d92ba1bace6b4aaa379a3214fd { Apple-main_client_42_ADDITION_ARGS=2 , Apple-main_client_42_LARGEST_TERM=100 , Apple-main_client_42_RUNS=50 , Apple-main_client_42_SIZEOFINT=4 , Apple-main_client_42_buf= , Apple-main_client_42_conn= , Apple-main_client_42_debug=false , Apple-main_client_42_lAddr= , Apple-main_client_42_rAddr= ,  } { {"Apple":98, "Apricot":97, "Banana":193} }
 Apple {"Apple":100, "Apricot":99, "Banana":197}
 Sending from Apple
-08905e4d98c9c7c1c5a97962e7e05d2ed1271560 { Apple-main_client_32_ADDITION_ARGS=2 , Apple-main_client_32_LARGEST_TERM=100 , Apple-main_client_32_RUNS=50 , Apple-main_client_32_SIZEOFINT=4 , Apple-main_client_32_buf= , Apple-main_client_32_conn= , Apple-main_client_32_debug=false , Apple-main_client_32_lAddr= , Apple-main_client_32_rAddr= , Apple-main_client_46_ADDITION_ARGS=2 , Apple-main_client_46_LARGEST_TERM=100 , Apple-main_client_46_RUNS=50 , Apple-main_client_46_SIZEOFINT=4 , Apple-main_client_46_buf= , Apple-main_client_46_conn= , Apple-main_client_46_debug=false , Apple-main_client_46_lAddr= , Apple-main_client_46_rAddr= ,  } { {"Apple":99, "Apricot":99, "Banana":197} }
 Apple {"Apple":101, "Apricot":101, "Banana":201}
 Received on Apple
-ff51e4bbf83253d92ba1bace6b4aaa379a3214fd { Apple-main_client_42_ADDITION_ARGS=2 , Apple-main_client_42_LARGEST_TERM=100 , Apple-main_client_42_RUNS=50 , Apple-main_client_42_SIZEOFINT=4 , Apple-main_client_42_buf= , Apple-main_client_42_conn= , Apple-main_client_42_debug=false , Apple-main_client_42_lAddr= , Apple-main_client_42_rAddr= ,  } { {"Apple":100, "Apricot":99, "Banana":197} }
 Apple {"Apple":102, "Apricot":101, "Banana":201}
 Sending from Apple
-66f23f2defe9f4708d9dd343c47a7a23e97b0e80 { Apple-main_client_32_ADDITION_ARGS=2 , Apple-main_client_32_LARGEST_TERM=100 , Apple-main_client_32_RUNS=50 , Apple-main_client_32_SIZEOFINT=4 , Apple-main_client_32_buf= , Apple-main_client_32_conn= , Apple-main_client_32_debug=false , Apple-main_client_32_lAddr= , Apple-main_client_32_rAddr= , Apple-main_client_46_ADDITION_ARGS=2 , Apple-main_client_46_LARGEST_TERM=100 , Apple-main_client_46_RUNS=50 , Apple-main_client_46_SIZEOFINT=4 , Apple-main_client_46_buf= , Apple-main_client_46_conn= , Apple-main_client_46_debug=false , Apple-main_client_46_lAddr= , Apple-main_client_46_rAddr= ,  } { {"Apple":101, "Apricot":101, "Banana":201} }
 Apple {"Apple":103, "Apricot":103, "Banana":205}
 Received on Apple
-ff51e4bbf83253d92ba1bace6b4aaa379a3214fd { Apple-main_client_42_ADDITION_ARGS=2 , Apple-main_client_42_LARGEST_TERM=100 , Apple-main_client_42_RUNS=50 , Apple-main_client_42_SIZEOFINT=4 , Apple-main_client_42_buf= , Apple-main_client_42_conn= , Apple-main_client_42_debug=false , Apple-main_client_42_lAddr= , Apple-main_client_42_rAddr= ,  } { {"Apple":102, "Apricot":101, "Banana":201} } {  } { {"Apple":102, "Apricot":101, "Banana":201} }
 Banana {"Banana":1}
 Initialization Complete
-
 Banana {"Apple":2, "Banana":2}
 Received on Banana
-da39a3ee5e6b4b0d3255bfef95601890afd80709 {  } { {"Banana":1} }
 Banana {"Apple":2, "Banana":3}
 Sending from Banana
-3722c3ce20c7f90c40f73cc97e43e4a6733119b8 { Banana-main_coeff_48_LARGEST_COEFF=6 , Banana-main_coeff_48_SIZEOFINT=4 , Banana-main_coeff_48_addr= , Banana-main_coeff_48_buf= , Banana-main_coeff_48_coeff=0 , Banana-main_coeff_48_conn= , Banana-main_coeff_48_conn2= , Banana-main_coeff_48_term1=0 , Banana-main_coeff_48_term2=0 ,  } { {"Apple":2, "Banana":2} }
 Banana {"Apple":2, "Apricot":3, "Banana":4}
 Received on Banana
-36b939fbee1a1ccbf5e3668e522778080696d015 { Banana-main_coeff_61_LARGEST_COEFF=6 , Banana-main_coeff_61_SIZEOFINT=4 , Banana-main_coeff_61_addr= , Banana-main_coeff_61_buf= , Banana-main_coeff_61_coeff=2 , Banana-main_coeff_61_conn= , Banana-main_coeff_61_conn2= , Banana-main_coeff_61_term1=10 , Banana-main_coeff_61_term2=51 ,  } { {"Apple":2, "Banana":3} }
 Banana {"Apple":2, "Apricot":3, "Banana":5}
 Sending from Banana
-673170285a4e9b093ee4775bf5033951413af8a0 { Banana-main_coeff_65_LARGEST_COEFF=6 , Banana-main_coeff_65_SIZEOFINT=4 , Banana-main_coeff_65_addr= , Banana-main_coeff_65_buf= , Banana-main_coeff_65_coeff=2 , Banana-main_coeff_65_conn= , Banana-main_coeff_65_conn2= , Banana-main_coeff_65_term1=10 , Banana-main_coeff_65_term2=51 ,  } { {"Apple":2, "Apricot":3, "Banana":4} }
 Banana {"Apple":4, "Apricot":3, "Banana":6}
 Received on Banana
-f128bd1839aaa9d5afd990a4316d1d12344417a5 { Banana-main_coeff_75_LARGEST_COEFF=6 , Banana-main_coeff_75_SIZEOFINT=4 , Banana-main_coeff_75_addr= , Banana-main_coeff_75_buf= , Banana-main_coeff_75_coeff=2 , Banana-main_coeff_75_conn= , Banana-main_coeff_75_conn2= , Banana-main_coeff_75_term1=10 , Banana-main_coeff_75_term2=51 ,  } { {"Apple":2, "Apricot":3, "Banana":5} }
 Banana {"Apple":4, "Apricot":3, "Banana":7}
 Sending from Banana
-3722c3ce20c7f90c40f73cc97e43e4a6733119b8 { Banana-main_coeff_48_LARGEST_COEFF=6 , Banana-main_coeff_48_SIZEOFINT=4 , Banana-main_coeff_48_addr= , Banana-main_coeff_48_buf= , Banana-main_coeff_48_coeff=0 , Banana-main_coeff_48_conn= , Banana-main_coeff_48_conn2= , Banana-main_coeff_48_term1=0 , Banana-main_coeff_48_term2=0 ,  } { {"Apple":4, "Apricot":3, "Banana":6} }
 Banana {"Apple":4, "Apricot":5, "Banana":8}
 Received on Banana
-36b939fbee1a1ccbf5e3668e522778080696d015 { Banana-main_coeff_61_LARGEST_COEFF=6 , Banana-main_coeff_61_SIZEOFINT=4 , Banana-main_coeff_61_addr= , Banana-main_coeff_61_buf= , Banana-main_coeff_61_coeff=1 , Banana-main_coeff_61_conn= , Banana-main_coeff_61_conn2= , Banana-main_coeff_61_term1=21 , Banana-main_coeff_61_term2=51 ,  } { {"Apple":4, "Apricot":3, "Banana":7} }
 Banana {"Apple":4, "Apricot":5, "Banana":9}
 Sending from Banana
-673170285a4e9b093ee4775bf5033951413af8a0 { Banana-main_coeff_65_LARGEST_COEFF=6 , Banana-main_coeff_65_SIZEOFINT=4 , Banana-main_coeff_65_addr= , Banana-main_coeff_65_buf= , Banana-main_coeff_65_coeff=1 , Banana-main_coeff_65_conn= , Banana-main_coeff_65_conn2= , Banana-main_coeff_65_term1=21 , Banana-main_coeff_65_term2=51 ,  } { {"Apple":4, "Apricot":5, "Banana":8} }
 Banana {"Apple":6, "Apricot":5, "Banana":10}
 Received on Banana
-f128bd1839aaa9d5afd990a4316d1d12344417a5 { Banana-main_coeff_75_LARGEST_COEFF=6 , Banana-main_coeff_75_SIZEOFINT=4 , Banana-main_coeff_75_addr= , Banana-main_coeff_75_buf= , Banana-main_coeff_75_coeff=1 , Banana-main_coeff_75_conn= , Banana-main_coeff_75_conn2= , Banana-main_coeff_75_term1=21 , Banana-main_coeff_75_term2=51 ,  } { {"Apple":4, "Apricot":5, "Banana":9} }
 Banana {"Apple":6, "Apricot":5, "Banana":11}
 Sending from Banana
-3722c3ce20c7f90c40f73cc97e43e4a6733119b8 { Banana-main_coeff_48_LARGEST_COEFF=6 , Banana-main_coeff_48_SIZEOFINT=4 , Banana-main_coeff_48_addr= , Banana-main_coeff_48_buf= , Banana-main_coeff_48_coeff=0 , Banana-main_coeff_48_conn= , Banana-main_coeff_48_conn2= , Banana-main_coeff_48_term1=0 , Banana-main_coeff_48_term2=0 ,  } { {"Apple":6, "Apricot":5, "Banana":10} }
 Banana {"Apple":6, "Apricot":7, "Banana":12}
 Received on Banana
-36b939fbee1a1ccbf5e3668e522778080696d015 { Banana-main_coeff_61_LARGEST_COEFF=6 , Banana-main_coeff_61_SIZEOFINT=4 , Banana-main_coeff_61_addr= , Banana-main_coeff_61_buf= , Banana-main_coeff_61_coeff=3 , Banana-main_coeff_61_conn= , Banana-main_coeff_61_conn2= , Banana-main_coeff_61_term1=37 , Banana-main_coeff_61_term2=20 ,  } { {"Apple":6, "Apricot":5, "Banana":11} }
 Banana {"Apple":6, "Apricot":7, "Banana":13}
 Sending from Banana
-673170285a4e9b093ee4775bf5033951413af8a0 { Banana-main_coeff_65_LARGEST_COEFF=6 , Banana-main_coeff_65_SIZEOFINT=4 , Banana-main_coeff_65_addr= , Banana-main_coeff_65_buf= , Banana-main_coeff_65_coeff=3 , Banana-main_coeff_65_conn= , Banana-main_coeff_65_conn2= , Banana-main_coeff_65_term1=37 , Banana-main_coeff_65_term2=20 ,  } { {"Apple":6, "Apricot":7, "Banana":12} }
 Banana {"Apple":8, "Apricot":7, "Banana":14}
 Received on Banana
-f128bd1839aaa9d5afd990a4316d1d12344417a5 { Banana-main_coeff_75_LARGEST_COEFF=6 , Banana-main_coeff_75_SIZEOFINT=4 , Banana-main_coeff_75_addr= , Banana-main_coeff_75_buf= , Banana-main_coeff_75_coeff=3 , Banana-main_coeff_75_conn= , Banana-main_coeff_75_conn2= , Banana-main_coeff_75_term1=37 , Banana-main_coeff_75_term2=20 ,  } { {"Apple":6, "Apricot":7, "Banana":13} }
 Banana {"Apple":8, "Apricot":7, "Banana":15}
 Sending from Banana
-3722c3ce20c7f90c40f73cc97e43e4a6733119b8 { Banana-main_coeff_48_LARGEST_COEFF=6 , Banana-main_coeff_48_SIZEOFINT=4 , Banana-main_coeff_48_addr= , Banana-main_coeff_48_buf= , Banana-main_coeff_48_coeff=0 , Banana-main_coeff_48_conn= , Banana-main_coeff_48_conn2= , Banana-main_coeff_48_term1=0 , Banana-main_coeff_48_term2=0 ,  } { {"Apple":8, "Apricot":7, "Banana":14} }
 Banana {"Apple":8, "Apricot":9, "Banana":16}
 Received on Banana
-36b939fbee1a1ccbf5e3668e522778080696d015 { Banana-main_coeff_61_LARGEST_COEFF=6 , Banana-main_coeff_61_SIZEOFINT=4 , Banana-main_coeff_61_addr= , Banana-main_coeff_61_buf= , Banana-main_coeff_61_coeff=5 , Banana-main_coeff_61_conn= , Banana-main_coeff_61_conn2= , Banana-main_coeff_61_term1=58 , Banana-main_coeff_61_term2=48 ,  } { {"Apple":8, "Apricot":7, "Banana":15} }
 Banana {"Apple":8, "Apricot":9, "Banana":17}
 Sending from Banana
-673170285a4e9b093ee4775bf5033951413af8a0 { Banana-main_coeff_65_LARGEST_COEFF=6 , Banana-main_coeff_65_SIZEOFINT=4 , Banana-main_coeff_65_addr= , Banana-main_coeff_65_buf= , Banana-main_coeff_65_coeff=5 , Banana-main_coeff_65_conn= , Banana-main_coeff_65_conn2= , Banana-main_coeff_65_term1=58 , Banana-main_coeff_65_term2=48 ,  } { {"Apple":8, "Apricot":9, "Banana":16} }
 Banana {"Apple":10, "Apricot":9, "Banana":18}
 Received on Banana
-f128bd1839aaa9d5afd990a4316d1d12344417a5 { Banana-main_coeff_75_LARGEST_COEFF=6 , Banana-main_coeff_75_SIZEOFINT=4 , Banana-main_coeff_75_addr= , Banana-main_coeff_75_buf= , Banana-main_coeff_75_coeff=5 , Banana-main_coeff_75_conn= , Banana-main_coeff_75_conn2= , Banana-main_coeff_75_term1=58 , Banana-main_coeff_75_term2=48 ,  } { {"Apple":8, "Apricot":9, "Banana":17} }
 Banana {"Apple":10, "Apricot":9, "Banana":19}
 Sending from Banana
-3722c3ce20c7f90c40f73cc97e43e4a6733119b8 { Banana-main_coeff_48_LARGEST_COEFF=6 , Banana-main_coeff_48_SIZEOFINT=4 , Banana-main_coeff_48_addr= , Banana-main_coeff_48_buf= , Banana-main_coeff_48_coeff=0 , Banana-main_coeff_48_conn= , Banana-main_coeff_48_conn2= , Banana-main_coeff_48_term1=0 , Banana-main_coeff_48_term2=0 ,  } { {"Apple":10, "Apricot":9, "Banana":18} }
 Banana {"Apple":10, "Apricot":11, "Banana":20}
 Received on Banana
-36b939fbee1a1ccbf5e3668e522778080696d015 { Banana-main_coeff_61_LARGEST_COEFF=6 , Banana-main_coeff_61_SIZEOFINT=4 , Banana-main_coeff_61_addr= , Banana-main_coeff_61_buf= , Banana-main_coeff_61_coeff=5 , Banana-main_coeff_61_conn= , Banana-main_coeff_61_conn2= , Banana-main_coeff_61_term1=16 , Banana-main_coeff_61_term2=49 ,  } { {"Apple":10, "Apricot":9, "Banana":19} }
 Banana {"Apple":10, "Apricot":11, "Banana":21}
 Sending from Banana
-673170285a4e9b093ee4775bf5033951413af8a0 { Banana-main_coeff_65_LARGEST_COEFF=6 , Banana-main_coeff_65_SIZEOFINT=4 , Banana-main_coeff_65_addr= , Banana-main_coeff_65_buf= , Banana-main_coeff_65_coeff=5 , Banana-main_coeff_65_conn= , Banana-main_coeff_65_conn2= , Banana-main_coeff_65_term1=16 , Banana-main_coeff_65_term2=49 ,  } { {"Apple":10, "Apricot":11, "Banana":20} }
 Banana {"Apple":12, "Apricot":11, "Banana":22}
 Received on Banana
-f128bd1839aaa9d5afd990a4316d1d12344417a5 { Banana-main_coeff_75_LARGEST_COEFF=6 , Banana-main_coeff_75_SIZEOFINT=4 , Banana-main_coeff_75_addr= , Banana-main_coeff_75_buf= , Banana-main_coeff_75_coeff=5 , Banana-main_coeff_75_conn= , Banana-main_coeff_75_conn2= , Banana-main_coeff_75_term1=16 , Banana-main_coeff_75_term2=49 ,  } { {"Apple":10, "Apricot":11, "Banana":21} }
 Banana {"Apple":12, "Apricot":11, "Banana":23}
 Sending from Banana
-3722c3ce20c7f90c40f73cc97e43e4a6733119b8 { Banana-main_coeff_48_LARGEST_COEFF=6 , Banana-main_coeff_48_SIZEOFINT=4 , Banana-main_coeff_48_addr= , Banana-main_coeff_48_buf= , Banana-main_coeff_48_coeff=0 , Banana-main_coeff_48_conn= , Banana-main_coeff_48_conn2= , Banana-main_coeff_48_term1=0 , Banana-main_coeff_48_term2=0 ,  } { {"Apple":12, "Apricot":11, "Banana":22} }
 Banana {"Apple":12, "Apricot":13, "Banana":24}
 Received on Banana
-36b939fbee1a1ccbf5e3668e522778080696d015 { Banana-main_coeff_61_LARGEST_COEFF=6 , Banana-main_coeff_61_SIZEOFINT=4 , Banana-main_coeff_61_addr= , Banana-main_coeff_61_buf= , Banana-main_coeff_61_coeff=2 , Banana-main_coeff_61_conn= , Banana-main_coeff_61_conn2= , Banana-main_coeff_61_term1=84 , Banana-main_coeff_61_term2=87 ,  } { {"Apple":12, "Apricot":11, "Banana":23} }
 Banana {"Apple":12, "Apricot":13, "Banana":25}
 Sending from Banana
-673170285a4e9b093ee4775bf5033951413af8a0 { Banana-main_coeff_65_LARGEST_COEFF=6 , Banana-main_coeff_65_SIZEOFINT=4 , Banana-main_coeff_65_addr= , Banana-main_coeff_65_buf= , Banana-main_coeff_65_coeff=2 , Banana-main_coeff_65_conn= , Banana-main_coeff_65_conn2= , Banana-main_coeff_65_term1=84 , Banana-main_coeff_65_term2=87 ,  } { {"Apple":12, "Apricot":13, "Banana":24} }
 Banana {"Apple":14, "Apricot":13, "Banana":26}
 Received on Banana
-f128bd1839aaa9d5afd990a4316d1d12344417a5 { Banana-main_coeff_75_LARGEST_COEFF=6 , Banana-main_coeff_75_SIZEOFINT=4 , Banana-main_coeff_75_addr= , Banana-main_coeff_75_buf= , Banana-main_coeff_75_coeff=2 , Banana-main_coeff_75_conn= , Banana-main_coeff_75_conn2= , Banana-main_coeff_75_term1=84 , Banana-main_coeff_75_term2=87 ,  } { {"Apple":12, "Apricot":13, "Banana":25} }
 Banana {"Apple":14, "Apricot":13, "Banana":27}
 Sending from Banana
-3722c3ce20c7f90c40f73cc97e43e4a6733119b8 { Banana-main_coeff_48_LARGEST_COEFF=6 , Banana-main_coeff_48_SIZEOFINT=4 , Banana-main_coeff_48_addr= , Banana-main_coeff_48_buf= , Banana-main_coeff_48_coeff=0 , Banana-main_coeff_48_conn= , Banana-main_coeff_48_conn2= , Banana-main_coeff_48_term1=0 , Banana-main_coeff_48_term2=0 ,  } { {"Apple":14, "Apricot":13, "Banana":26} }
 Banana {"Apple":14, "Apricot":15, "Banana":28}
 Received on Banana
-36b939fbee1a1ccbf5e3668e522778080696d015 { Banana-main_coeff_61_LARGEST_COEFF=6 , Banana-main_coeff_61_SIZEOFINT=4 , Banana-main_coeff_61_addr= , Banana-main_coeff_61_buf= , Banana-main_coeff_61_coeff=0 , Banana-main_coeff_61_conn= , Banana-main_coeff_61_conn2= , Banana-main_coeff_61_term1=74 , Banana-main_coeff_61_term2=36 ,  } { {"Apple":14, "Apricot":13, "Banana":27} }
 Banana {"Apple":14, "Apricot":15, "Banana":29}
 Sending from Banana
-673170285a4e9b093ee4775bf5033951413af8a0 { Banana-main_coeff_65_LARGEST_COEFF=6 , Banana-main_coeff_65_SIZEOFINT=4 , Banana-main_coeff_65_addr= , Banana-main_coeff_65_buf= , Banana-main_coeff_65_coeff=0 , Banana-main_coeff_65_conn= , Banana-main_coeff_65_conn2= , Banana-main_coeff_65_term1=74 , Banana-main_coeff_65_term2=36 ,  } { {"Apple":14, "Apricot":15, "Banana":28} }
 Banana {"Apple":16, "Apricot":15, "Banana":30}
 Received on Banana
-f128bd1839aaa9d5afd990a4316d1d12344417a5 { Banana-main_coeff_75_LARGEST_COEFF=6 , Banana-main_coeff_75_SIZEOFINT=4 , Banana-main_coeff_75_addr= , Banana-main_coeff_75_buf= , Banana-main_coeff_75_coeff=0 , Banana-main_coeff_75_conn= , Banana-main_coeff_75_conn2= , Banana-main_coeff_75_term1=74 , Banana-main_coeff_75_term2=36 ,  } { {"Apple":14, "Apricot":15, "Banana":29} }
 Banana {"Apple":16, "Apricot":15, "Banana":31}
 Sending from Banana
-3722c3ce20c7f90c40f73cc97e43e4a6733119b8 { Banana-main_coeff_48_LARGEST_COEFF=6 , Banana-main_coeff_48_SIZEOFINT=4 , Banana-main_coeff_48_addr= , Banana-main_coeff_48_buf= , Banana-main_coeff_48_coeff=0 , Banana-main_coeff_48_conn= , Banana-main_coeff_48_conn2= , Banana-main_coeff_48_term1=0 , Banana-main_coeff_48_term2=0 ,  } { {"Apple":16, "Apricot":15, "Banana":30} }
 Banana {"Apple":16, "Apricot":17, "Banana":32}
 Received on Banana
-36b939fbee1a1ccbf5e3668e522778080696d015 { Banana-main_coeff_61_LARGEST_COEFF=6 , Banana-main_coeff_61_SIZEOFINT=4 , Banana-main_coeff_61_addr= , Banana-main_coeff_61_buf= , Banana-main_coeff_61_coeff=2 , Banana-main_coeff_61_conn= , Banana-main_coeff_61_conn2= , Banana-main_coeff_61_term1=15 , Banana-main_coeff_61_term2=73 ,  } { {"Apple":16, "Apricot":15, "Banana":31} }
 Banana {"Apple":16, "Apricot":17, "Banana":33}
 Sending from Banana
-673170285a4e9b093ee4775bf5033951413af8a0 { Banana-main_coeff_65_LARGEST_COEFF=6 , Banana-main_coeff_65_SIZEOFINT=4 , Banana-main_coeff_65_addr= , Banana-main_coeff_65_buf= , Banana-main_coeff_65_coeff=2 , Banana-main_coeff_65_conn= , Banana-main_coeff_65_conn2= , Banana-main_coeff_65_term1=15 , Banana-main_coeff_65_term2=73 ,  } { {"Apple":16, "Apricot":17, "Banana":32} }
 Banana {"Apple":18, "Apricot":17, "Banana":34}
 Received on Banana
-f128bd1839aaa9d5afd990a4316d1d12344417a5 { Banana-main_coeff_75_LARGEST_COEFF=6 , Banana-main_coeff_75_SIZEOFINT=4 , Banana-main_coeff_75_addr= , Banana-main_coeff_75_buf= , Banana-main_coeff_75_coeff=2 , Banana-main_coeff_75_conn= , Banana-main_coeff_75_conn2= , Banana-main_coeff_75_term1=15 , Banana-main_coeff_75_term2=73 ,  } { {"Apple":16, "Apricot":17, "Banana":33} }
 Banana {"Apple":18, "Apricot":17, "Banana":35}
 Sending from Banana
-3722c3ce20c7f90c40f73cc97e43e4a6733119b8 { Banana-main_coeff_48_LARGEST_COEFF=6 , Banana-main_coeff_48_SIZEOFINT=4 , Banana-main_coeff_48_addr= , Banana-main_coeff_48_buf= , Banana-main_coeff_48_coeff=0 , Banana-main_coeff_48_conn= , Banana-main_coeff_48_conn2= , Banana-main_coeff_48_term1=0 , Banana-main_coeff_48_term2=0 ,  } { {"Apple":18, "Apricot":17, "Banana":34} }
 Banana {"Apple":18, "Apricot":19, "Banana":36}
 Received on Banana
-36b939fbee1a1ccbf5e3668e522778080696d015 { Banana-main_coeff_61_LARGEST_COEFF=6 , Banana-main_coeff_61_SIZEOFINT=4 , Banana-main_coeff_61_addr= , Banana-main_coeff_61_buf= , Banana-main_coeff_61_coeff=2 , Banana-main_coeff_61_conn= , Banana-main_coeff_61_conn2= , Banana-main_coeff_61_term1=68 , Banana-main_coeff_61_term2=91 ,  } { {"Apple":18, "Apricot":17, "Banana":35} }
 Banana {"Apple":18, "Apricot":19, "Banana":37}
 Sending from Banana
-673170285a4e9b093ee4775bf5033951413af8a0 { Banana-main_coeff_65_LARGEST_COEFF=6 , Banana-main_coeff_65_SIZEOFINT=4 , Banana-main_coeff_65_addr= , Banana-main_coeff_65_buf= , Banana-main_coeff_65_coeff=2 , Banana-main_coeff_65_conn= , Banana-main_coeff_65_conn2= , Banana-main_coeff_65_term1=68 , Banana-main_coeff_65_term2=91 ,  } { {"Apple":18, "Apricot":19, "Banana":36} }
 Banana {"Apple":20, "Apricot":19, "Banana":38}
 Received on Banana
-f128bd1839aaa9d5afd990a4316d1d12344417a5 { Banana-main_coeff_75_LARGEST_COEFF=6 , Banana-main_coeff_75_SIZEOFINT=4 , Banana-main_coeff_75_addr= , Banana-main_coeff_75_buf= , Banana-main_coeff_75_coeff=2 , Banana-main_coeff_75_conn= , Banana-main_coeff_75_conn2= , Banana-main_coeff_75_term1=68 , Banana-main_coeff_75_term2=91 ,  } { {"Apple":18, "Apricot":19, "Banana":37} }
 Banana {"Apple":20, "Apricot":19, "Banana":39}
 Sending from Banana
-3722c3ce20c7f90c40f73cc97e43e4a6733119b8 { Banana-main_coeff_48_LARGEST_COEFF=6 , Banana-main_coeff_48_SIZEOFINT=4 , Banana-main_coeff_48_addr= , Banana-main_coeff_48_buf= , Banana-main_coeff_48_coeff=0 , Banana-main_coeff_48_conn= , Banana-main_coeff_48_conn2= , Banana-main_coeff_48_term1=0 , Banana-main_coeff_48_term2=0 ,  } { {"Apple":20, "Apricot":19, "Banana":38} }
 Banana {"Apple":20, "Apricot":21, "Banana":40}
 Received on Banana
-36b939fbee1a1ccbf5e3668e522778080696d015 { Banana-main_coeff_61_LARGEST_COEFF=6 , Banana-main_coeff_61_SIZEOFINT=4 , Banana-main_coeff_61_addr= , Banana-main_coeff_61_buf= , Banana-main_coeff_61_coeff=5 , Banana-main_coeff_61_conn= , Banana-main_coeff_61_conn2= , Banana-main_coeff_61_term1=90 , Banana-main_coeff_61_term2=31 ,  } { {"Apple":20, "Apricot":19, "Banana":39} }
 Banana {"Apple":20, "Apricot":21, "Banana":41}
 Sending from Banana
-673170285a4e9b093ee4775bf5033951413af8a0 { Banana-main_coeff_65_LARGEST_COEFF=6 , Banana-main_coeff_65_SIZEOFINT=4 , Banana-main_coeff_65_addr= , Banana-main_coeff_65_buf= , Banana-main_coeff_65_coeff=5 , Banana-main_coeff_65_conn= , Banana-main_coeff_65_conn2= , Banana-main_coeff_65_term1=90 , Banana-main_coeff_65_term2=31 ,  } { {"Apple":20, "Apricot":21, "Banana":40} }
 Banana {"Apple":22, "Apricot":21, "Banana":42}
 Received on Banana
-f128bd1839aaa9d5afd990a4316d1d12344417a5 { Banana-main_coeff_75_LARGEST_COEFF=6 , Banana-main_coeff_75_SIZEOFINT=4 , Banana-main_coeff_75_addr= , Banana-main_coeff_75_buf= , Banana-main_coeff_75_coeff=5 , Banana-main_coeff_75_conn= , Banana-main_coeff_75_conn2= , Banana-main_coeff_75_term1=90 , Banana-main_coeff_75_term2=31 ,  } { {"Apple":20, "Apricot":21, "Banana":41} }
 Banana {"Apple":22, "Apricot":21, "Banana":43}
 Sending from Banana
-3722c3ce20c7f90c40f73cc97e43e4a6733119b8 { Banana-main_coeff_48_LARGEST_COEFF=6 , Banana-main_coeff_48_SIZEOFINT=4 , Banana-main_coeff_48_addr= , Banana-main_coeff_48_buf= , Banana-main_coeff_48_coeff=0 , Banana-main_coeff_48_conn= , Banana-main_coeff_48_conn2= , Banana-main_coeff_48_term1=0 , Banana-main_coeff_48_term2=0 ,  } { {"Apple":22, "Apricot":21, "Banana":42} }
 Banana {"Apple":22, "Apricot":23, "Banana":44}
 Received on Banana
-36b939fbee1a1ccbf5e3668e522778080696d015 { Banana-main_coeff_61_LARGEST_COEFF=6 , Banana-main_coeff_61_SIZEOFINT=4 , Banana-main_coeff_61_addr= , Banana-main_coeff_61_buf= , Banana-main_coeff_61_coeff=0 , Banana-main_coeff_61_conn= , Banana-main_coeff_61_conn2= , Banana-main_coeff_61_term1=73 , Banana-main_coeff_61_term2=56 ,  } { {"Apple":22, "Apricot":21, "Banana":43} }
 Banana {"Apple":22, "Apricot":23, "Banana":45}
 Sending from Banana
-673170285a4e9b093ee4775bf5033951413af8a0 { Banana-main_coeff_65_LARGEST_COEFF=6 , Banana-main_coeff_65_SIZEOFINT=4 , Banana-main_coeff_65_addr= , Banana-main_coeff_65_buf= , Banana-main_coeff_65_coeff=0 , Banana-main_coeff_65_conn= , Banana-main_coeff_65_conn2= , Banana-main_coeff_65_term1=73 , Banana-main_coeff_65_term2=56 ,  } { {"Apple":22, "Apricot":23, "Banana":44} }
 Banana {"Apple":24, "Apricot":23, "Banana":46}
 Received on Banana
-f128bd1839aaa9d5afd990a4316d1d12344417a5 { Banana-main_coeff_75_LARGEST_COEFF=6 , Banana-main_coeff_75_SIZEOFINT=4 , Banana-main_coeff_75_addr= , Banana-main_coeff_75_buf= , Banana-main_coeff_75_coeff=0 , Banana-main_coeff_75_conn= , Banana-main_coeff_75_conn2= , Banana-main_coeff_75_term1=73 , Banana-main_coeff_75_term2=56 ,  } { {"Apple":22, "Apricot":23, "Banana":45} }
 Banana {"Apple":24, "Apricot":23, "Banana":47}
 Sending from Banana
-3722c3ce20c7f90c40f73cc97e43e4a6733119b8 { Banana-main_coeff_48_LARGEST_COEFF=6 , Banana-main_coeff_48_SIZEOFINT=4 , Banana-main_coeff_48_addr= , Banana-main_coeff_48_buf= , Banana-main_coeff_48_coeff=0 , Banana-main_coeff_48_conn= , Banana-main_coeff_48_conn2= , Banana-main_coeff_48_term1=0 , Banana-main_coeff_48_term2=0 ,  } { {"Apple":24, "Apricot":23, "Banana":46} }
 Banana {"Apple":24, "Apricot":25, "Banana":48}
 Received on Banana
-36b939fbee1a1ccbf5e3668e522778080696d015 { Banana-main_coeff_61_LARGEST_COEFF=6 , Banana-main_coeff_61_SIZEOFINT=4 , Banana-main_coeff_61_addr= , Banana-main_coeff_61_buf= , Banana-main_coeff_61_coeff=3 , Banana-main_coeff_61_conn= , Banana-main_coeff_61_conn2= , Banana-main_coeff_61_term1=11 , Banana-main_coeff_61_term2=37 ,  } { {"Apple":24, "Apricot":23, "Banana":47} }
 Banana {"Apple":24, "Apricot":25, "Banana":49}
 Sending from Banana
-673170285a4e9b093ee4775bf5033951413af8a0 { Banana-main_coeff_65_LARGEST_COEFF=6 , Banana-main_coeff_65_SIZEOFINT=4 , Banana-main_coeff_65_addr= , Banana-main_coeff_65_buf= , Banana-main_coeff_65_coeff=3 , Banana-main_coeff_65_conn= , Banana-main_coeff_65_conn2= , Banana-main_coeff_65_term1=11 , Banana-main_coeff_65_term2=37 ,  } { {"Apple":24, "Apricot":25, "Banana":48} }
 Banana {"Apple":26, "Apricot":25, "Banana":50}
 Received on Banana
-f128bd1839aaa9d5afd990a4316d1d12344417a5 { Banana-main_coeff_75_LARGEST_COEFF=6 , Banana-main_coeff_75_SIZEOFINT=4 , Banana-main_coeff_75_addr= , Banana-main_coeff_75_buf= , Banana-main_coeff_75_coeff=3 , Banana-main_coeff_75_conn= , Banana-main_coeff_75_conn2= , Banana-main_coeff_75_term1=11 , Banana-main_coeff_75_term2=37 ,  } { {"Apple":24, "Apricot":25, "Banana":49} }
 Banana {"Apple":26, "Apricot":25, "Banana":51}
 Sending from Banana
-3722c3ce20c7f90c40f73cc97e43e4a6733119b8 { Banana-main_coeff_48_LARGEST_COEFF=6 , Banana-main_coeff_48_SIZEOFINT=4 , Banana-main_coeff_48_addr= , Banana-main_coeff_48_buf= , Banana-main_coeff_48_coeff=0 , Banana-main_coeff_48_conn= , Banana-main_coeff_48_conn2= , Banana-main_coeff_48_term1=0 , Banana-main_coeff_48_term2=0 ,  } { {"Apple":26, "Apricot":25, "Banana":50} }
 Banana {"Apple":26, "Apricot":27, "Banana":52}
 Received on Banana
-36b939fbee1a1ccbf5e3668e522778080696d015 { Banana-main_coeff_61_LARGEST_COEFF=6 , Banana-main_coeff_61_SIZEOFINT=4 , Banana-main_coeff_61_addr= , Banana-main_coeff_61_buf= , Banana-main_coeff_61_coeff=4 , Banana-main_coeff_61_conn= , Banana-main_coeff_61_conn2= , Banana-main_coeff_61_term1=78 , Banana-main_coeff_61_term2=9 ,  } { {"Apple":26, "Apricot":25, "Banana":51} }
 Banana {"Apple":26, "Apricot":27, "Banana":53}
 Sending from Banana
-673170285a4e9b093ee4775bf5033951413af8a0 { Banana-main_coeff_65_LARGEST_COEFF=6 , Banana-main_coeff_65_SIZEOFINT=4 , Banana-main_coeff_65_addr= , Banana-main_coeff_65_buf= , Banana-main_coeff_65_coeff=4 , Banana-main_coeff_65_conn= , Banana-main_coeff_65_conn2= , Banana-main_coeff_65_term1=78 , Banana-main_coeff_65_term2=9 ,  } { {"Apple":26, "Apricot":27, "Banana":52} }
 Banana {"Apple":28, "Apricot":27, "Banana":54}
 Received on Banana
-f128bd1839aaa9d5afd990a4316d1d12344417a5 { Banana-main_coeff_75_LARGEST_COEFF=6 , Banana-main_coeff_75_SIZEOFINT=4 , Banana-main_coeff_75_addr= , Banana-main_coeff_75_buf= , Banana-main_coeff_75_coeff=4 , Banana-main_coeff_75_conn= , Banana-main_coeff_75_conn2= , Banana-main_coeff_75_term1=78 , Banana-main_coeff_75_term2=9 ,  } { {"Apple":26, "Apricot":27, "Banana":53} }
 Banana {"Apple":28, "Apricot":27, "Banana":55}
 Sending from Banana
-3722c3ce20c7f90c40f73cc97e43e4a6733119b8 { Banana-main_coeff_48_LARGEST_COEFF=6 , Banana-main_coeff_48_SIZEOFINT=4 , Banana-main_coeff_48_addr= , Banana-main_coeff_48_buf= , Banana-main_coeff_48_coeff=0 , Banana-main_coeff_48_conn= , Banana-main_coeff_48_conn2= , Banana-main_coeff_48_term1=0 , Banana-main_coeff_48_term2=0 ,  } { {"Apple":28, "Apricot":27, "Banana":54} }
 Banana {"Apple":28, "Apricot":29, "Banana":56}
 Received on Banana
-36b939fbee1a1ccbf5e3668e522778080696d015 { Banana-main_coeff_61_LARGEST_COEFF=6 , Banana-main_coeff_61_SIZEOFINT=4 , Banana-main_coeff_61_addr= , Banana-main_coeff_61_buf= , Banana-main_coeff_61_coeff=0 , Banana-main_coeff_61_conn= , Banana-main_coeff_61_conn2= , Banana-main_coeff_61_term1=72 , Banana-main_coeff_61_term2=50 ,  } { {"Apple":28, "Apricot":27, "Banana":55} }
 Banana {"Apple":28, "Apricot":29, "Banana":57}
 Sending from Banana
-673170285a4e9b093ee4775bf5033951413af8a0 { Banana-main_coeff_65_LARGEST_COEFF=6 , Banana-main_coeff_65_SIZEOFINT=4 , Banana-main_coeff_65_addr= , Banana-main_coeff_65_buf= , Banana-main_coeff_65_coeff=0 , Banana-main_coeff_65_conn= , Banana-main_coeff_65_conn2= , Banana-main_coeff_65_term1=72 , Banana-main_coeff_65_term2=50 ,  } { {"Apple":28, "Apricot":29, "Banana":56} }
 Banana {"Apple":30, "Apricot":29, "Banana":58}
 Received on Banana
-f128bd1839aaa9d5afd990a4316d1d12344417a5 { Banana-main_coeff_75_LARGEST_COEFF=6 , Banana-main_coeff_75_SIZEOFINT=4 , Banana-main_coeff_75_addr= , Banana-main_coeff_75_buf= , Banana-main_coeff_75_coeff=0 , Banana-main_coeff_75_conn= , Banana-main_coeff_75_conn2= , Banana-main_coeff_75_term1=72 , Banana-main_coeff_75_term2=50 ,  } { {"Apple":28, "Apricot":29, "Banana":57} }
 Banana {"Apple":30, "Apricot":29, "Banana":59}
 Sending from Banana
-3722c3ce20c7f90c40f73cc97e43e4a6733119b8 { Banana-main_coeff_48_LARGEST_COEFF=6 , Banana-main_coeff_48_SIZEOFINT=4 , Banana-main_coeff_48_addr= , Banana-main_coeff_48_buf= , Banana-main_coeff_48_coeff=0 , Banana-main_coeff_48_conn= , Banana-main_coeff_48_conn2= , Banana-main_coeff_48_term1=0 , Banana-main_coeff_48_term2=0 ,  } { {"Apple":30, "Apricot":29, "Banana":58} }
 Banana {"Apple":30, "Apricot":31, "Banana":60}
 Received on Banana
-36b939fbee1a1ccbf5e3668e522778080696d015 { Banana-main_coeff_61_LARGEST_COEFF=6 , Banana-main_coeff_61_SIZEOFINT=4 , Banana-main_coeff_61_addr= , Banana-main_coeff_61_buf= , Banana-main_coeff_61_coeff=5 , Banana-main_coeff_61_conn= , Banana-main_coeff_61_conn2= , Banana-main_coeff_61_term1=88 , Banana-main_coeff_61_term2=71 ,  } { {"Apple":30, "Apricot":29, "Banana":59} }
 Banana {"Apple":30, "Apricot":31, "Banana":61}
 Sending from Banana
-673170285a4e9b093ee4775bf5033951413af8a0 { Banana-main_coeff_65_LARGEST_COEFF=6 , Banana-main_coeff_65_SIZEOFINT=4 , Banana-main_coeff_65_addr= , Banana-main_coeff_65_buf= , Banana-main_coeff_65_coeff=5 , Banana-main_coeff_65_conn= , Banana-main_coeff_65_conn2= , Banana-main_coeff_65_term1=88 , Banana-main_coeff_65_term2=71 ,  } { {"Apple":30, "Apricot":31, "Banana":60} }
 Banana {"Apple":32, "Apricot":31, "Banana":62}
 Received on Banana
-f128bd1839aaa9d5afd990a4316d1d12344417a5 { Banana-main_coeff_75_LARGEST_COEFF=6 , Banana-main_coeff_75_SIZEOFINT=4 , Banana-main_coeff_75_addr= , Banana-main_coeff_75_buf= , Banana-main_coeff_75_coeff=5 , Banana-main_coeff_75_conn= , Banana-main_coeff_75_conn2= , Banana-main_coeff_75_term1=88 , Banana-main_coeff_75_term2=71 ,  } { {"Apple":30, "Apricot":31, "Banana":61} }
 Banana {"Apple":32, "Apricot":31, "Banana":63}
 Sending from Banana
-3722c3ce20c7f90c40f73cc97e43e4a6733119b8 { Banana-main_coeff_48_LARGEST_COEFF=6 , Banana-main_coeff_48_SIZEOFINT=4 , Banana-main_coeff_48_addr= , Banana-main_coeff_48_buf= , Banana-main_coeff_48_coeff=0 , Banana-main_coeff_48_conn= , Banana-main_coeff_48_conn2= , Banana-main_coeff_48_term1=0 , Banana-main_coeff_48_term2=0 ,  } { {"Apple":32, "Apricot":31, "Banana":62} }
 Banana {"Apple":32, "Apricot":33, "Banana":64}
 Received on Banana
-36b939fbee1a1ccbf5e3668e522778080696d015 { Banana-main_coeff_61_LARGEST_COEFF=6 , Banana-main_coeff_61_SIZEOFINT=4 , Banana-main_coeff_61_addr= , Banana-main_coeff_61_buf= , Banana-main_coeff_61_coeff=5 , Banana-main_coeff_61_conn= , Banana-main_coeff_61_conn2= , Banana-main_coeff_61_term1=44 , Banana-main_coeff_61_term2=43 ,  } { {"Apple":32, "Apricot":31, "Banana":63} }
 Banana {"Apple":32, "Apricot":33, "Banana":65}
 Sending from Banana
-673170285a4e9b093ee4775bf5033951413af8a0 { Banana-main_coeff_65_LARGEST_COEFF=6 , Banana-main_coeff_65_SIZEOFINT=4 , Banana-main_coeff_65_addr= , Banana-main_coeff_65_buf= , Banana-main_coeff_65_coeff=5 , Banana-main_coeff_65_conn= , Banana-main_coeff_65_conn2= , Banana-main_coeff_65_term1=44 , Banana-main_coeff_65_term2=43 ,  } { {"Apple":32, "Apricot":33, "Banana":64} }
 Banana {"Apple":34, "Apricot":33, "Banana":66}
 Received on Banana
-f128bd1839aaa9d5afd990a4316d1d12344417a5 { Banana-main_coeff_75_LARGEST_COEFF=6 , Banana-main_coeff_75_SIZEOFINT=4 , Banana-main_coeff_75_addr= , Banana-main_coeff_75_buf= , Banana-main_coeff_75_coeff=5 , Banana-main_coeff_75_conn= , Banana-main_coeff_75_conn2= , Banana-main_coeff_75_term1=44 , Banana-main_coeff_75_term2=43 ,  } { {"Apple":32, "Apricot":33, "Banana":65} }
 Banana {"Apple":34, "Apricot":33, "Banana":67}
 Sending from Banana
-3722c3ce20c7f90c40f73cc97e43e4a6733119b8 { Banana-main_coeff_48_LARGEST_COEFF=6 , Banana-main_coeff_48_SIZEOFINT=4 , Banana-main_coeff_48_addr= , Banana-main_coeff_48_buf= , Banana-main_coeff_48_coeff=0 , Banana-main_coeff_48_conn= , Banana-main_coeff_48_conn2= , Banana-main_coeff_48_term1=0 , Banana-main_coeff_48_term2=0 ,  } { {"Apple":34, "Apricot":33, "Banana":66} }
 Banana {"Apple":34, "Apricot":35, "Banana":68}
 Received on Banana
-36b939fbee1a1ccbf5e3668e522778080696d015 { Banana-main_coeff_61_LARGEST_COEFF=6 , Banana-main_coeff_61_SIZEOFINT=4 , Banana-main_coeff_61_addr= , Banana-main_coeff_61_buf= , Banana-main_coeff_61_coeff=2 , Banana-main_coeff_61_conn= , Banana-main_coeff_61_conn2= , Banana-main_coeff_61_term1=23 , Banana-main_coeff_61_term2=59 ,  } { {"Apple":34, "Apricot":33, "Banana":67} }
 Banana {"Apple":34, "Apricot":35, "Banana":69}
 Sending from Banana
-673170285a4e9b093ee4775bf5033951413af8a0 { Banana-main_coeff_65_LARGEST_COEFF=6 , Banana-main_coeff_65_SIZEOFINT=4 , Banana-main_coeff_65_addr= , Banana-main_coeff_65_buf= , Banana-main_coeff_65_coeff=2 , Banana-main_coeff_65_conn= , Banana-main_coeff_65_conn2= , Banana-main_coeff_65_term1=23 , Banana-main_coeff_65_term2=59 ,  } { {"Apple":34, "Apricot":35, "Banana":68} }
 Banana {"Apple":36, "Apricot":35, "Banana":70}
 Received on Banana
-f128bd1839aaa9d5afd990a4316d1d12344417a5 { Banana-main_coeff_75_LARGEST_COEFF=6 , Banana-main_coeff_75_SIZEOFINT=4 , Banana-main_coeff_75_addr= , Banana-main_coeff_75_buf= , Banana-main_coeff_75_coeff=2 , Banana-main_coeff_75_conn= , Banana-main_coeff_75_conn2= , Banana-main_coeff_75_term1=23 , Banana-main_coeff_75_term2=59 ,  } { {"Apple":34, "Apricot":35, "Banana":69} }
 Banana {"Apple":36, "Apricot":35, "Banana":71}
 Sending from Banana
-3722c3ce20c7f90c40f73cc97e43e4a6733119b8 { Banana-main_coeff_48_LARGEST_COEFF=6 , Banana-main_coeff_48_SIZEOFINT=4 , Banana-main_coeff_48_addr= , Banana-main_coeff_48_buf= , Banana-main_coeff_48_coeff=0 , Banana-main_coeff_48_conn= , Banana-main_coeff_48_conn2= , Banana-main_coeff_48_term1=0 , Banana-main_coeff_48_term2=0 ,  } { {"Apple":36, "Apricot":35, "Banana":70} }
 Banana {"Apple":36, "Apricot":37, "Banana":72}
 Received on Banana
-36b939fbee1a1ccbf5e3668e522778080696d015 { Banana-main_coeff_61_LARGEST_COEFF=6 , Banana-main_coeff_61_SIZEOFINT=4 , Banana-main_coeff_61_addr= , Banana-main_coeff_61_buf= , Banana-main_coeff_61_coeff=1 , Banana-main_coeff_61_conn= , Banana-main_coeff_61_conn2= , Banana-main_coeff_61_term1=3 , Banana-main_coeff_61_term2=39 ,  } { {"Apple":36, "Apricot":35, "Banana":71} }
 Banana {"Apple":36, "Apricot":37, "Banana":73}
 Sending from Banana
-673170285a4e9b093ee4775bf5033951413af8a0 { Banana-main_coeff_65_LARGEST_COEFF=6 , Banana-main_coeff_65_SIZEOFINT=4 , Banana-main_coeff_65_addr= , Banana-main_coeff_65_buf= , Banana-main_coeff_65_coeff=1 , Banana-main_coeff_65_conn= , Banana-main_coeff_65_conn2= , Banana-main_coeff_65_term1=3 , Banana-main_coeff_65_term2=39 ,  } { {"Apple":36, "Apricot":37, "Banana":72} }
 Banana {"Apple":38, "Apricot":37, "Banana":74}
 Received on Banana
-f128bd1839aaa9d5afd990a4316d1d12344417a5 { Banana-main_coeff_75_LARGEST_COEFF=6 , Banana-main_coeff_75_SIZEOFINT=4 , Banana-main_coeff_75_addr= , Banana-main_coeff_75_buf= , Banana-main_coeff_75_coeff=1 , Banana-main_coeff_75_conn= , Banana-main_coeff_75_conn2= , Banana-main_coeff_75_term1=3 , Banana-main_coeff_75_term2=39 ,  } { {"Apple":36, "Apricot":37, "Banana":73} }
 Banana {"Apple":38, "Apricot":37, "Banana":75}
 Sending from Banana
-3722c3ce20c7f90c40f73cc97e43e4a6733119b8 { Banana-main_coeff_48_LARGEST_COEFF=6 , Banana-main_coeff_48_SIZEOFINT=4 , Banana-main_coeff_48_addr= , Banana-main_coeff_48_buf= , Banana-main_coeff_48_coeff=0 , Banana-main_coeff_48_conn= , Banana-main_coeff_48_conn2= , Banana-main_coeff_48_term1=0 , Banana-main_coeff_48_term2=0 ,  } { {"Apple":38, "Apricot":37, "Banana":74} }
 Banana {"Apple":38, "Apricot":39, "Banana":76}
 Received on Banana
-36b939fbee1a1ccbf5e3668e522778080696d015 { Banana-main_coeff_61_LARGEST_COEFF=6 , Banana-main_coeff_61_SIZEOFINT=4 , Banana-main_coeff_61_addr= , Banana-main_coeff_61_buf= , Banana-main_coeff_61_coeff=2 , Banana-main_coeff_61_conn= , Banana-main_coeff_61_conn2= , Banana-main_coeff_61_term1=83 , Banana-main_coeff_61_term2=7 ,  } { {"Apple":38, "Apricot":37, "Banana":75} }
 Banana {"Apple":38, "Apricot":39, "Banana":77}
 Sending from Banana
-673170285a4e9b093ee4775bf5033951413af8a0 { Banana-main_coeff_65_LARGEST_COEFF=6 , Banana-main_coeff_65_SIZEOFINT=4 , Banana-main_coeff_65_addr= , Banana-main_coeff_65_buf= , Banana-main_coeff_65_coeff=2 , Banana-main_coeff_65_conn= , Banana-main_coeff_65_conn2= , Banana-main_coeff_65_term1=83 , Banana-main_coeff_65_term2=7 ,  } { {"Apple":38, "Apricot":39, "Banana":76} }
 Banana {"Apple":40, "Apricot":39, "Banana":78}
 Received on Banana
-f128bd1839aaa9d5afd990a4316d1d12344417a5 { Banana-main_coeff_75_LARGEST_COEFF=6 , Banana-main_coeff_75_SIZEOFINT=4 , Banana-main_coeff_75_addr= , Banana-main_coeff_75_buf= , Banana-main_coeff_75_coeff=2 , Banana-main_coeff_75_conn= , Banana-main_coeff_75_conn2= , Banana-main_coeff_75_term1=83 , Banana-main_coeff_75_term2=7 ,  } { {"Apple":38, "Apricot":39, "Banana":77} }
 Banana {"Apple":40, "Apricot":39, "Banana":79}
 Sending from Banana
-3722c3ce20c7f90c40f73cc97e43e4a6733119b8 { Banana-main_coeff_48_LARGEST_COEFF=6 , Banana-main_coeff_48_SIZEOFINT=4 , Banana-main_coeff_48_addr= , Banana-main_coeff_48_buf= , Banana-main_coeff_48_coeff=0 , Banana-main_coeff_48_conn= , Banana-main_coeff_48_conn2= , Banana-main_coeff_48_term1=0 , Banana-main_coeff_48_term2=0 ,  } { {"Apple":40, "Apricot":39, "Banana":78} }
 Banana {"Apple":40, "Apricot":41, "Banana":80}
 Received on Banana
-36b939fbee1a1ccbf5e3668e522778080696d015 { Banana-main_coeff_61_LARGEST_COEFF=6 , Banana-main_coeff_61_SIZEOFINT=4 , Banana-main_coeff_61_addr= , Banana-main_coeff_61_buf= , Banana-main_coeff_61_coeff=3 , Banana-main_coeff_61_conn= , Banana-main_coeff_61_conn2= , Banana-main_coeff_61_term1=32 , Banana-main_coeff_61_term2=80 ,  } { {"Apple":40, "Apricot":39, "Banana":79} }
 Banana {"Apple":40, "Apricot":41, "Banana":81}
 Sending from Banana
-673170285a4e9b093ee4775bf5033951413af8a0 { Banana-main_coeff_65_LARGEST_COEFF=6 , Banana-main_coeff_65_SIZEOFINT=4 , Banana-main_coeff_65_addr= , Banana-main_coeff_65_buf= , Banana-main_coeff_65_coeff=3 , Banana-main_coeff_65_conn= , Banana-main_coeff_65_conn2= , Banana-main_coeff_65_term1=32 , Banana-main_coeff_65_term2=80 ,  } { {"Apple":40, "Apricot":41, "Banana":80} }
 Banana {"Apple":42, "Apricot":41, "Banana":82}
 Received on Banana
-f128bd1839aaa9d5afd990a4316d1d12344417a5 { Banana-main_coeff_75_LARGEST_COEFF=6 , Banana-main_coeff_75_SIZEOFINT=4 , Banana-main_coeff_75_addr= , Banana-main_coeff_75_buf= , Banana-main_coeff_75_coeff=3 , Banana-main_coeff_75_conn= , Banana-main_coeff_75_conn2= , Banana-main_coeff_75_term1=32 , Banana-main_coeff_75_term2=80 ,  } { {"Apple":40, "Apricot":41, "Banana":81} }
 Banana {"Apple":42, "Apricot":41, "Banana":83}
 Sending from Banana
-3722c3ce20c7f90c40f73cc97e43e4a6733119b8 { Banana-main_coeff_48_LARGEST_COEFF=6 , Banana-main_coeff_48_SIZEOFINT=4 , Banana-main_coeff_48_addr= , Banana-main_coeff_48_buf= , Banana-main_coeff_48_coeff=0 , Banana-main_coeff_48_conn= , Banana-main_coeff_48_conn2= , Banana-main_coeff_48_term1=0 , Banana-main_coeff_48_term2=0 ,  } { {"Apple":42, "Apricot":41, "Banana":82} }
 Banana {"Apple":42, "Apricot":43, "Banana":84}
 Received on Banana
-36b939fbee1a1ccbf5e3668e522778080696d015 { Banana-main_coeff_61_LARGEST_COEFF=6 , Banana-main_coeff_61_SIZEOFINT=4 , Banana-main_coeff_61_addr= , Banana-main_coeff_61_buf= , Banana-main_coeff_61_coeff=5 , Banana-main_coeff_61_conn= , Banana-main_coeff_61_conn2= , Banana-main_coeff_61_term1=15 , Banana-main_coeff_61_term2=16 ,  } { {"Apple":42, "Apricot":41, "Banana":83} }
 Banana {"Apple":42, "Apricot":43, "Banana":85}
 Sending from Banana
-673170285a4e9b093ee4775bf5033951413af8a0 { Banana-main_coeff_65_LARGEST_COEFF=6 , Banana-main_coeff_65_SIZEOFINT=4 , Banana-main_coeff_65_addr= , Banana-main_coeff_65_buf= , Banana-main_coeff_65_coeff=5 , Banana-main_coeff_65_conn= , Banana-main_coeff_65_conn2= , Banana-main_coeff_65_term1=15 , Banana-main_coeff_65_term2=16 ,  } { {"Apple":42, "Apricot":43, "Banana":84} }
 Banana {"Apple":44, "Apricot":43, "Banana":86}
 Received on Banana
-f128bd1839aaa9d5afd990a4316d1d12344417a5 { Banana-main_coeff_75_LARGEST_COEFF=6 , Banana-main_coeff_75_SIZEOFINT=4 , Banana-main_coeff_75_addr= , Banana-main_coeff_75_buf= , Banana-main_coeff_75_coeff=5 , Banana-main_coeff_75_conn= , Banana-main_coeff_75_conn2= , Banana-main_coeff_75_term1=15 , Banana-main_coeff_75_term2=16 ,  } { {"Apple":42, "Apricot":43, "Banana":85} }
 Banana {"Apple":44, "Apricot":43, "Banana":87}
 Sending from Banana
-3722c3ce20c7f90c40f73cc97e43e4a6733119b8 { Banana-main_coeff_48_LARGEST_COEFF=6 , Banana-main_coeff_48_SIZEOFINT=4 , Banana-main_coeff_48_addr= , Banana-main_coeff_48_buf= , Banana-main_coeff_48_coeff=0 , Banana-main_coeff_48_conn= , Banana-main_coeff_48_conn2= , Banana-main_coeff_48_term1=0 , Banana-main_coeff_48_term2=0 ,  } { {"Apple":44, "Apricot":43, "Banana":86} }
 Banana {"Apple":44, "Apricot":45, "Banana":88}
 Received on Banana
-36b939fbee1a1ccbf5e3668e522778080696d015 { Banana-main_coeff_61_LARGEST_COEFF=6 , Banana-main_coeff_61_SIZEOFINT=4 , Banana-main_coeff_61_addr= , Banana-main_coeff_61_buf= , Banana-main_coeff_61_coeff=2 , Banana-main_coeff_61_conn= , Banana-main_coeff_61_conn2= , Banana-main_coeff_61_term1=20 , Banana-main_coeff_61_term2=71 ,  } { {"Apple":44, "Apricot":43, "Banana":87} }
 Banana {"Apple":44, "Apricot":45, "Banana":89}
 Sending from Banana
-673170285a4e9b093ee4775bf5033951413af8a0 { Banana-main_coeff_65_LARGEST_COEFF=6 , Banana-main_coeff_65_SIZEOFINT=4 , Banana-main_coeff_65_addr= , Banana-main_coeff_65_buf= , Banana-main_coeff_65_coeff=2 , Banana-main_coeff_65_conn= , Banana-main_coeff_65_conn2= , Banana-main_coeff_65_term1=20 , Banana-main_coeff_65_term2=71 ,  } { {"Apple":44, "Apricot":45, "Banana":88} }
 Banana {"Apple":46, "Apricot":45, "Banana":90}
 Received on Banana
-f128bd1839aaa9d5afd990a4316d1d12344417a5 { Banana-main_coeff_75_LARGEST_COEFF=6 , Banana-main_coeff_75_SIZEOFINT=4 , Banana-main_coeff_75_addr= , Banana-main_coeff_75_buf= , Banana-main_coeff_75_coeff=2 , Banana-main_coeff_75_conn= , Banana-main_coeff_75_conn2= , Banana-main_coeff_75_term1=20 , Banana-main_coeff_75_term2=71 ,  } { {"Apple":44, "Apricot":45, "Banana":89} }
 Banana {"Apple":46, "Apricot":45, "Banana":91}
 Sending from Banana
-3722c3ce20c7f90c40f73cc97e43e4a6733119b8 { Banana-main_coeff_48_LARGEST_COEFF=6 , Banana-main_coeff_48_SIZEOFINT=4 , Banana-main_coeff_48_addr= , Banana-main_coeff_48_buf= , Banana-main_coeff_48_coeff=0 , Banana-main_coeff_48_conn= , Banana-main_coeff_48_conn2= , Banana-main_coeff_48_term1=0 , Banana-main_coeff_48_term2=0 ,  } { {"Apple":46, "Apricot":45, "Banana":90} }
 Banana {"Apple":46, "Apricot":47, "Banana":92}
 Received on Banana
-36b939fbee1a1ccbf5e3668e522778080696d015 { Banana-main_coeff_61_LARGEST_COEFF=6 , Banana-main_coeff_61_SIZEOFINT=4 , Banana-main_coeff_61_addr= , Banana-main_coeff_61_buf= , Banana-main_coeff_61_coeff=3 , Banana-main_coeff_61_conn= , Banana-main_coeff_61_conn2= , Banana-main_coeff_61_term1=52 , Banana-main_coeff_61_term2=7 ,  } { {"Apple":46, "Apricot":45, "Banana":91} }
 Banana {"Apple":46, "Apricot":47, "Banana":93}
 Sending from Banana
-673170285a4e9b093ee4775bf5033951413af8a0 { Banana-main_coeff_65_LARGEST_COEFF=6 , Banana-main_coeff_65_SIZEOFINT=4 , Banana-main_coeff_65_addr= , Banana-main_coeff_65_buf= , Banana-main_coeff_65_coeff=3 , Banana-main_coeff_65_conn= , Banana-main_coeff_65_conn2= , Banana-main_coeff_65_term1=52 , Banana-main_coeff_65_term2=7 ,  } { {"Apple":46, "Apricot":47, "Banana":92} }
 Banana {"Apple":48, "Apricot":47, "Banana":94}
 Received on Banana
-f128bd1839aaa9d5afd990a4316d1d12344417a5 { Banana-main_coeff_75_LARGEST_COEFF=6 , Banana-main_coeff_75_SIZEOFINT=4 , Banana-main_coeff_75_addr= , Banana-main_coeff_75_buf= , Banana-main_coeff_75_coeff=3 , Banana-main_coeff_75_conn= , Banana-main_coeff_75_conn2= , Banana-main_coeff_75_term1=52 , Banana-main_coeff_75_term2=7 ,  } { {"Apple":46, "Apricot":47, "Banana":93} }
 Banana {"Apple":48, "Apricot":47, "Banana":95}
 Sending from Banana
-3722c3ce20c7f90c40f73cc97e43e4a6733119b8 { Banana-main_coeff_48_LARGEST_COEFF=6 , Banana-main_coeff_48_SIZEOFINT=4 , Banana-main_coeff_48_addr= , Banana-main_coeff_48_buf= , Banana-main_coeff_48_coeff=0 , Banana-main_coeff_48_conn= , Banana-main_coeff_48_conn2= , Banana-main_coeff_48_term1=0 , Banana-main_coeff_48_term2=0 ,  } { {"Apple":48, "Apricot":47, "Banana":94} }
 Banana {"Apple":48, "Apricot":49, "Banana":96}
 Received on Banana
-36b939fbee1a1ccbf5e3668e522778080696d015 { Banana-main_coeff_61_LARGEST_COEFF=6 , Banana-main_coeff_61_SIZEOFINT=4 , Banana-main_coeff_61_addr= , Banana-main_coeff_61_buf= , Banana-main_coeff_61_coeff=1 , Banana-main_coeff_61_conn= , Banana-main_coeff_61_conn2= , Banana-main_coeff_61_term1=19 , Banana-main_coeff_61_term2=62 ,  } { {"Apple":48, "Apricot":47, "Banana":95} }
 Banana {"Apple":48, "Apricot":49, "Banana":97}
 Sending from Banana
-673170285a4e9b093ee4775bf5033951413af8a0 { Banana-main_coeff_65_LARGEST_COEFF=6 , Banana-main_coeff_65_SIZEOFINT=4 , Banana-main_coeff_65_addr= , Banana-main_coeff_65_buf= , Banana-main_coeff_65_coeff=1 , Banana-main_coeff_65_conn= , Banana-main_coeff_65_conn2= , Banana-main_coeff_65_term1=19 , Banana-main_coeff_65_term2=62 ,  } { {"Apple":48, "Apricot":49, "Banana":96} }
 Banana {"Apple":50, "Apricot":49, "Banana":98}
 Received on Banana
-f128bd1839aaa9d5afd990a4316d1d12344417a5 { Banana-main_coeff_75_LARGEST_COEFF=6 , Banana-main_coeff_75_SIZEOFINT=4 , Banana-main_coeff_75_addr= , Banana-main_coeff_75_buf= , Banana-main_coeff_75_coeff=1 , Banana-main_coeff_75_conn= , Banana-main_coeff_75_conn2= , Banana-main_coeff_75_term1=19 , Banana-main_coeff_75_term2=62 ,  } { {"Apple":48, "Apricot":49, "Banana":97} }
 Banana {"Apple":50, "Apricot":49, "Banana":99}
 Sending from Banana
-3722c3ce20c7f90c40f73cc97e43e4a6733119b8 { Banana-main_coeff_48_LARGEST_COEFF=6 , Banana-main_coeff_48_SIZEOFINT=4 , Banana-main_coeff_48_addr= , Banana-main_coeff_48_buf= , Banana-main_coeff_48_coeff=0 , Banana-main_coeff_48_conn= , Banana-main_coeff_48_conn2= , Banana-main_coeff_48_term1=0 , Banana-main_coeff_48_term2=0 ,  } { {"Apple":50, "Apricot":49, "Banana":98} }
 Banana {"Apple":50, "Apricot":51, "Banana":100}
 Received on Banana
-36b939fbee1a1ccbf5e3668e522778080696d015 { Banana-main_coeff_61_LARGEST_COEFF=6 , Banana-main_coeff_61_SIZEOFINT=4 , Banana-main_coeff_61_addr= , Banana-main_coeff_61_buf= , Banana-main_coeff_61_coeff=4 , Banana-main_coeff_61_conn= , Banana-main_coeff_61_conn2= , Banana-main_coeff_61_term1=10 , Banana-main_coeff_61_term2=97 ,  } { {"Apple":50, "Apricot":49, "Banana":99} }
 Banana {"Apple":50, "Apricot":51, "Banana":101}
 Sending from Banana
-673170285a4e9b093ee4775bf5033951413af8a0 { Banana-main_coeff_65_LARGEST_COEFF=6 , Banana-main_coeff_65_SIZEOFINT=4 , Banana-main_coeff_65_addr= , Banana-main_coeff_65_buf= , Banana-main_coeff_65_coeff=4 , Banana-main_coeff_65_conn= , Banana-main_coeff_65_conn2= , Banana-main_coeff_65_term1=10 , Banana-main_coeff_65_term2=97 ,  } { {"Apple":50, "Apricot":51, "Banana":100} }
 Banana {"Apple":52, "Apricot":51, "Banana":102}
 Received on Banana
-f128bd1839aaa9d5afd990a4316d1d12344417a5 { Banana-main_coeff_75_LARGEST_COEFF=6 , Banana-main_coeff_75_SIZEOFINT=4 , Banana-main_coeff_75_addr= , Banana-main_coeff_75_buf= , Banana-main_coeff_75_coeff=4 , Banana-main_coeff_75_conn= , Banana-main_coeff_75_conn2= , Banana-main_coeff_75_term1=10 , Banana-main_coeff_75_term2=97 ,  } { {"Apple":50, "Apricot":51, "Banana":101} }
 Banana {"Apple":52, "Apricot":51, "Banana":103}
 Sending from Banana
-3722c3ce20c7f90c40f73cc97e43e4a6733119b8 { Banana-main_coeff_48_LARGEST_COEFF=6 , Banana-main_coeff_48_SIZEOFINT=4 , Banana-main_coeff_48_addr= , Banana-main_coeff_48_buf= , Banana-main_coeff_48_coeff=0 , Banana-main_coeff_48_conn= , Banana-main_coeff_48_conn2= , Banana-main_coeff_48_term1=0 , Banana-main_coeff_48_term2=0 ,  } { {"Apple":52, "Apricot":51, "Banana":102} }
 Banana {"Apple":52, "Apricot":53, "Banana":104}
 Received on Banana
-36b939fbee1a1ccbf5e3668e522778080696d015 { Banana-main_coeff_61_LARGEST_COEFF=6 , Banana-main_coeff_61_SIZEOFINT=4 , Banana-main_coeff_61_addr= , Banana-main_coeff_61_buf= , Banana-main_coeff_61_coeff=3 , Banana-main_coeff_61_conn= , Banana-main_coeff_61_conn2= , Banana-main_coeff_61_term1=5 , Banana-main_coeff_61_term2=21 ,  } { {"Apple":52, "Apricot":51, "Banana":103} }
 Banana {"Apple":52, "Apricot":53, "Banana":105}
 Sending from Banana
-673170285a4e9b093ee4775bf5033951413af8a0 { Banana-main_coeff_65_LARGEST_COEFF=6 , Banana-main_coeff_65_SIZEOFINT=4 , Banana-main_coeff_65_addr= , Banana-main_coeff_65_buf= , Banana-main_coeff_65_coeff=3 , Banana-main_coeff_65_conn= , Banana-main_coeff_65_conn2= , Banana-main_coeff_65_term1=5 , Banana-main_coeff_65_term2=21 ,  } { {"Apple":52, "Apricot":53, "Banana":104} }
 Banana {"Apple":54, "Apricot":53, "Banana":106}
 Received on Banana
-f128bd1839aaa9d5afd990a4316d1d12344417a5 { Banana-main_coeff_75_LARGEST_COEFF=6 , Banana-main_coeff_75_SIZEOFINT=4 , Banana-main_coeff_75_addr= , Banana-main_coeff_75_buf= , Banana-main_coeff_75_coeff=3 , Banana-main_coeff_75_conn= , Banana-main_coeff_75_conn2= , Banana-main_coeff_75_term1=5 , Banana-main_coeff_75_term2=21 ,  } { {"Apple":52, "Apricot":53, "Banana":105} }
 Banana {"Apple":54, "Apricot":53, "Banana":107}
 Sending from Banana
-3722c3ce20c7f90c40f73cc97e43e4a6733119b8 { Banana-main_coeff_48_LARGEST_COEFF=6 , Banana-main_coeff_48_SIZEOFINT=4 , Banana-main_coeff_48_addr= , Banana-main_coeff_48_buf= , Banana-main_coeff_48_coeff=0 , Banana-main_coeff_48_conn= , Banana-main_coeff_48_conn2= , Banana-main_coeff_48_term1=0 , Banana-main_coeff_48_term2=0 ,  } { {"Apple":54, "Apricot":53, "Banana":106} }
 Banana {"Apple":54, "Apricot":55, "Banana":108}
 Received on Banana
-36b939fbee1a1ccbf5e3668e522778080696d015 { Banana-main_coeff_61_LARGEST_COEFF=6 , Banana-main_coeff_61_SIZEOFINT=4 , Banana-main_coeff_61_addr= , Banana-main_coeff_61_buf= , Banana-main_coeff_61_coeff=0 , Banana-main_coeff_61_conn= , Banana-main_coeff_61_conn2= , Banana-main_coeff_61_term1=17 , Banana-main_coeff_61_term2=12 ,  } { {"Apple":54, "Apricot":53, "Banana":107} }
 Banana {"Apple":54, "Apricot":55, "Banana":109}
 Sending from Banana
-673170285a4e9b093ee4775bf5033951413af8a0 { Banana-main_coeff_65_LARGEST_COEFF=6 , Banana-main_coeff_65_SIZEOFINT=4 , Banana-main_coeff_65_addr= , Banana-main_coeff_65_buf= , Banana-main_coeff_65_coeff=0 , Banana-main_coeff_65_conn= , Banana-main_coeff_65_conn2= , Banana-main_coeff_65_term1=17 , Banana-main_coeff_65_term2=12 ,  } { {"Apple":54, "Apricot":55, "Banana":108} }
 Banana {"Apple":56, "Apricot":55, "Banana":110}
 Received on Banana
-f128bd1839aaa9d5afd990a4316d1d12344417a5 { Banana-main_coeff_75_LARGEST_COEFF=6 , Banana-main_coeff_75_SIZEOFINT=4 , Banana-main_coeff_75_addr= , Banana-main_coeff_75_buf= , Banana-main_coeff_75_coeff=0 , Banana-main_coeff_75_conn= , Banana-main_coeff_75_conn2= , Banana-main_coeff_75_term1=17 , Banana-main_coeff_75_term2=12 ,  } { {"Apple":54, "Apricot":55, "Banana":109} }
 Banana {"Apple":56, "Apricot":55, "Banana":111}
 Sending from Banana
-3722c3ce20c7f90c40f73cc97e43e4a6733119b8 { Banana-main_coeff_48_LARGEST_COEFF=6 , Banana-main_coeff_48_SIZEOFINT=4 , Banana-main_coeff_48_addr= , Banana-main_coeff_48_buf= , Banana-main_coeff_48_coeff=0 , Banana-main_coeff_48_conn= , Banana-main_coeff_48_conn2= , Banana-main_coeff_48_term1=0 , Banana-main_coeff_48_term2=0 ,  } { {"Apple":56, "Apricot":55, "Banana":110} }
 Banana {"Apple":56, "Apricot":57, "Banana":112}
 Received on Banana
-36b939fbee1a1ccbf5e3668e522778080696d015 { Banana-main_coeff_61_LARGEST_COEFF=6 , Banana-main_coeff_61_SIZEOFINT=4 , Banana-main_coeff_61_addr= , Banana-main_coeff_61_buf= , Banana-main_coeff_61_coeff=4 , Banana-main_coeff_61_conn= , Banana-main_coeff_61_conn2= , Banana-main_coeff_61_term1=49 , Banana-main_coeff_61_term2=79 ,  } { {"Apple":56, "Apricot":55, "Banana":111} }
 Banana {"Apple":56, "Apricot":57, "Banana":113}
 Sending from Banana
-673170285a4e9b093ee4775bf5033951413af8a0 { Banana-main_coeff_65_LARGEST_COEFF=6 , Banana-main_coeff_65_SIZEOFINT=4 , Banana-main_coeff_65_addr= , Banana-main_coeff_65_buf= , Banana-main_coeff_65_coeff=4 , Banana-main_coeff_65_conn= , Banana-main_coeff_65_conn2= , Banana-main_coeff_65_term1=49 , Banana-main_coeff_65_term2=79 ,  } { {"Apple":56, "Apricot":57, "Banana":112} }
 Banana {"Apple":58, "Apricot":57, "Banana":114}
 Received on Banana
-f128bd1839aaa9d5afd990a4316d1d12344417a5 { Banana-main_coeff_75_LARGEST_COEFF=6 , Banana-main_coeff_75_SIZEOFINT=4 , Banana-main_coeff_75_addr= , Banana-main_coeff_75_buf= , Banana-main_coeff_75_coeff=4 , Banana-main_coeff_75_conn= , Banana-main_coeff_75_conn2= , Banana-main_coeff_75_term1=49 , Banana-main_coeff_75_term2=79 ,  } { {"Apple":56, "Apricot":57, "Banana":113} }
 Banana {"Apple":58, "Apricot":57, "Banana":115}
 Sending from Banana
-3722c3ce20c7f90c40f73cc97e43e4a6733119b8 { Banana-main_coeff_48_LARGEST_COEFF=6 , Banana-main_coeff_48_SIZEOFINT=4 , Banana-main_coeff_48_addr= , Banana-main_coeff_48_buf= , Banana-main_coeff_48_coeff=0 , Banana-main_coeff_48_conn= , Banana-main_coeff_48_conn2= , Banana-main_coeff_48_term1=0 , Banana-main_coeff_48_term2=0 ,  } { {"Apple":58, "Apricot":57, "Banana":114} }
 Banana {"Apple":58, "Apricot":59, "Banana":116}
 Received on Banana
-36b939fbee1a1ccbf5e3668e522778080696d015 { Banana-main_coeff_61_LARGEST_COEFF=6 , Banana-main_coeff_61_SIZEOFINT=4 , Banana-main_coeff_61_addr= , Banana-main_coeff_61_buf= , Banana-main_coeff_61_coeff=4 , Banana-main_coeff_61_conn= , Banana-main_coeff_61_conn2= , Banana-main_coeff_61_term1=33 , Banana-main_coeff_61_term2=25 ,  } { {"Apple":58, "Apricot":57, "Banana":115} }
 Banana {"Apple":58, "Apricot":59, "Banana":117}
 Sending from Banana
-673170285a4e9b093ee4775bf5033951413af8a0 { Banana-main_coeff_65_LARGEST_COEFF=6 , Banana-main_coeff_65_SIZEOFINT=4 , Banana-main_coeff_65_addr= , Banana-main_coeff_65_buf= , Banana-main_coeff_65_coeff=4 , Banana-main_coeff_65_conn= , Banana-main_coeff_65_conn2= , Banana-main_coeff_65_term1=33 , Banana-main_coeff_65_term2=25 ,  } { {"Apple":58, "Apricot":59, "Banana":116} }
 Banana {"Apple":60, "Apricot":59, "Banana":118}
 Received on Banana
-f128bd1839aaa9d5afd990a4316d1d12344417a5 { Banana-main_coeff_75_LARGEST_COEFF=6 , Banana-main_coeff_75_SIZEOFINT=4 , Banana-main_coeff_75_addr= , Banana-main_coeff_75_buf= , Banana-main_coeff_75_coeff=4 , Banana-main_coeff_75_conn= , Banana-main_coeff_75_conn2= , Banana-main_coeff_75_term1=33 , Banana-main_coeff_75_term2=25 ,  } { {"Apple":58, "Apricot":59, "Banana":117} }
 Banana {"Apple":60, "Apricot":59, "Banana":119}
 Sending from Banana
-3722c3ce20c7f90c40f73cc97e43e4a6733119b8 { Banana-main_coeff_48_LARGEST_COEFF=6 , Banana-main_coeff_48_SIZEOFINT=4 , Banana-main_coeff_48_addr= , Banana-main_coeff_48_buf= , Banana-main_coeff_48_coeff=0 , Banana-main_coeff_48_conn= , Banana-main_coeff_48_conn2= , Banana-main_coeff_48_term1=0 , Banana-main_coeff_48_term2=0 ,  } { {"Apple":60, "Apricot":59, "Banana":118} }
 Banana {"Apple":60, "Apricot":61, "Banana":120}
 Received on Banana
-36b939fbee1a1ccbf5e3668e522778080696d015 { Banana-main_coeff_61_LARGEST_COEFF=6 , Banana-main_coeff_61_SIZEOFINT=4 , Banana-main_coeff_61_addr= , Banana-main_coeff_61_buf= , Banana-main_coeff_61_coeff=5 , Banana-main_coeff_61_conn= , Banana-main_coeff_61_conn2= , Banana-main_coeff_61_term1=46 , Banana-main_coeff_61_term2=34 ,  } { {"Apple":60, "Apricot":59, "Banana":119} }
 Banana {"Apple":60, "Apricot":61, "Banana":121}
 Sending from Banana
-673170285a4e9b093ee4775bf5033951413af8a0 { Banana-main_coeff_65_LARGEST_COEFF=6 , Banana-main_coeff_65_SIZEOFINT=4 , Banana-main_coeff_65_addr= , Banana-main_coeff_65_buf= , Banana-main_coeff_65_coeff=5 , Banana-main_coeff_65_conn= , Banana-main_coeff_65_conn2= , Banana-main_coeff_65_term1=46 , Banana-main_coeff_65_term2=34 ,  } { {"Apple":60, "Apricot":61, "Banana":120} }
 Banana {"Apple":62, "Apricot":61, "Banana":122}
 Received on Banana
-f128bd1839aaa9d5afd990a4316d1d12344417a5 { Banana-main_coeff_75_LARGEST_COEFF=6 , Banana-main_coeff_75_SIZEOFINT=4 , Banana-main_coeff_75_addr= , Banana-main_coeff_75_buf= , Banana-main_coeff_75_coeff=5 , Banana-main_coeff_75_conn= , Banana-main_coeff_75_conn2= , Banana-main_coeff_75_term1=46 , Banana-main_coeff_75_term2=34 ,  } { {"Apple":60, "Apricot":61, "Banana":121} }
 Banana {"Apple":62, "Apricot":61, "Banana":123}
 Sending from Banana
-3722c3ce20c7f90c40f73cc97e43e4a6733119b8 { Banana-main_coeff_48_LARGEST_COEFF=6 , Banana-main_coeff_48_SIZEOFINT=4 , Banana-main_coeff_48_addr= , Banana-main_coeff_48_buf= , Banana-main_coeff_48_coeff=0 , Banana-main_coeff_48_conn= , Banana-main_coeff_48_conn2= , Banana-main_coeff_48_term1=0 , Banana-main_coeff_48_term2=0 ,  } { {"Apple":62, "Apricot":61, "Banana":122} }
 Banana {"Apple":62, "Apricot":63, "Banana":124}
 Received on Banana
-36b939fbee1a1ccbf5e3668e522778080696d015 { Banana-main_coeff_61_LARGEST_COEFF=6 , Banana-main_coeff_61_SIZEOFINT=4 , Banana-main_coeff_61_addr= , Banana-main_coeff_61_buf= , Banana-main_coeff_61_coeff=0 , Banana-main_coeff_61_conn= , Banana-main_coeff_61_conn2= , Banana-main_coeff_61_term1=18 , Banana-main_coeff_61_term2=1 ,  } { {"Apple":62, "Apricot":61, "Banana":123} }
 Banana {"Apple":62, "Apricot":63, "Banana":125}
 Sending from Banana
-673170285a4e9b093ee4775bf5033951413af8a0 { Banana-main_coeff_65_LARGEST_COEFF=6 , Banana-main_coeff_65_SIZEOFINT=4 , Banana-main_coeff_65_addr= , Banana-main_coeff_65_buf= , Banana-main_coeff_65_coeff=0 , Banana-main_coeff_65_conn= , Banana-main_coeff_65_conn2= , Banana-main_coeff_65_term1=18 , Banana-main_coeff_65_term2=1 ,  } { {"Apple":62, "Apricot":63, "Banana":124} }
 Banana {"Apple":64, "Apricot":63, "Banana":126}
 Received on Banana
-f128bd1839aaa9d5afd990a4316d1d12344417a5 { Banana-main_coeff_75_LARGEST_COEFF=6 , Banana-main_coeff_75_SIZEOFINT=4 , Banana-main_coeff_75_addr= , Banana-main_coeff_75_buf= , Banana-main_coeff_75_coeff=0 , Banana-main_coeff_75_conn= , Banana-main_coeff_75_conn2= , Banana-main_coeff_75_term1=18 , Banana-main_coeff_75_term2=1 ,  } { {"Apple":62, "Apricot":63, "Banana":125} }
 Banana {"Apple":64, "Apricot":63, "Banana":127}
 Sending from Banana
-3722c3ce20c7f90c40f73cc97e43e4a6733119b8 { Banana-main_coeff_48_LARGEST_COEFF=6 , Banana-main_coeff_48_SIZEOFINT=4 , Banana-main_coeff_48_addr= , Banana-main_coeff_48_buf= , Banana-main_coeff_48_coeff=0 , Banana-main_coeff_48_conn= , Banana-main_coeff_48_conn2= , Banana-main_coeff_48_term1=0 , Banana-main_coeff_48_term2=0 ,  } { {"Apple":64, "Apricot":63, "Banana":126} }
 Banana {"Apple":64, "Apricot":65, "Banana":128}
 Received on Banana
-36b939fbee1a1ccbf5e3668e522778080696d015 { Banana-main_coeff_61_LARGEST_COEFF=6 , Banana-main_coeff_61_SIZEOFINT=4 , Banana-main_coeff_61_addr= , Banana-main_coeff_61_buf= , Banana-main_coeff_61_coeff=5 , Banana-main_coeff_61_conn= , Banana-main_coeff_61_conn2= , Banana-main_coeff_61_term1=4 , Banana-main_coeff_61_term2=10 ,  } { {"Apple":64, "Apricot":63, "Banana":127} }
 Banana {"Apple":64, "Apricot":65, "Banana":129}
 Sending from Banana
-673170285a4e9b093ee4775bf5033951413af8a0 { Banana-main_coeff_65_LARGEST_COEFF=6 , Banana-main_coeff_65_SIZEOFINT=4 , Banana-main_coeff_65_addr= , Banana-main_coeff_65_buf= , Banana-main_coeff_65_coeff=5 , Banana-main_coeff_65_conn= , Banana-main_coeff_65_conn2= , Banana-main_coeff_65_term1=4 , Banana-main_coeff_65_term2=10 ,  } { {"Apple":64, "Apricot":65, "Banana":128} }
 Banana {"Apple":66, "Apricot":65, "Banana":130}
 Received on Banana
-f128bd1839aaa9d5afd990a4316d1d12344417a5 { Banana-main_coeff_75_LARGEST_COEFF=6 , Banana-main_coeff_75_SIZEOFINT=4 , Banana-main_coeff_75_addr= , Banana-main_coeff_75_buf= , Banana-main_coeff_75_coeff=5 , Banana-main_coeff_75_conn= , Banana-main_coeff_75_conn2= , Banana-main_coeff_75_term1=4 , Banana-main_coeff_75_term2=10 ,  } { {"Apple":64, "Apricot":65, "Banana":129} }
 Banana {"Apple":66, "Apricot":65, "Banana":131}
 Sending from Banana
-3722c3ce20c7f90c40f73cc97e43e4a6733119b8 { Banana-main_coeff_48_LARGEST_COEFF=6 , Banana-main_coeff_48_SIZEOFINT=4 , Banana-main_coeff_48_addr= , Banana-main_coeff_48_buf= , Banana-main_coeff_48_coeff=0 , Banana-main_coeff_48_conn= , Banana-main_coeff_48_conn2= , Banana-main_coeff_48_term1=0 , Banana-main_coeff_48_term2=0 ,  } { {"Apple":66, "Apricot":65, "Banana":130} }
 Banana {"Apple":66, "Apricot":67, "Banana":132}
 Received on Banana
-36b939fbee1a1ccbf5e3668e522778080696d015 { Banana-main_coeff_61_LARGEST_COEFF=6 , Banana-main_coeff_61_SIZEOFINT=4 , Banana-main_coeff_61_addr= , Banana-main_coeff_61_buf= , Banana-main_coeff_61_coeff=3 , Banana-main_coeff_61_conn= , Banana-main_coeff_61_conn2= , Banana-main_coeff_61_term1=24 , Banana-main_coeff_61_term2=17 ,  } { {"Apple":66, "Apricot":65, "Banana":131} }
 Banana {"Apple":66, "Apricot":67, "Banana":133}
 Sending from Banana
-673170285a4e9b093ee4775bf5033951413af8a0 { Banana-main_coeff_65_LARGEST_COEFF=6 , Banana-main_coeff_65_SIZEOFINT=4 , Banana-main_coeff_65_addr= , Banana-main_coeff_65_buf= , Banana-main_coeff_65_coeff=3 , Banana-main_coeff_65_conn= , Banana-main_coeff_65_conn2= , Banana-main_coeff_65_term1=24 , Banana-main_coeff_65_term2=17 ,  } { {"Apple":66, "Apricot":67, "Banana":132} }
 Banana {"Apple":68, "Apricot":67, "Banana":134}
 Received on Banana
-f128bd1839aaa9d5afd990a4316d1d12344417a5 { Banana-main_coeff_75_LARGEST_COEFF=6 , Banana-main_coeff_75_SIZEOFINT=4 , Banana-main_coeff_75_addr= , Banana-main_coeff_75_buf= , Banana-main_coeff_75_coeff=3 , Banana-main_coeff_75_conn= , Banana-main_coeff_75_conn2= , Banana-main_coeff_75_term1=24 , Banana-main_coeff_75_term2=17 ,  } { {"Apple":66, "Apricot":67, "Banana":133} }
 Banana {"Apple":68, "Apricot":67, "Banana":135}
 Sending from Banana
-3722c3ce20c7f90c40f73cc97e43e4a6733119b8 { Banana-main_coeff_48_LARGEST_COEFF=6 , Banana-main_coeff_48_SIZEOFINT=4 , Banana-main_coeff_48_addr= , Banana-main_coeff_48_buf= , Banana-main_coeff_48_coeff=0 , Banana-main_coeff_48_conn= , Banana-main_coeff_48_conn2= , Banana-main_coeff_48_term1=0 , Banana-main_coeff_48_term2=0 ,  } { {"Apple":68, "Apricot":67, "Banana":134} }
 Banana {"Apple":68, "Apricot":69, "Banana":136}
 Received on Banana
-36b939fbee1a1ccbf5e3668e522778080696d015 { Banana-main_coeff_61_LARGEST_COEFF=6 , Banana-main_coeff_61_SIZEOFINT=4 , Banana-main_coeff_61_addr= , Banana-main_coeff_61_buf= , Banana-main_coeff_61_coeff=5 , Banana-main_coeff_61_conn= , Banana-main_coeff_61_conn2= , Banana-main_coeff_61_term1=69 , Banana-main_coeff_61_term2=79 ,  } { {"Apple":68, "Apricot":67, "Banana":135} }
 Banana {"Apple":68, "Apricot":69, "Banana":137}
 Sending from Banana
-673170285a4e9b093ee4775bf5033951413af8a0 { Banana-main_coeff_65_LARGEST_COEFF=6 , Banana-main_coeff_65_SIZEOFINT=4 , Banana-main_coeff_65_addr= , Banana-main_coeff_65_buf= , Banana-main_coeff_65_coeff=5 , Banana-main_coeff_65_conn= , Banana-main_coeff_65_conn2= , Banana-main_coeff_65_term1=69 , Banana-main_coeff_65_term2=79 ,  } { {"Apple":68, "Apricot":69, "Banana":136} }
 Banana {"Apple":70, "Apricot":69, "Banana":138}
 Received on Banana
-f128bd1839aaa9d5afd990a4316d1d12344417a5 { Banana-main_coeff_75_LARGEST_COEFF=6 , Banana-main_coeff_75_SIZEOFINT=4 , Banana-main_coeff_75_addr= , Banana-main_coeff_75_buf= , Banana-main_coeff_75_coeff=5 , Banana-main_coeff_75_conn= , Banana-main_coeff_75_conn2= , Banana-main_coeff_75_term1=69 , Banana-main_coeff_75_term2=79 ,  } { {"Apple":68, "Apricot":69, "Banana":137} }
 Banana {"Apple":70, "Apricot":69, "Banana":139}
 Sending from Banana
-3722c3ce20c7f90c40f73cc97e43e4a6733119b8 { Banana-main_coeff_48_LARGEST_COEFF=6 , Banana-main_coeff_48_SIZEOFINT=4 , Banana-main_coeff_48_addr= , Banana-main_coeff_48_buf= , Banana-main_coeff_48_coeff=0 , Banana-main_coeff_48_conn= , Banana-main_coeff_48_conn2= , Banana-main_coeff_48_term1=0 , Banana-main_coeff_48_term2=0 ,  } { {"Apple":70, "Apricot":69, "Banana":138} }
 Banana {"Apple":70, "Apricot":71, "Banana":140}
 Received on Banana
-36b939fbee1a1ccbf5e3668e522778080696d015 { Banana-main_coeff_61_LARGEST_COEFF=6 , Banana-main_coeff_61_SIZEOFINT=4 , Banana-main_coeff_61_addr= , Banana-main_coeff_61_buf= , Banana-main_coeff_61_coeff=5 , Banana-main_coeff_61_conn= , Banana-main_coeff_61_conn2= , Banana-main_coeff_61_term1=69 , Banana-main_coeff_61_term2=50 ,  } { {"Apple":70, "Apricot":69, "Banana":139} }
 Banana {"Apple":70, "Apricot":71, "Banana":141}
 Sending from Banana
-673170285a4e9b093ee4775bf5033951413af8a0 { Banana-main_coeff_65_LARGEST_COEFF=6 , Banana-main_coeff_65_SIZEOFINT=4 , Banana-main_coeff_65_addr= , Banana-main_coeff_65_buf= , Banana-main_coeff_65_coeff=5 , Banana-main_coeff_65_conn= , Banana-main_coeff_65_conn2= , Banana-main_coeff_65_term1=69 , Banana-main_coeff_65_term2=50 ,  } { {"Apple":70, "Apricot":71, "Banana":140} }
 Banana {"Apple":72, "Apricot":71, "Banana":142}
 Received on Banana
-f128bd1839aaa9d5afd990a4316d1d12344417a5 { Banana-main_coeff_75_LARGEST_COEFF=6 , Banana-main_coeff_75_SIZEOFINT=4 , Banana-main_coeff_75_addr= , Banana-main_coeff_75_buf= , Banana-main_coeff_75_coeff=5 , Banana-main_coeff_75_conn= , Banana-main_coeff_75_conn2= , Banana-main_coeff_75_term1=69 , Banana-main_coeff_75_term2=50 ,  } { {"Apple":70, "Apricot":71, "Banana":141} }
 Banana {"Apple":72, "Apricot":71, "Banana":143}
 Sending from Banana
-3722c3ce20c7f90c40f73cc97e43e4a6733119b8 { Banana-main_coeff_48_LARGEST_COEFF=6 , Banana-main_coeff_48_SIZEOFINT=4 , Banana-main_coeff_48_addr= , Banana-main_coeff_48_buf= , Banana-main_coeff_48_coeff=0 , Banana-main_coeff_48_conn= , Banana-main_coeff_48_conn2= , Banana-main_coeff_48_term1=0 , Banana-main_coeff_48_term2=0 ,  } { {"Apple":72, "Apricot":71, "Banana":142} }
 Banana {"Apple":72, "Apricot":73, "Banana":144}
 Received on Banana
-36b939fbee1a1ccbf5e3668e522778080696d015 { Banana-main_coeff_61_LARGEST_COEFF=6 , Banana-main_coeff_61_SIZEOFINT=4 , Banana-main_coeff_61_addr= , Banana-main_coeff_61_buf= , Banana-main_coeff_61_coeff=1 , Banana-main_coeff_61_conn= , Banana-main_coeff_61_conn2= , Banana-main_coeff_61_term1=57 , Banana-main_coeff_61_term2=23 ,  } { {"Apple":72, "Apricot":71, "Banana":143} }
 Banana {"Apple":72, "Apricot":73, "Banana":145}
 Sending from Banana
-673170285a4e9b093ee4775bf5033951413af8a0 { Banana-main_coeff_65_LARGEST_COEFF=6 , Banana-main_coeff_65_SIZEOFINT=4 , Banana-main_coeff_65_addr= , Banana-main_coeff_65_buf= , Banana-main_coeff_65_coeff=1 , Banana-main_coeff_65_conn= , Banana-main_coeff_65_conn2= , Banana-main_coeff_65_term1=57 , Banana-main_coeff_65_term2=23 ,  } { {"Apple":72, "Apricot":73, "Banana":144} }
 Banana {"Apple":74, "Apricot":73, "Banana":146}
 Received on Banana
-f128bd1839aaa9d5afd990a4316d1d12344417a5 { Banana-main_coeff_75_LARGEST_COEFF=6 , Banana-main_coeff_75_SIZEOFINT=4 , Banana-main_coeff_75_addr= , Banana-main_coeff_75_buf= , Banana-main_coeff_75_coeff=1 , Banana-main_coeff_75_conn= , Banana-main_coeff_75_conn2= , Banana-main_coeff_75_term1=57 , Banana-main_coeff_75_term2=23 ,  } { {"Apple":72, "Apricot":73, "Banana":145} }
 Banana {"Apple":74, "Apricot":73, "Banana":147}
 Sending from Banana
-3722c3ce20c7f90c40f73cc97e43e4a6733119b8 { Banana-main_coeff_48_LARGEST_COEFF=6 , Banana-main_coeff_48_SIZEOFINT=4 , Banana-main_coeff_48_addr= , Banana-main_coeff_48_buf= , Banana-main_coeff_48_coeff=0 , Banana-main_coeff_48_conn= , Banana-main_coeff_48_conn2= , Banana-main_coeff_48_term1=0 , Banana-main_coeff_48_term2=0 ,  } { {"Apple":74, "Apricot":73, "Banana":146} }
 Banana {"Apple":74, "Apricot":75, "Banana":148}
 Received on Banana
-36b939fbee1a1ccbf5e3668e522778080696d015 { Banana-main_coeff_61_LARGEST_COEFF=6 , Banana-main_coeff_61_SIZEOFINT=4 , Banana-main_coeff_61_addr= , Banana-main_coeff_61_buf= , Banana-main_coeff_61_coeff=1 , Banana-main_coeff_61_conn= , Banana-main_coeff_61_conn2= , Banana-main_coeff_61_term1=12 , Banana-main_coeff_61_term2=2 ,  } { {"Apple":74, "Apricot":73, "Banana":147} }
 Banana {"Apple":74, "Apricot":75, "Banana":149}
 Sending from Banana
-673170285a4e9b093ee4775bf5033951413af8a0 { Banana-main_coeff_65_LARGEST_COEFF=6 , Banana-main_coeff_65_SIZEOFINT=4 , Banana-main_coeff_65_addr= , Banana-main_coeff_65_buf= , Banana-main_coeff_65_coeff=1 , Banana-main_coeff_65_conn= , Banana-main_coeff_65_conn2= , Banana-main_coeff_65_term1=12 , Banana-main_coeff_65_term2=2 ,  } { {"Apple":74, "Apricot":75, "Banana":148} }
 Banana {"Apple":76, "Apricot":75, "Banana":150}
 Received on Banana
-f128bd1839aaa9d5afd990a4316d1d12344417a5 { Banana-main_coeff_75_LARGEST_COEFF=6 , Banana-main_coeff_75_SIZEOFINT=4 , Banana-main_coeff_75_addr= , Banana-main_coeff_75_buf= , Banana-main_coeff_75_coeff=1 , Banana-main_coeff_75_conn= , Banana-main_coeff_75_conn2= , Banana-main_coeff_75_term1=12 , Banana-main_coeff_75_term2=2 ,  } { {"Apple":74, "Apricot":75, "Banana":149} }
 Banana {"Apple":76, "Apricot":75, "Banana":151}
 Sending from Banana
-3722c3ce20c7f90c40f73cc97e43e4a6733119b8 { Banana-main_coeff_48_LARGEST_COEFF=6 , Banana-main_coeff_48_SIZEOFINT=4 , Banana-main_coeff_48_addr= , Banana-main_coeff_48_buf= , Banana-main_coeff_48_coeff=0 , Banana-main_coeff_48_conn= , Banana-main_coeff_48_conn2= , Banana-main_coeff_48_term1=0 , Banana-main_coeff_48_term2=0 ,  } { {"Apple":76, "Apricot":75, "Banana":150} }
 Banana {"Apple":76, "Apricot":77, "Banana":152}
 Received on Banana
-36b939fbee1a1ccbf5e3668e522778080696d015 { Banana-main_coeff_61_LARGEST_COEFF=6 , Banana-main_coeff_61_SIZEOFINT=4 , Banana-main_coeff_61_addr= , Banana-main_coeff_61_buf= , Banana-main_coeff_61_coeff=5 , Banana-main_coeff_61_conn= , Banana-main_coeff_61_conn2= , Banana-main_coeff_61_term1=55 , Banana-main_coeff_61_term2=57 ,  } { {"Apple":76, "Apricot":75, "Banana":151} }
 Banana {"Apple":76, "Apricot":77, "Banana":153}
 Sending from Banana
-673170285a4e9b093ee4775bf5033951413af8a0 { Banana-main_coeff_65_LARGEST_COEFF=6 , Banana-main_coeff_65_SIZEOFINT=4 , Banana-main_coeff_65_addr= , Banana-main_coeff_65_buf= , Banana-main_coeff_65_coeff=5 , Banana-main_coeff_65_conn= , Banana-main_coeff_65_conn2= , Banana-main_coeff_65_term1=55 , Banana-main_coeff_65_term2=57 ,  } { {"Apple":76, "Apricot":77, "Banana":152} }
 Banana {"Apple":78, "Apricot":77, "Banana":154}
 Received on Banana
-f128bd1839aaa9d5afd990a4316d1d12344417a5 { Banana-main_coeff_75_LARGEST_COEFF=6 , Banana-main_coeff_75_SIZEOFINT=4 , Banana-main_coeff_75_addr= , Banana-main_coeff_75_buf= , Banana-main_coeff_75_coeff=5 , Banana-main_coeff_75_conn= , Banana-main_coeff_75_conn2= , Banana-main_coeff_75_term1=55 , Banana-main_coeff_75_term2=57 ,  } { {"Apple":76, "Apricot":77, "Banana":153} }
 Banana {"Apple":78, "Apricot":77, "Banana":155}
 Sending from Banana
-3722c3ce20c7f90c40f73cc97e43e4a6733119b8 { Banana-main_coeff_48_LARGEST_COEFF=6 , Banana-main_coeff_48_SIZEOFINT=4 , Banana-main_coeff_48_addr= , Banana-main_coeff_48_buf= , Banana-main_coeff_48_coeff=0 , Banana-main_coeff_48_conn= , Banana-main_coeff_48_conn2= , Banana-main_coeff_48_term1=0 , Banana-main_coeff_48_term2=0 ,  } { {"Apple":78, "Apricot":77, "Banana":154} }
 Banana {"Apple":78, "Apricot":79, "Banana":156}
 Received on Banana
-36b939fbee1a1ccbf5e3668e522778080696d015 { Banana-main_coeff_61_LARGEST_COEFF=6 , Banana-main_coeff_61_SIZEOFINT=4 , Banana-main_coeff_61_addr= , Banana-main_coeff_61_buf= , Banana-main_coeff_61_coeff=0 , Banana-main_coeff_61_conn= , Banana-main_coeff_61_conn2= , Banana-main_coeff_61_term1=43 , Banana-main_coeff_61_term2=1 ,  } { {"Apple":78, "Apricot":77, "Banana":155} }
 Banana {"Apple":78, "Apricot":79, "Banana":157}
 Sending from Banana
-673170285a4e9b093ee4775bf5033951413af8a0 { Banana-main_coeff_65_LARGEST_COEFF=6 , Banana-main_coeff_65_SIZEOFINT=4 , Banana-main_coeff_65_addr= , Banana-main_coeff_65_buf= , Banana-main_coeff_65_coeff=0 , Banana-main_coeff_65_conn= , Banana-main_coeff_65_conn2= , Banana-main_coeff_65_term1=43 , Banana-main_coeff_65_term2=1 ,  } { {"Apple":78, "Apricot":79, "Banana":156} }
 Banana {"Apple":80, "Apricot":79, "Banana":158}
 Received on Banana
-f128bd1839aaa9d5afd990a4316d1d12344417a5 { Banana-main_coeff_75_LARGEST_COEFF=6 , Banana-main_coeff_75_SIZEOFINT=4 , Banana-main_coeff_75_addr= , Banana-main_coeff_75_buf= , Banana-main_coeff_75_coeff=0 , Banana-main_coeff_75_conn= , Banana-main_coeff_75_conn2= , Banana-main_coeff_75_term1=43 , Banana-main_coeff_75_term2=1 ,  } { {"Apple":78, "Apricot":79, "Banana":157} }
 Banana {"Apple":80, "Apricot":79, "Banana":159}
 Sending from Banana
-3722c3ce20c7f90c40f73cc97e43e4a6733119b8 { Banana-main_coeff_48_LARGEST_COEFF=6 , Banana-main_coeff_48_SIZEOFINT=4 , Banana-main_coeff_48_addr= , Banana-main_coeff_48_buf= , Banana-main_coeff_48_coeff=0 , Banana-main_coeff_48_conn= , Banana-main_coeff_48_conn2= , Banana-main_coeff_48_term1=0 , Banana-main_coeff_48_term2=0 ,  } { {"Apple":80, "Apricot":79, "Banana":158} }
 Banana {"Apple":80, "Apricot":81, "Banana":160}
 Received on Banana
-36b939fbee1a1ccbf5e3668e522778080696d015 { Banana-main_coeff_61_LARGEST_COEFF=6 , Banana-main_coeff_61_SIZEOFINT=4 , Banana-main_coeff_61_addr= , Banana-main_coeff_61_buf= , Banana-main_coeff_61_coeff=0 , Banana-main_coeff_61_conn= , Banana-main_coeff_61_conn2= , Banana-main_coeff_61_term1=19 , Banana-main_coeff_61_term2=18 ,  } { {"Apple":80, "Apricot":79, "Banana":159} }
 Banana {"Apple":80, "Apricot":81, "Banana":161}
 Sending from Banana
-673170285a4e9b093ee4775bf5033951413af8a0 { Banana-main_coeff_65_LARGEST_COEFF=6 , Banana-main_coeff_65_SIZEOFINT=4 , Banana-main_coeff_65_addr= , Banana-main_coeff_65_buf= , Banana-main_coeff_65_coeff=0 , Banana-main_coeff_65_conn= , Banana-main_coeff_65_conn2= , Banana-main_coeff_65_term1=19 , Banana-main_coeff_65_term2=18 ,  } { {"Apple":80, "Apricot":81, "Banana":160} }
 Banana {"Apple":82, "Apricot":81, "Banana":162}
 Received on Banana
-f128bd1839aaa9d5afd990a4316d1d12344417a5 { Banana-main_coeff_75_LARGEST_COEFF=6 , Banana-main_coeff_75_SIZEOFINT=4 , Banana-main_coeff_75_addr= , Banana-main_coeff_75_buf= , Banana-main_coeff_75_coeff=0 , Banana-main_coeff_75_conn= , Banana-main_coeff_75_conn2= , Banana-main_coeff_75_term1=19 , Banana-main_coeff_75_term2=18 ,  } { {"Apple":80, "Apricot":81, "Banana":161} }
 Banana {"Apple":82, "Apricot":81, "Banana":163}
 Sending from Banana
-3722c3ce20c7f90c40f73cc97e43e4a6733119b8 { Banana-main_coeff_48_LARGEST_COEFF=6 , Banana-main_coeff_48_SIZEOFINT=4 , Banana-main_coeff_48_addr= , Banana-main_coeff_48_buf= , Banana-main_coeff_48_coeff=0 , Banana-main_coeff_48_conn= , Banana-main_coeff_48_conn2= , Banana-main_coeff_48_term1=0 , Banana-main_coeff_48_term2=0 ,  } { {"Apple":82, "Apricot":81, "Banana":162} }
 Banana {"Apple":82, "Apricot":83, "Banana":164}
 Received on Banana
-36b939fbee1a1ccbf5e3668e522778080696d015 { Banana-main_coeff_61_LARGEST_COEFF=6 , Banana-main_coeff_61_SIZEOFINT=4 , Banana-main_coeff_61_addr= , Banana-main_coeff_61_buf= , Banana-main_coeff_61_coeff=1 , Banana-main_coeff_61_conn= , Banana-main_coeff_61_conn2= , Banana-main_coeff_61_term1=94 , Banana-main_coeff_61_term2=41 ,  } { {"Apple":82, "Apricot":81, "Banana":163} }
 Banana {"Apple":82, "Apricot":83, "Banana":165}
 Sending from Banana
-673170285a4e9b093ee4775bf5033951413af8a0 { Banana-main_coeff_65_LARGEST_COEFF=6 , Banana-main_coeff_65_SIZEOFINT=4 , Banana-main_coeff_65_addr= , Banana-main_coeff_65_buf= , Banana-main_coeff_65_coeff=1 , Banana-main_coeff_65_conn= , Banana-main_coeff_65_conn2= , Banana-main_coeff_65_term1=94 , Banana-main_coeff_65_term2=41 ,  } { {"Apple":82, "Apricot":83, "Banana":164} }
 Banana {"Apple":84, "Apricot":83, "Banana":166}
 Received on Banana
-f128bd1839aaa9d5afd990a4316d1d12344417a5 { Banana-main_coeff_75_LARGEST_COEFF=6 , Banana-main_coeff_75_SIZEOFINT=4 , Banana-main_coeff_75_addr= , Banana-main_coeff_75_buf= , Banana-main_coeff_75_coeff=1 , Banana-main_coeff_75_conn= , Banana-main_coeff_75_conn2= , Banana-main_coeff_75_term1=94 , Banana-main_coeff_75_term2=41 ,  } { {"Apple":82, "Apricot":83, "Banana":165} }
 Banana {"Apple":84, "Apricot":83, "Banana":167}
 Sending from Banana
-3722c3ce20c7f90c40f73cc97e43e4a6733119b8 { Banana-main_coeff_48_LARGEST_COEFF=6 , Banana-main_coeff_48_SIZEOFINT=4 , Banana-main_coeff_48_addr= , Banana-main_coeff_48_buf= , Banana-main_coeff_48_coeff=0 , Banana-main_coeff_48_conn= , Banana-main_coeff_48_conn2= , Banana-main_coeff_48_term1=0 , Banana-main_coeff_48_term2=0 ,  } { {"Apple":84, "Apricot":83, "Banana":166} }
 Banana {"Apple":84, "Apricot":85, "Banana":168}
 Received on Banana
-36b939fbee1a1ccbf5e3668e522778080696d015 { Banana-main_coeff_61_LARGEST_COEFF=6 , Banana-main_coeff_61_SIZEOFINT=4 , Banana-main_coeff_61_addr= , Banana-main_coeff_61_buf= , Banana-main_coeff_61_coeff=4 , Banana-main_coeff_61_conn= , Banana-main_coeff_61_conn2= , Banana-main_coeff_61_term1=88 , Banana-main_coeff_61_term2=21 ,  } { {"Apple":84, "Apricot":83, "Banana":167} }
 Banana {"Apple":84, "Apricot":85, "Banana":169}
 Sending from Banana
-673170285a4e9b093ee4775bf5033951413af8a0 { Banana-main_coeff_65_LARGEST_COEFF=6 , Banana-main_coeff_65_SIZEOFINT=4 , Banana-main_coeff_65_addr= , Banana-main_coeff_65_buf= , Banana-main_coeff_65_coeff=4 , Banana-main_coeff_65_conn= , Banana-main_coeff_65_conn2= , Banana-main_coeff_65_term1=88 , Banana-main_coeff_65_term2=21 ,  } { {"Apple":84, "Apricot":85, "Banana":168} }
 Banana {"Apple":86, "Apricot":85, "Banana":170}
 Received on Banana
-f128bd1839aaa9d5afd990a4316d1d12344417a5 { Banana-main_coeff_75_LARGEST_COEFF=6 , Banana-main_coeff_75_SIZEOFINT=4 , Banana-main_coeff_75_addr= , Banana-main_coeff_75_buf= , Banana-main_coeff_75_coeff=4 , Banana-main_coeff_75_conn= , Banana-main_coeff_75_conn2= , Banana-main_coeff_75_term1=88 , Banana-main_coeff_75_term2=21 ,  } { {"Apple":84, "Apricot":85, "Banana":169} }
 Banana {"Apple":86, "Apricot":85, "Banana":171}
 Sending from Banana
-3722c3ce20c7f90c40f73cc97e43e4a6733119b8 { Banana-main_coeff_48_LARGEST_COEFF=6 , Banana-main_coeff_48_SIZEOFINT=4 , Banana-main_coeff_48_addr= , Banana-main_coeff_48_buf= , Banana-main_coeff_48_coeff=0 , Banana-main_coeff_48_conn= , Banana-main_coeff_48_conn2= , Banana-main_coeff_48_term1=0 , Banana-main_coeff_48_term2=0 ,  } { {"Apple":86, "Apricot":85, "Banana":170} }
 Banana {"Apple":86, "Apricot":87, "Banana":172}
 Received on Banana
-36b939fbee1a1ccbf5e3668e522778080696d015 { Banana-main_coeff_61_LARGEST_COEFF=6 , Banana-main_coeff_61_SIZEOFINT=4 , Banana-main_coeff_61_addr= , Banana-main_coeff_61_buf= , Banana-main_coeff_61_coeff=0 , Banana-main_coeff_61_conn= , Banana-main_coeff_61_conn2= , Banana-main_coeff_61_term1=11 , Banana-main_coeff_61_term2=80 ,  } { {"Apple":86, "Apricot":85, "Banana":171} }
 Banana {"Apple":86, "Apricot":87, "Banana":173}
 Sending from Banana
-673170285a4e9b093ee4775bf5033951413af8a0 { Banana-main_coeff_65_LARGEST_COEFF=6 , Banana-main_coeff_65_SIZEOFINT=4 , Banana-main_coeff_65_addr= , Banana-main_coeff_65_buf= , Banana-main_coeff_65_coeff=0 , Banana-main_coeff_65_conn= , Banana-main_coeff_65_conn2= , Banana-main_coeff_65_term1=11 , Banana-main_coeff_65_term2=80 ,  } { {"Apple":86, "Apricot":87, "Banana":172} }
 Banana {"Apple":88, "Apricot":87, "Banana":174}
 Received on Banana
-f128bd1839aaa9d5afd990a4316d1d12344417a5 { Banana-main_coeff_75_LARGEST_COEFF=6 , Banana-main_coeff_75_SIZEOFINT=4 , Banana-main_coeff_75_addr= , Banana-main_coeff_75_buf= , Banana-main_coeff_75_coeff=0 , Banana-main_coeff_75_conn= , Banana-main_coeff_75_conn2= , Banana-main_coeff_75_term1=11 , Banana-main_coeff_75_term2=80 ,  } { {"Apple":86, "Apricot":87, "Banana":173} }
 Banana {"Apple":88, "Apricot":87, "Banana":175}
 Sending from Banana
-3722c3ce20c7f90c40f73cc97e43e4a6733119b8 { Banana-main_coeff_48_LARGEST_COEFF=6 , Banana-main_coeff_48_SIZEOFINT=4 , Banana-main_coeff_48_addr= , Banana-main_coeff_48_buf= , Banana-main_coeff_48_coeff=0 , Banana-main_coeff_48_conn= , Banana-main_coeff_48_conn2= , Banana-main_coeff_48_term1=0 , Banana-main_coeff_48_term2=0 ,  } { {"Apple":88, "Apricot":87, "Banana":174} }
 Banana {"Apple":88, "Apricot":89, "Banana":176}
 Received on Banana
-36b939fbee1a1ccbf5e3668e522778080696d015 { Banana-main_coeff_61_LARGEST_COEFF=6 , Banana-main_coeff_61_SIZEOFINT=4 , Banana-main_coeff_61_addr= , Banana-main_coeff_61_buf= , Banana-main_coeff_61_coeff=1 , Banana-main_coeff_61_conn= , Banana-main_coeff_61_conn2= , Banana-main_coeff_61_term1=43 , Banana-main_coeff_61_term2=55 ,  } { {"Apple":88, "Apricot":87, "Banana":175} }
 Banana {"Apple":88, "Apricot":89, "Banana":177}
 Sending from Banana
-673170285a4e9b093ee4775bf5033951413af8a0 { Banana-main_coeff_65_LARGEST_COEFF=6 , Banana-main_coeff_65_SIZEOFINT=4 , Banana-main_coeff_65_addr= , Banana-main_coeff_65_buf= , Banana-main_coeff_65_coeff=1 , Banana-main_coeff_65_conn= , Banana-main_coeff_65_conn2= , Banana-main_coeff_65_term1=43 , Banana-main_coeff_65_term2=55 ,  } { {"Apple":88, "Apricot":89, "Banana":176} }
 Banana {"Apple":90, "Apricot":89, "Banana":178}
 Received on Banana
-f128bd1839aaa9d5afd990a4316d1d12344417a5 { Banana-main_coeff_75_LARGEST_COEFF=6 , Banana-main_coeff_75_SIZEOFINT=4 , Banana-main_coeff_75_addr= , Banana-main_coeff_75_buf= , Banana-main_coeff_75_coeff=1 , Banana-main_coeff_75_conn= , Banana-main_coeff_75_conn2= , Banana-main_coeff_75_term1=43 , Banana-main_coeff_75_term2=55 ,  } { {"Apple":88, "Apricot":89, "Banana":177} }
 Banana {"Apple":90, "Apricot":89, "Banana":179}
 Sending from Banana
-3722c3ce20c7f90c40f73cc97e43e4a6733119b8 { Banana-main_coeff_48_LARGEST_COEFF=6 , Banana-main_coeff_48_SIZEOFINT=4 , Banana-main_coeff_48_addr= , Banana-main_coeff_48_buf= , Banana-main_coeff_48_coeff=0 , Banana-main_coeff_48_conn= , Banana-main_coeff_48_conn2= , Banana-main_coeff_48_term1=0 , Banana-main_coeff_48_term2=0 ,  } { {"Apple":90, "Apricot":89, "Banana":178} }
 Banana {"Apple":90, "Apricot":91, "Banana":180}
 Received on Banana
-36b939fbee1a1ccbf5e3668e522778080696d015 { Banana-main_coeff_61_LARGEST_COEFF=6 , Banana-main_coeff_61_SIZEOFINT=4 , Banana-main_coeff_61_addr= , Banana-main_coeff_61_buf= , Banana-main_coeff_61_coeff=0 , Banana-main_coeff_61_conn= , Banana-main_coeff_61_conn2= , Banana-main_coeff_61_term1=41 , Banana-main_coeff_61_term2=53 ,  } { {"Apple":90, "Apricot":89, "Banana":179} }
 Banana {"Apple":90, "Apricot":91, "Banana":181}
 Sending from Banana
-673170285a4e9b093ee4775bf5033951413af8a0 { Banana-main_coeff_65_LARGEST_COEFF=6 , Banana-main_coeff_65_SIZEOFINT=4 , Banana-main_coeff_65_addr= , Banana-main_coeff_65_buf= , Banana-main_coeff_65_coeff=0 , Banana-main_coeff_65_conn= , Banana-main_coeff_65_conn2= , Banana-main_coeff_65_term1=41 , Banana-main_coeff_65_term2=53 ,  } { {"Apple":90, "Apricot":91, "Banana":180} }
 Banana {"Apple":92, "Apricot":91, "Banana":182}
 Received on Banana
-f128bd1839aaa9d5afd990a4316d1d12344417a5 { Banana-main_coeff_75_LARGEST_COEFF=6 , Banana-main_coeff_75_SIZEOFINT=4 , Banana-main_coeff_75_addr= , Banana-main_coeff_75_buf= , Banana-main_coeff_75_coeff=0 , Banana-main_coeff_75_conn= , Banana-main_coeff_75_conn2= , Banana-main_coeff_75_term1=41 , Banana-main_coeff_75_term2=53 ,  } { {"Apple":90, "Apricot":91, "Banana":181} }
 Banana {"Apple":92, "Apricot":91, "Banana":183}
 Sending from Banana
-3722c3ce20c7f90c40f73cc97e43e4a6733119b8 { Banana-main_coeff_48_LARGEST_COEFF=6 , Banana-main_coeff_48_SIZEOFINT=4 , Banana-main_coeff_48_addr= , Banana-main_coeff_48_buf= , Banana-main_coeff_48_coeff=0 , Banana-main_coeff_48_conn= , Banana-main_coeff_48_conn2= , Banana-main_coeff_48_term1=0 , Banana-main_coeff_48_term2=0 ,  } { {"Apple":92, "Apricot":91, "Banana":182} }
 Banana {"Apple":92, "Apricot":93, "Banana":184}
 Received on Banana
-36b939fbee1a1ccbf5e3668e522778080696d015 { Banana-main_coeff_61_LARGEST_COEFF=6 , Banana-main_coeff_61_SIZEOFINT=4 , Banana-main_coeff_61_addr= , Banana-main_coeff_61_buf= , Banana-main_coeff_61_coeff=3 , Banana-main_coeff_61_conn= , Banana-main_coeff_61_conn2= , Banana-main_coeff_61_term1=31 , Banana-main_coeff_61_term2=17 ,  } { {"Apple":92, "Apricot":91, "Banana":183} }
 Banana {"Apple":92, "Apricot":93, "Banana":185}
 Sending from Banana
-673170285a4e9b093ee4775bf5033951413af8a0 { Banana-main_coeff_65_LARGEST_COEFF=6 , Banana-main_coeff_65_SIZEOFINT=4 , Banana-main_coeff_65_addr= , Banana-main_coeff_65_buf= , Banana-main_coeff_65_coeff=3 , Banana-main_coeff_65_conn= , Banana-main_coeff_65_conn2= , Banana-main_coeff_65_term1=31 , Banana-main_coeff_65_term2=17 ,  } { {"Apple":92, "Apricot":93, "Banana":184} }
 Banana {"Apple":94, "Apricot":93, "Banana":186}
 Received on Banana
-f128bd1839aaa9d5afd990a4316d1d12344417a5 { Banana-main_coeff_75_LARGEST_COEFF=6 , Banana-main_coeff_75_SIZEOFINT=4 , Banana-main_coeff_75_addr= , Banana-main_coeff_75_buf= , Banana-main_coeff_75_coeff=3 , Banana-main_coeff_75_conn= , Banana-main_coeff_75_conn2= , Banana-main_coeff_75_term1=31 , Banana-main_coeff_75_term2=17 ,  } { {"Apple":92, "Apricot":93, "Banana":185} }
 Banana {"Apple":94, "Apricot":93, "Banana":187}
 Sending from Banana
-3722c3ce20c7f90c40f73cc97e43e4a6733119b8 { Banana-main_coeff_48_LARGEST_COEFF=6 , Banana-main_coeff_48_SIZEOFINT=4 , Banana-main_coeff_48_addr= , Banana-main_coeff_48_buf= , Banana-main_coeff_48_coeff=0 , Banana-main_coeff_48_conn= , Banana-main_coeff_48_conn2= , Banana-main_coeff_48_term1=0 , Banana-main_coeff_48_term2=0 ,  } { {"Apple":94, "Apricot":93, "Banana":186} }
 Banana {"Apple":94, "Apricot":95, "Banana":188}
 Received on Banana
-36b939fbee1a1ccbf5e3668e522778080696d015 { Banana-main_coeff_61_LARGEST_COEFF=6 , Banana-main_coeff_61_SIZEOFINT=4 , Banana-main_coeff_61_addr= , Banana-main_coeff_61_buf= , Banana-main_coeff_61_coeff=3 , Banana-main_coeff_61_conn= , Banana-main_coeff_61_conn2= , Banana-main_coeff_61_term1=31 , Banana-main_coeff_61_term2=18 ,  } { {"Apple":94, "Apricot":93, "Banana":187} }
 Banana {"Apple":94, "Apricot":95, "Banana":189}
 Sending from Banana
-673170285a4e9b093ee4775bf5033951413af8a0 { Banana-main_coeff_65_LARGEST_COEFF=6 , Banana-main_coeff_65_SIZEOFINT=4 , Banana-main_coeff_65_addr= , Banana-main_coeff_65_buf= , Banana-main_coeff_65_coeff=3 , Banana-main_coeff_65_conn= , Banana-main_coeff_65_conn2= , Banana-main_coeff_65_term1=31 , Banana-main_coeff_65_term2=18 ,  } { {"Apple":94, "Apricot":95, "Banana":188} }
 Banana {"Apple":96, "Apricot":95, "Banana":190}
 Received on Banana
-f128bd1839aaa9d5afd990a4316d1d12344417a5 { Banana-main_coeff_75_LARGEST_COEFF=6 , Banana-main_coeff_75_SIZEOFINT=4 , Banana-main_coeff_75_addr= , Banana-main_coeff_75_buf= , Banana-main_coeff_75_coeff=3 , Banana-main_coeff_75_conn= , Banana-main_coeff_75_conn2= , Banana-main_coeff_75_term1=31 , Banana-main_coeff_75_term2=18 ,  } { {"Apple":94, "Apricot":95, "Banana":189} }
 Banana {"Apple":96, "Apricot":95, "Banana":191}
 Sending from Banana
-3722c3ce20c7f90c40f73cc97e43e4a6733119b8 { Banana-main_coeff_48_LARGEST_COEFF=6 , Banana-main_coeff_48_SIZEOFINT=4 , Banana-main_coeff_48_addr= , Banana-main_coeff_48_buf= , Banana-main_coeff_48_coeff=0 , Banana-main_coeff_48_conn= , Banana-main_coeff_48_conn2= , Banana-main_coeff_48_term1=0 , Banana-main_coeff_48_term2=0 ,  } { {"Apple":96, "Apricot":95, "Banana":190} }
 Banana {"Apple":96, "Apricot":97, "Banana":192}
 Received on Banana
-36b939fbee1a1ccbf5e3668e522778080696d015 { Banana-main_coeff_61_LARGEST_COEFF=6 , Banana-main_coeff_61_SIZEOFINT=4 , Banana-main_coeff_61_addr= , Banana-main_coeff_61_buf= , Banana-main_coeff_61_coeff=4 , Banana-main_coeff_61_conn= , Banana-main_coeff_61_conn2= , Banana-main_coeff_61_term1=32 , Banana-main_coeff_61_term2=14 ,  } { {"Apple":96, "Apricot":95, "Banana":191} }
 Banana {"Apple":96, "Apricot":97, "Banana":193}
 Sending from Banana
-673170285a4e9b093ee4775bf5033951413af8a0 { Banana-main_coeff_65_LARGEST_COEFF=6 , Banana-main_coeff_65_SIZEOFINT=4 , Banana-main_coeff_65_addr= , Banana-main_coeff_65_buf= , Banana-main_coeff_65_coeff=4 , Banana-main_coeff_65_conn= , Banana-main_coeff_65_conn2= , Banana-main_coeff_65_term1=32 , Banana-main_coeff_65_term2=14 ,  } { {"Apple":96, "Apricot":97, "Banana":192} }
 Banana {"Apple":98, "Apricot":97, "Banana":194}
 Received on Banana
-f128bd1839aaa9d5afd990a4316d1d12344417a5 { Banana-main_coeff_75_LARGEST_COEFF=6 , Banana-main_coeff_75_SIZEOFINT=4 , Banana-main_coeff_75_addr= , Banana-main_coeff_75_buf= , Banana-main_coeff_75_coeff=4 , Banana-main_coeff_75_conn= , Banana-main_coeff_75_conn2= , Banana-main_coeff_75_term1=32 , Banana-main_coeff_75_term2=14 ,  } { {"Apple":96, "Apricot":97, "Banana":193} }
 Banana {"Apple":98, "Apricot":97, "Banana":195}
 Sending from Banana
-3722c3ce20c7f90c40f73cc97e43e4a6733119b8 { Banana-main_coeff_48_LARGEST_COEFF=6 , Banana-main_coeff_48_SIZEOFINT=4 , Banana-main_coeff_48_addr= , Banana-main_coeff_48_buf= , Banana-main_coeff_48_coeff=0 , Banana-main_coeff_48_conn= , Banana-main_coeff_48_conn2= , Banana-main_coeff_48_term1=0 , Banana-main_coeff_48_term2=0 ,  } { {"Apple":98, "Apricot":97, "Banana":194} }
 Banana {"Apple":98, "Apricot":99, "Banana":196}
 Received on Banana
-36b939fbee1a1ccbf5e3668e522778080696d015 { Banana-main_coeff_61_LARGEST_COEFF=6 , Banana-main_coeff_61_SIZEOFINT=4 , Banana-main_coeff_61_addr= , Banana-main_coeff_61_buf= , Banana-main_coeff_61_coeff=4 , Banana-main_coeff_61_conn= , Banana-main_coeff_61_conn2= , Banana-main_coeff_61_term1=4 , Banana-main_coeff_61_term2=80 ,  } { {"Apple":98, "Apricot":97, "Banana":195} }
 Banana {"Apple":98, "Apricot":99, "Banana":197}
 Sending from Banana
-673170285a4e9b093ee4775bf5033951413af8a0 { Banana-main_coeff_65_LARGEST_COEFF=6 , Banana-main_coeff_65_SIZEOFINT=4 , Banana-main_coeff_65_addr= , Banana-main_coeff_65_buf= , Banana-main_coeff_65_coeff=4 , Banana-main_coeff_65_conn= , Banana-main_coeff_65_conn2= , Banana-main_coeff_65_term1=4 , Banana-main_coeff_65_term2=80 ,  } { {"Apple":98, "Apricot":99, "Banana":196} }
 Banana {"Apple":100, "Apricot":99, "Banana":198}
 Received on Banana
-f128bd1839aaa9d5afd990a4316d1d12344417a5 { Banana-main_coeff_75_LARGEST_COEFF=6 , Banana-main_coeff_75_SIZEOFINT=4 , Banana-main_coeff_75_addr= , Banana-main_coeff_75_buf= , Banana-main_coeff_75_coeff=4 , Banana-main_coeff_75_conn= , Banana-main_coeff_75_conn2= , Banana-main_coeff_75_term1=4 , Banana-main_coeff_75_term2=80 ,  } { {"Apple":98, "Apricot":99, "Banana":197} }
 Banana {"Apple":100, "Apricot":99, "Banana":199}
 Sending from Banana
-3722c3ce20c7f90c40f73cc97e43e4a6733119b8 { Banana-main_coeff_48_LARGEST_COEFF=6 , Banana-main_coeff_48_SIZEOFINT=4 , Banana-main_coeff_48_addr= , Banana-main_coeff_48_buf= , Banana-main_coeff_48_coeff=0 , Banana-main_coeff_48_conn= , Banana-main_coeff_48_conn2= , Banana-main_coeff_48_term1=0 , Banana-main_coeff_48_term2=0 ,  } { {"Apple":100, "Apricot":99, "Banana":198} }
 Banana {"Apple":100, "Apricot":101, "Banana":200}
 Received on Banana
-36b939fbee1a1ccbf5e3668e522778080696d015 { Banana-main_coeff_61_LARGEST_COEFF=6 , Banana-main_coeff_61_SIZEOFINT=4 , Banana-main_coeff_61_addr= , Banana-main_coeff_61_buf= , Banana-main_coeff_61_coeff=3 , Banana-main_coeff_61_conn= , Banana-main_coeff_61_conn2= , Banana-main_coeff_61_term1=0 , Banana-main_coeff_61_term2=71 ,  } { {"Apple":100, "Apricot":99, "Banana":199} }
 Banana {"Apple":100, "Apricot":101, "Banana":201}
 Sending from Banana
-673170285a4e9b093ee4775bf5033951413af8a0 { Banana-main_coeff_65_LARGEST_COEFF=6 , Banana-main_coeff_65_SIZEOFINT=4 , Banana-main_coeff_65_addr= , Banana-main_coeff_65_buf= , Banana-main_coeff_65_coeff=3 , Banana-main_coeff_65_conn= , Banana-main_coeff_65_conn2= , Banana-main_coeff_65_term1=0 , Banana-main_coeff_65_term2=71 ,  } { {"Apple":100, "Apricot":101, "Banana":200} }
 Banana {"Apple":102, "Apricot":101, "Banana":202}
 Received on Banana
-f128bd1839aaa9d5afd990a4316d1d12344417a5 { Banana-main_coeff_75_LARGEST_COEFF=6 , Banana-main_coeff_75_SIZEOFINT=4 , Banana-main_coeff_75_addr= , Banana-main_coeff_75_buf= , Banana-main_coeff_75_coeff=3 , Banana-main_coeff_75_conn= , Banana-main_coeff_75_conn2= , Banana-main_coeff_75_term1=0 , Banana-main_coeff_75_term2=71 ,  } { {"Apple":100, "Apricot":101, "Banana":201} }
 Banana {"Apple":102, "Apricot":101, "Banana":203}
 Sending from Banana
-3722c3ce20c7f90c40f73cc97e43e4a6733119b8 { Banana-main_coeff_48_LARGEST_COEFF=6 , Banana-main_coeff_48_SIZEOFINT=4 , Banana-main_coeff_48_addr= , Banana-main_coeff_48_buf= , Banana-main_coeff_48_coeff=0 , Banana-main_coeff_48_conn= , Banana-main_coeff_48_conn2= , Banana-main_coeff_48_term1=0 , Banana-main_coeff_48_term2=0 ,  } { {"Apple":102, "Apricot":101, "Banana":202} }
 Banana {"Apple":102, "Apricot":103, "Banana":204}
 Received on Banana
-36b939fbee1a1ccbf5e3668e522778080696d015 { Banana-main_coeff_61_LARGEST_COEFF=6 , Banana-main_coeff_61_SIZEOFINT=4 , Banana-main_coeff_61_addr= , Banana-main_coeff_61_buf= , Banana-main_coeff_61_coeff=1 , Banana-main_coeff_61_conn= , Banana-main_coeff_61_conn2= , Banana-main_coeff_61_term1=85 , Banana-main_coeff_61_term2=23 ,  } { {"Apple":102, "Apricot":101, "Banana":203} }
 Banana {"Apple":102, "Apricot":103, "Banana":205}
 Sending from Banana
-673170285a4e9b093ee4775bf5033951413af8a0 { Banana-main_coeff_65_LARGEST_COEFF=6 , Banana-main_coeff_65_SIZEOFINT=4 , Banana-main_coeff_65_addr= , Banana-main_coeff_65_buf= , Banana-main_coeff_65_coeff=1 , Banana-main_coeff_65_conn= , Banana-main_coeff_65_conn2= , Banana-main_coeff_65_term1=85 , Banana-main_coeff_65_term2=23 ,  } { {"Apple":102, "Apricot":103, "Banana":204} } {  } { {"Apple":102, "Apricot":103, "Banana":204} }
 Apricot {"Apricot":1}
 Initialization Complete
-
 Apricot {"Apple":2, "Apricot":2, "Banana":3}
 Received on Apricot
-da39a3ee5e6b4b0d3255bfef95601890afd80709 {  } { {"Apricot":1} }
 Apricot {"Apple":2, "Apricot":3, "Banana":3}
 Sending from Apricot
-a1ce3e0bd111b8ce7008608b22bacf3433f96b91 { Apricot-main_linn_39_SIZEOFINT=4 , Apricot-main_linn_39_addr= , Apricot-main_linn_39_buf= , Apricot-main_linn_39_coeff=0 , Apricot-main_linn_39_conn= , Apricot-main_linn_39_lin=0 , Apricot-main_linn_39_term1=0 , Apricot-main_linn_39_term2=0 , Apricot-main_linn_50_SIZEOFINT=4 , Apricot-main_linn_50_addr= , Apricot-main_linn_50_buf= , Apricot-main_linn_50_coeff=2 , Apricot-main_linn_50_conn= , Apricot-main_linn_50_lin=71 , Apricot-main_linn_50_term1=10 , Apricot-main_linn_50_term2=51 ,  } { {"Apple":2, "Apricot":2, "Banana":3} }
 Apricot {"Apple":4, "Apricot":4, "Banana":7}
 Received on Apricot
-da39a3ee5e6b4b0d3255bfef95601890afd80709 {  } { {"Apple":2, "Apricot":3, "Banana":3} }
 Apricot {"Apple":4, "Apricot":5, "Banana":7}
 Sending from Apricot
-a1ce3e0bd111b8ce7008608b22bacf3433f96b91 { Apricot-main_linn_39_SIZEOFINT=4 , Apricot-main_linn_39_addr= , Apricot-main_linn_39_buf= , Apricot-main_linn_39_coeff=0 , Apricot-main_linn_39_conn= , Apricot-main_linn_39_lin=0 , Apricot-main_linn_39_term1=0 , Apricot-main_linn_39_term2=0 , Apricot-main_linn_50_SIZEOFINT=4 , Apricot-main_linn_50_addr= , Apricot-main_linn_50_buf= , Apricot-main_linn_50_coeff=1 , Apricot-main_linn_50_conn= , Apricot-main_linn_50_lin=72 , Apricot-main_linn_50_term1=21 , Apricot-main_linn_50_term2=51 ,  } { {"Apple":4, "Apricot":4, "Banana":7} }
 Apricot {"Apple":6, "Apricot":6, "Banana":11}
 Received on Apricot
-da39a3ee5e6b4b0d3255bfef95601890afd80709 {  } { {"Apple":4, "Apricot":5, "Banana":7} }
 Apricot {"Apple":6, "Apricot":7, "Banana":11}
 Sending from Apricot
-a1ce3e0bd111b8ce7008608b22bacf3433f96b91 { Apricot-main_linn_39_SIZEOFINT=4 , Apricot-main_linn_39_addr= , Apricot-main_linn_39_buf= , Apricot-main_linn_39_coeff=0 , Apricot-main_linn_39_conn= , Apricot-main_linn_39_lin=0 , Apricot-main_linn_39_term1=0 , Apricot-main_linn_39_term2=0 , Apricot-main_linn_50_SIZEOFINT=4 , Apricot-main_linn_50_addr= , Apricot-main_linn_50_buf= , Apricot-main_linn_50_coeff=3 , Apricot-main_linn_50_conn= , Apricot-main_linn_50_lin=131 , Apricot-main_linn_50_term1=37 , Apricot-main_linn_50_term2=20 ,  } { {"Apple":6, "Apricot":6, "Banana":11} }
 Apricot {"Apple":8, "Apricot":8, "Banana":15}
 Received on Apricot
-da39a3ee5e6b4b0d3255bfef95601890afd80709 {  } { {"Apple":6, "Apricot":7, "Banana":11} }
 Apricot {"Apple":8, "Apricot":9, "Banana":15}
 Sending from Apricot
-a1ce3e0bd111b8ce7008608b22bacf3433f96b91 { Apricot-main_linn_39_SIZEOFINT=4 , Apricot-main_linn_39_addr= , Apricot-main_linn_39_buf= , Apricot-main_linn_39_coeff=0 , Apricot-main_linn_39_conn= , Apricot-main_linn_39_lin=0 , Apricot-main_linn_39_term1=0 , Apricot-main_linn_39_term2=0 , Apricot-main_linn_50_SIZEOFINT=4 , Apricot-main_linn_50_addr= , Apricot-main_linn_50_buf= , Apricot-main_linn_50_coeff=5 , Apricot-main_linn_50_conn= , Apricot-main_linn_50_lin=338 , Apricot-main_linn_50_term1=58 , Apricot-main_linn_50_term2=48 ,  } { {"Apple":8, "Apricot":8, "Banana":15} }
 Apricot {"Apple":10, "Apricot":10, "Banana":19}
 Received on Apricot
-da39a3ee5e6b4b0d3255bfef95601890afd80709 {  } { {"Apple":8, "Apricot":9, "Banana":15} }
 Apricot {"Apple":10, "Apricot":11, "Banana":19}
 Sending from Apricot
-296c7369092af3272314adc0dc771be85c337273 { Apricot-main_linn_39_SIZEOFINT=4 , Apricot-main_linn_39_addr= , Apricot-main_linn_39_buf= , Apricot-main_linn_39_coeff=0 , Apricot-main_linn_39_conn= , Apricot-main_linn_39_lin=0 , Apricot-main_linn_39_term1=0 , Apricot-main_linn_39_term2=0 , Apricot-main_linn_50_SIZEOFINT=4 , Apricot-main_linn_50_addr= , Apricot-main_linn_50_buf= , Apricot-main_linn_50_coeff=5 , Apricot-main_linn_50_conn= , Apricot-main_linn_50_lin=129 , Apricot-main_linn_50_term1=16 , Apricot-main_linn_50_term2=49 ,  } { {"Apple":10, "Apricot":10, "Banana":19} }
 Apricot {"Apple":12, "Apricot":12, "Banana":23}
 Received on Apricot
-da39a3ee5e6b4b0d3255bfef95601890afd80709 {  } { {"Apple":10, "Apricot":11, "Banana":19} }
 Apricot {"Apple":12, "Apricot":13, "Banana":23}
 Sending from Apricot
-a1ce3e0bd111b8ce7008608b22bacf3433f96b91 { Apricot-main_linn_39_SIZEOFINT=4 , Apricot-main_linn_39_addr= , Apricot-main_linn_39_buf= , Apricot-main_linn_39_coeff=0 , Apricot-main_linn_39_conn= , Apricot-main_linn_39_lin=0 , Apricot-main_linn_39_term1=0 , Apricot-main_linn_39_term2=0 , Apricot-main_linn_50_SIZEOFINT=4 , Apricot-main_linn_50_addr= , Apricot-main_linn_50_buf= , Apricot-main_linn_50_coeff=2 , Apricot-main_linn_50_conn= , Apricot-main_linn_50_lin=255 , Apricot-main_linn_50_term1=84 , Apricot-main_linn_50_term2=87 ,  } { {"Apple":12, "Apricot":12, "Banana":23} }
 Apricot {"Apple":14, "Apricot":14, "Banana":27}
 Received on Apricot
-da39a3ee5e6b4b0d3255bfef95601890afd80709 {  } { {"Apple":12, "Apricot":13, "Banana":23} }
 Apricot {"Apple":14, "Apricot":15, "Banana":27}
 Sending from Apricot
-a1ce3e0bd111b8ce7008608b22bacf3433f96b91 { Apricot-main_linn_39_SIZEOFINT=4 , Apricot-main_linn_39_addr= , Apricot-main_linn_39_buf= , Apricot-main_linn_39_coeff=0 , Apricot-main_linn_39_conn= , Apricot-main_linn_39_lin=0 , Apricot-main_linn_39_term1=0 , Apricot-main_linn_39_term2=0 , Apricot-main_linn_50_SIZEOFINT=4 , Apricot-main_linn_50_addr= , Apricot-main_linn_50_buf= , Apricot-main_linn_50_coeff=0 , Apricot-main_linn_50_conn= , Apricot-main_linn_50_lin=36 , Apricot-main_linn_50_term1=74 , Apricot-main_linn_50_term2=36 ,  } { {"Apple":14, "Apricot":14, "Banana":27} }
 Apricot {"Apple":16, "Apricot":16, "Banana":31}
 Received on Apricot
-da39a3ee5e6b4b0d3255bfef95601890afd80709 {  } { {"Apple":14, "Apricot":15, "Banana":27} }
 Apricot {"Apple":16, "Apricot":17, "Banana":31}
 Sending from Apricot
-a1ce3e0bd111b8ce7008608b22bacf3433f96b91 { Apricot-main_linn_39_SIZEOFINT=4 , Apricot-main_linn_39_addr= , Apricot-main_linn_39_buf= , Apricot-main_linn_39_coeff=0 , Apricot-main_linn_39_conn= , Apricot-main_linn_39_lin=0 , Apricot-main_linn_39_term1=0 , Apricot-main_linn_39_term2=0 , Apricot-main_linn_50_SIZEOFINT=4 , Apricot-main_linn_50_addr= , Apricot-main_linn_50_buf= , Apricot-main_linn_50_coeff=2 , Apricot-main_linn_50_conn= , Apricot-main_linn_50_lin=103 , Apricot-main_linn_50_term1=15 , Apricot-main_linn_50_term2=73 ,  } { {"Apple":16, "Apricot":16, "Banana":31} }
 Apricot {"Apple":18, "Apricot":18, "Banana":35}
 Received on Apricot
-da39a3ee5e6b4b0d3255bfef95601890afd80709 {  } { {"Apple":16, "Apricot":17, "Banana":31} }
 Apricot {"Apple":18, "Apricot":19, "Banana":35}
 Sending from Apricot
-a1ce3e0bd111b8ce7008608b22bacf3433f96b91 { Apricot-main_linn_39_SIZEOFINT=4 , Apricot-main_linn_39_addr= , Apricot-main_linn_39_buf= , Apricot-main_linn_39_coeff=0 , Apricot-main_linn_39_conn= , Apricot-main_linn_39_lin=0 , Apricot-main_linn_39_term1=0 , Apricot-main_linn_39_term2=0 , Apricot-main_linn_50_SIZEOFINT=4 , Apricot-main_linn_50_addr= , Apricot-main_linn_50_buf= , Apricot-main_linn_50_coeff=2 , Apricot-main_linn_50_conn= , Apricot-main_linn_50_lin=227 , Apricot-main_linn_50_term1=68 , Apricot-main_linn_50_term2=91 ,  } { {"Apple":18, "Apricot":18, "Banana":35} }
 Apricot {"Apple":20, "Apricot":20, "Banana":39}
 Received on Apricot
-da39a3ee5e6b4b0d3255bfef95601890afd80709 {  } { {"Apple":18, "Apricot":19, "Banana":35} }
 Apricot {"Apple":20, "Apricot":21, "Banana":39}
 Sending from Apricot
-a1ce3e0bd111b8ce7008608b22bacf3433f96b91 { Apricot-main_linn_39_SIZEOFINT=4 , Apricot-main_linn_39_addr= , Apricot-main_linn_39_buf= , Apricot-main_linn_39_coeff=0 , Apricot-main_linn_39_conn= , Apricot-main_linn_39_lin=0 , Apricot-main_linn_39_term1=0 , Apricot-main_linn_39_term2=0 , Apricot-main_linn_50_SIZEOFINT=4 , Apricot-main_linn_50_addr= , Apricot-main_linn_50_buf= , Apricot-main_linn_50_coeff=5 , Apricot-main_linn_50_conn= , Apricot-main_linn_50_lin=481 , Apricot-main_linn_50_term1=90 , Apricot-main_linn_50_term2=31 ,  } { {"Apple":20, "Apricot":20, "Banana":39} }
 Apricot {"Apple":22, "Apricot":22, "Banana":43}
 Received on Apricot
-da39a3ee5e6b4b0d3255bfef95601890afd80709 {  } { {"Apple":20, "Apricot":21, "Banana":39} }
 Apricot {"Apple":22, "Apricot":23, "Banana":43}
 Sending from Apricot
-296c7369092af3272314adc0dc771be85c337273 { Apricot-main_linn_39_SIZEOFINT=4 , Apricot-main_linn_39_addr= , Apricot-main_linn_39_buf= , Apricot-main_linn_39_coeff=0 , Apricot-main_linn_39_conn= , Apricot-main_linn_39_lin=0 , Apricot-main_linn_39_term1=0 , Apricot-main_linn_39_term2=0 , Apricot-main_linn_50_SIZEOFINT=4 , Apricot-main_linn_50_addr= , Apricot-main_linn_50_buf= , Apricot-main_linn_50_coeff=0 , Apricot-main_linn_50_conn= , Apricot-main_linn_50_lin=56 , Apricot-main_linn_50_term1=73 , Apricot-main_linn_50_term2=56 ,  } { {"Apple":22, "Apricot":22, "Banana":43} }
 Apricot {"Apple":24, "Apricot":24, "Banana":47}
 Received on Apricot
-da39a3ee5e6b4b0d3255bfef95601890afd80709 {  } { {"Apple":22, "Apricot":23, "Banana":43} }
 Apricot {"Apple":24, "Apricot":25, "Banana":47}
 Sending from Apricot
-a1ce3e0bd111b8ce7008608b22bacf3433f96b91 { Apricot-main_linn_39_SIZEOFINT=4 , Apricot-main_linn_39_addr= , Apricot-main_linn_39_buf= , Apricot-main_linn_39_coeff=0 , Apricot-main_linn_39_conn= , Apricot-main_linn_39_lin=0 , Apricot-main_linn_39_term1=0 , Apricot-main_linn_39_term2=0 , Apricot-main_linn_50_SIZEOFINT=4 , Apricot-main_linn_50_addr= , Apricot-main_linn_50_buf= , Apricot-main_linn_50_coeff=3 , Apricot-main_linn_50_conn= , Apricot-main_linn_50_lin=70 , Apricot-main_linn_50_term1=11 , Apricot-main_linn_50_term2=37 ,  } { {"Apple":24, "Apricot":24, "Banana":47} }
 Apricot {"Apple":26, "Apricot":26, "Banana":51}
 Received on Apricot
-da39a3ee5e6b4b0d3255bfef95601890afd80709 {  } { {"Apple":24, "Apricot":25, "Banana":47} }
 Apricot {"Apple":26, "Apricot":27, "Banana":51}
 Sending from Apricot
-a1ce3e0bd111b8ce7008608b22bacf3433f96b91 { Apricot-main_linn_39_SIZEOFINT=4 , Apricot-main_linn_39_addr= , Apricot-main_linn_39_buf= , Apricot-main_linn_39_coeff=0 , Apricot-main_linn_39_conn= , Apricot-main_linn_39_lin=0 , Apricot-main_linn_39_term1=0 , Apricot-main_linn_39_term2=0 , Apricot-main_linn_50_SIZEOFINT=4 , Apricot-main_linn_50_addr= , Apricot-main_linn_50_buf= , Apricot-main_linn_50_coeff=4 , Apricot-main_linn_50_conn= , Apricot-main_linn_50_lin=321 , Apricot-main_linn_50_term1=78 , Apricot-main_linn_50_term2=9 ,  } { {"Apple":26, "Apricot":26, "Banana":51} }
 Apricot {"Apple":28, "Apricot":28, "Banana":55}
 Received on Apricot
-da39a3ee5e6b4b0d3255bfef95601890afd80709 {  } { {"Apple":26, "Apricot":27, "Banana":51} }
 Apricot {"Apple":28, "Apricot":29, "Banana":55}
 Sending from Apricot
-a1ce3e0bd111b8ce7008608b22bacf3433f96b91 { Apricot-main_linn_39_SIZEOFINT=4 , Apricot-main_linn_39_addr= , Apricot-main_linn_39_buf= , Apricot-main_linn_39_coeff=0 , Apricot-main_linn_39_conn= , Apricot-main_linn_39_lin=0 , Apricot-main_linn_39_term1=0 , Apricot-main_linn_39_term2=0 , Apricot-main_linn_50_SIZEOFINT=4 , Apricot-main_linn_50_addr= , Apricot-main_linn_50_buf= , Apricot-main_linn_50_coeff=0 , Apricot-main_linn_50_conn= , Apricot-main_linn_50_lin=50 , Apricot-main_linn_50_term1=72 , Apricot-main_linn_50_term2=50 ,  } { {"Apple":28, "Apricot":28, "Banana":55} }
 Apricot {"Apple":30, "Apricot":30, "Banana":59}
 Received on Apricot
-da39a3ee5e6b4b0d3255bfef95601890afd80709 {  } { {"Apple":28, "Apricot":29, "Banana":55} }
 Apricot {"Apple":30, "Apricot":31, "Banana":59}
 Sending from Apricot
-296c7369092af3272314adc0dc771be85c337273 { Apricot-main_linn_39_SIZEOFINT=4 , Apricot-main_linn_39_addr= , Apricot-main_linn_39_buf= , Apricot-main_linn_39_coeff=0 , Apricot-main_linn_39_conn= , Apricot-main_linn_39_lin=0 , Apricot-main_linn_39_term1=0 , Apricot-main_linn_39_term2=0 , Apricot-main_linn_50_SIZEOFINT=4 , Apricot-main_linn_50_addr= , Apricot-main_linn_50_buf= , Apricot-main_linn_50_coeff=5 , Apricot-main_linn_50_conn= , Apricot-main_linn_50_lin=511 , Apricot-main_linn_50_term1=88 , Apricot-main_linn_50_term2=71 ,  } { {"Apple":30, "Apricot":30, "Banana":59} }
 Apricot {"Apple":32, "Apricot":32, "Banana":63}
 Received on Apricot
-da39a3ee5e6b4b0d3255bfef95601890afd80709 {  } { {"Apple":30, "Apricot":31, "Banana":59} }
 Apricot {"Apple":32, "Apricot":33, "Banana":63}
 Sending from Apricot
-a1ce3e0bd111b8ce7008608b22bacf3433f96b91 { Apricot-main_linn_39_SIZEOFINT=4 , Apricot-main_linn_39_addr= , Apricot-main_linn_39_buf= , Apricot-main_linn_39_coeff=0 , Apricot-main_linn_39_conn= , Apricot-main_linn_39_lin=0 , Apricot-main_linn_39_term1=0 , Apricot-main_linn_39_term2=0 , Apricot-main_linn_50_SIZEOFINT=4 , Apricot-main_linn_50_addr= , Apricot-main_linn_50_buf= , Apricot-main_linn_50_coeff=5 , Apricot-main_linn_50_conn= , Apricot-main_linn_50_lin=263 , Apricot-main_linn_50_term1=44 , Apricot-main_linn_50_term2=43 ,  } { {"Apple":32, "Apricot":32, "Banana":63} }
 Apricot {"Apple":34, "Apricot":34, "Banana":67}
 Received on Apricot
-da39a3ee5e6b4b0d3255bfef95601890afd80709 {  } { {"Apple":32, "Apricot":33, "Banana":63} }
 Apricot {"Apple":34, "Apricot":35, "Banana":67}
 Sending from Apricot
-a1ce3e0bd111b8ce7008608b22bacf3433f96b91 { Apricot-main_linn_39_SIZEOFINT=4 , Apricot-main_linn_39_addr= , Apricot-main_linn_39_buf= , Apricot-main_linn_39_coeff=0 , Apricot-main_linn_39_conn= , Apricot-main_linn_39_lin=0 , Apricot-main_linn_39_term1=0 , Apricot-main_linn_39_term2=0 , Apricot-main_linn_50_SIZEOFINT=4 , Apricot-main_linn_50_addr= , Apricot-main_linn_50_buf= , Apricot-main_linn_50_coeff=2 , Apricot-main_linn_50_conn= , Apricot-main_linn_50_lin=105 , Apricot-main_linn_50_term1=23 , Apricot-main_linn_50_term2=59 ,  } { {"Apple":34, "Apricot":34, "Banana":67} }
 Apricot {"Apple":36, "Apricot":36, "Banana":71}
 Received on Apricot
-da39a3ee5e6b4b0d3255bfef95601890afd80709 {  } { {"Apple":34, "Apricot":35, "Banana":67} }
 Apricot {"Apple":36, "Apricot":37, "Banana":71}
 Sending from Apricot
-a1ce3e0bd111b8ce7008608b22bacf3433f96b91 { Apricot-main_linn_39_SIZEOFINT=4 , Apricot-main_linn_39_addr= , Apricot-main_linn_39_buf= , Apricot-main_linn_39_coeff=0 , Apricot-main_linn_39_conn= , Apricot-main_linn_39_lin=0 , Apricot-main_linn_39_term1=0 , Apricot-main_linn_39_term2=0 , Apricot-main_linn_50_SIZEOFINT=4 , Apricot-main_linn_50_addr= , Apricot-main_linn_50_buf= , Apricot-main_linn_50_coeff=1 , Apricot-main_linn_50_conn= , Apricot-main_linn_50_lin=42 , Apricot-main_linn_50_term1=3 , Apricot-main_linn_50_term2=39 ,  } { {"Apple":36, "Apricot":36, "Banana":71} }
 Apricot {"Apple":38, "Apricot":38, "Banana":75}
 Received on Apricot
-da39a3ee5e6b4b0d3255bfef95601890afd80709 {  } { {"Apple":36, "Apricot":37, "Banana":71} }
 Apricot {"Apple":38, "Apricot":39, "Banana":75}
 Sending from Apricot
-a1ce3e0bd111b8ce7008608b22bacf3433f96b91 { Apricot-main_linn_39_SIZEOFINT=4 , Apricot-main_linn_39_addr= , Apricot-main_linn_39_buf= , Apricot-main_linn_39_coeff=0 , Apricot-main_linn_39_conn= , Apricot-main_linn_39_lin=0 , Apricot-main_linn_39_term1=0 , Apricot-main_linn_39_term2=0 , Apricot-main_linn_50_SIZEOFINT=4 , Apricot-main_linn_50_addr= , Apricot-main_linn_50_buf= , Apricot-main_linn_50_coeff=2 , Apricot-main_linn_50_conn= , Apricot-main_linn_50_lin=173 , Apricot-main_linn_50_term1=83 , Apricot-main_linn_50_term2=7 ,  } { {"Apple":38, "Apricot":38, "Banana":75} }
 Apricot {"Apple":40, "Apricot":40, "Banana":79}
 Received on Apricot
-da39a3ee5e6b4b0d3255bfef95601890afd80709 {  } { {"Apple":38, "Apricot":39, "Banana":75} }
 Apricot {"Apple":40, "Apricot":41, "Banana":79}
 Sending from Apricot
-a1ce3e0bd111b8ce7008608b22bacf3433f96b91 { Apricot-main_linn_39_SIZEOFINT=4 , Apricot-main_linn_39_addr= , Apricot-main_linn_39_buf= , Apricot-main_linn_39_coeff=0 , Apricot-main_linn_39_conn= , Apricot-main_linn_39_lin=0 , Apricot-main_linn_39_term1=0 , Apricot-main_linn_39_term2=0 , Apricot-main_linn_50_SIZEOFINT=4 , Apricot-main_linn_50_addr= , Apricot-main_linn_50_buf= , Apricot-main_linn_50_coeff=3 , Apricot-main_linn_50_conn= , Apricot-main_linn_50_lin=176 , Apricot-main_linn_50_term1=32 , Apricot-main_linn_50_term2=80 ,  } { {"Apple":40, "Apricot":40, "Banana":79} }
 Apricot {"Apple":42, "Apricot":42, "Banana":83}
 Received on Apricot
-da39a3ee5e6b4b0d3255bfef95601890afd80709 {  } { {"Apple":40, "Apricot":41, "Banana":79} }
 Apricot {"Apple":42, "Apricot":43, "Banana":83}
 Sending from Apricot
-a1ce3e0bd111b8ce7008608b22bacf3433f96b91 { Apricot-main_linn_39_SIZEOFINT=4 , Apricot-main_linn_39_addr= , Apricot-main_linn_39_buf= , Apricot-main_linn_39_coeff=0 , Apricot-main_linn_39_conn= , Apricot-main_linn_39_lin=0 , Apricot-main_linn_39_term1=0 , Apricot-main_linn_39_term2=0 , Apricot-main_linn_50_SIZEOFINT=4 , Apricot-main_linn_50_addr= , Apricot-main_linn_50_buf= , Apricot-main_linn_50_coeff=5 , Apricot-main_linn_50_conn= , Apricot-main_linn_50_lin=91 , Apricot-main_linn_50_term1=15 , Apricot-main_linn_50_term2=16 ,  } { {"Apple":42, "Apricot":42, "Banana":83} }
 Apricot {"Apple":44, "Apricot":44, "Banana":87}
 Received on Apricot
-da39a3ee5e6b4b0d3255bfef95601890afd80709 {  } { {"Apple":42, "Apricot":43, "Banana":83} }
 Apricot {"Apple":44, "Apricot":45, "Banana":87}
 Sending from Apricot
-a1ce3e0bd111b8ce7008608b22bacf3433f96b91 { Apricot-main_linn_39_SIZEOFINT=4 , Apricot-main_linn_39_addr= , Apricot-main_linn_39_buf= , Apricot-main_linn_39_coeff=0 , Apricot-main_linn_39_conn= , Apricot-main_linn_39_lin=0 , Apricot-main_linn_39_term1=0 , Apricot-main_linn_39_term2=0 , Apricot-main_linn_50_SIZEOFINT=4 , Apricot-main_linn_50_addr= , Apricot-main_linn_50_buf= , Apricot-main_linn_50_coeff=2 , Apricot-main_linn_50_conn= , Apricot-main_linn_50_lin=111 , Apricot-main_linn_50_term1=20 , Apricot-main_linn_50_term2=71 ,  } { {"Apple":44, "Apricot":44, "Banana":87} }
 Apricot {"Apple":46, "Apricot":46, "Banana":91}
 Received on Apricot
-da39a3ee5e6b4b0d3255bfef95601890afd80709 {  } { {"Apple":44, "Apricot":45, "Banana":87} }
 Apricot {"Apple":46, "Apricot":47, "Banana":91}
 Sending from Apricot
-a1ce3e0bd111b8ce7008608b22bacf3433f96b91 { Apricot-main_linn_39_SIZEOFINT=4 , Apricot-main_linn_39_addr= , Apricot-main_linn_39_buf= , Apricot-main_linn_39_coeff=0 , Apricot-main_linn_39_conn= , Apricot-main_linn_39_lin=0 , Apricot-main_linn_39_term1=0 , Apricot-main_linn_39_term2=0 , Apricot-main_linn_50_SIZEOFINT=4 , Apricot-main_linn_50_addr= , Apricot-main_linn_50_buf= , Apricot-main_linn_50_coeff=3 , Apricot-main_linn_50_conn= , Apricot-main_linn_50_lin=163 , Apricot-main_linn_50_term1=52 , Apricot-main_linn_50_term2=7 ,  } { {"Apple":46, "Apricot":46, "Banana":91} }
 Apricot {"Apple":48, "Apricot":48, "Banana":95}
 Received on Apricot
-da39a3ee5e6b4b0d3255bfef95601890afd80709 {  } { {"Apple":46, "Apricot":47, "Banana":91} }
 Apricot {"Apple":48, "Apricot":49, "Banana":95}
 Sending from Apricot
-a1ce3e0bd111b8ce7008608b22bacf3433f96b91 { Apricot-main_linn_39_SIZEOFINT=4 , Apricot-main_linn_39_addr= , Apricot-main_linn_39_buf= , Apricot-main_linn_39_coeff=0 , Apricot-main_linn_39_conn= , Apricot-main_linn_39_lin=0 , Apricot-main_linn_39_term1=0 , Apricot-main_linn_39_term2=0 , Apricot-main_linn_50_SIZEOFINT=4 , Apricot-main_linn_50_addr= , Apricot-main_linn_50_buf= , Apricot-main_linn_50_coeff=1 , Apricot-main_linn_50_conn= , Apricot-main_linn_50_lin=81 , Apricot-main_linn_50_term1=19 , Apricot-main_linn_50_term2=62 ,  } { {"Apple":48, "Apricot":48, "Banana":95} }
 Apricot {"Apple":50, "Apricot":50, "Banana":99}
 Received on Apricot
-da39a3ee5e6b4b0d3255bfef95601890afd80709 {  } { {"Apple":48, "Apricot":49, "Banana":95} }
 Apricot {"Apple":50, "Apricot":51, "Banana":99}
 Sending from Apricot
-a1ce3e0bd111b8ce7008608b22bacf3433f96b91 { Apricot-main_linn_39_SIZEOFINT=4 , Apricot-main_linn_39_addr= , Apricot-main_linn_39_buf= , Apricot-main_linn_39_coeff=0 , Apricot-main_linn_39_conn= , Apricot-main_linn_39_lin=0 , Apricot-main_linn_39_term1=0 , Apricot-main_linn_39_term2=0 , Apricot-main_linn_50_SIZEOFINT=4 , Apricot-main_linn_50_addr= , Apricot-main_linn_50_buf= , Apricot-main_linn_50_coeff=4 , Apricot-main_linn_50_conn= , Apricot-main_linn_50_lin=137 , Apricot-main_linn_50_term1=10 , Apricot-main_linn_50_term2=97 ,  } { {"Apple":50, "Apricot":50, "Banana":99} }
 Apricot {"Apple":52, "Apricot":52, "Banana":103}
 Received on Apricot
-da39a3ee5e6b4b0d3255bfef95601890afd80709 {  } { {"Apple":50, "Apricot":51, "Banana":99} }
 Apricot {"Apple":52, "Apricot":53, "Banana":103}
 Sending from Apricot
-a1ce3e0bd111b8ce7008608b22bacf3433f96b91 { Apricot-main_linn_39_SIZEOFINT=4 , Apricot-main_linn_39_addr= , Apricot-main_linn_39_buf= , Apricot-main_linn_39_coeff=0 , Apricot-main_linn_39_conn= , Apricot-main_linn_39_lin=0 , Apricot-main_linn_39_term1=0 , Apricot-main_linn_39_term2=0 , Apricot-main_linn_50_SIZEOFINT=4 , Apricot-main_linn_50_addr= , Apricot-main_linn_50_buf= , Apricot-main_linn_50_coeff=3 , Apricot-main_linn_50_conn= , Apricot-main_linn_50_lin=36 , Apricot-main_linn_50_term1=5 , Apricot-main_linn_50_term2=21 ,  } { {"Apple":52, "Apricot":52, "Banana":103} }
 Apricot {"Apple":54, "Apricot":54, "Banana":107}
 Received on Apricot
-da39a3ee5e6b4b0d3255bfef95601890afd80709 {  } { {"Apple":52, "Apricot":53, "Banana":103} }
 Apricot {"Apple":54, "Apricot":55, "Banana":107}
 Sending from Apricot
-a1ce3e0bd111b8ce7008608b22bacf3433f96b91 { Apricot-main_linn_39_SIZEOFINT=4 , Apricot-main_linn_39_addr= , Apricot-main_linn_39_buf= , Apricot-main_linn_39_coeff=0 , Apricot-main_linn_39_conn= , Apricot-main_linn_39_lin=0 , Apricot-main_linn_39_term1=0 , Apricot-main_linn_39_term2=0 , Apricot-main_linn_50_SIZEOFINT=4 , Apricot-main_linn_50_addr= , Apricot-main_linn_50_buf= , Apricot-main_linn_50_coeff=0 , Apricot-main_linn_50_conn= , Apricot-main_linn_50_lin=12 , Apricot-main_linn_50_term1=17 , Apricot-main_linn_50_term2=12 ,  } { {"Apple":54, "Apricot":54, "Banana":107} }
 Apricot {"Apple":56, "Apricot":56, "Banana":111}
 Received on Apricot
-da39a3ee5e6b4b0d3255bfef95601890afd80709 {  } { {"Apple":54, "Apricot":55, "Banana":107} }
 Apricot {"Apple":56, "Apricot":57, "Banana":111}
 Sending from Apricot
-a1ce3e0bd111b8ce7008608b22bacf3433f96b91 { Apricot-main_linn_39_SIZEOFINT=4 , Apricot-main_linn_39_addr= , Apricot-main_linn_39_buf= , Apricot-main_linn_39_coeff=0 , Apricot-main_linn_39_conn= , Apricot-main_linn_39_lin=0 , Apricot-main_linn_39_term1=0 , Apricot-main_linn_39_term2=0 , Apricot-main_linn_50_SIZEOFINT=4 , Apricot-main_linn_50_addr= , Apricot-main_linn_50_buf= , Apricot-main_linn_50_coeff=4 , Apricot-main_linn_50_conn= , Apricot-main_linn_50_lin=275 , Apricot-main_linn_50_term1=49 , Apricot-main_linn_50_term2=79 ,  } { {"Apple":56, "Apricot":56, "Banana":111} }
 Apricot {"Apple":58, "Apricot":58, "Banana":115}
 Received on Apricot
-da39a3ee5e6b4b0d3255bfef95601890afd80709 {  } { {"Apple":56, "Apricot":57, "Banana":111} }
 Apricot {"Apple":58, "Apricot":59, "Banana":115}
 Sending from Apricot
-a1ce3e0bd111b8ce7008608b22bacf3433f96b91 { Apricot-main_linn_39_SIZEOFINT=4 , Apricot-main_linn_39_addr= , Apricot-main_linn_39_buf= , Apricot-main_linn_39_coeff=0 , Apricot-main_linn_39_conn= , Apricot-main_linn_39_lin=0 , Apricot-main_linn_39_term1=0 , Apricot-main_linn_39_term2=0 , Apricot-main_linn_50_SIZEOFINT=4 , Apricot-main_linn_50_addr= , Apricot-main_linn_50_buf= , Apricot-main_linn_50_coeff=4 , Apricot-main_linn_50_conn= , Apricot-main_linn_50_lin=157 , Apricot-main_linn_50_term1=33 , Apricot-main_linn_50_term2=25 ,  } { {"Apple":58, "Apricot":58, "Banana":115} }
 Apricot {"Apple":60, "Apricot":60, "Banana":119}
 Received on Apricot
-da39a3ee5e6b4b0d3255bfef95601890afd80709 {  } { {"Apple":58, "Apricot":59, "Banana":115} }
 Apricot {"Apple":60, "Apricot":61, "Banana":119}
 Sending from Apricot
-a1ce3e0bd111b8ce7008608b22bacf3433f96b91 { Apricot-main_linn_39_SIZEOFINT=4 , Apricot-main_linn_39_addr= , Apricot-main_linn_39_buf= , Apricot-main_linn_39_coeff=0 , Apricot-main_linn_39_conn= , Apricot-main_linn_39_lin=0 , Apricot-main_linn_39_term1=0 , Apricot-main_linn_39_term2=0 , Apricot-main_linn_50_SIZEOFINT=4 , Apricot-main_linn_50_addr= , Apricot-main_linn_50_buf= , Apricot-main_linn_50_coeff=5 , Apricot-main_linn_50_conn= , Apricot-main_linn_50_lin=264 , Apricot-main_linn_50_term1=46 , Apricot-main_linn_50_term2=34 ,  } { {"Apple":60, "Apricot":60, "Banana":119} }
 Apricot {"Apple":62, "Apricot":62, "Banana":123}
 Received on Apricot
-da39a3ee5e6b4b0d3255bfef95601890afd80709 {  } { {"Apple":60, "Apricot":61, "Banana":119} }
 Apricot {"Apple":62, "Apricot":63, "Banana":123}
 Sending from Apricot
-a1ce3e0bd111b8ce7008608b22bacf3433f96b91 { Apricot-main_linn_39_SIZEOFINT=4 , Apricot-main_linn_39_addr= , Apricot-main_linn_39_buf= , Apricot-main_linn_39_coeff=0 , Apricot-main_linn_39_conn= , Apricot-main_linn_39_lin=0 , Apricot-main_linn_39_term1=0 , Apricot-main_linn_39_term2=0 , Apricot-main_linn_50_SIZEOFINT=4 , Apricot-main_linn_50_addr= , Apricot-main_linn_50_buf= , Apricot-main_linn_50_coeff=0 , Apricot-main_linn_50_conn= , Apricot-main_linn_50_lin=1 , Apricot-main_linn_50_term1=18 , Apricot-main_linn_50_term2=1 ,  } { {"Apple":62, "Apricot":62, "Banana":123} }
 Apricot {"Apple":64, "Apricot":64, "Banana":127}
 Received on Apricot
-da39a3ee5e6b4b0d3255bfef95601890afd80709 {  } { {"Apple":62, "Apricot":63, "Banana":123} }
 Apricot {"Apple":64, "Apricot":65, "Banana":127}
 Sending from Apricot
-a1ce3e0bd111b8ce7008608b22bacf3433f96b91 { Apricot-main_linn_39_SIZEOFINT=4 , Apricot-main_linn_39_addr= , Apricot-main_linn_39_buf= , Apricot-main_linn_39_coeff=0 , Apricot-main_linn_39_conn= , Apricot-main_linn_39_lin=0 , Apricot-main_linn_39_term1=0 , Apricot-main_linn_39_term2=0 , Apricot-main_linn_50_SIZEOFINT=4 , Apricot-main_linn_50_addr= , Apricot-main_linn_50_buf= , Apricot-main_linn_50_coeff=5 , Apricot-main_linn_50_conn= , Apricot-main_linn_50_lin=30 , Apricot-main_linn_50_term1=4 , Apricot-main_linn_50_term2=10 ,  } { {"Apple":64, "Apricot":64, "Banana":127} }
 Apricot {"Apple":66, "Apricot":66, "Banana":131}
 Received on Apricot
-da39a3ee5e6b4b0d3255bfef95601890afd80709 {  } { {"Apple":64, "Apricot":65, "Banana":127} }
 Apricot {"Apple":66, "Apricot":67, "Banana":131}
 Sending from Apricot
-a1ce3e0bd111b8ce7008608b22bacf3433f96b91 { Apricot-main_linn_39_SIZEOFINT=4 , Apricot-main_linn_39_addr= , Apricot-main_linn_39_buf= , Apricot-main_linn_39_coeff=0 , Apricot-main_linn_39_conn= , Apricot-main_linn_39_lin=0 , Apricot-main_linn_39_term1=0 , Apricot-main_linn_39_term2=0 , Apricot-main_linn_50_SIZEOFINT=4 , Apricot-main_linn_50_addr= , Apricot-main_linn_50_buf= , Apricot-main_linn_50_coeff=3 , Apricot-main_linn_50_conn= , Apricot-main_linn_50_lin=89 , Apricot-main_linn_50_term1=24 , Apricot-main_linn_50_term2=17 ,  } { {"Apple":66, "Apricot":66, "Banana":131} }
 Apricot {"Apple":68, "Apricot":68, "Banana":135}
 Received on Apricot
-da39a3ee5e6b4b0d3255bfef95601890afd80709 {  } { {"Apple":66, "Apricot":67, "Banana":131} }
 Apricot {"Apple":68, "Apricot":69, "Banana":135}
 Sending from Apricot
-a1ce3e0bd111b8ce7008608b22bacf3433f96b91 { Apricot-main_linn_39_SIZEOFINT=4 , Apricot-main_linn_39_addr= , Apricot-main_linn_39_buf= , Apricot-main_linn_39_coeff=0 , Apricot-main_linn_39_conn= , Apricot-main_linn_39_lin=0 , Apricot-main_linn_39_term1=0 , Apricot-main_linn_39_term2=0 , Apricot-main_linn_50_SIZEOFINT=4 , Apricot-main_linn_50_addr= , Apricot-main_linn_50_buf= , Apricot-main_linn_50_coeff=5 , Apricot-main_linn_50_conn= , Apricot-main_linn_50_lin=424 , Apricot-main_linn_50_term1=69 , Apricot-main_linn_50_term2=79 ,  } { {"Apple":68, "Apricot":68, "Banana":135} }
 Apricot {"Apple":70, "Apricot":70, "Banana":139}
 Received on Apricot
-da39a3ee5e6b4b0d3255bfef95601890afd80709 {  } { {"Apple":68, "Apricot":69, "Banana":135} }
 Apricot {"Apple":70, "Apricot":71, "Banana":139}
 Sending from Apricot
-a1ce3e0bd111b8ce7008608b22bacf3433f96b91 { Apricot-main_linn_39_SIZEOFINT=4 , Apricot-main_linn_39_addr= , Apricot-main_linn_39_buf= , Apricot-main_linn_39_coeff=0 , Apricot-main_linn_39_conn= , Apricot-main_linn_39_lin=0 , Apricot-main_linn_39_term1=0 , Apricot-main_linn_39_term2=0 , Apricot-main_linn_50_SIZEOFINT=4 , Apricot-main_linn_50_addr= , Apricot-main_linn_50_buf= , Apricot-main_linn_50_coeff=5 , Apricot-main_linn_50_conn= , Apricot-main_linn_50_lin=395 , Apricot-main_linn_50_term1=69 , Apricot-main_linn_50_term2=50 ,  } { {"Apple":70, "Apricot":70, "Banana":139} }
 Apricot {"Apple":72, "Apricot":72, "Banana":143}
 Received on Apricot
-da39a3ee5e6b4b0d3255bfef95601890afd80709 {  } { {"Apple":70, "Apricot":71, "Banana":139} }
 Apricot {"Apple":72, "Apricot":73, "Banana":143}
 Sending from Apricot
-a1ce3e0bd111b8ce7008608b22bacf3433f96b91 { Apricot-main_linn_39_SIZEOFINT=4 , Apricot-main_linn_39_addr= , Apricot-main_linn_39_buf= , Apricot-main_linn_39_coeff=0 , Apricot-main_linn_39_conn= , Apricot-main_linn_39_lin=0 , Apricot-main_linn_39_term1=0 , Apricot-main_linn_39_term2=0 , Apricot-main_linn_50_SIZEOFINT=4 , Apricot-main_linn_50_addr= , Apricot-main_linn_50_buf= , Apricot-main_linn_50_coeff=1 , Apricot-main_linn_50_conn= , Apricot-main_linn_50_lin=80 , Apricot-main_linn_50_term1=57 , Apricot-main_linn_50_term2=23 ,  } { {"Apple":72, "Apricot":72, "Banana":143} }
 Apricot {"Apple":74, "Apricot":74, "Banana":147}
 Received on Apricot
-da39a3ee5e6b4b0d3255bfef95601890afd80709 {  } { {"Apple":72, "Apricot":73, "Banana":143} }
 Apricot {"Apple":74, "Apricot":75, "Banana":147}
 Sending from Apricot
-a1ce3e0bd111b8ce7008608b22bacf3433f96b91 { Apricot-main_linn_39_SIZEOFINT=4 , Apricot-main_linn_39_addr= , Apricot-main_linn_39_buf= , Apricot-main_linn_39_coeff=0 , Apricot-main_linn_39_conn= , Apricot-main_linn_39_lin=0 , Apricot-main_linn_39_term1=0 , Apricot-main_linn_39_term2=0 , Apricot-main_linn_50_SIZEOFINT=4 , Apricot-main_linn_50_addr= , Apricot-main_linn_50_buf= , Apricot-main_linn_50_coeff=1 , Apricot-main_linn_50_conn= , Apricot-main_linn_50_lin=14 , Apricot-main_linn_50_term1=12 , Apricot-main_linn_50_term2=2 ,  } { {"Apple":74, "Apricot":74, "Banana":147} }
 Apricot {"Apple":76, "Apricot":76, "Banana":151}
 Received on Apricot
-da39a3ee5e6b4b0d3255bfef95601890afd80709 {  } { {"Apple":74, "Apricot":75, "Banana":147} }
 Apricot {"Apple":76, "Apricot":77, "Banana":151}
 Sending from Apricot
-a1ce3e0bd111b8ce7008608b22bacf3433f96b91 { Apricot-main_linn_39_SIZEOFINT=4 , Apricot-main_linn_39_addr= , Apricot-main_linn_39_buf= , Apricot-main_linn_39_coeff=0 , Apricot-main_linn_39_conn= , Apricot-main_linn_39_lin=0 , Apricot-main_linn_39_term1=0 , Apricot-main_linn_39_term2=0 , Apricot-main_linn_50_SIZEOFINT=4 , Apricot-main_linn_50_addr= , Apricot-main_linn_50_buf= , Apricot-main_linn_50_coeff=5 , Apricot-main_linn_50_conn= , Apricot-main_linn_50_lin=332 , Apricot-main_linn_50_term1=55 , Apricot-main_linn_50_term2=57 ,  } { {"Apple":76, "Apricot":76, "Banana":151} }
 Apricot {"Apple":78, "Apricot":78, "Banana":155}
 Received on Apricot
-da39a3ee5e6b4b0d3255bfef95601890afd80709 {  } { {"Apple":76, "Apricot":77, "Banana":151} }
 Apricot {"Apple":78, "Apricot":79, "Banana":155}
 Sending from Apricot
-a1ce3e0bd111b8ce7008608b22bacf3433f96b91 { Apricot-main_linn_39_SIZEOFINT=4 , Apricot-main_linn_39_addr= , Apricot-main_linn_39_buf= , Apricot-main_linn_39_coeff=0 , Apricot-main_linn_39_conn= , Apricot-main_linn_39_lin=0 , Apricot-main_linn_39_term1=0 , Apricot-main_linn_39_term2=0 , Apricot-main_linn_50_SIZEOFINT=4 , Apricot-main_linn_50_addr= , Apricot-main_linn_50_buf= , Apricot-main_linn_50_coeff=0 , Apricot-main_linn_50_conn= , Apricot-main_linn_50_lin=1 , Apricot-main_linn_50_term1=43 , Apricot-main_linn_50_term2=1 ,  } { {"Apple":78, "Apricot":78, "Banana":155} }
 Apricot {"Apple":80, "Apricot":80, "Banana":159}
 Received on Apricot
-da39a3ee5e6b4b0d3255bfef95601890afd80709 {  } { {"Apple":78, "Apricot":79, "Banana":155} }
 Apricot {"Apple":80, "Apricot":81, "Banana":159}
 Sending from Apricot
-a1ce3e0bd111b8ce7008608b22bacf3433f96b91 { Apricot-main_linn_39_SIZEOFINT=4 , Apricot-main_linn_39_addr= , Apricot-main_linn_39_buf= , Apricot-main_linn_39_coeff=0 , Apricot-main_linn_39_conn= , Apricot-main_linn_39_lin=0 , Apricot-main_linn_39_term1=0 , Apricot-main_linn_39_term2=0 , Apricot-main_linn_50_SIZEOFINT=4 , Apricot-main_linn_50_addr= , Apricot-main_linn_50_buf= , Apricot-main_linn_50_coeff=0 , Apricot-main_linn_50_conn= , Apricot-main_linn_50_lin=18 , Apricot-main_linn_50_term1=19 , Apricot-main_linn_50_term2=18 ,  } { {"Apple":80, "Apricot":80, "Banana":159} }
 Apricot {"Apple":82, "Apricot":82, "Banana":163}
 Received on Apricot
-da39a3ee5e6b4b0d3255bfef95601890afd80709 {  } { {"Apple":80, "Apricot":81, "Banana":159} }
 Apricot {"Apple":82, "Apricot":83, "Banana":163}
 Sending from Apricot
-296c7369092af3272314adc0dc771be85c337273 { Apricot-main_linn_39_SIZEOFINT=4 , Apricot-main_linn_39_addr= , Apricot-main_linn_39_buf= , Apricot-main_linn_39_coeff=0 , Apricot-main_linn_39_conn= , Apricot-main_linn_39_lin=0 , Apricot-main_linn_39_term1=0 , Apricot-main_linn_39_term2=0 , Apricot-main_linn_50_SIZEOFINT=4 , Apricot-main_linn_50_addr= , Apricot-main_linn_50_buf= , Apricot-main_linn_50_coeff=1 , Apricot-main_linn_50_conn= , Apricot-main_linn_50_lin=135 , Apricot-main_linn_50_term1=94 , Apricot-main_linn_50_term2=41 ,  } { {"Apple":82, "Apricot":82, "Banana":163} }
 Apricot {"Apple":84, "Apricot":84, "Banana":167}
 Received on Apricot
-da39a3ee5e6b4b0d3255bfef95601890afd80709 {  } { {"Apple":82, "Apricot":83, "Banana":163} }
 Apricot {"Apple":84, "Apricot":85, "Banana":167}
 Sending from Apricot
-a1ce3e0bd111b8ce7008608b22bacf3433f96b91 { Apricot-main_linn_39_SIZEOFINT=4 , Apricot-main_linn_39_addr= , Apricot-main_linn_39_buf= , Apricot-main_linn_39_coeff=0 , Apricot-main_linn_39_conn= , Apricot-main_linn_39_lin=0 , Apricot-main_linn_39_term1=0 , Apricot-main_linn_39_term2=0 , Apricot-main_linn_50_SIZEOFINT=4 , Apricot-main_linn_50_addr= , Apricot-main_linn_50_buf= , Apricot-main_linn_50_coeff=4 , Apricot-main_linn_50_conn= , Apricot-main_linn_50_lin=373 , Apricot-main_linn_50_term1=88 , Apricot-main_linn_50_term2=21 ,  } { {"Apple":84, "Apricot":84, "Banana":167} }
 Apricot {"Apple":86, "Apricot":86, "Banana":171}
 Received on Apricot
-da39a3ee5e6b4b0d3255bfef95601890afd80709 {  } { {"Apple":84, "Apricot":85, "Banana":167} }
 Apricot {"Apple":86, "Apricot":87, "Banana":171}
 Sending from Apricot
-a1ce3e0bd111b8ce7008608b22bacf3433f96b91 { Apricot-main_linn_39_SIZEOFINT=4 , Apricot-main_linn_39_addr= , Apricot-main_linn_39_buf= , Apricot-main_linn_39_coeff=0 , Apricot-main_linn_39_conn= , Apricot-main_linn_39_lin=0 , Apricot-main_linn_39_term1=0 , Apricot-main_linn_39_term2=0 , Apricot-main_linn_50_SIZEOFINT=4 , Apricot-main_linn_50_addr= , Apricot-main_linn_50_buf= , Apricot-main_linn_50_coeff=0 , Apricot-main_linn_50_conn= , Apricot-main_linn_50_lin=80 , Apricot-main_linn_50_term1=11 , Apricot-main_linn_50_term2=80 ,  } { {"Apple":86, "Apricot":86, "Banana":171} }
 Apricot {"Apple":88, "Apricot":88, "Banana":175}
 Received on Apricot
-da39a3ee5e6b4b0d3255bfef95601890afd80709 {  } { {"Apple":86, "Apricot":87, "Banana":171} }
 Apricot {"Apple":88, "Apricot":89, "Banana":175}
 Sending from Apricot
-a1ce3e0bd111b8ce7008608b22bacf3433f96b91 { Apricot-main_linn_39_SIZEOFINT=4 , Apricot-main_linn_39_addr= , Apricot-main_linn_39_buf= , Apricot-main_linn_39_coeff=0 , Apricot-main_linn_39_conn= , Apricot-main_linn_39_lin=0 , Apricot-main_linn_39_term1=0 , Apricot-main_linn_39_term2=0 , Apricot-main_linn_50_SIZEOFINT=4 , Apricot-main_linn_50_addr= , Apricot-main_linn_50_buf= , Apricot-main_linn_50_coeff=1 , Apricot-main_linn_50_conn= , Apricot-main_linn_50_lin=98 , Apricot-main_linn_50_term1=43 , Apricot-main_linn_50_term2=55 ,  } { {"Apple":88, "Apricot":88, "Banana":175} }
 Apricot {"Apple":90, "Apricot":90, "Banana":179}
 Received on Apricot
-da39a3ee5e6b4b0d3255bfef95601890afd80709 {  } { {"Apple":88, "Apricot":89, "Banana":175} }
 Apricot {"Apple":90, "Apricot":91, "Banana":179}
 Sending from Apricot
-a1ce3e0bd111b8ce7008608b22bacf3433f96b91 { Apricot-main_linn_39_SIZEOFINT=4 , Apricot-main_linn_39_addr= , Apricot-main_linn_39_buf= , Apricot-main_linn_39_coeff=0 , Apricot-main_linn_39_conn= , Apricot-main_linn_39_lin=0 , Apricot-main_linn_39_term1=0 , Apricot-main_linn_39_term2=0 , Apricot-main_linn_50_SIZEOFINT=4 , Apricot-main_linn_50_addr= , Apricot-main_linn_50_buf= , Apricot-main_linn_50_coeff=0 , Apricot-main_linn_50_conn= , Apricot-main_linn_50_lin=53 , Apricot-main_linn_50_term1=41 , Apricot-main_linn_50_term2=53 ,  } { {"Apple":90, "Apricot":90, "Banana":179} }
 Apricot {"Apple":92, "Apricot":92, "Banana":183}
 Received on Apricot
-da39a3ee5e6b4b0d3255bfef95601890afd80709 {  } { {"Apple":90, "Apricot":91, "Banana":179} }
 Apricot {"Apple":92, "Apricot":93, "Banana":183}
 Sending from Apricot
-a1ce3e0bd111b8ce7008608b22bacf3433f96b91 { Apricot-main_linn_39_SIZEOFINT=4 , Apricot-main_linn_39_addr= , Apricot-main_linn_39_buf= , Apricot-main_linn_39_coeff=0 , Apricot-main_linn_39_conn= , Apricot-main_linn_39_lin=0 , Apricot-main_linn_39_term1=0 , Apricot-main_linn_39_term2=0 , Apricot-main_linn_50_SIZEOFINT=4 , Apricot-main_linn_50_addr= , Apricot-main_linn_50_buf= , Apricot-main_linn_50_coeff=3 , Apricot-main_linn_50_conn= , Apricot-main_linn_50_lin=110 , Apricot-main_linn_50_term1=31 , Apricot-main_linn_50_term2=17 ,  } { {"Apple":92, "Apricot":92, "Banana":183} }
 Apricot {"Apple":94, "Apricot":94, "Banana":187}
 Received on Apricot
-da39a3ee5e6b4b0d3255bfef95601890afd80709 {  } { {"Apple":92, "Apricot":93, "Banana":183} }
 Apricot {"Apple":94, "Apricot":95, "Banana":187}
 Sending from Apricot
-a1ce3e0bd111b8ce7008608b22bacf3433f96b91 { Apricot-main_linn_39_SIZEOFINT=4 , Apricot-main_linn_39_addr= , Apricot-main_linn_39_buf= , Apricot-main_linn_39_coeff=0 , Apricot-main_linn_39_conn= , Apricot-main_linn_39_lin=0 , Apricot-main_linn_39_term1=0 , Apricot-main_linn_39_term2=0 , Apricot-main_linn_50_SIZEOFINT=4 , Apricot-main_linn_50_addr= , Apricot-main_linn_50_buf= , Apricot-main_linn_50_coeff=3 , Apricot-main_linn_50_conn= , Apricot-main_linn_50_lin=111 , Apricot-main_linn_50_term1=31 , Apricot-main_linn_50_term2=18 ,  } { {"Apple":94, "Apricot":94, "Banana":187} }
 Apricot {"Apple":96, "Apricot":96, "Banana":191}
 Received on Apricot
-da39a3ee5e6b4b0d3255bfef95601890afd80709 {  } { {"Apple":94, "Apricot":95, "Banana":187} }
 Apricot {"Apple":96, "Apricot":97, "Banana":191}
 Sending from Apricot
-a1ce3e0bd111b8ce7008608b22bacf3433f96b91 { Apricot-main_linn_39_SIZEOFINT=4 , Apricot-main_linn_39_addr= , Apricot-main_linn_39_buf= , Apricot-main_linn_39_coeff=0 , Apricot-main_linn_39_conn= , Apricot-main_linn_39_lin=0 , Apricot-main_linn_39_term1=0 , Apricot-main_linn_39_term2=0 , Apricot-main_linn_50_SIZEOFINT=4 , Apricot-main_linn_50_addr= , Apricot-main_linn_50_buf= , Apricot-main_linn_50_coeff=4 , Apricot-main_linn_50_conn= , Apricot-main_linn_50_lin=142 , Apricot-main_linn_50_term1=32 , Apricot-main_linn_50_term2=14 ,  } { {"Apple":96, "Apricot":96, "Banana":191} }
 Apricot {"Apple":98, "Apricot":98, "Banana":195}
 Received on Apricot
-da39a3ee5e6b4b0d3255bfef95601890afd80709 {  } { {"Apple":96, "Apricot":97, "Banana":191} }
 Apricot {"Apple":98, "Apricot":99, "Banana":195}
 Sending from Apricot
-a1ce3e0bd111b8ce7008608b22bacf3433f96b91 { Apricot-main_linn_39_SIZEOFINT=4 , Apricot-main_linn_39_addr= , Apricot-main_linn_39_buf= , Apricot-main_linn_39_coeff=0 , Apricot-main_linn_39_conn= , Apricot-main_linn_39_lin=0 , Apricot-main_linn_39_term1=0 , Apricot-main_linn_39_term2=0 , Apricot-main_linn_50_SIZEOFINT=4 , Apricot-main_linn_50_addr= , Apricot-main_linn_50_buf= , Apricot-main_linn_50_coeff=4 , Apricot-main_linn_50_conn= , Apricot-main_linn_50_lin=96 , Apricot-main_linn_50_term1=4 , Apricot-main_linn_50_term2=80 ,  } { {"Apple":98, "Apricot":98, "Banana":195} }
 Apricot {"Apple":100, "Apricot":100, "Banana":199}
 Received on Apricot
-da39a3ee5e6b4b0d3255bfef95601890afd80709 {  } { {"Apple":98, "Apricot":99, "Banana":195} }
 Apricot {"Apple":100, "Apricot":101, "Banana":199}
 Sending from Apricot
-296c7369092af3272314adc0dc771be85c337273 { Apricot-main_linn_39_SIZEOFINT=4 , Apricot-main_linn_39_addr= , Apricot-main_linn_39_buf= , Apricot-main_linn_39_coeff=0 , Apricot-main_linn_39_conn= , Apricot-main_linn_39_lin=0 , Apricot-main_linn_39_term1=0 , Apricot-main_linn_39_term2=0 , Apricot-main_linn_50_SIZEOFINT=4 , Apricot-main_linn_50_addr= , Apricot-main_linn_50_buf= , Apricot-main_linn_50_coeff=3 , Apricot-main_linn_50_conn= , Apricot-main_linn_50_lin=71 , Apricot-main_linn_50_term1=0 , Apricot-main_linn_50_term2=71 ,  } { {"Apple":100, "Apricot":100, "Banana":199} }
 Apricot {"Apple":102, "Apricot":102, "Banana":203}
 Received on Apricot
-da39a3ee5e6b4b0d3255bfef95601890afd80709 {  } { {"Apple":100, "Apricot":101, "Banana":199} }
 Apricot {"Apple":102, "Apricot":103, "Banana":203}
 Sending from Apricot
-a1ce3e0bd111b8ce7008608b22bacf3433f96b91 { Apricot-main_linn_39_SIZEOFINT=4 , Apricot-main_linn_39_addr= , Apricot-main_linn_39_buf= , Apricot-main_linn_39_coeff=0 , Apricot-main_linn_39_conn= , Apricot-main_linn_39_lin=0 , Apricot-main_linn_39_term1=0 , Apricot-main_linn_39_term2=0 , Apricot-main_linn_50_SIZEOFINT=4 , Apricot-main_linn_50_addr= , Apricot-main_linn_50_buf= , Apricot-main_linn_50_coeff=1 , Apricot-main_linn_50_conn= , Apricot-main_linn_50_lin=108 , Apricot-main_linn_50_term1=85 , Apricot-main_linn_50_term2=23 ,  } { {"Apple":102, "Apricot":102, "Banana":203} } {  } { {"Apple":102, "Apricot":102, "Banana":203} }
+Strawberry {"Strawberry":1}
+Initialization Complete
+Strawberry {"Strawberry":2}
+Sending from Strawberry
+Strawberry {"Strawberry":3}
+Received on Strawberry
