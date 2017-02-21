@@ -5,6 +5,7 @@ import (
 	"net"
 	"os"
 	"reflect"
+	"strings"
 	"time"
 )
 
@@ -23,6 +24,28 @@ const (
 	ASSERT_FAILED              = iota
 )
 
+func msgTypeToString(msgT messageType) string {
+	switch msgT {
+	case RTT_REQUEST:
+		return "RTT_REQUEST"
+	case RTT_RETURN:
+		return "RTT_RETURN"
+	case ASSERT_REQUEST:
+		return "ASSERT_REQUEST"
+	case ASSERT_RETURN:
+		return "ASSERT_RETURN"
+	case TIME_REQUEST:
+		return "TIME_REQUEST"
+	case TIME_RETURN:
+		return "TIME_RETURN"
+	case SYNC_REQUEST:
+		return "SYNC_REQUEST"
+	case ASSERT_FAILED:
+		return "ASSERT_FAILED"
+	}
+	return "UNDEFINED"
+}
+
 // ============================================ STRUCTS ============================================
 
 type assertionFunction func(map[string]map[string]interface{}) bool
@@ -40,7 +63,7 @@ type _message struct {
 // =======================================  GLOBAL VARIABLES =======================================
 
 var address string
-var neighbors []string
+var peers []string
 var listener *net.UDPConn
 var assertableDictionary map[string]interface{}
 var assertableFunctions map[string]func(interface{}) interface{}
@@ -69,10 +92,19 @@ func checkResult(err error, caller string) {
 	}
 }
 
-func getValue(pointer interface{}) reflect.Value {
-	return reflect.ValueOf(pointer).Elem()
+func getValue(pointer interface{}) (value reflect.Value) {
+	defer func() {
+		if recover() != nil {
+			fmt.Printf("Zero Value in Assert")
+			value = reflect.ValueOf(pointer)
+		}
+	}()
+
+	value = reflect.ValueOf(pointer).Elem()
+	return
 }
 
+//Turn an array of integers into a string
 func B2S(bs []uint8) string {
 	b := make([]byte, len(bs))
 	for i, v := range bs {
@@ -84,7 +116,7 @@ func B2S(bs []uint8) string {
 // ===================================== COMMUNICATION METHODS =====================================
 
 func broadcastMessage(payload _message, logMessage string) {
-	for _, v := range neighbors {
+	for _, v := range peers {
 		// fmt.Println("Sending to", v)
 		go sendToAddr(payload, v, logMessage)
 	}
@@ -106,16 +138,17 @@ func sendToAddr(payload _message, addr string, logMessage string) {
 func receiveConnections() chan _message {
 	msg := make(chan _message)
 
-	buf := make([]byte, 1024)
+	buf := make([]byte, 8192)
 
 	go func() {
 		for {
 			n, addr, err := listener.ReadFromUDP(buf[0:])
 			var incomingMessage _message
 			UnpackM(buf[0:n], &incomingMessage, "Received Message From Node")
-			logMessage := fmt.Sprintf("Received message [MessageType: %d] from [%s]",
-				incomingMessage.MessageType,
-				addr)
+			logMessage := fmt.Sprintf("Received message [MessageType: %d] from [%s] of size %d",
+				msgTypeToString(incomingMessage.MessageType),
+				addr,
+				n)
 			Local(logMessage)
 			if err != nil {
 				fmt.Println("READ ERROR: ", err)
@@ -183,6 +216,7 @@ func processData(message_chan chan _message) {
 				if ok {
 					roundMap := *val
 					returnedValues := message.Result.(map[interface{}]interface{})
+					//fmt.Println(returnedValues)
 					returnedValuesCopy := make(map[string]interface{})
 					for k, v := range returnedValues {
 						returnedValuesCopy[k.(string)] = v
@@ -245,7 +279,7 @@ func handleRTT() {
 			// TODO: This can probably be configurable to not flood the network
 			time.Sleep(5 * time.Second)
 			roundNumberRTT++
-			for _, v := range neighbors {
+			for _, v := range peers {
 				getRTT(v)
 			}
 		}
@@ -287,7 +321,7 @@ func handleTimeSync() {
 	go func() {
 		for {
 			time.Sleep(4 * time.Second)
-			for _, v := range neighbors {
+			for _, v := range peers {
 				delete(syncClientTime, v)
 				syncTime(v)
 			}
@@ -301,10 +335,45 @@ func handleTimeSync() {
 }
 
 // =======================================  PUBLIC METHODS =======================================
+//Listening address
+//option 1) addr is the format :portnumber
+//option 2) environment variable DINV_ASSERT_LISTEN is the format
+//ip:port
+//Peers
+//option 1) assertPeers is a string array of the format :ports
+//option 2) enviornment variable DINV_ASSERT_PEERS is the form
+//ip:port,ip:port,...,ip:port which may or may not include the
+//peer itself
+func InitDistributedAssert(addr string, assertPeers []string, processName string) {
+	//initalize dinvRT if it is not allready running
+	initDinv("")
+	//initalize asserting address
+	if addr != "" {
+		address = addr
+	} else if os.Getenv("DINV_ASSERT_LISTEN") != "" {
+		address = os.Getenv("DINV_ASSERT_LISTEN")
+	} else {
+		goVecLogger.LogLocalEvent("Cannot Initalize Assert Address Dying!")
+		os.Exit(1)
+	}
+	//initalize assert peers
+	if assertPeers != nil {
+		peers = assertPeers
+	} else if os.Getenv("DINV_ASSERT_PEERS") != "" {
+		peers = strings.Split(os.Getenv("DINV_ASSERT_PEERS"), ",")
+	} else {
+		goVecLogger.LogLocalEvent("Cannot parse assert peers dying!!")
+		os.Exit(1)
+	}
+	//remove self from peer list
+	tmpNeighbours := make([]string, 0)
+	for _, n := range peers {
+		if n != address {
+			tmpNeighbours = append(tmpNeighbours, n)
+		}
+	}
+	peers = tmpNeighbours
 
-func InitDistributedAssert(addr string, neighbours []string, processName string) {
-	address = addr
-	neighbors = neighbours
 	listen_address, err := net.ResolveUDPAddr("udp4", address)
 	// fmt.Println("Listening on address: ", address)
 	listener, err = net.ListenUDP("udp4", listen_address)
@@ -332,7 +401,7 @@ func InitDistributedAssert(addr string, neighbours []string, processName string)
 	roundToResponseMap = make(map[int]*map[string]map[string]interface{})
 
 	lowest := true
-	for _, v := range neighbours {
+	for _, v := range peers {
 		roundTripTimeMap[v] = time.Second
 		if v < addr {
 			lowest = false
@@ -391,4 +460,8 @@ func Assert(outerFunc func(map[string]map[string]interface{}) bool, requestedVal
 		message := fmt.Sprintf("ASSERTION PASSED: %#+v", responseMap)
 		Local(message)
 	}
+}
+
+func GetPeers() []string {
+	return peers
 }

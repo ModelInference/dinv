@@ -8,7 +8,6 @@ import (
 	"net"
 	"os"
 	"time"
-    "github.com/acarb95/DistributedAsserts/assert"
 )
 
 const addr = ":9090"
@@ -20,15 +19,15 @@ var sum int64
 func main() {
 
 	// ============================== ASSERT CODE ==============================
-	client_assert_addr := ":18589"
-	server_assert_addr := ":9099"
-	assert.InitDistributedAssert(server_assert_addr, []string{client_assert_addr}, "server");
-	assert.AddAssertable("a", &a, nil);
-	assert.AddAssertable("b", &b, nil);
-	assert.AddAssertable("sum", &sum, nil)
+	//client_assert_addr := ":18589"
+	//server_assert_addr := ":9099"
+	dinvRT.InitDistributedAssert("", nil, "server")
+	dinvRT.AddAssertable("a", &a, nil)
+	dinvRT.AddAssertable("b", &b, nil)
+	dinvRT.AddAssertable("sum", &sum, nil)
 	// ============================ END ASSERT CODE ============================
 
-	time.Sleep(5*time.Second)
+	time.Sleep(5 * time.Second)
 
 	conn, err := net.ListenPacket("udp4", addr)
 	if err != nil {
@@ -72,7 +71,6 @@ func listenAndRespond(conn net.PacketConn) (err error) {
 	sum = a + b // - 3 // CHANGE TO: Uncomment to force error on server side for sum computation
 	// ============================ END ASSERT CODE ============================
 
-
 	// fmt.Println(buf)
 	// fmt.Println(buf[:8], a, readA)
 	// fmt.Println(buf[8:], b, readB)
@@ -80,12 +78,14 @@ func listenAndRespond(conn net.PacketConn) (err error) {
 	// fmt.Printf("[SERVER] %d + %d = %d\n", a, b, sum)
 
 	msg := make([]byte, 32)
-	binary.PutVarint(msg, sum) //putN := 
+	binary.PutVarint(msg, sum) //putN :=
 
 	// fmt.Println(putN, msg)
 
 	// after instrumentation:
 	capture.WriteTo(conn.WriteTo, msg, addr)
+	//Experiment should cause assertion failure
+	sum++
 	// conn.WriteTo(msg, addr)
 
 	//@dump

@@ -8,13 +8,12 @@ import (
 	"math/rand"
 	"net"
 	"os"
-    "github.com/acarb95/DistributedAsserts/assert"
-    "time"
+	"time"
 )
 
 const (
 	LARGEST_TERM = 100
-	RUNS         = 5//00
+	RUNS         = 5 //00
 )
 
 var n int64
@@ -28,38 +27,48 @@ var server_assert_addr = ":9099"
 func assertValue(values map[string]map[string]interface{}) bool {
 	int_a := values[server_assert_addr]["a"].(int64)
 	int_b := values[server_assert_addr]["b"].(int64)
+	int_server_sum := values[server_assert_addr]["sum"].(int64)
 	int_n := values[client_assert_addr]["n"].(int64)
 	int_m := values[client_assert_addr]["m"].(int64)
-	int_sum := values[client_assert_addr]["sum"].(int64)
+	int_client_sum := values[client_assert_addr]["sum"].(int64)
 
+	fmt.Println(int_client_sum, int_server_sum)
 	if (int_n != int_a) && (int_n != int_b) {
+		//assert that n, a client variable is equal to either a or b
+		//on the server
 		fmt.Println("ASSERTION FAILURE: client n does not match server a or b.")
 		fmt.Printf("\tn: %d, a: %d, b: %d\n", int_n, int_a, int_b)
 		return false
 	} else if (int_m != int_a) && (int_m != int_b) {
-	  	fmt.Println("ASSERTION FAILURE: client n does not match server a or b.")
+		//assert that m, a client variable is equal to either a or b
+		//on the server
+		fmt.Println("ASSERTION FAILURE: client n does not match server a or b.")
 		fmt.Printf("\tm: %d, a: %d, b: %d\n", int_m, int_a, int_b)
 		return false
-	} else if int_sum != (int_m + int_n) {
+	} else if int_client_sum != (int_m + int_n) {
 		fmt.Println("ASSERTION FAILURE: sum does not match n + m.")
-		fmt.Printf("\tsum: %d, n: %d, m: %d\n", int_sum, int_n, int_m)
+		fmt.Printf("\tsum: %d, n: %d, m: %d\n", int_client_sum, int_n, int_m)
+		return false
+	} else if int_client_sum != int_server_sum {
+		fmt.Println("ASSERTION FAILURE: sum does not match across client server")
+		fmt.Printf("\tsum_client: %d, sum_server %d \n", int_client_sum, int_server_sum)
 		return false
 	} else {
 		return true
 	}
 }
-// ============================ END ASSERT CODE ============================
 
+// ============================ END ASSERT CODE ============================
 
 func main() {
 	// ============================== ASSERT CODE ==============================
-	assert.InitDistributedAssert(client_assert_addr, []string{server_assert_addr}, "client");
-	assert.AddAssertable("n", &n, nil);
-	assert.AddAssertable("m", &m, nil);
-	assert.AddAssertable("sum", &sum, nil)
+	dinvRT.InitDistributedAssert("", nil, "client")
+	dinvRT.AddAssertable("n", &n, nil)
+	dinvRT.AddAssertable("m", &m, nil)
+	dinvRT.AddAssertable("sum", &sum, nil)
 	// ============================ END ASSERT CODE ============================
 
-	time.Sleep(5*time.Second)
+	time.Sleep(5 * time.Second)
 
 	localAddr, err := net.ResolveUDPAddr("udp4", ":18585")
 	printErrAndExit(err)
@@ -85,13 +94,13 @@ func main() {
 
 		requestedValues[server_assert_addr] = append(requestedValues[server_assert_addr], "a")
 		requestedValues[server_assert_addr] = append(requestedValues[server_assert_addr], "b")
+		requestedValues[server_assert_addr] = append(requestedValues[server_assert_addr], "sum")
 
-		// Assert on those requested things. 
-		assert.Assert(assertValue, requestedValues)
+		// Assert on those requested things.
+		dinvRT.Assert(assertValue, requestedValues)
 		// ============================ END ASSERT CODE ============================
 
-
-		time.Sleep(assert.GetAssertDelay()*2)
+		time.Sleep(dinvRT.GetAssertDelay() * 2)
 		// fmt.Printf("[CLIENT] %d/%d: %d + %d = %d\n", t, RUNS, n, m, sum)
 	}
 	fmt.Println()

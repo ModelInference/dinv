@@ -3,8 +3,12 @@
 testDir=$GOPATH/src/bitbucket.org/bestchai/dinv/dinvRT/test-asserts/sum
 
 function runTestPrograms {
+    export DINV_ASSERT_LISTEN=:9099
+    export DINV_ASSERT_PEERS=:18589,:9099
     go run server/server.go &
     sleep 2
+    export DINV_ASSERT_LISTEN=:18589
+    export DINV_ASSERT_PEERS=:18589,:9099
     go run client/client.go &
     sleep 10
     killall server
@@ -51,8 +55,8 @@ then
     exit
 fi
 
-#runTestPrograms
-#sleep 5
-runLogMerger
-runDaikon
-shivizMerge
+runTestPrograms
+sleep 5
+#runLogMerger
+#runDaikon
+#shivizMerge
