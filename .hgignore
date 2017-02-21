@@ -9,6 +9,7 @@ syntax: glob
 *.orig
 *.json
 *.stext
+*.log
 *out.text
 savedtest*
 mod_*
