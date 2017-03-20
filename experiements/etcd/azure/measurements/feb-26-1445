@@ -1,0 +1,73 @@
+NONE-leader-true-sample-1-client-4,4,10,1049, 36.00  , 37.77  ,11.43202
+NONE-leader-true-sample-1-client-40,40,10,3217,121.0  ,121.8  ,32.42286
+NONE-leader-true-sample-1-client-400,400,10,4682, 804.0  , 784.6  ,257.6285
+NONE-leader-true-sample-10-client-4,4,10,1068, 35.00  , 37.08  ,10.57521
+NONE-leader-true-sample-10-client-40,40,10,3256,119.0  ,121.5  ,33.58175
+NONE-leader-true-sample-10-client-400,400,10,6404, 512.0  , 582.6  ,256.8573
+NONE-leader-true-sample-100-client-4,4,10,1066, 35.00  , 37.17  ,10.04875
+NONE-leader-true-sample-100-client-40,40,10,3307,118  ,119  ,33.58444
+NONE-leader-true-sample-100-client-400,400,10,5335, 636  , 676  ,302.6089
+NONE-leader-false-sample-1-client-4,4,10,1039, 36.00  , 38.19  ,12.41988
+NONE-leader-false-sample-1-client-40,40,10,3336,117.0  ,117.3  ,31.0127
+NONE-leader-false-sample-1-client-400,400,10,5516, 621.0  , 679.3  ,298.2347
+NONE-leader-false-sample-10-client-4,4,10,1069, 35.00  , 36.98  ,9.526152
+NONE-leader-false-sample-10-client-40,40,10,3727,104.0  ,104.2  ,25.73452
+NONE-leader-false-sample-10-client-400,400,10,3906, 972.0  , 953.1  ,226.6533
+NONE-leader-false-sample-100-client-4,4,10,1054, 35.00  , 37.46  ,10.18665
+NONE-leader-false-sample-100-client-40,40,10,3271,118.0  ,120.1  ,33.89659
+NONE-leader-false-sample-100-client-400,400,10,5748, 584.0  , 657.8  ,316.0471
+STRONGLEADER-leader-true-sample-1-client-4,4,10,16,2067  ,2070  ,41.37103
+STRONGLEADER-leader-true-sample-1-client-40,40,10,160,2090  ,2088  ,42.55275
+STRONGLEADER-leader-true-sample-1-client-400,400,10,1352,2092  ,2699  ,1256.661
+STRONGLEADER-leader-true-sample-10-client-4,4,10,16,2071  ,2071  ,41.02113
+STRONGLEADER-leader-true-sample-10-client-40,40,10,134,2118  ,2771  ,1554.481
+STRONGLEADER-leader-true-sample-10-client-400,400,10,1505,2122  ,2375  ,930.9528
+STRONGLEADER-leader-true-sample-100-client-4,4,10,1012, 36.00  , 38.98  ,11.19735
+STRONGLEADER-leader-true-sample-100-client-40,40,10,325, 132  ,1129  ,1327.368
+STRONGLEADER-leader-true-sample-100-client-400,400,10,4960, 738.0  , 756.9  ,147.7349
+STRONGLEADER-leader-false-sample-1-client-4,4,10,16,2072  ,2073  ,39.10238
+STRONGLEADER-leader-false-sample-1-client-40,40,10,160,2096  ,2092  ,41.75803
+STRONGLEADER-leader-false-sample-1-client-400,400,10,1600,2127  ,2151  ,97.50415
+STRONGLEADER-leader-false-sample-10-client-4,4,10,371, 54.00  , 57.71  ,25.34129
+STRONGLEADER-leader-false-sample-10-client-40,40,10,227,2035  ,1714  ,1810.021
+STRONGLEADER-leader-false-sample-10-client-400,400,10,1491,2122  ,2437  ,1065.141
+STRONGLEADER-leader-false-sample-100-client-4,4,10,1015, 36  , 39  ,11.76579
+STRONGLEADER-leader-false-sample-100-client-40,40,10,1075, 133.0  , 324.3  ,902.117
+STRONGLEADER-leader-false-sample-100-client-400,400,10,1748,1456.0  ,2071.9  ,1760.533
+LOGMATCHING-leader-true-sample-1-client-4,4,10,32,1122  ,1113  ,542.4476
+LOGMATCHING-leader-true-sample-1-client-40,40,10,89,3908  ,3476  ,1168.327
+LOGMATCHING-leader-true-sample-1-client-400,400,10,455,5249  ,4976  ,954.2896
+LOGMATCHING-leader-true-sample-10-client-4,4,10,741, 52.00  , 53.56  ,20.79003
+LOGMATCHING-leader-true-sample-10-client-40,40,10,1993,192.0  ,198.4  ,78.24788
+LOGMATCHING-leader-true-sample-10-client-400,400,10,2109,1804  ,1677  ,464.6234
+LOGMATCHING-leader-true-sample-100-client-4,4,10,1018, 36.00  , 38.84  ,11.67135
+LOGMATCHING-leader-true-sample-100-client-40,40,10,2877,135.0  ,136.2  ,42.23809
+LOGMATCHING-leader-true-sample-100-client-400,400,10,4591, 794.0  , 815.6  ,367.4723
+LOGMATCHING-leader-false-sample-1-client-4,4,10,33,1084  ,1140  ,529.602
+LOGMATCHING-leader-false-sample-1-client-40,40,10,92,3885  ,3252  ,1239.641
+LOGMATCHING-leader-false-sample-1-client-400,400,10,445,5270  ,5024  ,897.1779
+LOGMATCHING-leader-false-sample-10-client-4,4,10,693, 54.00  , 57.11  ,24.54791
+LOGMATCHING-leader-false-sample-10-client-40,40,10,1788,213.0  ,220.6  ,82.73427
+LOGMATCHING-leader-false-sample-10-client-400,400,10,1592,2392  ,2316  ,689.7203
+LOGMATCHING-leader-false-sample-100-client-4,4,10,1071, 35.00  , 36.91  ,9.899294
+LOGMATCHING-leader-false-sample-100-client-40,40,10,3831, 99.0  ,100.8  ,31.6607
+LOGMATCHING-leader-false-sample-100-client-400,400,10,4186, 823.0  , 860.3  ,376.429
+LEADERAGREEMENT-leader-true-sample-1-client-4,4,10,731, 52.00  , 54.27  ,17.10655
+LEADERAGREEMENT-leader-true-sample-1-client-40,40,10,3774,101.0  ,103.5  ,32.56612
+LEADERAGREEMENT-leader-true-sample-1-client-400,400,10,4534, 802.0  , 808.3  ,345.645
+LEADERAGREEMENT-leader-true-sample-10-client-4,4,10,1005, 36.00  , 39.39  ,11.86022
+LEADERAGREEMENT-leader-true-sample-10-client-40,40,10,3763,102.0  ,103.3  ,29.88093
+LEADERAGREEMENT-leader-true-sample-10-client-400,400,10,4653, 735.0  , 771.6  ,358.6064
+LEADERAGREEMENT-leader-true-sample-100-client-4,4,10,978, 37.00  , 40.52  ,12.44288
+LEADERAGREEMENT-leader-true-sample-100-client-40,40,10,3744,102.0  ,103.7  ,30.80354
+LEADERAGREEMENT-leader-true-sample-100-client-400,400,10,4697, 751.0  , 765.4  ,316.3988
+LEADERAGREEMENT-leader-false-sample-1-client-4,4,10,1005, 36.00  , 39.46  ,11.76173
+LEADERAGREEMENT-leader-false-sample-1-client-40,40,10,3798,100.0  ,101.6  ,32.60896
+LEADERAGREEMENT-leader-false-sample-1-client-400,400,10,4762, 772  , 784  ,324.1455
+LEADERAGREEMENT-leader-false-sample-10-client-4,4,10,990, 36.00  , 39.99  ,13.44633
+LEADERAGREEMENT-leader-false-sample-10-client-40,40,10,3756,102.0  ,103.4  ,29.8528
+LEADERAGREEMENT-leader-false-sample-10-client-400,400,10,4755, 820.0  , 798.7  ,294.5542
+LEADERAGREEMENT-leader-false-sample-100-client-4,4,10,1009, 36.00  , 39.28  ,11.56859
+LEADERAGREEMENT-leader-false-sample-100-client-40,40,10,3686,105.0  ,105.1  ,31.45592
+LEADERAGREEMENT-leader-false-sample-100-client-400,400,10,4696, 759.5  , 756.6  ,310.5878
+STRONGLEADER-leader-true-sample-10-client-4-bug-true,4,0,,,,

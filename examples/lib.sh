@@ -39,7 +39,7 @@ function runLogMerger {
         echo "merge logs with extra args '$1'"
     fi
 
-    dinv -v -l $1 ./*Encoded.txt ./*Log.txt
+    dinv -l $1 $2 $3 $4 ./*Encoded.txt ./*Log.txt
     # dinv -v -l $1 -name="fruits" -shiviz ./*Encoded.txt ./*Log.txt
     echo "logmerger took $(($(date +'%s') - $t1))s to run"
 }
@@ -48,7 +48,9 @@ function runDaikon  {
     t1=$(date +'%s')
     echo "run daikon"
     # redirect output both to output.txt and stdout
-    java daikon.Daikon ./*.dtrace | tee output.txt
+    for file in ./*.dtrace; do
+        java daikon.Daikon $file >>  output.txt
+    done
     echo "daikon took $(($(date +'%s') - $t1))s to run"
 }
 

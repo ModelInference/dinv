@@ -365,6 +365,7 @@ func InitDistributedAssert(addr string, assertPeers []string, processName string
 		goVecLogger.LogLocalEvent("Cannot parse assert peers dying!!")
 		os.Exit(1)
 	}
+
 	//remove self from peer list
 	tmpNeighbours := make([]string, 0)
 	for _, n := range peers {

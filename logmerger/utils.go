@@ -281,7 +281,7 @@ func getClockId(clocks []vclock.VClock) string {
 		return "anon"
 	}
 	clock := clocks[0]
-	re := regexp.MustCompile("{\"([A-Za-z0-9_:]+)\"")
+	re := regexp.MustCompile("{\"([" + HOSTNAMEREGEXP + "]+)\"")
 	vString := clock.ReturnVCString()
 	match := re.FindStringSubmatch(vString)
 	//fmt.Printf(" Found %s\n", match[1])
