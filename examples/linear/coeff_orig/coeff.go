@@ -1,13 +1,11 @@
 package main
 
 import (
-	"fmt"
 	"math/rand"
 	"net"
+	"fmt"
 	"os"
 
-	"bitbucket.org/bestchai/dinv/dinvRT"
-	"github.com/arcaneiceman/GoVector/capture"
 )
 
 const (
@@ -46,7 +44,7 @@ func handleConn(conn net.PacketConn, conn2 *net.UDPConn) {
 	var term1, term2, coeff int
 
 	//read from client
-	_, addr, err := capture.ReadFrom(conn.ReadFrom, buf[0:])
+	_, addr, err := conn.ReadFrom(buf[0:])
 	//@track
 	PrintErr(err)
 	//unmarshall client arguments
@@ -58,25 +56,23 @@ func handleConn(conn net.PacketConn, conn2 *net.UDPConn) {
 	//	fmt.Printf("Coeff: T1:%d\tT2:%d\tCoeff:%d\n", term1, term2, coeff)
 	//}
 	msg := MarshallInts([]int{term1, term2, coeff})
-	_, errWrite := capture.Write(conn2.Write, msg)
+	_, errWrite := conn2.Write(msg)
 	PrintErr(errWrite)
 	//@track
-	dinvRT.Track("Coe-pre", "term1,term2,coeff", term1, term2, coeff)
 
 	//read response from linn server
-	_, errRead := capture.Read(conn2.Read, buf[0:])
+	_, errRead := conn2.Read(buf[0:])
 	//@track
 	PrintErr(errRead)
 	//unmarshall response from linn server
 	uret := UnmarshallInts(buf)
 	lin := uret[0]
-	dinvRT.Track("Coe-mid", "term1,term2,lin", term1, term2, lin)
 	//fmt.Printf("C: %d*%d + %d = %d\n", coeff, term1, term2, lin)
 	//marshall response and send back to client
 	msg2 := MarshallInts([]int{lin})
-	capture.WriteTo(conn.WriteTo, msg2, addr)
+
+	conn.WriteTo(msg2, addr)
 	//@track
-	dinvRT.Track("Coe-post", "term1,term2,lin", term1, term2, lin)
 }
 
 const (

@@ -3,18 +3,21 @@ package main
 import (
 	"encoding/binary"
 	"fmt"
-	"github.com/arcaneiceman/GoVector/capture"
 	"math/rand"
 	"net"
 	"os"
+
+	"bitbucket.org/bestchai/dinv/dinvRT"
+	"github.com/arcaneiceman/GoVector/capture"
 )
 
 const (
 	LARGEST_TERM = 100
-	RUNS         = 500
+	RUNS         = 5
 )
 
 func main() {
+
 	localAddr, err := net.ResolveUDPAddr("udp4", ":18585")
 	printErrAndExit(err)
 	remoteAddr, err := net.ResolveUDPAddr("udp4", ":9090")
@@ -36,22 +39,21 @@ func main() {
 }
 
 func reqSum(conn *net.UDPConn, n, m int) (sum int64, err error) {
-	msg := make([]byte, 16)
+	msg := make([]byte, 256)
 	binary.PutVarint(msg[:8], int64(n))
 	binary.PutVarint(msg[8:], int64(m))
-
 	fmt.Println(msg)
 
 	// after instrumentation
 	_, err = capture.Write(conn.Write, msg[:])
-	// _, err = conn.Write(msg)
+	_, err = conn.Write(msg)
 	if err != nil {
 		return
 	}
 
-	//@dump
+	dinvRT.Dump("main_client_52_", "main_client_52_LARGEST_TERM,main_client_52_RUNS,main_client_52_conn,main_client_52_n,main_client_52_m,main_client_52_msg", LARGEST_TERM, RUNS, conn, n, m, msg)
 
-	buf := make([]byte, 8)
+	buf := make([]byte, 256)
 	// after instrumentation
 	_, err = capture.Read(conn.Read, buf[:])
 	// _, err = conn.Read(buf)
@@ -61,9 +63,9 @@ func reqSum(conn *net.UDPConn, n, m int) (sum int64, err error) {
 
 	sum, _ = binary.Varint(buf[0:])
 
-	fmt.Println(sum, buf)
+	//fmt.Println(sum, buf)
 
-	//@dump
+	dinvRT.Dump("main_client_66_", "main_client_66_LARGEST_TERM,main_client_66_RUNS,main_client_66_conn,main_client_66_n,main_client_66_m,main_client_66_msg", LARGEST_TERM, RUNS, conn, n, m, msg)
 
 	return
 }

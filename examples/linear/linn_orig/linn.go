@@ -5,8 +5,6 @@ import (
 	"net"
 	"os"
 
-	"bitbucket.org/bestchai/dinv/dinvRT"
-	"github.com/arcaneiceman/GoVector/capture"
 )
 
 //var debug = false
@@ -36,10 +34,9 @@ func handleConn(conn net.PacketConn) {
 	var buf [1024]byte
 	var term1, term2, coeff, lin int
 
-	_, addr, err := capture.ReadFrom(conn.ReadFrom, buf[0:])
+	_, addr, err := conn.ReadFrom(buf[0:])
 
 	//@track
-	dinvRT.Track("linn-pore", "term1,term2,coeff,lin", term1, term2, coeff, lin)
 	PrintErr(err)
 
 	uArgs := UnmarshallInts(buf)
@@ -49,9 +46,9 @@ func handleConn(conn net.PacketConn) {
 	//	fmt.Printf("C: %d*%d + %d = %d\n", coeff, term1, term2, lin)
 	//}
 	msg := MarshallInts([]int{lin})
-	capture.WriteTo( //@track
-		conn.WriteTo, msg, addr)
-	dinvRT.Track("linn-pore", "term1,term2,coeff,lin", term1, term2, coeff, lin)
+
+	//@track
+	conn.WriteTo(msg, addr)
 }
 
 const (
