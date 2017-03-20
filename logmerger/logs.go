@@ -16,6 +16,8 @@ import (
 	"github.com/arcaneiceman/GoVector/govec/vclock"
 )
 
+const HOSTNAMEREGEXP = "A-Za-z0-9_:."
+
 //file. If the log file does not exist or is unreadable, readLog
 //panics. Otherwise an array of program points is returned
 func readLog(filePath string) []Point {
@@ -192,7 +194,7 @@ func GoLogFromString(clockLog, regex string) (*golog, error) {
 
 	vclocks := make([]vclock.VClock, 0)
 	for i := range rawClocks {
-		clock, err := ClockFromString(rawClocks[i], "\"([A-Za-z0-9_:]+)\":([0-9]+)")
+		clock, err := ClockFromString(rawClocks[i], "\"(["+HOSTNAMEREGEXP+"]+)\":([0-9]+)")
 		if clock == nil || err != nil {
 			return nil, err
 		}
@@ -215,11 +217,10 @@ func swapClockIds(oldClock vclock.VClock, idMap map[string]string) vclock.VClock
 	return ConstructVclock(ids, ticks)
 }
 
-
 //A wrapper to access this function publicly
 //TODO consolodate this function
 func WriteToDaikon(log []Point, filename string) {
-    writeLogToFile(log,filename)
+	writeLogToTrace(log, filename)
 }
 
 //writeLogToFile produces a daikon dtrace file based on a log

@@ -132,7 +132,7 @@ func partitionLogs(points [][]Point, gos []*golog) ([][][]Point, [][]*golog) {
 	for i := range gos {
 		partLog = append(partLog, points[i])
 		partGoLog = append(partGoLog, gos[i])
-		fmt.Println(gos[i])
+		//fmt.Println(gos[i])
 	}
 	seperatePoints = append(seperatePoints, partLog)
 	seperategoLogs = append(seperategoLogs, partGoLog)
