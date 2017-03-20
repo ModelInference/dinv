@@ -5,6 +5,12 @@ syntax: glob
 *.dtrace
 *.sw[a-z]
 *.txt
+*.trace
+*.orig
+*.json
+*.stext
+*.log
+*out.text
 savedtest*
 mod_*
 TestPrograms/*.txt
@@ -12,4 +18,5 @@ TestPrograms/t3/*.txt
 
 examples/ricartagrawala/gonadoresults/*
 examples/chainkv/results/*
+examples/sum/failed
 userstudy/*

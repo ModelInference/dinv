@@ -47,6 +47,10 @@ func New() *LatticeWrapper {
 
 }
 
+func (lw *LatticeWrapper) String() string {
+	return fmt.Sprintf("Lattice Memory Size: %d\t Lattice Disk Slices: %d\n CurrentFile: %d\t Points:%d\n Level Memory %d\t Level Disk %d\t Level Estimate %d", len(lw.LatticeM), len(lw.LatticeD), lw.CurrentFile, lw.Points, lw.LevelM, lw.LevelD, lw.LevelEstimate)
+}
+
 func (lw *LatticeWrapper) Delete() {
 	for i := range lw.LatticeD {
 		os.Remove(lw.LatticeD[i])
@@ -91,7 +95,7 @@ func (lw *LatticeWrapper) Push(layer []vclock.VClock) {
 
 func (lw *LatticeWrapper) Pop() []vclock.VClock {
 	//nothing left to pop
-	if lw.CurrentFile == (len(lw.LatticeD)-1) && lw.LevelM == (len(lw.LatticeM)-1) {
+	if lw.CurrentFile >= (len(lw.LatticeD)-1) && lw.LevelM == (len(lw.LatticeM)-1) {
 		return nil
 	} else if lw.LevelM == len(lw.LatticeM)-1 && len(lw.LatticeD) > 0 {
 		//fetch from disk

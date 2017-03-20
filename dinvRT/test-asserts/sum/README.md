@@ -1,0 +1,7 @@
+#Client/Server Summation
+The Client will request the server to compute a summation for them. The client/server summation provides an interesting example of assertions that can be made with our library. We assert multiple things, but only require one assertion call because the predicate is a function, we can evaluate multiple variables in one predicate. This is interesting because it minimizes the overhead of the assertion library if multiple assertions can be combined into one assertion. In this particular case, we use the assertions on the client side to determine if the server has bugs or the client.
+
+## How to Run
+To run the program, simply call the `./run.sh` script. It will run a basic version of the dining philosopher's code. This code does not violate the invariant, so the assertions will pass. To run it where an assertion fails, go to the code and change the line of code labeled with the comment `// CHANGE TO` in order to violate the invariant. You can re-run the code using the same script. 
+
+To determine if the assertion has passed or failed, go to the node logs (`client-Log.txt` and `server-Log.txt`) and check to see if the logs contain the message "ASSERTION FAILED". The node at which the assertion is called will have a message of "ASSERTION FAILED: \<map of values\>" or "ASSERTION PASSED: \<map of values\>". The nodes that receive the kill message from the assertion library will have a "Received ASSERTION FAILED" log message.

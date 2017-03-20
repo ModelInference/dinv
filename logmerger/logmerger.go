@@ -34,6 +34,8 @@ var (
 	debug  = false
 	//produce a shiviz readable log
 	shiviz = false
+	//output distributed program points as json
+	jsonDPP = false
 	//specifies how program points should be merged. The merging plan
 	//translates the set of states into a 2D array of program points.
 	mergePlan = func(states []State) [][]Point { return nil }
@@ -87,6 +89,8 @@ func initalizeLogMerger(options map[string]string, inlogger *log.Logger) {
 			renamingScheme = options[setting]
 		case "shiviz":
 			shiviz = true
+		case "json":
+			jsonDPP = true
 		default:
 			continue
 		}
@@ -107,6 +111,9 @@ func Merge(logfiles []string, gologfiles []string, options map[string]string, in
 		for i := range plogs {
 			fmt.Printf("Merging group %d\n", i)
 			states := mineStates(plogs[i], pgoLogs[i])
+			if jsonDPP {
+				writeLogToJson(states)
+			}
 			writeTraceFiles(states)
 		}
 	}
@@ -114,9 +121,24 @@ func Merge(logfiles []string, gologfiles []string, options map[string]string, in
 
 //partition logs seperates logs that do not communicate into seperate
 //arrays
+
+//TODO fix this freaking function
 func partitionLogs(points [][]Point, gos []*golog) ([][][]Point, [][]*golog) {
 	seperatePoints := make([][][]Point, 0)
 	seperategoLogs := make([][]*golog, 0)
+	//this is a breaking function to just get everything working
+	partLog := make([][]Point, 0)
+	partGoLog := make([]*golog, 0)
+	for i := range gos {
+		partLog = append(partLog, points[i])
+		partGoLog = append(partGoLog, gos[i])
+		fmt.Println(gos[i])
+	}
+	seperatePoints = append(seperatePoints, partLog)
+	seperategoLogs = append(seperategoLogs, partGoLog)
+	return seperatePoints, seperategoLogs
+	//TODO TODO this is where the function should continue
+
 	used := make([]bool, len(points))
 	var checked int
 	for checked < len(gos) {
@@ -169,7 +191,7 @@ func writeUnmergedTraces(filenames []string, logs [][]Point) {
 	for i, filename := range filenames {
 		unmergedName := filename + "unmerged.log"
 		logger.Printf("New unmerged trace %s\n", unmergedName)
-		writeLogToFile(logs[i], unmergedName)
+		writeLogToTrace(logs[i], unmergedName)
 	}
 
 }
@@ -208,7 +230,7 @@ func buildLogs(logFiles []string, gologFiles []string) ([][]Point, []*golog) {
 	replaceIds(logs, goLogs, renamingScheme)
 
 	if shiviz {
-		writeShiVizLog(logs, goLogs)
+		WriteShiVizLogFast(logs, goLogs)
 	}
 
 	return logs, goLogs
@@ -296,8 +318,7 @@ func statesFromCuts2(cuts []Cut, clocks [][]vclock.VClock, logs [][]Point) []Sta
 				fmt.Printf("unfound log entry %s index %s\n", ids[i], point.String())
 			}
 		}
-		state.TotalOrdering = totalOrderFromCut(cut, clocks) //SPEED UP
-		logger.Printf("%s\n", state.String())
+		state.TotalOrdering = totalOrderFromCut(cut, clocks) //TODO SPEED UP
 		fmt.Printf("\rExtracting states %3.0f%% \t[%d] found", 100*float32(cutIndex)/float32(len(cuts)), len(states))
 		states = append(states, *state)
 	}
@@ -346,8 +367,8 @@ func writeTraceFiles(states []State) {
 			}
 		}
 		if newFile {
-			logger.Printf("New trace file %s\n", filename)
-			writeLogToFile(pointLog, filename)
+			logger.Printf("New file %s\n", filename)
+			writeLogToTrace(pointLog, filename)
 		}
 	}
 }
@@ -386,7 +407,7 @@ func totalOrderLineNumberMerge(states []State) [][]Point {
 				points = append(points, state.Points[state.TotalOrdering[j][k]])
 			}
 			mergedPoints[i][j] = mergePoints(points)
-			logger.Printf("Merged points id :%s\n\n===========\n", mergedPoints[i][j].Id)
+			//logger.Printf("Merged points id :%s\n\n===========\n", mergedPoints[i][j].Id)
 		}
 	}
 	fmt.Println()
@@ -493,7 +514,23 @@ func printErr(err error) {
 	}
 }
 
-func writeShiVizLog(pointLog [][]Point, goLogs []*golog) {
+func WriteShiVizLogFast(pointLog [][]Point, goLogs []*golog) {
+	file, _ := os.Create("Shiviz.log")
+	shivizRegex := "(?<host>\\S*) (?<clock>{.*})\\n(?<event>.*)"
+	file.WriteString(shivizRegex)
+	file.WriteString("\n\n")
+	//TODO add in information about dump statements to logs will look
+	//something like the (matchSendAndReceive) function in utils,
+	//involving the backtracking through duplicate clock valued events
+	for _, goLog := range goLogs {
+		for j := range goLog.clocks {
+			log := fmt.Sprintf("%s %s\n%s\n", goLog.id, goLog.clocks[j].ReturnVCString(), goLog.messages[j])
+			file.WriteString(log)
+		}
+	}
+}
+
+func WriteShiVizLog(pointLog [][]Point, goLogs []*golog) {
 	file, _ := os.Create("Shiviz.log")
 	shivizRegex := "(?<host>\\S*) (?<clock>{.*})\\n(?<event>.*)\\n(?<dump>.*)"
 	file.WriteString(shivizRegex)

@@ -125,6 +125,7 @@ func getProgramWrapper() (*programslicer.ProgramWrapper, error) {
 		if err != nil {
 			return program, err
 		}
+
 	}
 	//TODO write functionality for piping
 	return program, nil
@@ -216,7 +217,8 @@ func getAccessedAffectedVars(dump *ast.Comment, affectedFuncs map[*ast.FuncDecl]
 	}
 	//find variables within the scope of the dump statement
 	var affected []string
-	inScope := GetAccessibleVarsInScope(int(dump.Pos()), program.Packages[pnum].Sources[snum].Source, program.Fset)
+	inScope := GetAccessibleVarsInScope(int(dump.Pos()), program, pnum, snum)
+	fmt.Println(len(inScope))
 	//collect all the variables affected by networking in the known
 	//function
 	for _, fn := range affectedFuncs[f] {
@@ -323,14 +325,33 @@ func getAffectedVars(program *programslicer.ProgramWrapper) map[*ast.FuncDecl][]
 
 //GetAccessibleVarsInScope returns the variables names of all
 //varialbes in scope at the point start.
+func GetAccessibleVarsInScope(dumpPosition int, program *programslicer.ProgramWrapper, pnum, snum int) []string {
+	logger.Println("Collecting Scope Variables")
+	//inScope := GetAccessibleVarsInScope(int(dump.Pos()), program.Packages[pnum].Sources[snum].Source, program.Fset)
+	globals := GetGlobalVariables(program)
+	locals := GetLocalVariables(dumpPosition, program.Packages[pnum].Sources[snum].Source, program.Fset)
+	return append(globals, locals...)
+	return nil
+}
+
+/*
 func GetAccessibleVarsInScope(dumpPosition int, file *ast.File, fset *token.FileSet) []string {
 	logger.Println("Collecting Scope Variables")
 	globals := GetGlobalVariables(file, fset)
 	locals := GetLocalVariables(dumpPosition, file, fset)
 	return append(globals, locals...)
+}*/
+func GetGlobalVariables(program *programslicer.ProgramWrapper) []string {
+	var results []string
+	for pnum := range program.Packages {
+		for snum := range program.Packages[pnum].Sources {
+			results = append(results, GetGlobalVariablesFromFile(program.Packages[pnum].Sources[snum].Source, program.Fset)...)
+		}
+	}
+	return results
 }
 
-func GetGlobalVariables(file *ast.File, fset *token.FileSet) []string {
+func GetGlobalVariablesFromFile(file *ast.File, fset *token.FileSet) []string {
 	var results []string
 
 	//test if the globals for this ast file have allready been found
@@ -347,6 +368,8 @@ func GetGlobalVariables(file *ast.File, fset *token.FileSet) []string {
 		case ast.Var, ast.Con: //|| global_objs[identifier].Kind == ast.Typ { //can be used for diving into structs
 			logger.Printf("Global Found :%s\n", fmt.Sprintf("%v", identifier))
 			results = append(results, fmt.Sprintf("%v", identifier))
+		default:
+			fmt.Println(identifier)
 		}
 	}
 	structVars := collectStructs(results, file)

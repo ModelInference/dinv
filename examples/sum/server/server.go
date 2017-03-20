@@ -3,9 +3,12 @@ package main
 import (
 	"encoding/binary"
 	"fmt"
-	"github.com/arcaneiceman/GoVector/capture"
 	"net"
 	"os"
+
+	"bitbucket.org/bestchai/dinv/dinvRT"
+
+	"github.com/arcaneiceman/GoVector/capture"
 )
 
 const addr = ":9090"
@@ -31,7 +34,7 @@ func main() {
 
 // expects messages with two 64 bit integers (2 * 8 bytes)
 func listenAndRespond(conn net.PacketConn) (err error) {
-	buf := make([]byte, 16)
+	buf := make([]byte, 256)
 
 	// after instrumentation:
 	_, addr, err := capture.ReadFrom(conn.ReadFrom, buf[0:])
@@ -42,27 +45,28 @@ func listenAndRespond(conn net.PacketConn) (err error) {
 
 	//@dump
 
-	a, readA := binary.Varint(buf[:8])
-	b, readB := binary.Varint(buf[8:])
+	a, _ := binary.Varint(buf[:8])
+	b, _ := binary.Varint(buf[8:])
 
 	sum := a + b
-
-	fmt.Println(buf)
-	fmt.Println(buf[:8], a, readA)
-	fmt.Println(buf[8:], b, readB)
+	/*
+		fmt.Println(buf)
+		fmt.Println(buf[:8], a, readA)
+		fmt.Println(buf[8:], b, readB)
+	*/
 
 	fmt.Printf("[SERVER] %d + %d = %d\n", a, b, sum)
 
-	msg := make([]byte, 8)
-	putN := binary.PutVarint(msg, sum)
+	msg := make([]byte, 256)
+	binary.PutVarint(msg, sum)
 
-	fmt.Println(putN, msg)
+	//fmt.Println(putN, msg)
 
 	// after instrumentation:
 	capture.WriteTo(conn.WriteTo, msg, addr)
 	// conn.WriteTo(msg, addr)
 
-	//@dump
+	dinvRT.Dump("s64", "sum,a,b", sum, a, b)
 
 	return nil
 }

@@ -1,3 +1,8 @@
+[![Screenshot](https://bitbucket.org/bestchai/dinv/raw/default/figs/play-demo-video.jpg)](https://www.youtube.com/watch?v=n9fH9ABJ6S4)
+
+A demo video explaining Dinv.
+
+
 # DInv is a distributed system data invariant detector
 
 Distributed system state is not easily accessible and must be pieced together from the state at the individual hosts. Developers have few tools to help them extract, check, and reason about distributed state.
@@ -59,6 +64,8 @@ To clone the repository run the following commands
 
 `hg clone https://bitbucket.org/bestchai/dinv`
 
+For a quick start to using Dinv check out out [tutorial](./TUTORIAL.md)
+
 ## Dependencies
 
 Dinv depends on a number of remote repositories, you can install these by running `dependencies.sh`:
@@ -77,9 +84,11 @@ To infer invariants on the trace files produced by DInv
 
 ## Installing DInv
 
-After you install the above dependencies, install DInv by running. The binary will be placed in `$GOPATH/bin` and can be run with `$GOPATH/bin/dinv`.
-
+After you install the above dependencies, install DInv by running:
 `go install bitbucket.org/bestchai/dinv`
+
+The dinv binary will be generated at `$GOPATH/bin/dinv`.
+
 
 
 # Usage
