@@ -213,6 +213,13 @@ func swapClockIds(oldClock vclock.VClock, idMap map[string]string) vclock.VClock
 	return ConstructVclock(ids, ticks)
 }
 
+
+//A wrapper to access this function publicly
+//TODO consolodate this function
+func WriteToDaikon(log []Point, filename string) {
+    writeLogToFile(log,filename)
+}
+
 //writeLogToFile produces a daikon dtrace file based on a log
 //represented as an array of points
 func writeLogToFile(log []Point, filename string) {

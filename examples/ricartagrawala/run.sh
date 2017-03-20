@@ -41,7 +41,7 @@ function instrument {
 
 function runLogMerger {
     cd $testDir
-    dinv -l -plan=SCM *d.txt *g.txt
+    dinv -l -json -plan=SCM *d.txt *g.txt
 }
     
 
@@ -63,6 +63,15 @@ function movelogs {
         mv *.dtrace old/$name
         mv *.gz old/$name
     fi
+}
+
+
+#runDaikon first preforms work on the trace files, then prints out the invareints detected.
+function runDviz {
+ cd $testDir
+ for file in ./*.json; do
+        Dviz $file
+ done
 }
 
 #runDaikon first preforms work on the trace files, then prints out the invareints detected.
@@ -87,7 +96,8 @@ fi
 install
 runTest
 runLogMerger
-runDaikon
+runDviz
+#runDaikon
 if [ "$1" == "-d" ];
 then
     exit

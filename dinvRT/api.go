@@ -308,8 +308,6 @@ func initDinv(hostName string) {
 			id = os.Getenv("DINV_HOSTNAME")
 		} else {
 			id = fmt.Sprintf("%d", time.Now().Nanosecond())
-		} else {
-			id = hostName
 		}
 		goVecLogger = govec.Initialize(id, id+".log")
 

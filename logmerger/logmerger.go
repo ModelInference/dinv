@@ -453,6 +453,12 @@ func sendReceiveMerge(states []State) [][]Point {
 	return mergedPoints
 }
 
+//Public Wrapper for Point Merging 
+//TODO consolodate
+func MergePoints(points []Point) Point {
+    return mergePoints(points)
+}
+
 //Merge Points merges an array of points into a single aggregated point
 func mergePoints(points []Point) Point {
 	var mergedPoint Point
