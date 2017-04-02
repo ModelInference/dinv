@@ -21,3 +21,5 @@ examples/chainkv/results/*
 examples/sum/failed
 userstudy/*
 *log_archive/*
+
+experiments/etcd/infra*
