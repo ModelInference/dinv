@@ -11,11 +11,11 @@
 #in.in test*30000
 #/usr/share/dict/words words
 killall etcd
-killall clientMeasure.share
+killall clientMeasure.sh
 
 clustersize=3
-clients=3
-clientRuntime=300
+clients=50
+clientRuntime=10
 etcddir=~/go/src/github.com/coreos/etcd
 
 ./clean.sh
@@ -37,11 +37,8 @@ sleep $clientRuntime
 killall etcd
 killall clientMeasure.share
 
-#collect the number of requests serviced over the course of the execution
-gnuplot latency.plot
-evince latency.pdf
-
-cat *.time | grep time:
-ls -lrt *.txt | nawk '{print $5}' | awk '{total = total + $1}END{print total}'
-time dinv -l -plan=SCM -json -name=fruits -shiviz *d.txt *g.txt
-./daikon.sh
+./statplot.sh
+#cat *.time | grep time:
+#ls -lrt *.txt | nawk '{print $5}' | awk '{total = total + $1}END{print total}'
+#time dinv -l -plan=SCM -json -name=fruits -shiviz *d.txt *g.txt
+#./daikon.sh
