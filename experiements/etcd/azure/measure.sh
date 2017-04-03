@@ -3,6 +3,13 @@
 # measure.sh words.txt [server ip:port] runtime clients etcdcdlLoc
 # (newline) client
 #ex ./measure.sh /
+
+#command line arguments
+# $1: 
+#
+#
+#
+#
 i=0
 CLIENTS=$4
 

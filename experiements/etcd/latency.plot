@@ -22,8 +22,7 @@ set output "latency.pdf"
 # Define a function to calculate average over previous 5 points
 #
 set title \
-    "Demonstrate use of assignment and serial evaluation operators\n" \
-    . "to accumulate statistics as successive data lines are read in\n"
+    "Go Vector latency\n"
 set key invert box center right reverse Left
 set xtics nomirror
 set xlabel "time (ms)"

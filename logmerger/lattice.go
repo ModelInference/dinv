@@ -194,7 +194,6 @@ func BuildLattice5(clocks [][]vclock.VClock) *LatticeWrapper {
 	for len(lw.LatticeM[lw.LevelM-1]) > 0 {
 		// next lattice level = previous *num nodes (worst case)
 		nextMap := make(map[string]vclock.VClock, len(lw.LatticeM[lw.LevelM-1])*len(ids))
-		levelPoints := 0
 
 		div := ThreadCount(len(lw.LatticeM[lw.LevelM-1]))
 		c := make(chan map[string]vclock.VClock, div)
@@ -214,7 +213,6 @@ func BuildLattice5(clocks [][]vclock.VClock) *LatticeWrapper {
 						if !ok && fastCorrectLatticePoint(mClocks, pu, id) {
 							//fmt.Println(vstring)
 							subMap[vstring] = pu
-							levelPoints++
 						}
 					}
 				}
