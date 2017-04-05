@@ -9,7 +9,7 @@
 # PUT-AND-GET
 
 # 
-
+echo "Launching Client $1 $2 $3 $4 $5"
 #latency is measured in ms
 LATENCY=latency$4.dat
 #bandwidth is measured in r/s
@@ -30,12 +30,14 @@ echo "" > $BANDWIDTH
 
 start=`date +%s%N`
 starts=`date +%s`
-if [ "$BENCMARK" == "YCSB-A" ] || [ "$BENCHMARK" == "YCSB-B" ]; then
-    if [ "$BENCMARK" == "YCSB-A" ]; then
+echo "BENCHMARK $BENCHMARK"
+if [ "$BENCHMARK" == "YCSB-A" ] || [ "$BENCHMARK" == "YCSB-B" ]; then
+    if [ "$BENCHMARK" == "YCSB-A" ]; then
         mod=2
     elif [ "$BENCHMARK" == "YSCB-B" ]; then
         mod=20
     fi
+    echo "Beginning requests"
 
     HASPUT=()
     for word in $(<$1)
