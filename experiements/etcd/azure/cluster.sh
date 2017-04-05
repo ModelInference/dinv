@@ -64,9 +64,9 @@ ETCDCTL=$HOMEA/go/src/github.com/coreos/etcd/bin/etcdctl
 AZURENODE=/dinv/azure/node.sh
 #different clients
 #CLIENT=/dinv/azure/blast.sh
-CLIENT=/dinv/azure/benchmarkClient.sh
+CLIENT=/benchmarkClient.sh
 #CLIENT=/dinv/azure/client.sh
-CLIENTMGR=/dinv/azure/measure.sh
+CLIENTMGR=/measure.sh
 
 BENCHMARK="YCSB-A"
 #BENCMARK="YCSB-A"
@@ -164,7 +164,8 @@ if [ "$1" == "-r" ];then
     ssh stewart@$GLOBALS2 -x "$ETCD$AZURENODE 1 $GLOBALS2 $LOCALS2 $CLUSTER $ASSERT $4 $5 $6 $7" &
     ssh stewart@$GLOBALS3 -x "$ETCD$AZURENODE 2 $GLOBALS3 $LOCALS3 $CLUSTER $ASSERT $4 $5 $6 $7" &
 
-    #GLOBAL CLUSTER
+    #GLOBAL CLUSTER3
+
     #CLUSTER="infra0=http://$GLOBALS1:2380,infra1=http://$GLOBALS2:2380,infra2=http://$GLOBALS3:2380"
     #ASSERT="$GLOBALS1:12000,$GLOBALS2:12000,$GLOBALS3:12000"
     #ssh stewart@$GLOBALS1 -x "$ETCD$AZURENODE 0 $GLOBALS1 $GLOBALS1 $CLUSTER $ASSERT" &
@@ -196,7 +197,7 @@ if [ "$1" == "-r" ];then
         
         #ssh stewart@$GLOBALS1 -x "echo $ETCD$CLIENT $TEXT $LOCALS1 && $ETCD$CLIENT $TEXT $LOCALS1 $ETCDCTL"
         ##BLOCK HERE
-        ssh stewart@$SBG -x "echo $ETCD$CLIENTMGR $TEXT $LOCALS1 && $ETCD$CLIENTMGR $TEXT $LOCALS1 $RUNTIME $CLIENTS $ETCDCTL $ETCD$CLIENT"
+        ssh stewart@$SBG -x "echo $DINV_ETCD_AZURE$CLIENTMGR $TEXT $LOCALS1 && $DINV_ETCD_AZURE$CLIENTMGR $TEXT $LOCALS1 $RUNTIME $CLIENTS $ETCDCTL $DINV_ETCD_AZURE$CLIENT $BENCHMARK"
         #kill allthe hosts
         echo kill
         onall "killall etcd"
