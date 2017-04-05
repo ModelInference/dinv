@@ -38,30 +38,41 @@ S2P=10.0.0.5
 #stewart3
 S3G=13.64.242.139
 S3P=10.0.0.6
+#stewart4
+S4G=13.88.179.170
+S4P=10.0.0.8
 #stewartbig
 SBG=13.64.149.118
 SBP=10.0.0.7
 
 
 #map a subset of the VM's to the current cluster
-GLOBALS1=$S1G
-LOCALS1=$S1P
-GLOBALS2=$S2G
-LOCALS2=$S2P
-GLOBALS3=$S3G
-LOCALS3=$S3P
+GLOBALS1=$S2G
+LOCALS1=$S2P
+GLOBALS2=$S3G
+LOCALS2=$S3P
+GLOBALS3=$S4G
+LOCALS3=$S4P
 
 #GLOBAL information true of all VMs
 HOMEA=/home/stewart
 DINV=$HOMEA/go/src/bitbucket.org/bestchai/dinv
+DINV_ETCD_AZURE=$DINV/experiements/etcd/azure
 ETCD=$HOMEA/go/src/github.com/coreos/etcd
 ETCDCMD=$HOMEA/go/src/github.com/coreos/etcd/bin/etcd
 ETCDCTL=$HOMEA/go/src/github.com/coreos/etcd/bin/etcdctl
 AZURENODE=/dinv/azure/node.sh
 #different clients
-CLIENT=/dinv/azure/blast.sh
+#CLIENT=/dinv/azure/blast.sh
+CLIENT=/dinv/azure/benchmarkClient.sh
 #CLIENT=/dinv/azure/client.sh
 CLIENTMGR=/dinv/azure/measure.sh
+
+BENCHMARK="YCSB-A"
+#BENCMARK="YCSB-A"
+#BENCMARK="YCSB-B"
+#BENCMARK="PUT-THEN-GET"
+#BENCMARK="PUT-AND-GET"
 
 #LOCAL
 DINVDIR=/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv
@@ -102,13 +113,13 @@ if [ "$1" == "-p" ];then
     echo clean
     $DINVDIR/examples/lib.sh clean
     echo push
-    cd ../../
+    cd $ETCD
     git add --all
     git commit -m "updating raft for peers"
     git push
-    cd dinv/azure
+    cd $DINV_ETCD_AZURE
     echo pull
-    onall "cd $ETCD && git pull && ./build ; cd $DINV && hg pull"
+    onall "cd $ETCD && git pull && ./build ; cd $DINV && hg pull && hg update"
     exit
 fi
 

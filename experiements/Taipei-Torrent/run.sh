@@ -1,9 +1,9 @@
 #!/bin/bash
 
-nodes=5
+nodes=10
 startingport=6000
 trackerport=6011
-nodesWithFiles=2
+nodesWithFiles=1
 nodePID=()
 
 #testDir=~/go/src/github.com/jackpal/Taipei-Torrent/dinv
@@ -15,6 +15,8 @@ torrentFolder=torrents
 #realfile=12am.mp3
 torrentFile=speech.torrent
 realfile=speech.mp3
+
+lev='stewart@198.162.52.56'
 
 function install {
     $dinvDir/examples/lib.sh installDinv
@@ -104,6 +106,8 @@ if [ "$1" == "-d" ];
 then
 install
 moveResults
+    ssh -x stewart@198.162.52.56 "cd dinvwork; rm *.txt"
+    scp *[dg].txt stewart@198.162.52.56:/home/stewart/dinvwork
     $dinvDir/examples/lib.sh runLogMerger
     $dinvDir/examples/lib.sh runDaikon
 fi
