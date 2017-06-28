@@ -245,6 +245,12 @@ func UnpackM(msg []byte, pack interface{}, log string) {
 	return
 }
 
+
+func Local(msg string) {
+	logVarStore()
+	goVecLogger.LogLocalEvent(msg)
+}
+
 //Initalize is an optional call for naming hosts uniquely based on a
 //user specified string
 func Initalize(hostName string) error {
