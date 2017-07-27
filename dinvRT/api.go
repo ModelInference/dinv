@@ -313,7 +313,7 @@ func initDinv(hostName string) {
 		} else {
 			id = fmt.Sprintf("%d", time.Now().Nanosecond())
 		}
-		goVecLogger = govec.Initialize(id, id+".log")
+		goVecLogger = govec.InitGoVector(id, id+".log")
 
 		encodedLogname := fmt.Sprintf("%sEncoded.txt", id)
 
@@ -405,10 +405,6 @@ func CreatePoint(vars []interface{}, varNames []string, id string, logger *govec
 	}
 	point := logmerger.Point{dumps, hashedId, logger.GetCurrentVC(), 0}
 	return point
-}
-
-func Local(msg string) {
-	goVecLogger.LogLocalEvent(msg)
 }
 
 type ByName []logmerger.NameValuePair

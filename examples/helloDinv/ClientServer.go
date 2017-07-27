@@ -40,7 +40,7 @@ func main() {
 }
 
 func client(listen, send string) {
-	Logger := govec.Initialize("client", "clientlogfile")
+	Logger := govec.InitGoVector("client", "clientlogfile")
 	// sending UDP packet to specified address and port
 	conn := setupConnection(SERVERPORT, CLIENTPORT)
 
@@ -65,7 +65,7 @@ func client(listen, send string) {
 
 func server(listen string) {
 	dinvRT.Dump("main_ClientServer_67_", "main_ClientServer_67_SERVERPORT,main_ClientServer_67_CLIENTPORT,main_ClientServer_67_MESSAGES,main_ClientServer_67_done,main_ClientServer_67_cpuprofile,main_ClientServer_67_listen", SERVERPORT, CLIENTPORT, MESSAGES, done, cpuprofile, listen)
-	Logger := govec.Initialize("server", "server")
+	Logger := govec.InitGoVector("server", "server")
 	conn, err := net.ListenPacket("udp", ":"+listen)
 	printErr(err)
 
