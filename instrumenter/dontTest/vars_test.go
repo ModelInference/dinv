@@ -186,7 +186,7 @@ func UnmarshallInts(args []byte) []int {
 }
 
 func Init() {
-	Logger = govec.Initialize("self", "self.log")
+	Logger = govec.InitGoVector("self", "self.log")
 	//setup receiving connection
 	sConn, _ = net.ListenPacket("udp", ":8080")
 
