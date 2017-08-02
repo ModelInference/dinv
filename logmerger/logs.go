@@ -365,6 +365,12 @@ func (nvp NameValuePair) value() string {
 	}
 }
 
+//returns the value of the Name value pair as a string
+//TODO catch and print all possible reflected types
+func (nvp NameValuePair) ValueG() string {
+    return nvp.value()
+}
+
 //Point is a representation of a program point. Name value pair is the
 //variable values at that program point. LineNumber is the line the
 //variables were gathered on. VectorClock is byte valued vector clock
