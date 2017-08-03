@@ -140,7 +140,10 @@ fi
 if [ "$1" == "-c" ];then
     echo clean
     onall "cd; rm *.txt"
+    onall "killall etcd"
+    onall "killall blast"
     $DINVDIR/examples/lib.sh clean
+    rm *.txt
     exit
 fi
 
@@ -149,6 +152,10 @@ if [ "$1" == "-r" ];then
     echo run
 
     onall "cd; pwd; rm bug*"
+    onall "rm agg*"
+    onall "rm bandwidth*"
+    onall "rm latency*"
+    onall "rm request*"
 
     #Example execute ssh 
     #ssh stewart@13.64.239.61 -x "mkdir test"
@@ -200,8 +207,9 @@ if [ "$1" == "-r" ];then
         ssh stewart@$SBG -x "echo $DINV_ETCD_AZURE$CLIENTMGR $TEXT $LOCALS1 && $DINV_ETCD_AZURE$CLIENTMGR $TEXT $LOCALS1 $RUNTIME $CLIENTS $ETCDCTL $DINV_ETCD_AZURE$CLIENT $BENCHMARK"
         #kill allthe hosts
         echo kill
-        onall "killall etcd"
-        onall "killall blast"
+        rm agg*
+        rm bandwidth*
+        rm request*
     fi
 
     #wait for the test to run
@@ -215,9 +223,30 @@ if [ "$1" == "-r" ];then
 
     if [ "$MEASURE" = true ] ; then
         #get the latency from the requests
-        cat latency* > agg.txt
+        cat latency* > agglat.txt
         rm latency*
-        R -q -e "x <- read.csv('agg.txt', header = F); summary(x); sd(x[ , 1])" > stats.txt
+        R -q -e "x <- read.csv('agglat.txt', header = F); summary(x); sd(x[ , 1])" > latstats.txt
+
+        #calculate the bandwidth
+        cat bandwidth* > aggband.txt
+        #remove whitespace
+        sed -i '/^$/d' aggband.txt
+        #get the digit on the last line, so we have a termination limit
+        last=`tail -1 aggband.txt`
+        echo "" > bandwidth.dat
+        echo $last
+        for(( i=1 ; i < last ; i++)); do
+            echo $i
+            #count each number
+            c=`grep -c "^$i$" aggband.txt`
+            if [ "$i" == "$last" ]; then
+                break
+            fi
+            echo "$c" >> bandwidth.dat
+        done
+
+        R -q -e "x <- read.csv('bandwidth.dat', header = F); summary(x); sd(x[ , 1])" > bandstats.txt
+        
 
         #get the bug catching times
         #get the earliest bug starting time
@@ -243,13 +272,19 @@ if [ "$1" == "-r" ];then
         echo $CATCH - $START
         BUGTIME=`echo $CATCH - $START | bc`
 
-        MEDIAN=`grep Median stats.txt |cut -d: -f2`
-        MEAN=`grep Mean stats.txt |cut -d: -f2`
-        SD=`grep "\[1\]" stats.txt |cut -d' ' -f2`
+        LATMEDIAN=`grep Median latstats.txt |cut -d: -f2`
+        LATMEAN=`grep Mean latstats.txt |cut -d: -f2`
+        LATSD=`grep "\[1\]" latstats.txt |cut -d' ' -f2`
+
+        BANDMEDIAN=`grep Median bandstats.txt |cut -d: -f2`
+        BANDMEAN=`grep Mean bandstats.txt |cut -d: -f2`
+        BANDSD=`grep "\[1\]" bandstats.txt |cut -d' ' -f2`
         #./client.sh /usr/share/dict/words $GLOBALS1:2379
         TP=`grep -E '[0-9]' agg.txt | wc -l | cut -f1`
         let "RPS=$TP/$RUNTIME"
-        echo "$EXP,$CLIENTS,$RPS,$MEDIAN,$MEAN,$SD,$BUGTIME" >> measurements.txt
+
+
+        echo "$EXP,$CLIENTS,$RPS,$LATMEDIAN,$LATMEAN,$LATSD,$BANDMEDIAN,$BANDMEAN,$BANDSD,$BUGTIME" >> measurements.dat
     fi
     exit
 fi

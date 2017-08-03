@@ -57,7 +57,7 @@ if [ "$BENCMARK" == "YCSB-A" ] || [ "$BENCHMARK" == "YCSB-B" ]; then
         #measure latency
         bn=$(($(date +%s%N)/1000000))
         lat=0
-        let lat=b-a
+        let lat=bn-na
         timestamp=`date +%s%N`
         timestamps=`date +%s`
         let "timestamp=timestamp-start"
