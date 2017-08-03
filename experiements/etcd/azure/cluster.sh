@@ -64,9 +64,9 @@ ETCDCTL=$HOMEA/go/src/github.com/coreos/etcd/bin/etcdctl
 AZURENODE=/dinv/azure/node.sh
 #different clients
 #CLIENT=/dinv/azure/blast.sh
-CLIENT=/dinv/azure/benchmarkClient.sh
+CLIENT=/benchmarkClient.sh
 #CLIENT=/dinv/azure/client.sh
-CLIENTMGR=/dinv/azure/measure.sh
+CLIENTMGR=/measure.sh
 
 BENCHMARK="YCSB-A"
 #BENCMARK="YCSB-A"
@@ -140,7 +140,10 @@ fi
 if [ "$1" == "-c" ];then
     echo clean
     onall "cd; rm *.txt"
+    onall "killall etcd"
+    onall "killall blast"
     $DINVDIR/examples/lib.sh clean
+    rm *.txt
     exit
 fi
 
@@ -149,6 +152,10 @@ if [ "$1" == "-r" ];then
     echo run
 
     onall "cd; pwd; rm bug*"
+    onall "rm agg*"
+    onall "rm bandwidth*"
+    onall "rm latency*"
+    onall "rm request*"
 
     #Example execute ssh 
     #ssh stewart@13.64.239.61 -x "mkdir test"
@@ -164,7 +171,8 @@ if [ "$1" == "-r" ];then
     ssh stewart@$GLOBALS2 -x "$ETCD$AZURENODE 1 $GLOBALS2 $LOCALS2 $CLUSTER $ASSERT $4 $5 $6 $7" &
     ssh stewart@$GLOBALS3 -x "$ETCD$AZURENODE 2 $GLOBALS3 $LOCALS3 $CLUSTER $ASSERT $4 $5 $6 $7" &
 
-    #GLOBAL CLUSTER
+    #GLOBAL CLUSTER3
+
     #CLUSTER="infra0=http://$GLOBALS1:2380,infra1=http://$GLOBALS2:2380,infra2=http://$GLOBALS3:2380"
     #ASSERT="$GLOBALS1:12000,$GLOBALS2:12000,$GLOBALS3:12000"
     #ssh stewart@$GLOBALS1 -x "$ETCD$AZURENODE 0 $GLOBALS1 $GLOBALS1 $CLUSTER $ASSERT" &
@@ -196,11 +204,12 @@ if [ "$1" == "-r" ];then
         
         #ssh stewart@$GLOBALS1 -x "echo $ETCD$CLIENT $TEXT $LOCALS1 && $ETCD$CLIENT $TEXT $LOCALS1 $ETCDCTL"
         ##BLOCK HERE
-        ssh stewart@$SBG -x "echo $ETCD$CLIENTMGR $TEXT $LOCALS1 && $ETCD$CLIENTMGR $TEXT $LOCALS1 $RUNTIME $CLIENTS $ETCDCTL $ETCD$CLIENT"
+        ssh stewart@$SBG -x "echo $DINV_ETCD_AZURE$CLIENTMGR $TEXT $LOCALS1 && $DINV_ETCD_AZURE$CLIENTMGR $TEXT $LOCALS1 $RUNTIME $CLIENTS $ETCDCTL $DINV_ETCD_AZURE$CLIENT $BENCHMARK"
         #kill allthe hosts
         echo kill
-        onall "killall etcd"
-        onall "killall blast"
+        rm agg*
+        rm bandwidth*
+        rm request*
     fi
 
     #wait for the test to run
@@ -214,9 +223,30 @@ if [ "$1" == "-r" ];then
 
     if [ "$MEASURE" = true ] ; then
         #get the latency from the requests
-        cat latency* > agg.txt
+        cat latency* > agglat.txt
         rm latency*
-        R -q -e "x <- read.csv('agg.txt', header = F); summary(x); sd(x[ , 1])" > stats.txt
+        R -q -e "x <- read.csv('agglat.txt', header = F); summary(x); sd(x[ , 1])" > latstats.txt
+
+        #calculate the bandwidth
+        cat bandwidth* > aggband.txt
+        #remove whitespace
+        sed -i '/^$/d' aggband.txt
+        #get the digit on the last line, so we have a termination limit
+        last=`tail -1 aggband.txt`
+        echo "" > bandwidth.dat
+        echo $last
+        for(( i=1 ; i < last ; i++)); do
+            echo $i
+            #count each number
+            c=`grep -c "^$i$" aggband.txt`
+            if [ "$i" == "$last" ]; then
+                break
+            fi
+            echo "$c" >> bandwidth.dat
+        done
+
+        R -q -e "x <- read.csv('bandwidth.dat', header = F); summary(x); sd(x[ , 1])" > bandstats.txt
+        
 
         #get the bug catching times
         #get the earliest bug starting time
@@ -242,13 +272,19 @@ if [ "$1" == "-r" ];then
         echo $CATCH - $START
         BUGTIME=`echo $CATCH - $START | bc`
 
-        MEDIAN=`grep Median stats.txt |cut -d: -f2`
-        MEAN=`grep Mean stats.txt |cut -d: -f2`
-        SD=`grep "\[1\]" stats.txt |cut -d' ' -f2`
+        LATMEDIAN=`grep Median latstats.txt |cut -d: -f2`
+        LATMEAN=`grep Mean latstats.txt |cut -d: -f2`
+        LATSD=`grep "\[1\]" latstats.txt |cut -d' ' -f2`
+
+        BANDMEDIAN=`grep Median bandstats.txt |cut -d: -f2`
+        BANDMEAN=`grep Mean bandstats.txt |cut -d: -f2`
+        BANDSD=`grep "\[1\]" bandstats.txt |cut -d' ' -f2`
         #./client.sh /usr/share/dict/words $GLOBALS1:2379
         TP=`grep -E '[0-9]' agg.txt | wc -l | cut -f1`
         let "RPS=$TP/$RUNTIME"
-        echo "$EXP,$CLIENTS,$RPS,$MEDIAN,$MEAN,$SD,$BUGTIME" >> measurements.txt
+
+
+        echo "$EXP,$CLIENTS,$RPS,$LATMEDIAN,$LATMEAN,$LATSD,$BANDMEDIAN,$BANDMEAN,$BANDSD,$BUGTIME" >> measurements.dat
     fi
     exit
 fi
