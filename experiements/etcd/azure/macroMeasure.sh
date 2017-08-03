@@ -35,11 +35,14 @@ sampleOP[2]="100"
 clientOP[0]="4"
 clientOP[1]="8"
 clientOP[2]="12"
+clientOP[3]="24"
+clientOP[4]="36"
+clientOP[5]="72"
 
 
 #run a single instance and exit
-./cluster.sh -r 1 NONE-leader-true-sample-1-client-1-bug-false NONE "true" 1 "false"
-exit
+#./cluster.sh -r 4 NONE-leader-true-sample-1-client-1-bug-false NONE "true" 1 "false"
+#exit
 
 #bench mark test runs with ramped up clients but no bugs
 for client in ${clientOP[@]}
@@ -49,6 +52,8 @@ do
         ./cluster.sh -r $client NONE-leader-true-sample-1-client-$client-bug-false NONE "true" 1 "false"
     done
 done
+
+exit
                     #example
                     #./cluster.sh -r 4 STRONGLEADER-leader-true-sample-10-client-4-bug-true STRONGLEADER true 10 true
 
