@@ -233,7 +233,7 @@ func Pack(msg interface{}) []byte {
 	}
 	buf := goVecLogger.PrepareSend(loggedMsg, msg)
 	//log after updating vector clock
-	go log(msg, ls.SEND, loggedMsg)
+	log(msg, ls.SEND, loggedMsg)
 	return buf
 }
 
@@ -243,7 +243,7 @@ func PackM(msg interface{}, info string) []byte {
 	initDinv("")
 	buf := goVecLogger.PrepareSend(info, msg)
 	//log after updating vector clock
-	go log(msg, ls.SEND, info)
+	log(msg, ls.SEND, info)
 	return buf
 }
 
@@ -260,21 +260,21 @@ func Unpack(msg []byte, pack interface{}) {
 		loggedMsg = "Received on " + getCallingFunctionID() + " " + id
 	}
 	goVecLogger.UnpackReceive(loggedMsg, msg, pack)
-	go log(pack, ls.REC, loggedMsg)
+	log(pack, ls.REC, loggedMsg)
 	return
 }
 
 func UnpackM(msg []byte, pack interface{}, info string) {
 	initDinv("")
 	goVecLogger.UnpackReceive(info, msg, pack)
-	go log(pack, ls.REC, info)
+	log(pack, ls.REC, info)
 
 	return
 }
 
 func Local(msg string) {
 	goVecLogger.LogLocalEvent(msg)
-	go log(nil, ls.LOCAL, msg) //logVarStore()
+	log(nil, ls.LOCAL, msg) //logVarStore()
 }
 
 //Initalize is an optional call for naming hosts uniquely based on a
@@ -341,9 +341,9 @@ func initDinv(hostName string) {
 		} else {
 			id = fmt.Sprintf("%d", time.Now().Nanosecond())
 		}
+		goVecLogger = govec.InitGoVector(id, id+".log")
 		//Log everything locally to a file
 		if !remotelogging {
-			goVecLogger = govec.InitGoVector(id, id+".log")
 			encodedLogname := fmt.Sprintf("%sEncoded.txt", id)
 
 			logFile, err := os.Create(encodedLogname)
@@ -355,8 +355,6 @@ func initDinv(hostName string) {
 			//set up remote logging with a dinv server
 			//TODO there are many failure conditions here, try to recover or give good messages
 			// or set up a name server
-			//TODO also find a way to not log with GoVec
-			goVecLogger = govec.InitGoVector(id, id+".log")
 			rid.Node = id
 			if os.Getenv(LOGSTORE) != "" {
 				logStoreLocation = os.Getenv(LOGSTORE)
@@ -472,9 +470,12 @@ func (a ByName) Less(i, j int) bool { return a[i].VarName < a[j].VarName }
 /* New logging format for remote logging (Done at Inria (merge with the new govector at some point (clement fab)
 /**************************************************************************/
 
-//log is a generalized function for logging message events, their type, and vector clock information. TODO when this works well integrate it everywhere.
+//log is a generalized function for logging message events, their
+//type, and vector clock information. TODO when this works well
+//integrate it everywhere.
 func log(msg interface{}, eventType int, info string) {
-	//Assume that KV is being used
+	//Assume that the varStore
+	//Read all variables from the varStore for logging
 	//TODO make sure that each invoked log function completes
 	varStoreMx.Lock()
 	defer varStoreMx.Unlock()
@@ -500,14 +501,14 @@ func log(msg interface{}, eventType int, info string) {
 	request := ls.PostReq{Id: rid, Log: log}
 	resp := ls.PostReply{}
 	rpcClient.Call("LogStore.Log", request, &resp)
-	l.Println(resp)
+	//l.Println(resp)
 	//TODO Handel errors
 	if resp.Id.Session == "" {
 		l.Fatal()
 	}
 	//update SessionID
 	rid = resp.Id
-	fmt.Println("Made it back from RPC!!!")
+	//fmt.Println("Made it back from RPC!!!")
 
 }
 
