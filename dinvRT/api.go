@@ -31,7 +31,7 @@ const (
 
 var (
 	initialized = false // Boolean used to track the initalization of the logger
-	fast        = true
+	fast        = false
 	id          string        // Timestamp for identifiying loggers
 	goVecLogger *govec.GoLog  // GoVec logger, used to track vector timestamps
 	packageName string        // TODO packageName is not used -- can it be removed?
@@ -41,9 +41,12 @@ var (
 	useKV         = true
 	resetKV       = true                             // determines if the KV is emptied after the values were written to the log
 	varStore      map[string]logmerger.NameValuePair // used to store variable name/value pairs between multiple dumps
-	varStoreMx    *sync.Mutex                        // manages access to varStore map
-	kvDumpIds     []string
-	genKVID       func([]logmerger.NameValuePair) string
+	dumpIDCache   map[string]DumpID                  //optimization for accessing dumpid's
+	trace         TransitionTrace
+	varStoreMx    *sync.Mutex // manages access to varStore map
+
+	kvDumpIds []string
+	genKVID   func([]logmerger.NameValuePair) string
 
 	initMutex *sync.Mutex = &sync.Mutex{}
 
@@ -52,6 +55,57 @@ var (
 	logStoreLocation string   //ip port of log store //specifed as an enviornment var "
 	rpcClient        *rpc.Client
 )
+
+type DumpID struct {
+	Node     string
+	Function string
+	Location string
+}
+
+func (d *DumpID) String() string {
+	return d.Node + "_" + d.Function + "_" + d.Location
+}
+
+type DumpDiff struct {
+	ID   DumpID
+	Diff []logmerger.NameValuePair
+}
+
+func NewDumpDiff(id DumpID) DumpDiff {
+	return DumpDiff{ID: id, Diff: make([]logmerger.NameValuePair, 0)}
+}
+
+func (dd *DumpDiff) String() string {
+	return fmt.Sprintf("ID:%s\nDiff:%s", dd.ID, dd.Diff)
+}
+
+func (dd *DumpDiff) Add(nvp logmerger.NameValuePair) {
+	dd.Diff = append(dd.Diff, nvp)
+}
+
+type TransitionTrace struct {
+	Dumps []DumpDiff
+}
+
+func NewTransitionTrace() TransitionTrace {
+	return TransitionTrace{Dumps: make([]DumpDiff, 0)}
+}
+
+func (tt *TransitionTrace) Append(dd DumpDiff) {
+	tt.Dumps = append(tt.Dumps, dd)
+}
+
+func (tt *TransitionTrace) Reset() {
+	tt.Dumps = make([]DumpDiff, 0)
+}
+
+func (tt *TransitionTrace) String() string {
+	s := ""
+	for i := range tt.Dumps {
+		s += tt.Dumps[i].String() + "\n"
+	}
+	return fmt.Sprintf("Trace:\n%s", s)
+}
 
 //Dump logs the values of variables passed in as a set of varadic
 //arguments. did is the dump id, it must be unique to the dump
@@ -97,14 +151,39 @@ func Track(did, names string, values ...interface{}) {
 	if len(nameList) != len(values) {
 		panic(fmt.Errorf("track at [%s] has unequal argument lengths"))
 	}
+	//fmt.Println(ResolveDumpID(did))
 	varStoreMx.Lock()
 	defer varStoreMx.Unlock()
+
+	dumpDiff := NewDumpDiff(ResolveDumpID(did))
 	for i := 0; i < len(values); i++ {
 		if values[i] != nil {
-			varStore[nameList[i]] = newPair(nameList[i], values[i])
-			kvDumpIds = append(kvDumpIds, did) // collect the id of the dump statement being tracked
+			//Update Check if variable updates the key value store,
+			//add it to the diff if it does
+			currentValue := varStore[nameList[i]]
+			newValue := newPair(nameList[i], values[i])
+			if currentValue.Value != newValue.Value {
+				dumpDiff.Add(newValue)
+				varStore[nameList[i]] = newValue
+			}
 		}
 	}
+	trace.Append(dumpDiff)
+	kvDumpIds = append(kvDumpIds, did) // collect the id of the dump statement being tracked
+}
+
+//Prerequisite: All did's are unique
+//ResolveDumpID returns absolute naming information about a dump id.
+//This function wraps getHashedID by caching the results for speed.
+func ResolveDumpID(did string) (dump DumpID) {
+	var ok bool
+	if dump, ok = dumpIDCache[did]; ok {
+		return dump
+	} else {
+		dump = getHashedId()
+		dumpIDCache[did] = dump
+	}
+	return dump
 }
 
 //newPair creates a name value pair out of an arbetrary variable and
@@ -134,7 +213,8 @@ func logPairList(pairs []logmerger.NameValuePair, did string) {
 	if fast || did != "" {
 		dumpID = did
 	} else {
-		dumpID = getHashedId()
+		dump := getHashedId()
+		dumpID = dump.String()
 	}
 
 	point := logmerger.Point{
@@ -229,7 +309,8 @@ func Pack(msg interface{}) []byte {
 	if fast {
 		loggedMsg = "Sending from " + id
 	} else {
-		loggedMsg = "Sending from " + getCallingFunctionID() + " " + id
+		dump := getHashedId()
+		loggedMsg = "Sending from " + dump.String() + " " + id
 	}
 	buf := goVecLogger.PrepareSend(loggedMsg, msg)
 	//log after updating vector clock
@@ -257,7 +338,8 @@ func Unpack(msg []byte, pack interface{}) {
 	if fast {
 		loggedMsg = "Received on " + id
 	} else {
-		loggedMsg = "Received on " + getCallingFunctionID() + " " + id
+		dump := getHashedId()
+		loggedMsg = "Received on " + dump.String() + " " + id
 	}
 	goVecLogger.UnpackReceive(loggedMsg, msg, pack)
 	log(pack, ls.REC, loggedMsg)
@@ -378,42 +460,52 @@ func initDinv(hostName string) {
 	/*TODO in the future only use the kvStore*/
 	if useKV && varStore == nil {
 		varStore = make(map[string]logmerger.NameValuePair)
+		dumpIDCache = make(map[string]DumpID)
 		varStoreMx = &sync.Mutex{}
 		//genKVID = variableNamesID
-		genKVID = smearedDumpID
+		genKVID = smearedDumpID //TODO remove once all dumps are being tracked by the tracing function
 		kvDumpIds = make([]string, 0)
+		trace = NewTransitionTrace()
 	}
 
 	initialized = true
 }
 
-func getHashedId() string {
-	return GetId() + "_" + getCallingFunctionID()
+func getHashedId() (dump DumpID) {
+	dump.Node = GetId()
+	dump.Function, dump.Location = getCallingFunctionID()
+	return dump
 }
 
 //getCallingFunctionID returns the file name and line number of the
 //program which called api.go. This function is used to generate
 //logging statements dynamically.
-func getCallingFunctionID() string {
+//The values returned are the (function id, dump location)
+func getCallingFunctionID() (string, string) {
 	profiles := pprof.Profiles()
 	block := profiles[1]
 	var buf bytes.Buffer
 	block.WriteTo(&buf, 1)
 	//fmt.Printf("%s",buf)
 	passedFrontOnStack := false
-	re := regexp.MustCompile("([a-zA-Z0-9]+.go:[0-9]+)")
+	//re := regexp.MustCompile("([a-zA-Z0-9]+.go:[0-9]+)")
+	//re := regexp.MustCompile("([a-zA-Z0-9/.]+.go:[0-9]+)")
+	re := regexp.MustCompile(`(\S+)\s+([a-zA-Z0-9/.]+.go:[0-9]+)`)
 	ownFilename := regexp.MustCompile("api.go") // hardcoded own filename
-	matches := re.FindAllString(fmt.Sprintf("%s", buf), -1)
+	//matches := re.FindAllString(fmt.Sprintf("%s", buf), -1)
+	matches := re.FindAllStringSubmatch(fmt.Sprintf("%s", buf), -1)
+	//fmt.Println(buf.String())
 	for _, match := range matches {
-		if passedFrontOnStack && !ownFilename.MatchString(match) {
-			return match
-		} else if ownFilename.MatchString(match) {
+		//fmt.Println(match)
+		if passedFrontOnStack && !ownFilename.MatchString(match[2]) {
+			return match[1], match[2]
+		} else if ownFilename.MatchString(match[2]) {
 			passedFrontOnStack = true
 		}
 		//fmt.Printf("found %s\n", match)
 	}
 	fmt.Printf("%s\n", buf)
-	return ""
+	return "", ""
 }
 
 /* Injection Code */
@@ -493,6 +585,9 @@ func log(msg interface{}, eventType int, info string) {
 		l.Fatal(err)
 	}
 	sevent := msgState(msg)
+	//Reset the dump trace for the next increment of vector time
+	//fmt.Println(trace.String())
+	trace.Reset()
 	//turn into NV pair list
 	log := ls.SElog{Type: eventType, Message: []byte(info), VC: sclock, State: sstate, Event: sevent}
 	if err != nil {
