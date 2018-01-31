@@ -45,6 +45,10 @@ fi
 #Install and start the logserver
 echo "installing dara servers"
 go install github.com/wantonsolutions/dara/servers
+#Install and start the logserver
+
+echo "installing dinv"
+go install github.com/bitbucket.org/bestchai/dinv
 
 #start the log server
 servers -l >> logs/serverRecords.log &

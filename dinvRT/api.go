@@ -37,7 +37,7 @@ var (
 	packageName string        // TODO packageName is not used -- can it be removed?
 	Encoder     *json.Encoder // global name value pair point encoder
 
-	remotelogging = true
+	remotelogging = false
 	useKV         = true
 	resetKV       = true                             // determines if the KV is emptied after the values were written to the log
 	varStore      map[string]logmerger.NameValuePair // used to store variable name/value pairs between multiple dumps
@@ -107,6 +107,15 @@ func (tt *TransitionTrace) String() string {
 	return fmt.Sprintf("Trace:\n%s", s)
 }
 
+func (tt *TransitionTrace) Marshal() []byte {
+	b, _ := json.Marshal(trace)
+	return b
+}
+
+func (tt *TransitionTrace) Unmarshal(b []byte) {
+	json.Unmarshal(b, tt)
+}
+
 //Dump logs the values of variables passed in as a set of varadic
 //arguments. did is the dump id, it must be unique to the dump
 //statement, and the host. If a dump statement is constructed by hand,
@@ -162,10 +171,10 @@ func Track(did, names string, values ...interface{}) {
 			//add it to the diff if it does
 			currentValue := varStore[nameList[i]]
 			newValue := newPair(nameList[i], values[i])
-			if currentValue.Value != newValue.Value {
+			if (currentValue.Type == "int" || currentValue.Type == "boolean" || currentValue.Type == "float" || currentValue.Type == "string") && currentValue.Value != newValue.Value {
 				dumpDiff.Add(newValue)
-				varStore[nameList[i]] = newValue
 			}
+			varStore[nameList[i]] = newValue
 		}
 	}
 	trace.Append(dumpDiff)
@@ -355,6 +364,7 @@ func UnpackM(msg []byte, pack interface{}, info string) {
 }
 
 func Local(msg string) {
+	initDinv("")
 	goVecLogger.LogLocalEvent(msg)
 	log(nil, ls.LOCAL, msg) //logVarStore()
 }
@@ -414,6 +424,7 @@ func initDinv(hostName string) {
 	initMutex.Lock()
 	defer initMutex.Unlock()
 	if !initialized {
+		l.Println("Initalizing Dinv")
 
 		//get host name
 		if hostName != "" {
@@ -566,44 +577,47 @@ func (a ByName) Less(i, j int) bool { return a[i].VarName < a[j].VarName }
 //type, and vector clock information. TODO when this works well
 //integrate it everywhere.
 func log(msg interface{}, eventType int, info string) {
-	//Assume that the varStore
-	//Read all variables from the varStore for logging
-	//TODO make sure that each invoked log function completes
-	varStoreMx.Lock()
-	defer varStoreMx.Unlock()
-	state := make([]logmerger.NameValuePair, len(varStore))
-	itt := 0
-	for i := range varStore {
-		state[itt] = varStore[i]
-		itt++
+	if remotelogging {
+		//Assume that the varStore
+		//Read all variables from the varStore for logging
+		//TODO make sure that each invoked log function completes
+		varStoreMx.Lock()
+		defer varStoreMx.Unlock()
+		state := make([]logmerger.NameValuePair, len(varStore))
+		itt := 0
+		for i := range varStore {
+			state[itt] = varStore[i]
+			itt++
+		}
+		//TODO figure out a better way to do this than sorting is it even nessisary with JSON?
+		sort.Sort(ByName(state))
+		sclock := goVecLogger.GetCurrentVC()
+		sstate, err := json.Marshal(state)
+		if err != nil {
+			l.Fatal(err)
+		}
+		sevent := msgState(msg)
+		//Reset the dump trace for the next increment of vector time
+		//fmt.Println(trace.String())
+		traceBytes := trace.Marshal()
+		trace.Reset()
+		//turn into NV pair list
+		log := ls.SElog{Type: eventType, Message: []byte(info), VC: sclock, State: sstate, Event: sevent, DumpTrace: traceBytes}
+		if err != nil {
+			l.Fatal(err)
+		}
+		request := ls.PostReq{Id: rid, Log: log}
+		resp := ls.PostReply{}
+		rpcClient.Call("LogStore.Log", request, &resp)
+		//l.Println(resp)
+		//TODO Handel errors
+		if resp.Id.Session == "" {
+			l.Fatal()
+		}
+		//update SessionID
+		rid = resp.Id
+		//fmt.Println("Made it back from RPC!!!")
 	}
-	//TODO figure out a better way to do this than sorting is it even nessisary with JSON?
-	sort.Sort(ByName(state))
-	sclock := goVecLogger.GetCurrentVC()
-	sstate, err := json.Marshal(state)
-	if err != nil {
-		l.Fatal(err)
-	}
-	sevent := msgState(msg)
-	//Reset the dump trace for the next increment of vector time
-	//fmt.Println(trace.String())
-	trace.Reset()
-	//turn into NV pair list
-	log := ls.SElog{Type: eventType, Message: []byte(info), VC: sclock, State: sstate, Event: sevent}
-	if err != nil {
-		l.Fatal(err)
-	}
-	request := ls.PostReq{Id: rid, Log: log}
-	resp := ls.PostReply{}
-	rpcClient.Call("LogStore.Log", request, &resp)
-	//l.Println(resp)
-	//TODO Handel errors
-	if resp.Id.Session == "" {
-		l.Fatal()
-	}
-	//update SessionID
-	rid = resp.Id
-	//fmt.Println("Made it back from RPC!!!")
 
 }
 
