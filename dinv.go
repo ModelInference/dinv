@@ -21,8 +21,8 @@ const (
 	defaultDirectory = ""
 
 	//logmerger defaults
-	defaultMergePlan  = "TOLN" //total order line number merge
-	defaultSampleRate = 100    //take 100 percent of all mined cuts
+	defaultMergePlan  = "SCM" //total order line number merge
+	defaultSampleRate = 100   //take 100 percent of all mined cuts
 
 	defaultRenameingScheme = "" //rename hosts as fruit
 
@@ -45,7 +45,7 @@ var (
 	sampleRate         int
 	totallyOrderedCuts bool
 	renamingScheme     string
-	json 			   bool
+	json               bool
 
 	//options for both
 	verbose    bool
@@ -56,20 +56,20 @@ var (
 )
 
 func setFlags() {
-	flag.BoolVar(&inst, "instrumenter", false, "go run dinv -instrumenter -dir=directory")
-	flag.BoolVar(&inst, "i", false, "go run dinv -i -dir=directory")
+	flag.BoolVar(&inst, "instrumenter", false, "Insturements Go source code to log variable values at runtime.\n Example: go run dinv -instrumenter -dir=directory")
+	flag.BoolVar(&inst, "i", false, "Shorthand argument for insturmenter")
+	flag.StringVar(&directory, "dir", defaultDirectory, "When instrumenting use -dir to recursivly insturment a directory.\n Ex: dir=absolute/path/to/go/directory")
+	flag.StringVar(&file, "file", defaultFilename, "insturment a single source file")
 
 	flag.BoolVar(&clean, "c", false, "go run dinv -i -c removes converts insturmented dump code into commments")
 	flag.BoolVar(&dataflowAnalysis, "df", false, "-df=true triggers dataflow analysis at dumpstatements")
 	flag.BoolVar(&dumpsLocalEvents, "local", false, "-local=true logs //@dump annotations as local events")
-	flag.StringVar(&directory, "dir", defaultDirectory, "-dir=directoryName recursivly instruments a directory inplace, original directory is duplicated for safty")
-	flag.StringVar(&file, "file", defaultFilename, "-file=filename insturments a file")
 
 	flag.BoolVar(&shivizLog, "shiviz", false, "-shiviz adds shiviz log to output")
 	flag.StringVar(&mergePlan, "plan", defaultMergePlan, "-plan=TOLN merges based on total order, and line number\nOptions\n"+planDiscription)
 	flag.IntVar(&sampleRate, "sample", defaultSampleRate, "-sample=50 % sample of consistant cuts to be analysed")
 	flag.BoolVar(&totallyOrderedCuts, "toc", false, "-toc overlapping cuts are not analysed")
-	flag.StringVar(&renamingScheme, "name", defaultRenameingScheme, "-name=color names hosts after colors includes color/fruit/philosopher/letter")
+	flag.StringVar(&renamingScheme, "name", defaultRenameingScheme, "-name=Nodes not explicitly given names get generated ID's. They are integers and are difficult to comprehend. Generated ID can be mapped to easier to remember names in the categorties: color/fruit/philosopher/letter\n ex: -name=color")
 	flag.BoolVar(&json, "json", false, "-json distributed program poins output as json rather than dtrace")
 
 	flag.BoolVar(&logmer, "logmerger", false, "go run dinv -logmerger file1 file2 ...")

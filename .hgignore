@@ -22,4 +22,6 @@ examples/sum/failed
 userstudy/*
 *log_archive/*
 
-experiments/etcd/infra*
+experiements/etcd/azure*.wal
+experiements/etcd*.pdf
+dinvRT/benchmarks*

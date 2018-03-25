@@ -14,7 +14,7 @@ killall etcd
 killall clientMeasure.sh
 
 clustersize=3
-clients=50
+clients=1
 clientRuntime=10
 etcddir=~/go/src/github.com/coreos/etcd
 
@@ -37,8 +37,8 @@ sleep $clientRuntime
 killall etcd
 killall clientMeasure.share
 
-./statplot.sh
-#cat *.time | grep time:
-#ls -lrt *.txt | nawk '{print $5}' | awk '{total = total + $1}END{print total}'
-#time dinv -l -plan=SCM -json -name=fruits -shiviz *d.txt *g.txt
-#./daikon.sh
+#./statplot.sh
+cat *.time | grep time:
+ls -lrt *.txt | nawk '{print $5}' | awk '{total = total + $1}END{print total}'
+dinv -l -plan=SCM -json -name=fruits -shiviz *d.txt *g.txt
+./daikon.sh

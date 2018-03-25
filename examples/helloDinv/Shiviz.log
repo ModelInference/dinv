@@ -1,20 +1,806 @@
-(?<host>\S*) (?<clock>{.*})\n(?<event>.*)\n(?<dump>.*)
+(?<host>\S*) (?<clock>{.*})\n(?<event>.*)
 
-Client {"Client":1}
+452584089 {"452584089":1}
 Initialization Complete
-
-Client {"Client":2}
-Sending from client.go:16 Client
- {  } { {"Client":1} }
-Client {"Server":3, "Client":3}
-Received on client.go:27 Client
- {  } { {"Client":2} }
-Server {"Server":1}
+452584089 {"452584089":2, "455937521":2}
+Received on 452584089_main.server+0x848_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:85 452584089
+452584089 {"452584089":3, "455937521":2}
+Sending from 452584089_main.server+0x8e1_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:105 452584089
+452584089 {"452584089":4, "455937521":4}
+Received on 452584089_main.server+0x848_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:85 452584089
+452584089 {"452584089":5, "455937521":4}
+Sending from 452584089_main.server+0x8e1_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:105 452584089
+452584089 {"452584089":6, "455937521":6}
+Received on 452584089_main.server+0x848_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:85 452584089
+452584089 {"452584089":7, "455937521":6}
+Sending from 452584089_main.server+0x8e1_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:105 452584089
+452584089 {"452584089":8, "455937521":8}
+Received on 452584089_main.server+0x848_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:85 452584089
+452584089 {"452584089":9, "455937521":8}
+Sending from 452584089_main.server+0x8e1_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:105 452584089
+452584089 {"452584089":10, "455937521":10}
+Received on 452584089_main.server+0x848_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:85 452584089
+452584089 {"452584089":11, "455937521":10}
+Sending from 452584089_main.server+0x8e1_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:105 452584089
+452584089 {"452584089":12, "455937521":12}
+Received on 452584089_main.server+0x848_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:85 452584089
+452584089 {"452584089":13, "455937521":12}
+Sending from 452584089_main.server+0x8e1_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:105 452584089
+452584089 {"452584089":14, "455937521":14}
+Received on 452584089_main.server+0x848_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:85 452584089
+452584089 {"452584089":15, "455937521":14}
+Sending from 452584089_main.server+0x8e1_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:105 452584089
+452584089 {"452584089":16, "455937521":16}
+Received on 452584089_main.server+0x848_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:85 452584089
+452584089 {"452584089":17, "455937521":16}
+Sending from 452584089_main.server+0x8e1_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:105 452584089
+452584089 {"452584089":18, "455937521":18}
+Received on 452584089_main.server+0x848_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:85 452584089
+452584089 {"452584089":19, "455937521":18}
+Sending from 452584089_main.server+0x8e1_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:105 452584089
+452584089 {"452584089":20, "455937521":20}
+Received on 452584089_main.server+0x848_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:85 452584089
+452584089 {"452584089":21, "455937521":20}
+Sending from 452584089_main.server+0x8e1_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:105 452584089
+452584089 {"452584089":22, "455937521":22}
+Received on 452584089_main.server+0x848_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:85 452584089
+452584089 {"452584089":23, "455937521":22}
+Sending from 452584089_main.server+0x8e1_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:105 452584089
+452584089 {"452584089":24, "455937521":24}
+Received on 452584089_main.server+0x848_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:85 452584089
+452584089 {"452584089":25, "455937521":24}
+Sending from 452584089_main.server+0x8e1_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:105 452584089
+452584089 {"452584089":26, "455937521":26}
+Received on 452584089_main.server+0x848_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:85 452584089
+452584089 {"452584089":27, "455937521":26}
+Sending from 452584089_main.server+0x8e1_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:105 452584089
+452584089 {"452584089":28, "455937521":28}
+Received on 452584089_main.server+0x848_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:85 452584089
+452584089 {"452584089":29, "455937521":28}
+Sending from 452584089_main.server+0x8e1_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:105 452584089
+452584089 {"452584089":30, "455937521":30}
+Received on 452584089_main.server+0x848_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:85 452584089
+452584089 {"452584089":31, "455937521":30}
+Sending from 452584089_main.server+0x8e1_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:105 452584089
+452584089 {"452584089":32, "455937521":32}
+Received on 452584089_main.server+0x848_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:85 452584089
+452584089 {"452584089":33, "455937521":32}
+Sending from 452584089_main.server+0x8e1_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:105 452584089
+452584089 {"452584089":34, "455937521":34}
+Received on 452584089_main.server+0x848_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:85 452584089
+452584089 {"452584089":35, "455937521":34}
+Sending from 452584089_main.server+0x8e1_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:105 452584089
+452584089 {"452584089":36, "455937521":36}
+Received on 452584089_main.server+0x848_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:85 452584089
+452584089 {"452584089":37, "455937521":36}
+Sending from 452584089_main.server+0x8e1_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:105 452584089
+452584089 {"452584089":38, "455937521":38}
+Received on 452584089_main.server+0x848_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:85 452584089
+452584089 {"452584089":39, "455937521":38}
+Sending from 452584089_main.server+0x8e1_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:105 452584089
+452584089 {"452584089":40, "455937521":40}
+Received on 452584089_main.server+0x848_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:85 452584089
+452584089 {"452584089":41, "455937521":40}
+Sending from 452584089_main.server+0x8e1_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:105 452584089
+452584089 {"452584089":42, "455937521":42}
+Received on 452584089_main.server+0x848_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:85 452584089
+452584089 {"452584089":43, "455937521":42}
+Sending from 452584089_main.server+0x8e1_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:105 452584089
+452584089 {"452584089":44, "455937521":44}
+Received on 452584089_main.server+0x848_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:85 452584089
+452584089 {"452584089":45, "455937521":44}
+Sending from 452584089_main.server+0x8e1_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:105 452584089
+452584089 {"452584089":46, "455937521":46}
+Received on 452584089_main.server+0x848_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:85 452584089
+452584089 {"452584089":47, "455937521":46}
+Sending from 452584089_main.server+0x8e1_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:105 452584089
+452584089 {"452584089":48, "455937521":48}
+Received on 452584089_main.server+0x848_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:85 452584089
+452584089 {"452584089":49, "455937521":48}
+Sending from 452584089_main.server+0x8e1_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:105 452584089
+452584089 {"452584089":50, "455937521":50}
+Received on 452584089_main.server+0x848_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:85 452584089
+452584089 {"452584089":51, "455937521":50}
+Sending from 452584089_main.server+0x8e1_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:105 452584089
+452584089 {"452584089":52, "455937521":52}
+Received on 452584089_main.server+0x848_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:85 452584089
+452584089 {"452584089":53, "455937521":52}
+Sending from 452584089_main.server+0x8e1_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:105 452584089
+452584089 {"452584089":54, "455937521":54}
+Received on 452584089_main.server+0x848_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:85 452584089
+452584089 {"452584089":55, "455937521":54}
+Sending from 452584089_main.server+0x8e1_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:105 452584089
+452584089 {"452584089":56, "455937521":56}
+Received on 452584089_main.server+0x848_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:85 452584089
+452584089 {"452584089":57, "455937521":56}
+Sending from 452584089_main.server+0x8e1_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:105 452584089
+452584089 {"452584089":58, "455937521":58}
+Received on 452584089_main.server+0x848_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:85 452584089
+452584089 {"452584089":59, "455937521":58}
+Sending from 452584089_main.server+0x8e1_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:105 452584089
+452584089 {"452584089":60, "455937521":60}
+Received on 452584089_main.server+0x848_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:85 452584089
+452584089 {"452584089":61, "455937521":60}
+Sending from 452584089_main.server+0x8e1_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:105 452584089
+452584089 {"452584089":62, "455937521":62}
+Received on 452584089_main.server+0x848_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:85 452584089
+452584089 {"452584089":63, "455937521":62}
+Sending from 452584089_main.server+0x8e1_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:105 452584089
+452584089 {"452584089":64, "455937521":64}
+Received on 452584089_main.server+0x848_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:85 452584089
+452584089 {"452584089":65, "455937521":64}
+Sending from 452584089_main.server+0x8e1_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:105 452584089
+452584089 {"452584089":66, "455937521":66}
+Received on 452584089_main.server+0x848_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:85 452584089
+452584089 {"452584089":67, "455937521":66}
+Sending from 452584089_main.server+0x8e1_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:105 452584089
+452584089 {"452584089":68, "455937521":68}
+Received on 452584089_main.server+0x848_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:85 452584089
+452584089 {"452584089":69, "455937521":68}
+Sending from 452584089_main.server+0x8e1_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:105 452584089
+452584089 {"452584089":70, "455937521":70}
+Received on 452584089_main.server+0x848_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:85 452584089
+452584089 {"452584089":71, "455937521":70}
+Sending from 452584089_main.server+0x8e1_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:105 452584089
+452584089 {"452584089":72, "455937521":72}
+Received on 452584089_main.server+0x848_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:85 452584089
+452584089 {"452584089":73, "455937521":72}
+Sending from 452584089_main.server+0x8e1_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:105 452584089
+452584089 {"452584089":74, "455937521":74}
+Received on 452584089_main.server+0x848_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:85 452584089
+452584089 {"452584089":75, "455937521":74}
+Sending from 452584089_main.server+0x8e1_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:105 452584089
+452584089 {"452584089":76, "455937521":76}
+Received on 452584089_main.server+0x848_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:85 452584089
+452584089 {"452584089":77, "455937521":76}
+Sending from 452584089_main.server+0x8e1_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:105 452584089
+452584089 {"452584089":78, "455937521":78}
+Received on 452584089_main.server+0x848_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:85 452584089
+452584089 {"452584089":79, "455937521":78}
+Sending from 452584089_main.server+0x8e1_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:105 452584089
+452584089 {"452584089":80, "455937521":80}
+Received on 452584089_main.server+0x848_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:85 452584089
+452584089 {"452584089":81, "455937521":80}
+Sending from 452584089_main.server+0x8e1_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:105 452584089
+452584089 {"452584089":82, "455937521":82}
+Received on 452584089_main.server+0x848_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:85 452584089
+452584089 {"452584089":83, "455937521":82}
+Sending from 452584089_main.server+0x8e1_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:105 452584089
+452584089 {"452584089":84, "455937521":84}
+Received on 452584089_main.server+0x848_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:85 452584089
+452584089 {"452584089":85, "455937521":84}
+Sending from 452584089_main.server+0x8e1_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:105 452584089
+452584089 {"452584089":86, "455937521":86}
+Received on 452584089_main.server+0x848_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:85 452584089
+452584089 {"452584089":87, "455937521":86}
+Sending from 452584089_main.server+0x8e1_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:105 452584089
+452584089 {"452584089":88, "455937521":88}
+Received on 452584089_main.server+0x848_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:85 452584089
+452584089 {"452584089":89, "455937521":88}
+Sending from 452584089_main.server+0x8e1_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:105 452584089
+452584089 {"452584089":90, "455937521":90}
+Received on 452584089_main.server+0x848_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:85 452584089
+452584089 {"452584089":91, "455937521":90}
+Sending from 452584089_main.server+0x8e1_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:105 452584089
+452584089 {"452584089":92, "455937521":92}
+Received on 452584089_main.server+0x848_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:85 452584089
+452584089 {"452584089":93, "455937521":92}
+Sending from 452584089_main.server+0x8e1_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:105 452584089
+452584089 {"452584089":94, "455937521":94}
+Received on 452584089_main.server+0x848_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:85 452584089
+452584089 {"452584089":95, "455937521":94}
+Sending from 452584089_main.server+0x8e1_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:105 452584089
+452584089 {"452584089":96, "455937521":96}
+Received on 452584089_main.server+0x848_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:85 452584089
+452584089 {"452584089":97, "455937521":96}
+Sending from 452584089_main.server+0x8e1_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:105 452584089
+452584089 {"452584089":98, "455937521":98}
+Received on 452584089_main.server+0x848_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:85 452584089
+452584089 {"452584089":99, "455937521":98}
+Sending from 452584089_main.server+0x8e1_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:105 452584089
+452584089 {"452584089":100, "455937521":100}
+Received on 452584089_main.server+0x848_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:85 452584089
+452584089 {"452584089":101, "455937521":100}
+Sending from 452584089_main.server+0x8e1_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:105 452584089
+452584089 {"452584089":102, "455937521":102}
+Received on 452584089_main.server+0x848_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:85 452584089
+452584089 {"452584089":103, "455937521":102}
+Sending from 452584089_main.server+0x8e1_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:105 452584089
+452584089 {"452584089":104, "455937521":104}
+Received on 452584089_main.server+0x848_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:85 452584089
+452584089 {"452584089":105, "455937521":104}
+Sending from 452584089_main.server+0x8e1_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:105 452584089
+452584089 {"452584089":106, "455937521":106}
+Received on 452584089_main.server+0x848_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:85 452584089
+452584089 {"452584089":107, "455937521":106}
+Sending from 452584089_main.server+0x8e1_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:105 452584089
+452584089 {"452584089":108, "455937521":108}
+Received on 452584089_main.server+0x848_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:85 452584089
+452584089 {"452584089":109, "455937521":108}
+Sending from 452584089_main.server+0x8e1_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:105 452584089
+452584089 {"452584089":110, "455937521":110}
+Received on 452584089_main.server+0x848_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:85 452584089
+452584089 {"452584089":111, "455937521":110}
+Sending from 452584089_main.server+0x8e1_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:105 452584089
+452584089 {"452584089":112, "455937521":112}
+Received on 452584089_main.server+0x848_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:85 452584089
+452584089 {"452584089":113, "455937521":112}
+Sending from 452584089_main.server+0x8e1_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:105 452584089
+452584089 {"452584089":114, "455937521":114}
+Received on 452584089_main.server+0x848_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:85 452584089
+452584089 {"452584089":115, "455937521":114}
+Sending from 452584089_main.server+0x8e1_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:105 452584089
+452584089 {"452584089":116, "455937521":116}
+Received on 452584089_main.server+0x848_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:85 452584089
+452584089 {"452584089":117, "455937521":116}
+Sending from 452584089_main.server+0x8e1_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:105 452584089
+452584089 {"452584089":118, "455937521":118}
+Received on 452584089_main.server+0x848_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:85 452584089
+452584089 {"452584089":119, "455937521":118}
+Sending from 452584089_main.server+0x8e1_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:105 452584089
+452584089 {"452584089":120, "455937521":120}
+Received on 452584089_main.server+0x848_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:85 452584089
+452584089 {"452584089":121, "455937521":120}
+Sending from 452584089_main.server+0x8e1_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:105 452584089
+452584089 {"452584089":122, "455937521":122}
+Received on 452584089_main.server+0x848_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:85 452584089
+452584089 {"452584089":123, "455937521":122}
+Sending from 452584089_main.server+0x8e1_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:105 452584089
+452584089 {"452584089":124, "455937521":124}
+Received on 452584089_main.server+0x848_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:85 452584089
+452584089 {"452584089":125, "455937521":124}
+Sending from 452584089_main.server+0x8e1_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:105 452584089
+452584089 {"452584089":126, "455937521":126}
+Received on 452584089_main.server+0x848_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:85 452584089
+452584089 {"452584089":127, "455937521":126}
+Sending from 452584089_main.server+0x8e1_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:105 452584089
+452584089 {"452584089":128, "455937521":128}
+Received on 452584089_main.server+0x848_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:85 452584089
+452584089 {"452584089":129, "455937521":128}
+Sending from 452584089_main.server+0x8e1_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:105 452584089
+452584089 {"452584089":130, "455937521":130}
+Received on 452584089_main.server+0x848_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:85 452584089
+452584089 {"452584089":131, "455937521":130}
+Sending from 452584089_main.server+0x8e1_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:105 452584089
+452584089 {"452584089":132, "455937521":132}
+Received on 452584089_main.server+0x848_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:85 452584089
+452584089 {"452584089":133, "455937521":132}
+Sending from 452584089_main.server+0x8e1_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:105 452584089
+452584089 {"452584089":134, "455937521":134}
+Received on 452584089_main.server+0x848_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:85 452584089
+452584089 {"452584089":135, "455937521":134}
+Sending from 452584089_main.server+0x8e1_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:105 452584089
+452584089 {"452584089":136, "455937521":136}
+Received on 452584089_main.server+0x848_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:85 452584089
+452584089 {"452584089":137, "455937521":136}
+Sending from 452584089_main.server+0x8e1_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:105 452584089
+452584089 {"452584089":138, "455937521":138}
+Received on 452584089_main.server+0x848_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:85 452584089
+452584089 {"452584089":139, "455937521":138}
+Sending from 452584089_main.server+0x8e1_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:105 452584089
+452584089 {"452584089":140, "455937521":140}
+Received on 452584089_main.server+0x848_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:85 452584089
+452584089 {"452584089":141, "455937521":140}
+Sending from 452584089_main.server+0x8e1_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:105 452584089
+452584089 {"452584089":142, "455937521":142}
+Received on 452584089_main.server+0x848_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:85 452584089
+452584089 {"452584089":143, "455937521":142}
+Sending from 452584089_main.server+0x8e1_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:105 452584089
+452584089 {"452584089":144, "455937521":144}
+Received on 452584089_main.server+0x848_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:85 452584089
+452584089 {"452584089":145, "455937521":144}
+Sending from 452584089_main.server+0x8e1_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:105 452584089
+452584089 {"452584089":146, "455937521":146}
+Received on 452584089_main.server+0x848_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:85 452584089
+452584089 {"452584089":147, "455937521":146}
+Sending from 452584089_main.server+0x8e1_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:105 452584089
+452584089 {"452584089":148, "455937521":148}
+Received on 452584089_main.server+0x848_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:85 452584089
+452584089 {"452584089":149, "455937521":148}
+Sending from 452584089_main.server+0x8e1_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:105 452584089
+452584089 {"452584089":150, "455937521":150}
+Received on 452584089_main.server+0x848_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:85 452584089
+452584089 {"452584089":151, "455937521":150}
+Sending from 452584089_main.server+0x8e1_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:105 452584089
+452584089 {"452584089":152, "455937521":152}
+Received on 452584089_main.server+0x848_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:85 452584089
+452584089 {"452584089":153, "455937521":152}
+Sending from 452584089_main.server+0x8e1_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:105 452584089
+452584089 {"452584089":154, "455937521":154}
+Received on 452584089_main.server+0x848_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:85 452584089
+452584089 {"452584089":155, "455937521":154}
+Sending from 452584089_main.server+0x8e1_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:105 452584089
+452584089 {"452584089":156, "455937521":156}
+Received on 452584089_main.server+0x848_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:85 452584089
+452584089 {"452584089":157, "455937521":156}
+Sending from 452584089_main.server+0x8e1_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:105 452584089
+452584089 {"452584089":158, "455937521":158}
+Received on 452584089_main.server+0x848_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:85 452584089
+452584089 {"452584089":159, "455937521":158}
+Sending from 452584089_main.server+0x8e1_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:105 452584089
+452584089 {"452584089":160, "455937521":160}
+Received on 452584089_main.server+0x848_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:85 452584089
+452584089 {"452584089":161, "455937521":160}
+Sending from 452584089_main.server+0x8e1_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:105 452584089
+452584089 {"452584089":162, "455937521":162}
+Received on 452584089_main.server+0x848_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:85 452584089
+452584089 {"452584089":163, "455937521":162}
+Sending from 452584089_main.server+0x8e1_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:105 452584089
+452584089 {"452584089":164, "455937521":164}
+Received on 452584089_main.server+0x848_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:85 452584089
+452584089 {"452584089":165, "455937521":164}
+Sending from 452584089_main.server+0x8e1_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:105 452584089
+452584089 {"452584089":166, "455937521":166}
+Received on 452584089_main.server+0x848_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:85 452584089
+452584089 {"452584089":167, "455937521":166}
+Sending from 452584089_main.server+0x8e1_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:105 452584089
+452584089 {"452584089":168, "455937521":168}
+Received on 452584089_main.server+0x848_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:85 452584089
+452584089 {"452584089":169, "455937521":168}
+Sending from 452584089_main.server+0x8e1_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:105 452584089
+452584089 {"452584089":170, "455937521":170}
+Received on 452584089_main.server+0x848_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:85 452584089
+452584089 {"452584089":171, "455937521":170}
+Sending from 452584089_main.server+0x8e1_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:105 452584089
+452584089 {"452584089":172, "455937521":172}
+Received on 452584089_main.server+0x848_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:85 452584089
+452584089 {"452584089":173, "455937521":172}
+Sending from 452584089_main.server+0x8e1_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:105 452584089
+452584089 {"452584089":174, "455937521":174}
+Received on 452584089_main.server+0x848_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:85 452584089
+452584089 {"452584089":175, "455937521":174}
+Sending from 452584089_main.server+0x8e1_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:105 452584089
+452584089 {"452584089":176, "455937521":176}
+Received on 452584089_main.server+0x848_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:85 452584089
+452584089 {"452584089":177, "455937521":176}
+Sending from 452584089_main.server+0x8e1_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:105 452584089
+452584089 {"452584089":178, "455937521":178}
+Received on 452584089_main.server+0x848_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:85 452584089
+452584089 {"452584089":179, "455937521":178}
+Sending from 452584089_main.server+0x8e1_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:105 452584089
+452584089 {"452584089":180, "455937521":180}
+Received on 452584089_main.server+0x848_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:85 452584089
+452584089 {"452584089":181, "455937521":180}
+Sending from 452584089_main.server+0x8e1_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:105 452584089
+452584089 {"452584089":182, "455937521":182}
+Received on 452584089_main.server+0x848_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:85 452584089
+452584089 {"452584089":183, "455937521":182}
+Sending from 452584089_main.server+0x8e1_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:105 452584089
+452584089 {"452584089":184, "455937521":184}
+Received on 452584089_main.server+0x848_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:85 452584089
+452584089 {"452584089":185, "455937521":184}
+Sending from 452584089_main.server+0x8e1_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:105 452584089
+452584089 {"452584089":186, "455937521":186}
+Received on 452584089_main.server+0x848_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:85 452584089
+452584089 {"452584089":187, "455937521":186}
+Sending from 452584089_main.server+0x8e1_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:105 452584089
+452584089 {"452584089":188, "455937521":188}
+Received on 452584089_main.server+0x848_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:85 452584089
+452584089 {"452584089":189, "455937521":188}
+Sending from 452584089_main.server+0x8e1_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:105 452584089
+452584089 {"452584089":190, "455937521":190}
+Received on 452584089_main.server+0x848_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:85 452584089
+452584089 {"452584089":191, "455937521":190}
+Sending from 452584089_main.server+0x8e1_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:105 452584089
+452584089 {"452584089":192, "455937521":192}
+Received on 452584089_main.server+0x848_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:85 452584089
+452584089 {"452584089":193, "455937521":192}
+Sending from 452584089_main.server+0x8e1_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:105 452584089
+452584089 {"452584089":194, "455937521":194}
+Received on 452584089_main.server+0x848_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:85 452584089
+452584089 {"452584089":195, "455937521":194}
+Sending from 452584089_main.server+0x8e1_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:105 452584089
+452584089 {"452584089":196, "455937521":196}
+Received on 452584089_main.server+0x848_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:85 452584089
+452584089 {"452584089":197, "455937521":196}
+Sending from 452584089_main.server+0x8e1_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:105 452584089
+452584089 {"452584089":198, "455937521":198}
+Received on 452584089_main.server+0x848_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:85 452584089
+452584089 {"452584089":199, "455937521":198}
+Sending from 452584089_main.server+0x8e1_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:105 452584089
+452584089 {"452584089":200, "455937521":200}
+Received on 452584089_main.server+0x848_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:85 452584089
+452584089 {"452584089":201, "455937521":200}
+Sending from 452584089_main.server+0x8e1_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:105 452584089
+455937521 {"455937521":1}
 Initialization Complete
-
-Server {"Client":2, "Server":2}
-Received on server.go:39 Server
- {  } { {"Server":1} }
-Server {"Client":2, "Server":3}
-Sending from server.go:42 Server
- {  } { {"Client":2, "Server":2} }
+455937521 {"455937521":2}
+Sending from 455937521_main.client+0x4fb_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:57 455937521
+455937521 {"452584089":3, "455937521":3}
+Received on 455937521_main.client+0x6a8_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:64 455937521
+455937521 {"452584089":3, "455937521":4}
+Sending from 455937521_main.client+0x4fb_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:57 455937521
+455937521 {"452584089":5, "455937521":5}
+Received on 455937521_main.client+0x6a8_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:64 455937521
+455937521 {"452584089":5, "455937521":6}
+Sending from 455937521_main.client+0x4fb_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:57 455937521
+455937521 {"452584089":7, "455937521":7}
+Received on 455937521_main.client+0x6a8_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:64 455937521
+455937521 {"452584089":7, "455937521":8}
+Sending from 455937521_main.client+0x4fb_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:57 455937521
+455937521 {"452584089":9, "455937521":9}
+Received on 455937521_main.client+0x6a8_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:64 455937521
+455937521 {"452584089":9, "455937521":10}
+Sending from 455937521_main.client+0x4fb_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:57 455937521
+455937521 {"452584089":11, "455937521":11}
+Received on 455937521_main.client+0x6a8_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:64 455937521
+455937521 {"452584089":11, "455937521":12}
+Sending from 455937521_main.client+0x4fb_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:57 455937521
+455937521 {"452584089":13, "455937521":13}
+Received on 455937521_main.client+0x6a8_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:64 455937521
+455937521 {"452584089":13, "455937521":14}
+Sending from 455937521_main.client+0x4fb_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:57 455937521
+455937521 {"452584089":15, "455937521":15}
+Received on 455937521_main.client+0x6a8_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:64 455937521
+455937521 {"452584089":15, "455937521":16}
+Sending from 455937521_main.client+0x4fb_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:57 455937521
+455937521 {"452584089":17, "455937521":17}
+Received on 455937521_main.client+0x6a8_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:64 455937521
+455937521 {"452584089":17, "455937521":18}
+Sending from 455937521_main.client+0x4fb_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:57 455937521
+455937521 {"452584089":19, "455937521":19}
+Received on 455937521_main.client+0x6a8_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:64 455937521
+455937521 {"452584089":19, "455937521":20}
+Sending from 455937521_main.client+0x4fb_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:57 455937521
+455937521 {"452584089":21, "455937521":21}
+Received on 455937521_main.client+0x6a8_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:64 455937521
+455937521 {"452584089":21, "455937521":22}
+Sending from 455937521_main.client+0x4fb_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:57 455937521
+455937521 {"452584089":23, "455937521":23}
+Received on 455937521_main.client+0x6a8_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:64 455937521
+455937521 {"452584089":23, "455937521":24}
+Sending from 455937521_main.client+0x4fb_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:57 455937521
+455937521 {"452584089":25, "455937521":25}
+Received on 455937521_main.client+0x6a8_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:64 455937521
+455937521 {"452584089":25, "455937521":26}
+Sending from 455937521_main.client+0x4fb_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:57 455937521
+455937521 {"452584089":27, "455937521":27}
+Received on 455937521_main.client+0x6a8_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:64 455937521
+455937521 {"452584089":27, "455937521":28}
+Sending from 455937521_main.client+0x4fb_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:57 455937521
+455937521 {"452584089":29, "455937521":29}
+Received on 455937521_main.client+0x6a8_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:64 455937521
+455937521 {"452584089":29, "455937521":30}
+Sending from 455937521_main.client+0x4fb_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:57 455937521
+455937521 {"452584089":31, "455937521":31}
+Received on 455937521_main.client+0x6a8_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:64 455937521
+455937521 {"452584089":31, "455937521":32}
+Sending from 455937521_main.client+0x4fb_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:57 455937521
+455937521 {"452584089":33, "455937521":33}
+Received on 455937521_main.client+0x6a8_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:64 455937521
+455937521 {"452584089":33, "455937521":34}
+Sending from 455937521_main.client+0x4fb_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:57 455937521
+455937521 {"452584089":35, "455937521":35}
+Received on 455937521_main.client+0x6a8_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:64 455937521
+455937521 {"452584089":35, "455937521":36}
+Sending from 455937521_main.client+0x4fb_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:57 455937521
+455937521 {"452584089":37, "455937521":37}
+Received on 455937521_main.client+0x6a8_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:64 455937521
+455937521 {"452584089":37, "455937521":38}
+Sending from 455937521_main.client+0x4fb_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:57 455937521
+455937521 {"452584089":39, "455937521":39}
+Received on 455937521_main.client+0x6a8_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:64 455937521
+455937521 {"452584089":39, "455937521":40}
+Sending from 455937521_main.client+0x4fb_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:57 455937521
+455937521 {"452584089":41, "455937521":41}
+Received on 455937521_main.client+0x6a8_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:64 455937521
+455937521 {"452584089":41, "455937521":42}
+Sending from 455937521_main.client+0x4fb_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:57 455937521
+455937521 {"452584089":43, "455937521":43}
+Received on 455937521_main.client+0x6a8_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:64 455937521
+455937521 {"452584089":43, "455937521":44}
+Sending from 455937521_main.client+0x4fb_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:57 455937521
+455937521 {"452584089":45, "455937521":45}
+Received on 455937521_main.client+0x6a8_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:64 455937521
+455937521 {"452584089":45, "455937521":46}
+Sending from 455937521_main.client+0x4fb_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:57 455937521
+455937521 {"452584089":47, "455937521":47}
+Received on 455937521_main.client+0x6a8_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:64 455937521
+455937521 {"452584089":47, "455937521":48}
+Sending from 455937521_main.client+0x4fb_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:57 455937521
+455937521 {"452584089":49, "455937521":49}
+Received on 455937521_main.client+0x6a8_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:64 455937521
+455937521 {"452584089":49, "455937521":50}
+Sending from 455937521_main.client+0x4fb_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:57 455937521
+455937521 {"452584089":51, "455937521":51}
+Received on 455937521_main.client+0x6a8_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:64 455937521
+455937521 {"452584089":51, "455937521":52}
+Sending from 455937521_main.client+0x4fb_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:57 455937521
+455937521 {"452584089":53, "455937521":53}
+Received on 455937521_main.client+0x6a8_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:64 455937521
+455937521 {"452584089":53, "455937521":54}
+Sending from 455937521_main.client+0x4fb_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:57 455937521
+455937521 {"452584089":55, "455937521":55}
+Received on 455937521_main.client+0x6a8_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:64 455937521
+455937521 {"452584089":55, "455937521":56}
+Sending from 455937521_main.client+0x4fb_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:57 455937521
+455937521 {"452584089":57, "455937521":57}
+Received on 455937521_main.client+0x6a8_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:64 455937521
+455937521 {"452584089":57, "455937521":58}
+Sending from 455937521_main.client+0x4fb_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:57 455937521
+455937521 {"452584089":59, "455937521":59}
+Received on 455937521_main.client+0x6a8_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:64 455937521
+455937521 {"452584089":59, "455937521":60}
+Sending from 455937521_main.client+0x4fb_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:57 455937521
+455937521 {"452584089":61, "455937521":61}
+Received on 455937521_main.client+0x6a8_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:64 455937521
+455937521 {"452584089":61, "455937521":62}
+Sending from 455937521_main.client+0x4fb_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:57 455937521
+455937521 {"452584089":63, "455937521":63}
+Received on 455937521_main.client+0x6a8_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:64 455937521
+455937521 {"452584089":63, "455937521":64}
+Sending from 455937521_main.client+0x4fb_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:57 455937521
+455937521 {"452584089":65, "455937521":65}
+Received on 455937521_main.client+0x6a8_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:64 455937521
+455937521 {"452584089":65, "455937521":66}
+Sending from 455937521_main.client+0x4fb_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:57 455937521
+455937521 {"452584089":67, "455937521":67}
+Received on 455937521_main.client+0x6a8_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:64 455937521
+455937521 {"452584089":67, "455937521":68}
+Sending from 455937521_main.client+0x4fb_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:57 455937521
+455937521 {"452584089":69, "455937521":69}
+Received on 455937521_main.client+0x6a8_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:64 455937521
+455937521 {"452584089":69, "455937521":70}
+Sending from 455937521_main.client+0x4fb_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:57 455937521
+455937521 {"452584089":71, "455937521":71}
+Received on 455937521_main.client+0x6a8_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:64 455937521
+455937521 {"452584089":71, "455937521":72}
+Sending from 455937521_main.client+0x4fb_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:57 455937521
+455937521 {"452584089":73, "455937521":73}
+Received on 455937521_main.client+0x6a8_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:64 455937521
+455937521 {"452584089":73, "455937521":74}
+Sending from 455937521_main.client+0x4fb_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:57 455937521
+455937521 {"452584089":75, "455937521":75}
+Received on 455937521_main.client+0x6a8_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:64 455937521
+455937521 {"452584089":75, "455937521":76}
+Sending from 455937521_main.client+0x4fb_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:57 455937521
+455937521 {"452584089":77, "455937521":77}
+Received on 455937521_main.client+0x6a8_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:64 455937521
+455937521 {"452584089":77, "455937521":78}
+Sending from 455937521_main.client+0x4fb_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:57 455937521
+455937521 {"452584089":79, "455937521":79}
+Received on 455937521_main.client+0x6a8_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:64 455937521
+455937521 {"452584089":79, "455937521":80}
+Sending from 455937521_main.client+0x4fb_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:57 455937521
+455937521 {"452584089":81, "455937521":81}
+Received on 455937521_main.client+0x6a8_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:64 455937521
+455937521 {"452584089":81, "455937521":82}
+Sending from 455937521_main.client+0x4fb_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:57 455937521
+455937521 {"452584089":83, "455937521":83}
+Received on 455937521_main.client+0x6a8_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:64 455937521
+455937521 {"452584089":83, "455937521":84}
+Sending from 455937521_main.client+0x4fb_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:57 455937521
+455937521 {"452584089":85, "455937521":85}
+Received on 455937521_main.client+0x6a8_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:64 455937521
+455937521 {"452584089":85, "455937521":86}
+Sending from 455937521_main.client+0x4fb_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:57 455937521
+455937521 {"452584089":87, "455937521":87}
+Received on 455937521_main.client+0x6a8_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:64 455937521
+455937521 {"452584089":87, "455937521":88}
+Sending from 455937521_main.client+0x4fb_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:57 455937521
+455937521 {"452584089":89, "455937521":89}
+Received on 455937521_main.client+0x6a8_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:64 455937521
+455937521 {"452584089":89, "455937521":90}
+Sending from 455937521_main.client+0x4fb_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:57 455937521
+455937521 {"452584089":91, "455937521":91}
+Received on 455937521_main.client+0x6a8_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:64 455937521
+455937521 {"452584089":91, "455937521":92}
+Sending from 455937521_main.client+0x4fb_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:57 455937521
+455937521 {"452584089":93, "455937521":93}
+Received on 455937521_main.client+0x6a8_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:64 455937521
+455937521 {"452584089":93, "455937521":94}
+Sending from 455937521_main.client+0x4fb_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:57 455937521
+455937521 {"452584089":95, "455937521":95}
+Received on 455937521_main.client+0x6a8_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:64 455937521
+455937521 {"452584089":95, "455937521":96}
+Sending from 455937521_main.client+0x4fb_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:57 455937521
+455937521 {"452584089":97, "455937521":97}
+Received on 455937521_main.client+0x6a8_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:64 455937521
+455937521 {"452584089":97, "455937521":98}
+Sending from 455937521_main.client+0x4fb_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:57 455937521
+455937521 {"452584089":99, "455937521":99}
+Received on 455937521_main.client+0x6a8_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:64 455937521
+455937521 {"452584089":99, "455937521":100}
+Sending from 455937521_main.client+0x4fb_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:57 455937521
+455937521 {"452584089":101, "455937521":101}
+Received on 455937521_main.client+0x6a8_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:64 455937521
+455937521 {"452584089":101, "455937521":102}
+Sending from 455937521_main.client+0x4fb_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:57 455937521
+455937521 {"452584089":103, "455937521":103}
+Received on 455937521_main.client+0x6a8_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:64 455937521
+455937521 {"452584089":103, "455937521":104}
+Sending from 455937521_main.client+0x4fb_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:57 455937521
+455937521 {"452584089":105, "455937521":105}
+Received on 455937521_main.client+0x6a8_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:64 455937521
+455937521 {"452584089":105, "455937521":106}
+Sending from 455937521_main.client+0x4fb_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:57 455937521
+455937521 {"452584089":107, "455937521":107}
+Received on 455937521_main.client+0x6a8_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:64 455937521
+455937521 {"452584089":107, "455937521":108}
+Sending from 455937521_main.client+0x4fb_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:57 455937521
+455937521 {"452584089":109, "455937521":109}
+Received on 455937521_main.client+0x6a8_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:64 455937521
+455937521 {"452584089":109, "455937521":110}
+Sending from 455937521_main.client+0x4fb_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:57 455937521
+455937521 {"452584089":111, "455937521":111}
+Received on 455937521_main.client+0x6a8_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:64 455937521
+455937521 {"452584089":111, "455937521":112}
+Sending from 455937521_main.client+0x4fb_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:57 455937521
+455937521 {"452584089":113, "455937521":113}
+Received on 455937521_main.client+0x6a8_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:64 455937521
+455937521 {"452584089":113, "455937521":114}
+Sending from 455937521_main.client+0x4fb_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:57 455937521
+455937521 {"452584089":115, "455937521":115}
+Received on 455937521_main.client+0x6a8_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:64 455937521
+455937521 {"452584089":115, "455937521":116}
+Sending from 455937521_main.client+0x4fb_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:57 455937521
+455937521 {"452584089":117, "455937521":117}
+Received on 455937521_main.client+0x6a8_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:64 455937521
+455937521 {"452584089":117, "455937521":118}
+Sending from 455937521_main.client+0x4fb_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:57 455937521
+455937521 {"452584089":119, "455937521":119}
+Received on 455937521_main.client+0x6a8_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:64 455937521
+455937521 {"452584089":119, "455937521":120}
+Sending from 455937521_main.client+0x4fb_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:57 455937521
+455937521 {"452584089":121, "455937521":121}
+Received on 455937521_main.client+0x6a8_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:64 455937521
+455937521 {"452584089":121, "455937521":122}
+Sending from 455937521_main.client+0x4fb_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:57 455937521
+455937521 {"452584089":123, "455937521":123}
+Received on 455937521_main.client+0x6a8_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:64 455937521
+455937521 {"452584089":123, "455937521":124}
+Sending from 455937521_main.client+0x4fb_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:57 455937521
+455937521 {"452584089":125, "455937521":125}
+Received on 455937521_main.client+0x6a8_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:64 455937521
+455937521 {"452584089":125, "455937521":126}
+Sending from 455937521_main.client+0x4fb_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:57 455937521
+455937521 {"452584089":127, "455937521":127}
+Received on 455937521_main.client+0x6a8_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:64 455937521
+455937521 {"452584089":127, "455937521":128}
+Sending from 455937521_main.client+0x4fb_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:57 455937521
+455937521 {"452584089":129, "455937521":129}
+Received on 455937521_main.client+0x6a8_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:64 455937521
+455937521 {"452584089":129, "455937521":130}
+Sending from 455937521_main.client+0x4fb_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:57 455937521
+455937521 {"452584089":131, "455937521":131}
+Received on 455937521_main.client+0x6a8_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:64 455937521
+455937521 {"452584089":131, "455937521":132}
+Sending from 455937521_main.client+0x4fb_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:57 455937521
+455937521 {"452584089":133, "455937521":133}
+Received on 455937521_main.client+0x6a8_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:64 455937521
+455937521 {"452584089":133, "455937521":134}
+Sending from 455937521_main.client+0x4fb_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:57 455937521
+455937521 {"452584089":135, "455937521":135}
+Received on 455937521_main.client+0x6a8_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:64 455937521
+455937521 {"452584089":135, "455937521":136}
+Sending from 455937521_main.client+0x4fb_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:57 455937521
+455937521 {"452584089":137, "455937521":137}
+Received on 455937521_main.client+0x6a8_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:64 455937521
+455937521 {"452584089":137, "455937521":138}
+Sending from 455937521_main.client+0x4fb_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:57 455937521
+455937521 {"452584089":139, "455937521":139}
+Received on 455937521_main.client+0x6a8_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:64 455937521
+455937521 {"452584089":139, "455937521":140}
+Sending from 455937521_main.client+0x4fb_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:57 455937521
+455937521 {"452584089":141, "455937521":141}
+Received on 455937521_main.client+0x6a8_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:64 455937521
+455937521 {"452584089":141, "455937521":142}
+Sending from 455937521_main.client+0x4fb_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:57 455937521
+455937521 {"452584089":143, "455937521":143}
+Received on 455937521_main.client+0x6a8_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:64 455937521
+455937521 {"452584089":143, "455937521":144}
+Sending from 455937521_main.client+0x4fb_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:57 455937521
+455937521 {"452584089":145, "455937521":145}
+Received on 455937521_main.client+0x6a8_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:64 455937521
+455937521 {"452584089":145, "455937521":146}
+Sending from 455937521_main.client+0x4fb_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:57 455937521
+455937521 {"452584089":147, "455937521":147}
+Received on 455937521_main.client+0x6a8_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:64 455937521
+455937521 {"452584089":147, "455937521":148}
+Sending from 455937521_main.client+0x4fb_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:57 455937521
+455937521 {"452584089":149, "455937521":149}
+Received on 455937521_main.client+0x6a8_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:64 455937521
+455937521 {"452584089":149, "455937521":150}
+Sending from 455937521_main.client+0x4fb_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:57 455937521
+455937521 {"452584089":151, "455937521":151}
+Received on 455937521_main.client+0x6a8_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:64 455937521
+455937521 {"452584089":151, "455937521":152}
+Sending from 455937521_main.client+0x4fb_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:57 455937521
+455937521 {"452584089":153, "455937521":153}
+Received on 455937521_main.client+0x6a8_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:64 455937521
+455937521 {"452584089":153, "455937521":154}
+Sending from 455937521_main.client+0x4fb_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:57 455937521
+455937521 {"452584089":155, "455937521":155}
+Received on 455937521_main.client+0x6a8_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:64 455937521
+455937521 {"452584089":155, "455937521":156}
+Sending from 455937521_main.client+0x4fb_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:57 455937521
+455937521 {"452584089":157, "455937521":157}
+Received on 455937521_main.client+0x6a8_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:64 455937521
+455937521 {"452584089":157, "455937521":158}
+Sending from 455937521_main.client+0x4fb_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:57 455937521
+455937521 {"452584089":159, "455937521":159}
+Received on 455937521_main.client+0x6a8_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:64 455937521
+455937521 {"452584089":159, "455937521":160}
+Sending from 455937521_main.client+0x4fb_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:57 455937521
+455937521 {"452584089":161, "455937521":161}
+Received on 455937521_main.client+0x6a8_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:64 455937521
+455937521 {"452584089":161, "455937521":162}
+Sending from 455937521_main.client+0x4fb_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:57 455937521
+455937521 {"452584089":163, "455937521":163}
+Received on 455937521_main.client+0x6a8_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:64 455937521
+455937521 {"452584089":163, "455937521":164}
+Sending from 455937521_main.client+0x4fb_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:57 455937521
+455937521 {"452584089":165, "455937521":165}
+Received on 455937521_main.client+0x6a8_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:64 455937521
+455937521 {"452584089":165, "455937521":166}
+Sending from 455937521_main.client+0x4fb_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:57 455937521
+455937521 {"452584089":167, "455937521":167}
+Received on 455937521_main.client+0x6a8_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:64 455937521
+455937521 {"452584089":167, "455937521":168}
+Sending from 455937521_main.client+0x4fb_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:57 455937521
+455937521 {"452584089":169, "455937521":169}
+Received on 455937521_main.client+0x6a8_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:64 455937521
+455937521 {"452584089":169, "455937521":170}
+Sending from 455937521_main.client+0x4fb_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:57 455937521
+455937521 {"452584089":171, "455937521":171}
+Received on 455937521_main.client+0x6a8_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:64 455937521
+455937521 {"452584089":171, "455937521":172}
+Sending from 455937521_main.client+0x4fb_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:57 455937521
+455937521 {"452584089":173, "455937521":173}
+Received on 455937521_main.client+0x6a8_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:64 455937521
+455937521 {"452584089":173, "455937521":174}
+Sending from 455937521_main.client+0x4fb_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:57 455937521
+455937521 {"452584089":175, "455937521":175}
+Received on 455937521_main.client+0x6a8_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:64 455937521
+455937521 {"452584089":175, "455937521":176}
+Sending from 455937521_main.client+0x4fb_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:57 455937521
+455937521 {"452584089":177, "455937521":177}
+Received on 455937521_main.client+0x6a8_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:64 455937521
+455937521 {"452584089":177, "455937521":178}
+Sending from 455937521_main.client+0x4fb_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:57 455937521
+455937521 {"452584089":179, "455937521":179}
+Received on 455937521_main.client+0x6a8_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:64 455937521
+455937521 {"452584089":179, "455937521":180}
+Sending from 455937521_main.client+0x4fb_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:57 455937521
+455937521 {"452584089":181, "455937521":181}
+Received on 455937521_main.client+0x6a8_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:64 455937521
+455937521 {"452584089":181, "455937521":182}
+Sending from 455937521_main.client+0x4fb_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:57 455937521
+455937521 {"452584089":183, "455937521":183}
+Received on 455937521_main.client+0x6a8_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:64 455937521
+455937521 {"452584089":183, "455937521":184}
+Sending from 455937521_main.client+0x4fb_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:57 455937521
+455937521 {"452584089":185, "455937521":185}
+Received on 455937521_main.client+0x6a8_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:64 455937521
+455937521 {"452584089":185, "455937521":186}
+Sending from 455937521_main.client+0x4fb_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:57 455937521
+455937521 {"452584089":187, "455937521":187}
+Received on 455937521_main.client+0x6a8_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:64 455937521
+455937521 {"452584089":187, "455937521":188}
+Sending from 455937521_main.client+0x4fb_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:57 455937521
+455937521 {"452584089":189, "455937521":189}
+Received on 455937521_main.client+0x6a8_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:64 455937521
+455937521 {"452584089":189, "455937521":190}
+Sending from 455937521_main.client+0x4fb_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:57 455937521
+455937521 {"452584089":191, "455937521":191}
+Received on 455937521_main.client+0x6a8_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:64 455937521
+455937521 {"452584089":191, "455937521":192}
+Sending from 455937521_main.client+0x4fb_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:57 455937521
+455937521 {"452584089":193, "455937521":193}
+Received on 455937521_main.client+0x6a8_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:64 455937521
+455937521 {"452584089":193, "455937521":194}
+Sending from 455937521_main.client+0x4fb_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:57 455937521
+455937521 {"452584089":195, "455937521":195}
+Received on 455937521_main.client+0x6a8_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:64 455937521
+455937521 {"452584089":195, "455937521":196}
+Sending from 455937521_main.client+0x4fb_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:57 455937521
+455937521 {"452584089":197, "455937521":197}
+Received on 455937521_main.client+0x6a8_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:64 455937521
+455937521 {"452584089":197, "455937521":198}
+Sending from 455937521_main.client+0x4fb_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:57 455937521
+455937521 {"452584089":199, "455937521":199}
+Received on 455937521_main.client+0x6a8_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:64 455937521
+455937521 {"452584089":199, "455937521":200}
+Sending from 455937521_main.client+0x4fb_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:57 455937521
+455937521 {"452584089":201, "455937521":201}
+Received on 455937521_main.client+0x6a8_/home/stewartgrant/go/src/bitbucket.org/bestchai/dinv/examples/helloDinv/ClientServer.go:64 455937521
