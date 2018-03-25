@@ -10,6 +10,12 @@ syntax: glob
 *.json
 *.stext
 *.log
+*.wal
+*.mp4
+*.tmp
+*.RData
+*db
+tags
 *out.text
 savedtest*
 mod_*
@@ -22,6 +28,19 @@ examples/sum/failed
 userstudy/*
 *log_archive/*
 
+
 experiements/etcd/azure*.wal
-experiements/etcd*.pdf
+experiements/etcd*.pdf$
+experiements/etcd/azure/*.plot
+experiements/etcd/azure/*.dat
+experiements/etcd/azure/*.pdf
+experiements/etcd/azure/*.tmp
+
+
+experiements/etcd/*.plot
+experiements/etcd/*.dat
+experiements/etcd/*.pdf
+experiements/etcd/*.tmp
+
+*.dat
 dinvRT/benchmarks*

@@ -1,0 +1,76 @@
+
+R version 3.0.2 (2013-09-25) -- "Frisbee Sailing"
+Copyright (C) 2013 The R Foundation for Statistical Computing
+Platform: x86_64-pc-linux-gnu (64-bit)
+
+R is free software and comes with ABSOLUTELY NO WARRANTY.
+You are welcome to redistribute it under certain conditions.
+Type 'license()' or 'licence()' for distribution details.
+
+  Natural language support but running in an English locale
+
+R is a collaborative project with many contributors.
+Type 'contributors()' for more information and
+'citation()' on how to cite R or R packages in publications.
+
+Type 'demo()' for some demos, 'help()' for on-line help, or
+'help.start()' for an HTML browser interface to help.
+Type 'q()' to quit R.
+
+[Previously saved workspace restored]
+
+> #/!usr/bin/env Rscript
+>  uninstlat <-read.table("./govectorEval/unmodifiedLatency.dat", header=TRUE, sep=",", na.strings="NA", dec=".", strip.white=TRUE)
+>  instlat <-read.table("./govectorEval/instrumentedLatency.dat", header=TRUE, sep=",", na.strings="NA", dec=".", strip.white=TRUE)
+>  uninstband <-read.table("./govectorEval/unmodifiedBandwidth.dat", header=TRUE, sep=",", na.strings="NA", dec=".", strip.white=TRUE)
+>  instband <-read.table("./govectorEval/instrumentedBandwidth.dat", header=TRUE, sep=",", na.strings="NA", dec=".", strip.white=TRUE)
+> 
+> 
+> print("unmodified latency")
+[1] "unmodified latency"
+> summary(uninstlat)
+   X172384821             X24        
+ Min.   :1.872e+08   Min.   : 19.00  
+ 1st Qu.:4.980e+09   1st Qu.: 29.00  
+ Median :1.002e+10   Median : 35.00  
+ Mean   :1.007e+10   Mean   : 42.57  
+ 3rd Qu.:1.503e+10   3rd Qu.: 50.00  
+ Max.   :1.999e+10   Max.   :284.00  
+> 
+> print("instrumented latency")
+[1] "instrumented latency"
+> summary(instlat)
+  X1724258727              X0   
+ Min.   :1.894e+09   Min.   :0  
+ 1st Qu.:3.768e+09   1st Qu.:0  
+ Median :5.725e+09   Median :0  
+ Mean   :5.741e+09   Mean   :0  
+ 3rd Qu.:7.558e+09   3rd Qu.:0  
+ Max.   :9.920e+09   Max.   :0  
+> 
+> print("unmodified bandwidth")
+[1] "unmodified bandwidth"
+> summary(uninstband)
+       X1              X0       
+ Min.   : 2.00   Min.   :  0.0  
+ 1st Qu.:16.25   1st Qu.:120.0  
+ Median :30.50   Median :134.0  
+ Mean   :30.50   Mean   :128.0  
+ 3rd Qu.:44.75   3rd Qu.:150.8  
+ Max.   :59.00   Max.   :175.0  
+> 
+> print("instrumented bandwidth")
+[1] "instrumented bandwidth"
+> summary(instband)
+       X1             X0     
+ Min.   :2.00   Min.   :5.0  
+ 1st Qu.:3.75   1st Qu.:7.5  
+ Median :5.50   Median :8.0  
+ Mean   :5.50   Mean   :7.5  
+ 3rd Qu.:7.25   3rd Qu.:8.0  
+ Max.   :9.00   Max.   :9.0  
+> 
+> 
+> proc.time()
+   user  system elapsed 
+  0.233   0.044   1.043 
