@@ -41,8 +41,8 @@ function fixModDir {
 
 # used to run the instrumented test files
 function runTestProgram {
-    cd $testDir/$1
-    go run $1.go &
+    cd $testDir/
+    go run ClientServer.go $1 &
     sleep 2
 }
 
@@ -93,11 +93,11 @@ then
     cleanup
     exit
 fi
-#installDinv
+installDinv
 #instrument client
 #instrument server
-runTestProgram server
-runTestProgram client
+runTestProgram -isServer
+runTestProgram -isClient
 runLogMerger client server
 runDaikon
 if [ "$1" == "-d" ];

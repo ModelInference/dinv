@@ -146,6 +146,9 @@ func cleanSources(p *programslicer.ProgramWrapper) {
 								if xx.Name == "dinvRT" && s.Sel.Name == "Dump" {
 									x.X = ast.NewIdent("//@dump")
 								}
+								if xx.Name == "dinvRT" && s.Sel.Name == "Track" {
+									x.X = ast.NewIdent("//@track")
+								}
 							}
 						}
 					}

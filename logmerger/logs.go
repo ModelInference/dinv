@@ -342,7 +342,7 @@ type NameValuePair struct {
 
 //String representation of a name value pair
 func (nvp NameValuePair) String() string {
-	return fmt.Sprintf("%s=%s , ", nvp.VarName, nvp.value())
+	return fmt.Sprintf("(Name:%s,Value:%s,Type:%s)", nvp.VarName, nvp.value(), nvp.Type)
 }
 
 //returns the value of the Name value pair as a string
@@ -368,7 +368,7 @@ func (nvp NameValuePair) value() string {
 //returns the value of the Name value pair as a string
 //TODO catch and print all possible reflected types
 func (nvp NameValuePair) ValueG() string {
-    return nvp.value()
+	return nvp.value()
 }
 
 //Point is a representation of a program point. Name value pair is the

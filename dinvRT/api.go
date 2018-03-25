@@ -171,10 +171,12 @@ func Track(did, names string, values ...interface{}) {
 			//add it to the diff if it does
 			currentValue := varStore[nameList[i]]
 			newValue := newPair(nameList[i], values[i])
-			if (currentValue.Type == "int" || currentValue.Type == "boolean" || currentValue.Type == "float" || currentValue.Type == "string") && currentValue.Value != newValue.Value {
-				dumpDiff.Add(newValue)
+			if newValue.Type == "int" || newValue.Type == "boolean" || newValue.Type == "float" || newValue.Type == "string" {
+				if currentValue.Value != newValue.Value {
+					dumpDiff.Add(newValue)
+				}
+				varStore[nameList[i]] = newValue
 			}
-			varStore[nameList[i]] = newValue
 		}
 	}
 	trace.Append(dumpDiff)
@@ -232,8 +234,9 @@ func logPairList(pairs []logmerger.NameValuePair, did string) {
 		VectorClock:        GetLogger().GetCurrentVC(),
 		CommunicationDelta: 0,
 	}
+	fmt.Println(pairs)
 	if err := Encoder.Encode(point); err != nil {
-		fmt.Printf("%s: dinvRT/api.go: Error encoding point: %s", GetId(), err.Error())
+		fmt.Printf("%s: dinvRT/api.go: Error encoding point: %s\n", GetId(), err.Error())
 		return
 	}
 }
@@ -359,7 +362,6 @@ func UnpackM(msg []byte, pack interface{}, info string) {
 	initDinv("")
 	goVecLogger.UnpackReceive(info, msg, pack)
 	log(pack, ls.REC, info)
-
 	return
 }
 
@@ -617,6 +619,9 @@ func log(msg interface{}, eventType int, info string) {
 		//update SessionID
 		rid = resp.Id
 		//fmt.Println("Made it back from RPC!!!")
+	} else {
+		logVarStore()
+		//fmt.Println("Local logging not enabled because I'm a dunce")
 	}
 
 }

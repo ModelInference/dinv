@@ -7,7 +7,6 @@ import (
 	"os"
 
 	"bitbucket.org/bestchai/dinv/dinvRT"
-	"github.com/arcaneiceman/GoVector/capture"
 )
 
 const (
@@ -38,7 +37,9 @@ func main() {
 
 		msg := MarshallInts([]int{term1, term2})
 		// sending UDP packet to specified address and port
-		_, errWrite := capture.Write(conn.Write, msg)
+		//_, errWrite := capture.Write(conn.Write, msg)
+		govector.PrepareSend("Sending a new validated BC block", &msg)
+		_, errWrite := conn.Write(msg)
 
 		PrintErr(errWrite)
 
@@ -46,7 +47,8 @@ func main() {
 		dinvRT.Track("C-pre", "term1,term2,sum", term1, term2, sum)
 		// Reading the response message
 
-		_, errRead := capture.Read(conn.Read, buf[0:])
+		_, errRead := conn.Read(buf[0:])
+		govector.UnpackReceve("Blockchain append", buf, someStruct{})
 		dinvRT.Track("C-post", "term1,term2,sum", term1, term2, sum)
 		//@track
 		PrintErr(errRead)

@@ -44,6 +44,7 @@ if [ "$BENCMARK" == "YCSB-A" ] || [ "$BENCHMARK" == "YCSB-B" ]; then
         #put or get based on uniform modulo
         let "op=RANDOM%mod"
         echo "$op"
+        echo "$word"
         an=$(($(date +%s%N)/1000000))
         if [ "$op" == "0" ];then
             i=${#HASPUT[@]}

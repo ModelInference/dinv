@@ -2,829 +2,823 @@
 
 Apple {"Apple":1}
 Initialization Complete
-Apple {"Apple":2}
-Sending from Apple
-Apple {"Apple":3, "Apricot":3, "Banana":5}
-Received on Apple
-Apple {"Apple":4, "Apricot":3, "Banana":5}
-Sending from Apple
-Apple {"Apple":5, "Apricot":5, "Banana":9}
-Received on Apple
-Apple {"Apple":6, "Apricot":5, "Banana":9}
-Sending from Apple
-Apple {"Apple":7, "Apricot":7, "Banana":13}
-Received on Apple
-Apple {"Apple":8, "Apricot":7, "Banana":13}
-Sending from Apple
-Apple {"Apple":9, "Apricot":9, "Banana":17}
-Received on Apple
-Apple {"Apple":10, "Apricot":9, "Banana":17}
-Sending from Apple
-Apple {"Apple":11, "Apricot":11, "Banana":21}
-Received on Apple
-Apple {"Apple":12, "Apricot":11, "Banana":21}
-Sending from Apple
-Apple {"Apple":13, "Apricot":13, "Banana":25}
-Received on Apple
-Apple {"Apple":14, "Apricot":13, "Banana":25}
-Sending from Apple
-Apple {"Apple":15, "Apricot":15, "Banana":29}
-Received on Apple
-Apple {"Apple":16, "Apricot":15, "Banana":29}
-Sending from Apple
-Apple {"Apple":17, "Apricot":17, "Banana":33}
-Received on Apple
-Apple {"Apple":18, "Apricot":17, "Banana":33}
-Sending from Apple
-Apple {"Apple":19, "Apricot":19, "Banana":37}
-Received on Apple
-Apple {"Apple":20, "Apricot":19, "Banana":37}
-Sending from Apple
-Apple {"Apple":21, "Apricot":21, "Banana":41}
-Received on Apple
-Apple {"Apple":22, "Apricot":21, "Banana":41}
-Sending from Apple
-Apple {"Apple":23, "Apricot":23, "Banana":45}
-Received on Apple
-Apple {"Apple":24, "Apricot":23, "Banana":45}
-Sending from Apple
-Apple {"Apple":25, "Apricot":25, "Banana":49}
-Received on Apple
-Apple {"Apple":26, "Apricot":25, "Banana":49}
-Sending from Apple
-Apple {"Apple":27, "Apricot":27, "Banana":53}
-Received on Apple
-Apple {"Apple":28, "Apricot":27, "Banana":53}
-Sending from Apple
-Apple {"Apple":29, "Apricot":29, "Banana":57}
-Received on Apple
-Apple {"Apple":30, "Apricot":29, "Banana":57}
-Sending from Apple
-Apple {"Apple":31, "Apricot":31, "Banana":61}
-Received on Apple
-Apple {"Apple":32, "Apricot":31, "Banana":61}
-Sending from Apple
-Apple {"Apple":33, "Apricot":33, "Banana":65}
-Received on Apple
-Apple {"Apple":34, "Apricot":33, "Banana":65}
-Sending from Apple
-Apple {"Apple":35, "Apricot":35, "Banana":69}
-Received on Apple
-Apple {"Apple":36, "Apricot":35, "Banana":69}
-Sending from Apple
-Apple {"Apple":37, "Apricot":37, "Banana":73}
-Received on Apple
-Apple {"Apple":38, "Apricot":37, "Banana":73}
-Sending from Apple
-Apple {"Apple":39, "Apricot":39, "Banana":77}
-Received on Apple
-Apple {"Apple":40, "Apricot":39, "Banana":77}
-Sending from Apple
-Apple {"Apple":41, "Apricot":41, "Banana":81}
-Received on Apple
-Apple {"Apple":42, "Apricot":41, "Banana":81}
-Sending from Apple
-Apple {"Apple":43, "Apricot":43, "Banana":85}
-Received on Apple
-Apple {"Apple":44, "Apricot":43, "Banana":85}
-Sending from Apple
-Apple {"Apple":45, "Apricot":45, "Banana":89}
-Received on Apple
-Apple {"Apple":46, "Apricot":45, "Banana":89}
-Sending from Apple
-Apple {"Apple":47, "Apricot":47, "Banana":93}
-Received on Apple
-Apple {"Apple":48, "Apricot":47, "Banana":93}
-Sending from Apple
-Apple {"Apple":49, "Apricot":49, "Banana":97}
-Received on Apple
-Apple {"Apple":50, "Apricot":49, "Banana":97}
-Sending from Apple
-Apple {"Apple":51, "Apricot":51, "Banana":101}
-Received on Apple
-Apple {"Apple":52, "Apricot":51, "Banana":101}
-Sending from Apple
-Apple {"Apple":53, "Apricot":53, "Banana":105}
-Received on Apple
-Apple {"Apple":54, "Apricot":53, "Banana":105}
-Sending from Apple
-Apple {"Apple":55, "Apricot":55, "Banana":109}
-Received on Apple
-Apple {"Apple":56, "Apricot":55, "Banana":109}
-Sending from Apple
-Apple {"Apple":57, "Apricot":57, "Banana":113}
-Received on Apple
-Apple {"Apple":58, "Apricot":57, "Banana":113}
-Sending from Apple
-Apple {"Apple":59, "Apricot":59, "Banana":117}
-Received on Apple
-Apple {"Apple":60, "Apricot":59, "Banana":117}
-Sending from Apple
-Apple {"Apple":61, "Apricot":61, "Banana":121}
-Received on Apple
-Apple {"Apple":62, "Apricot":61, "Banana":121}
-Sending from Apple
-Apple {"Apple":63, "Apricot":63, "Banana":125}
-Received on Apple
-Apple {"Apple":64, "Apricot":63, "Banana":125}
-Sending from Apple
-Apple {"Apple":65, "Apricot":65, "Banana":129}
-Received on Apple
-Apple {"Apple":66, "Apricot":65, "Banana":129}
-Sending from Apple
-Apple {"Apple":67, "Apricot":67, "Banana":133}
-Received on Apple
-Apple {"Apple":68, "Apricot":67, "Banana":133}
-Sending from Apple
-Apple {"Apple":69, "Apricot":69, "Banana":137}
-Received on Apple
-Apple {"Apple":70, "Apricot":69, "Banana":137}
-Sending from Apple
-Apple {"Apple":71, "Apricot":71, "Banana":141}
-Received on Apple
-Apple {"Apple":72, "Apricot":71, "Banana":141}
-Sending from Apple
-Apple {"Apple":73, "Apricot":73, "Banana":145}
-Received on Apple
-Apple {"Apple":74, "Apricot":73, "Banana":145}
-Sending from Apple
-Apple {"Apple":75, "Apricot":75, "Banana":149}
-Received on Apple
-Apple {"Apple":76, "Apricot":75, "Banana":149}
-Sending from Apple
-Apple {"Apple":77, "Apricot":77, "Banana":153}
-Received on Apple
-Apple {"Apple":78, "Apricot":77, "Banana":153}
-Sending from Apple
-Apple {"Apple":79, "Apricot":79, "Banana":157}
-Received on Apple
-Apple {"Apple":80, "Apricot":79, "Banana":157}
-Sending from Apple
-Apple {"Apple":81, "Apricot":81, "Banana":161}
-Received on Apple
-Apple {"Apple":82, "Apricot":81, "Banana":161}
-Sending from Apple
-Apple {"Apple":83, "Apricot":83, "Banana":165}
-Received on Apple
-Apple {"Apple":84, "Apricot":83, "Banana":165}
-Sending from Apple
-Apple {"Apple":85, "Apricot":85, "Banana":169}
-Received on Apple
-Apple {"Apple":86, "Apricot":85, "Banana":169}
-Sending from Apple
-Apple {"Apple":87, "Apricot":87, "Banana":173}
-Received on Apple
-Apple {"Apple":88, "Apricot":87, "Banana":173}
-Sending from Apple
-Apple {"Apple":89, "Apricot":89, "Banana":177}
-Received on Apple
-Apple {"Apple":90, "Apricot":89, "Banana":177}
-Sending from Apple
-Apple {"Apple":91, "Apricot":91, "Banana":181}
-Received on Apple
-Apple {"Apple":92, "Apricot":91, "Banana":181}
-Sending from Apple
-Apple {"Apple":93, "Apricot":93, "Banana":185}
-Received on Apple
-Apple {"Apple":94, "Apricot":93, "Banana":185}
-Sending from Apple
-Apple {"Apple":95, "Apricot":95, "Banana":189}
-Received on Apple
-Apple {"Apple":96, "Apricot":95, "Banana":189}
-Sending from Apple
-Apple {"Apple":97, "Apricot":97, "Banana":193}
-Received on Apple
-Apple {"Apple":98, "Apricot":97, "Banana":193}
-Sending from Apple
-Apple {"Apple":99, "Apricot":99, "Banana":197}
-Received on Apple
-Apple {"Apple":100, "Apricot":99, "Banana":197}
-Sending from Apple
-Apple {"Apple":101, "Apricot":101, "Banana":201}
-Received on Apple
-Apple {"Apple":102, "Apricot":101, "Banana":201}
-Sending from Apple
-Apple {"Apple":103, "Apricot":103, "Banana":205}
-Received on Apple
+Apple {"Apple":2, "Apricot":2}
+Received on Apple_github.com/arcaneiceman/GoVector/capture.ReadFrom+0x161_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:28 Apple
+Apple {"Apple":3, "Apricot":2}
+Sending from Apple_github.com/arcaneiceman/GoVector/capture.Write+0x87_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:33 Apple
+Apple {"Apple":4, "Apricot":2, "Banana":3}
+Received on Apple_github.com/arcaneiceman/GoVector/capture.Read+0x121_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:21 Apple
+Apple {"Apple":5, "Apricot":2, "Banana":3}
+Sending from Apple_github.com/arcaneiceman/GoVector/capture.WriteTo+0x8d_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:39 Apple
+Apple {"Apple":6, "Apricot":4, "Banana":3}
+Received on Apple_github.com/arcaneiceman/GoVector/capture.ReadFrom+0x161_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:28 Apple
+Apple {"Apple":7, "Apricot":4, "Banana":3}
+Sending from Apple_github.com/arcaneiceman/GoVector/capture.Write+0x87_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:33 Apple
+Apple {"Apple":8, "Apricot":4, "Banana":5}
+Received on Apple_github.com/arcaneiceman/GoVector/capture.Read+0x121_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:21 Apple
+Apple {"Apple":9, "Apricot":4, "Banana":5}
+Sending from Apple_github.com/arcaneiceman/GoVector/capture.WriteTo+0x8d_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:39 Apple
+Apple {"Apple":10, "Apricot":6, "Banana":5}
+Received on Apple_github.com/arcaneiceman/GoVector/capture.ReadFrom+0x161_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:28 Apple
+Apple {"Apple":11, "Apricot":6, "Banana":5}
+Sending from Apple_github.com/arcaneiceman/GoVector/capture.Write+0x87_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:33 Apple
+Apple {"Apple":12, "Apricot":6, "Banana":7}
+Received on Apple_github.com/arcaneiceman/GoVector/capture.Read+0x121_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:21 Apple
+Apple {"Apple":13, "Apricot":6, "Banana":7}
+Sending from Apple_github.com/arcaneiceman/GoVector/capture.WriteTo+0x8d_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:39 Apple
+Apple {"Apple":14, "Apricot":8, "Banana":7}
+Received on Apple_github.com/arcaneiceman/GoVector/capture.ReadFrom+0x161_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:28 Apple
+Apple {"Apple":15, "Apricot":8, "Banana":7}
+Sending from Apple_github.com/arcaneiceman/GoVector/capture.Write+0x87_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:33 Apple
+Apple {"Apple":16, "Apricot":8, "Banana":9}
+Received on Apple_github.com/arcaneiceman/GoVector/capture.Read+0x121_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:21 Apple
+Apple {"Apple":17, "Apricot":8, "Banana":9}
+Sending from Apple_github.com/arcaneiceman/GoVector/capture.WriteTo+0x8d_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:39 Apple
+Apple {"Apple":18, "Apricot":10, "Banana":9}
+Received on Apple_github.com/arcaneiceman/GoVector/capture.ReadFrom+0x161_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:28 Apple
+Apple {"Apple":19, "Apricot":10, "Banana":9}
+Sending from Apple_github.com/arcaneiceman/GoVector/capture.Write+0x87_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:33 Apple
+Apple {"Apple":20, "Apricot":10, "Banana":11}
+Received on Apple_github.com/arcaneiceman/GoVector/capture.Read+0x121_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:21 Apple
+Apple {"Apple":21, "Apricot":10, "Banana":11}
+Sending from Apple_github.com/arcaneiceman/GoVector/capture.WriteTo+0x8d_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:39 Apple
+Apple {"Apple":22, "Apricot":12, "Banana":11}
+Received on Apple_github.com/arcaneiceman/GoVector/capture.ReadFrom+0x161_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:28 Apple
+Apple {"Apple":23, "Apricot":12, "Banana":11}
+Sending from Apple_github.com/arcaneiceman/GoVector/capture.Write+0x87_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:33 Apple
+Apple {"Apple":24, "Apricot":12, "Banana":13}
+Received on Apple_github.com/arcaneiceman/GoVector/capture.Read+0x121_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:21 Apple
+Apple {"Apple":25, "Apricot":12, "Banana":13}
+Sending from Apple_github.com/arcaneiceman/GoVector/capture.WriteTo+0x8d_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:39 Apple
+Apple {"Apple":26, "Apricot":14, "Banana":13}
+Received on Apple_github.com/arcaneiceman/GoVector/capture.ReadFrom+0x161_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:28 Apple
+Apple {"Apple":27, "Apricot":14, "Banana":13}
+Sending from Apple_github.com/arcaneiceman/GoVector/capture.Write+0x87_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:33 Apple
+Apple {"Apple":28, "Apricot":14, "Banana":15}
+Received on Apple_github.com/arcaneiceman/GoVector/capture.Read+0x121_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:21 Apple
+Apple {"Apple":29, "Apricot":14, "Banana":15}
+Sending from Apple_github.com/arcaneiceman/GoVector/capture.WriteTo+0x8d_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:39 Apple
+Apple {"Apple":30, "Apricot":16, "Banana":15}
+Received on Apple_github.com/arcaneiceman/GoVector/capture.ReadFrom+0x161_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:28 Apple
+Apple {"Apple":31, "Apricot":16, "Banana":15}
+Sending from Apple_github.com/arcaneiceman/GoVector/capture.Write+0x87_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:33 Apple
+Apple {"Apple":32, "Apricot":16, "Banana":17}
+Received on Apple_github.com/arcaneiceman/GoVector/capture.Read+0x121_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:21 Apple
+Apple {"Apple":33, "Apricot":16, "Banana":17}
+Sending from Apple_github.com/arcaneiceman/GoVector/capture.WriteTo+0x8d_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:39 Apple
+Apple {"Apple":34, "Apricot":18, "Banana":17}
+Received on Apple_github.com/arcaneiceman/GoVector/capture.ReadFrom+0x161_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:28 Apple
+Apple {"Apple":35, "Apricot":18, "Banana":17}
+Sending from Apple_github.com/arcaneiceman/GoVector/capture.Write+0x87_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:33 Apple
+Apple {"Apple":36, "Apricot":18, "Banana":19}
+Received on Apple_github.com/arcaneiceman/GoVector/capture.Read+0x121_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:21 Apple
+Apple {"Apple":37, "Apricot":18, "Banana":19}
+Sending from Apple_github.com/arcaneiceman/GoVector/capture.WriteTo+0x8d_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:39 Apple
+Apple {"Apple":38, "Apricot":20, "Banana":19}
+Received on Apple_github.com/arcaneiceman/GoVector/capture.ReadFrom+0x161_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:28 Apple
+Apple {"Apple":39, "Apricot":20, "Banana":19}
+Sending from Apple_github.com/arcaneiceman/GoVector/capture.Write+0x87_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:33 Apple
+Apple {"Apple":40, "Apricot":20, "Banana":21}
+Received on Apple_github.com/arcaneiceman/GoVector/capture.Read+0x121_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:21 Apple
+Apple {"Apple":41, "Apricot":20, "Banana":21}
+Sending from Apple_github.com/arcaneiceman/GoVector/capture.WriteTo+0x8d_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:39 Apple
+Apple {"Apple":42, "Apricot":22, "Banana":21}
+Received on Apple_github.com/arcaneiceman/GoVector/capture.ReadFrom+0x161_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:28 Apple
+Apple {"Apple":43, "Apricot":22, "Banana":21}
+Sending from Apple_github.com/arcaneiceman/GoVector/capture.Write+0x87_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:33 Apple
+Apple {"Apple":44, "Apricot":22, "Banana":23}
+Received on Apple_github.com/arcaneiceman/GoVector/capture.Read+0x121_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:21 Apple
+Apple {"Apple":45, "Apricot":22, "Banana":23}
+Sending from Apple_github.com/arcaneiceman/GoVector/capture.WriteTo+0x8d_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:39 Apple
+Apple {"Apple":46, "Apricot":24, "Banana":23}
+Received on Apple_github.com/arcaneiceman/GoVector/capture.ReadFrom+0x161_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:28 Apple
+Apple {"Apple":47, "Apricot":24, "Banana":23}
+Sending from Apple_github.com/arcaneiceman/GoVector/capture.Write+0x87_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:33 Apple
+Apple {"Apple":48, "Apricot":24, "Banana":25}
+Received on Apple_github.com/arcaneiceman/GoVector/capture.Read+0x121_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:21 Apple
+Apple {"Apple":49, "Apricot":24, "Banana":25}
+Sending from Apple_github.com/arcaneiceman/GoVector/capture.WriteTo+0x8d_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:39 Apple
+Apple {"Apple":50, "Apricot":26, "Banana":25}
+Received on Apple_github.com/arcaneiceman/GoVector/capture.ReadFrom+0x161_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:28 Apple
+Apple {"Apple":51, "Apricot":26, "Banana":25}
+Sending from Apple_github.com/arcaneiceman/GoVector/capture.Write+0x87_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:33 Apple
+Apple {"Apple":52, "Apricot":26, "Banana":27}
+Received on Apple_github.com/arcaneiceman/GoVector/capture.Read+0x121_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:21 Apple
+Apple {"Apple":53, "Apricot":26, "Banana":27}
+Sending from Apple_github.com/arcaneiceman/GoVector/capture.WriteTo+0x8d_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:39 Apple
+Apple {"Apple":54, "Apricot":28, "Banana":27}
+Received on Apple_github.com/arcaneiceman/GoVector/capture.ReadFrom+0x161_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:28 Apple
+Apple {"Apple":55, "Apricot":28, "Banana":27}
+Sending from Apple_github.com/arcaneiceman/GoVector/capture.Write+0x87_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:33 Apple
+Apple {"Apple":56, "Apricot":28, "Banana":29}
+Received on Apple_github.com/arcaneiceman/GoVector/capture.Read+0x121_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:21 Apple
+Apple {"Apple":57, "Apricot":28, "Banana":29}
+Sending from Apple_github.com/arcaneiceman/GoVector/capture.WriteTo+0x8d_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:39 Apple
+Apple {"Apple":58, "Apricot":30, "Banana":29}
+Received on Apple_github.com/arcaneiceman/GoVector/capture.ReadFrom+0x161_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:28 Apple
+Apple {"Apple":59, "Apricot":30, "Banana":29}
+Sending from Apple_github.com/arcaneiceman/GoVector/capture.Write+0x87_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:33 Apple
+Apple {"Apple":60, "Apricot":30, "Banana":31}
+Received on Apple_github.com/arcaneiceman/GoVector/capture.Read+0x121_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:21 Apple
+Apple {"Apple":61, "Apricot":30, "Banana":31}
+Sending from Apple_github.com/arcaneiceman/GoVector/capture.WriteTo+0x8d_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:39 Apple
+Apple {"Apple":62, "Apricot":32, "Banana":31}
+Received on Apple_github.com/arcaneiceman/GoVector/capture.ReadFrom+0x161_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:28 Apple
+Apple {"Apple":63, "Apricot":32, "Banana":31}
+Sending from Apple_github.com/arcaneiceman/GoVector/capture.Write+0x87_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:33 Apple
+Apple {"Apple":64, "Apricot":32, "Banana":33}
+Received on Apple_github.com/arcaneiceman/GoVector/capture.Read+0x121_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:21 Apple
+Apple {"Apple":65, "Apricot":32, "Banana":33}
+Sending from Apple_github.com/arcaneiceman/GoVector/capture.WriteTo+0x8d_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:39 Apple
+Apple {"Apple":66, "Apricot":34, "Banana":33}
+Received on Apple_github.com/arcaneiceman/GoVector/capture.ReadFrom+0x161_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:28 Apple
+Apple {"Apple":67, "Apricot":34, "Banana":33}
+Sending from Apple_github.com/arcaneiceman/GoVector/capture.Write+0x87_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:33 Apple
+Apple {"Apple":68, "Apricot":34, "Banana":35}
+Received on Apple_github.com/arcaneiceman/GoVector/capture.Read+0x121_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:21 Apple
+Apple {"Apple":69, "Apricot":34, "Banana":35}
+Sending from Apple_github.com/arcaneiceman/GoVector/capture.WriteTo+0x8d_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:39 Apple
+Apple {"Apple":70, "Apricot":36, "Banana":35}
+Received on Apple_github.com/arcaneiceman/GoVector/capture.ReadFrom+0x161_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:28 Apple
+Apple {"Apple":71, "Apricot":36, "Banana":35}
+Sending from Apple_github.com/arcaneiceman/GoVector/capture.Write+0x87_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:33 Apple
+Apple {"Apple":72, "Apricot":36, "Banana":37}
+Received on Apple_github.com/arcaneiceman/GoVector/capture.Read+0x121_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:21 Apple
+Apple {"Apple":73, "Apricot":36, "Banana":37}
+Sending from Apple_github.com/arcaneiceman/GoVector/capture.WriteTo+0x8d_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:39 Apple
+Apple {"Apple":74, "Apricot":38, "Banana":37}
+Received on Apple_github.com/arcaneiceman/GoVector/capture.ReadFrom+0x161_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:28 Apple
+Apple {"Apple":75, "Apricot":38, "Banana":37}
+Sending from Apple_github.com/arcaneiceman/GoVector/capture.Write+0x87_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:33 Apple
+Apple {"Apple":76, "Apricot":38, "Banana":39}
+Received on Apple_github.com/arcaneiceman/GoVector/capture.Read+0x121_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:21 Apple
+Apple {"Apple":77, "Apricot":38, "Banana":39}
+Sending from Apple_github.com/arcaneiceman/GoVector/capture.WriteTo+0x8d_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:39 Apple
+Apple {"Apple":78, "Apricot":40, "Banana":39}
+Received on Apple_github.com/arcaneiceman/GoVector/capture.ReadFrom+0x161_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:28 Apple
+Apple {"Apple":79, "Apricot":40, "Banana":39}
+Sending from Apple_github.com/arcaneiceman/GoVector/capture.Write+0x87_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:33 Apple
+Apple {"Apple":80, "Apricot":40, "Banana":41}
+Received on Apple_github.com/arcaneiceman/GoVector/capture.Read+0x121_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:21 Apple
+Apple {"Apple":81, "Apricot":40, "Banana":41}
+Sending from Apple_github.com/arcaneiceman/GoVector/capture.WriteTo+0x8d_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:39 Apple
+Apple {"Apple":82, "Apricot":42, "Banana":41}
+Received on Apple_github.com/arcaneiceman/GoVector/capture.ReadFrom+0x161_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:28 Apple
+Apple {"Apple":83, "Apricot":42, "Banana":41}
+Sending from Apple_github.com/arcaneiceman/GoVector/capture.Write+0x87_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:33 Apple
+Apple {"Apple":84, "Apricot":42, "Banana":43}
+Received on Apple_github.com/arcaneiceman/GoVector/capture.Read+0x121_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:21 Apple
+Apple {"Apple":85, "Apricot":42, "Banana":43}
+Sending from Apple_github.com/arcaneiceman/GoVector/capture.WriteTo+0x8d_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:39 Apple
+Apple {"Apple":86, "Apricot":44, "Banana":43}
+Received on Apple_github.com/arcaneiceman/GoVector/capture.ReadFrom+0x161_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:28 Apple
+Apple {"Apple":87, "Apricot":44, "Banana":43}
+Sending from Apple_github.com/arcaneiceman/GoVector/capture.Write+0x87_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:33 Apple
+Apple {"Apple":88, "Apricot":44, "Banana":45}
+Received on Apple_github.com/arcaneiceman/GoVector/capture.Read+0x121_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:21 Apple
+Apple {"Apple":89, "Apricot":44, "Banana":45}
+Sending from Apple_github.com/arcaneiceman/GoVector/capture.WriteTo+0x8d_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:39 Apple
+Apple {"Apple":90, "Apricot":46, "Banana":45}
+Received on Apple_github.com/arcaneiceman/GoVector/capture.ReadFrom+0x161_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:28 Apple
+Apple {"Apple":91, "Apricot":46, "Banana":45}
+Sending from Apple_github.com/arcaneiceman/GoVector/capture.Write+0x87_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:33 Apple
+Apple {"Apple":92, "Apricot":46, "Banana":47}
+Received on Apple_github.com/arcaneiceman/GoVector/capture.Read+0x121_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:21 Apple
+Apple {"Apple":93, "Apricot":46, "Banana":47}
+Sending from Apple_github.com/arcaneiceman/GoVector/capture.WriteTo+0x8d_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:39 Apple
+Apple {"Apple":94, "Apricot":48, "Banana":47}
+Received on Apple_github.com/arcaneiceman/GoVector/capture.ReadFrom+0x161_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:28 Apple
+Apple {"Apple":95, "Apricot":48, "Banana":47}
+Sending from Apple_github.com/arcaneiceman/GoVector/capture.Write+0x87_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:33 Apple
+Apple {"Apple":96, "Apricot":48, "Banana":49}
+Received on Apple_github.com/arcaneiceman/GoVector/capture.Read+0x121_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:21 Apple
+Apple {"Apple":97, "Apricot":48, "Banana":49}
+Sending from Apple_github.com/arcaneiceman/GoVector/capture.WriteTo+0x8d_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:39 Apple
+Apple {"Apple":98, "Apricot":50, "Banana":49}
+Received on Apple_github.com/arcaneiceman/GoVector/capture.ReadFrom+0x161_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:28 Apple
+Apple {"Apple":99, "Apricot":50, "Banana":49}
+Sending from Apple_github.com/arcaneiceman/GoVector/capture.Write+0x87_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:33 Apple
+Apple {"Apple":100, "Apricot":50, "Banana":51}
+Received on Apple_github.com/arcaneiceman/GoVector/capture.Read+0x121_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:21 Apple
+Apple {"Apple":101, "Apricot":50, "Banana":51}
+Sending from Apple_github.com/arcaneiceman/GoVector/capture.WriteTo+0x8d_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:39 Apple
+Apple {"Apple":102, "Apricot":52, "Banana":51}
+Received on Apple_github.com/arcaneiceman/GoVector/capture.ReadFrom+0x161_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:28 Apple
+Apple {"Apple":103, "Apricot":52, "Banana":51}
+Sending from Apple_github.com/arcaneiceman/GoVector/capture.Write+0x87_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:33 Apple
+Apple {"Apple":104, "Apricot":52, "Banana":53}
+Received on Apple_github.com/arcaneiceman/GoVector/capture.Read+0x121_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:21 Apple
+Apple {"Apple":105, "Apricot":52, "Banana":53}
+Sending from Apple_github.com/arcaneiceman/GoVector/capture.WriteTo+0x8d_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:39 Apple
+Apple {"Apple":106, "Apricot":54, "Banana":53}
+Received on Apple_github.com/arcaneiceman/GoVector/capture.ReadFrom+0x161_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:28 Apple
+Apple {"Apple":107, "Apricot":54, "Banana":53}
+Sending from Apple_github.com/arcaneiceman/GoVector/capture.Write+0x87_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:33 Apple
+Apple {"Apple":108, "Apricot":54, "Banana":55}
+Received on Apple_github.com/arcaneiceman/GoVector/capture.Read+0x121_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:21 Apple
+Apple {"Apple":109, "Apricot":54, "Banana":55}
+Sending from Apple_github.com/arcaneiceman/GoVector/capture.WriteTo+0x8d_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:39 Apple
+Apple {"Apple":110, "Apricot":56, "Banana":55}
+Received on Apple_github.com/arcaneiceman/GoVector/capture.ReadFrom+0x161_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:28 Apple
+Apple {"Apple":111, "Apricot":56, "Banana":55}
+Sending from Apple_github.com/arcaneiceman/GoVector/capture.Write+0x87_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:33 Apple
+Apple {"Apple":112, "Apricot":56, "Banana":57}
+Received on Apple_github.com/arcaneiceman/GoVector/capture.Read+0x121_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:21 Apple
+Apple {"Apple":113, "Apricot":56, "Banana":57}
+Sending from Apple_github.com/arcaneiceman/GoVector/capture.WriteTo+0x8d_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:39 Apple
+Apple {"Apple":114, "Apricot":58, "Banana":57}
+Received on Apple_github.com/arcaneiceman/GoVector/capture.ReadFrom+0x161_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:28 Apple
+Apple {"Apple":115, "Apricot":58, "Banana":57}
+Sending from Apple_github.com/arcaneiceman/GoVector/capture.Write+0x87_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:33 Apple
+Apple {"Apple":116, "Apricot":58, "Banana":59}
+Received on Apple_github.com/arcaneiceman/GoVector/capture.Read+0x121_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:21 Apple
+Apple {"Apple":117, "Apricot":58, "Banana":59}
+Sending from Apple_github.com/arcaneiceman/GoVector/capture.WriteTo+0x8d_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:39 Apple
+Apple {"Apple":118, "Apricot":60, "Banana":59}
+Received on Apple_github.com/arcaneiceman/GoVector/capture.ReadFrom+0x161_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:28 Apple
+Apple {"Apple":119, "Apricot":60, "Banana":59}
+Sending from Apple_github.com/arcaneiceman/GoVector/capture.Write+0x87_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:33 Apple
+Apple {"Apple":120, "Apricot":60, "Banana":61}
+Received on Apple_github.com/arcaneiceman/GoVector/capture.Read+0x121_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:21 Apple
+Apple {"Apple":121, "Apricot":60, "Banana":61}
+Sending from Apple_github.com/arcaneiceman/GoVector/capture.WriteTo+0x8d_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:39 Apple
+Apple {"Apple":122, "Apricot":62, "Banana":61}
+Received on Apple_github.com/arcaneiceman/GoVector/capture.ReadFrom+0x161_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:28 Apple
+Apple {"Apple":123, "Apricot":62, "Banana":61}
+Sending from Apple_github.com/arcaneiceman/GoVector/capture.Write+0x87_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:33 Apple
+Apple {"Apple":124, "Apricot":62, "Banana":63}
+Received on Apple_github.com/arcaneiceman/GoVector/capture.Read+0x121_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:21 Apple
+Apple {"Apple":125, "Apricot":62, "Banana":63}
+Sending from Apple_github.com/arcaneiceman/GoVector/capture.WriteTo+0x8d_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:39 Apple
+Apple {"Apple":126, "Apricot":64, "Banana":63}
+Received on Apple_github.com/arcaneiceman/GoVector/capture.ReadFrom+0x161_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:28 Apple
+Apple {"Apple":127, "Apricot":64, "Banana":63}
+Sending from Apple_github.com/arcaneiceman/GoVector/capture.Write+0x87_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:33 Apple
+Apple {"Apple":128, "Apricot":64, "Banana":65}
+Received on Apple_github.com/arcaneiceman/GoVector/capture.Read+0x121_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:21 Apple
+Apple {"Apple":129, "Apricot":64, "Banana":65}
+Sending from Apple_github.com/arcaneiceman/GoVector/capture.WriteTo+0x8d_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:39 Apple
+Apple {"Apple":130, "Apricot":66, "Banana":65}
+Received on Apple_github.com/arcaneiceman/GoVector/capture.ReadFrom+0x161_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:28 Apple
+Apple {"Apple":131, "Apricot":66, "Banana":65}
+Sending from Apple_github.com/arcaneiceman/GoVector/capture.Write+0x87_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:33 Apple
+Apple {"Apple":132, "Apricot":66, "Banana":67}
+Received on Apple_github.com/arcaneiceman/GoVector/capture.Read+0x121_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:21 Apple
+Apple {"Apple":133, "Apricot":66, "Banana":67}
+Sending from Apple_github.com/arcaneiceman/GoVector/capture.WriteTo+0x8d_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:39 Apple
+Apple {"Apple":134, "Apricot":68, "Banana":67}
+Received on Apple_github.com/arcaneiceman/GoVector/capture.ReadFrom+0x161_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:28 Apple
+Apple {"Apple":135, "Apricot":68, "Banana":67}
+Sending from Apple_github.com/arcaneiceman/GoVector/capture.Write+0x87_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:33 Apple
+Apple {"Apple":136, "Apricot":68, "Banana":69}
+Received on Apple_github.com/arcaneiceman/GoVector/capture.Read+0x121_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:21 Apple
+Apple {"Apple":137, "Apricot":68, "Banana":69}
+Sending from Apple_github.com/arcaneiceman/GoVector/capture.WriteTo+0x8d_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:39 Apple
+Apple {"Apple":138, "Apricot":70, "Banana":69}
+Received on Apple_github.com/arcaneiceman/GoVector/capture.ReadFrom+0x161_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:28 Apple
+Apple {"Apple":139, "Apricot":70, "Banana":69}
+Sending from Apple_github.com/arcaneiceman/GoVector/capture.Write+0x87_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:33 Apple
+Apple {"Apple":140, "Apricot":70, "Banana":71}
+Received on Apple_github.com/arcaneiceman/GoVector/capture.Read+0x121_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:21 Apple
+Apple {"Apple":141, "Apricot":70, "Banana":71}
+Sending from Apple_github.com/arcaneiceman/GoVector/capture.WriteTo+0x8d_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:39 Apple
+Apple {"Apple":142, "Apricot":72, "Banana":71}
+Received on Apple_github.com/arcaneiceman/GoVector/capture.ReadFrom+0x161_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:28 Apple
+Apple {"Apple":143, "Apricot":72, "Banana":71}
+Sending from Apple_github.com/arcaneiceman/GoVector/capture.Write+0x87_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:33 Apple
+Apple {"Apple":144, "Apricot":72, "Banana":73}
+Received on Apple_github.com/arcaneiceman/GoVector/capture.Read+0x121_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:21 Apple
+Apple {"Apple":145, "Apricot":72, "Banana":73}
+Sending from Apple_github.com/arcaneiceman/GoVector/capture.WriteTo+0x8d_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:39 Apple
+Apple {"Apple":146, "Apricot":74, "Banana":73}
+Received on Apple_github.com/arcaneiceman/GoVector/capture.ReadFrom+0x161_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:28 Apple
+Apple {"Apple":147, "Apricot":74, "Banana":73}
+Sending from Apple_github.com/arcaneiceman/GoVector/capture.Write+0x87_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:33 Apple
+Apple {"Apple":148, "Apricot":74, "Banana":75}
+Received on Apple_github.com/arcaneiceman/GoVector/capture.Read+0x121_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:21 Apple
+Apple {"Apple":149, "Apricot":74, "Banana":75}
+Sending from Apple_github.com/arcaneiceman/GoVector/capture.WriteTo+0x8d_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:39 Apple
+Apple {"Apple":150, "Apricot":76, "Banana":75}
+Received on Apple_github.com/arcaneiceman/GoVector/capture.ReadFrom+0x161_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:28 Apple
+Apple {"Apple":151, "Apricot":76, "Banana":75}
+Sending from Apple_github.com/arcaneiceman/GoVector/capture.Write+0x87_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:33 Apple
+Apple {"Apple":152, "Apricot":76, "Banana":77}
+Received on Apple_github.com/arcaneiceman/GoVector/capture.Read+0x121_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:21 Apple
+Apple {"Apple":153, "Apricot":76, "Banana":77}
+Sending from Apple_github.com/arcaneiceman/GoVector/capture.WriteTo+0x8d_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:39 Apple
+Apple {"Apple":154, "Apricot":78, "Banana":77}
+Received on Apple_github.com/arcaneiceman/GoVector/capture.ReadFrom+0x161_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:28 Apple
+Apple {"Apple":155, "Apricot":78, "Banana":77}
+Sending from Apple_github.com/arcaneiceman/GoVector/capture.Write+0x87_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:33 Apple
+Apple {"Apple":156, "Apricot":78, "Banana":79}
+Received on Apple_github.com/arcaneiceman/GoVector/capture.Read+0x121_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:21 Apple
+Apple {"Apple":157, "Apricot":78, "Banana":79}
+Sending from Apple_github.com/arcaneiceman/GoVector/capture.WriteTo+0x8d_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:39 Apple
+Apple {"Apple":158, "Apricot":80, "Banana":79}
+Received on Apple_github.com/arcaneiceman/GoVector/capture.ReadFrom+0x161_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:28 Apple
+Apple {"Apple":159, "Apricot":80, "Banana":79}
+Sending from Apple_github.com/arcaneiceman/GoVector/capture.Write+0x87_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:33 Apple
+Apple {"Apple":160, "Apricot":80, "Banana":81}
+Received on Apple_github.com/arcaneiceman/GoVector/capture.Read+0x121_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:21 Apple
+Apple {"Apple":161, "Apricot":80, "Banana":81}
+Sending from Apple_github.com/arcaneiceman/GoVector/capture.WriteTo+0x8d_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:39 Apple
+Apple {"Apple":162, "Apricot":82, "Banana":81}
+Received on Apple_github.com/arcaneiceman/GoVector/capture.ReadFrom+0x161_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:28 Apple
+Apple {"Apple":163, "Apricot":82, "Banana":81}
+Sending from Apple_github.com/arcaneiceman/GoVector/capture.Write+0x87_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:33 Apple
+Apple {"Apple":164, "Apricot":82, "Banana":83}
+Received on Apple_github.com/arcaneiceman/GoVector/capture.Read+0x121_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:21 Apple
+Apple {"Apple":165, "Apricot":82, "Banana":83}
+Sending from Apple_github.com/arcaneiceman/GoVector/capture.WriteTo+0x8d_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:39 Apple
+Apple {"Apple":166, "Apricot":84, "Banana":83}
+Received on Apple_github.com/arcaneiceman/GoVector/capture.ReadFrom+0x161_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:28 Apple
+Apple {"Apple":167, "Apricot":84, "Banana":83}
+Sending from Apple_github.com/arcaneiceman/GoVector/capture.Write+0x87_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:33 Apple
+Apple {"Apple":168, "Apricot":84, "Banana":85}
+Received on Apple_github.com/arcaneiceman/GoVector/capture.Read+0x121_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:21 Apple
+Apple {"Apple":169, "Apricot":84, "Banana":85}
+Sending from Apple_github.com/arcaneiceman/GoVector/capture.WriteTo+0x8d_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:39 Apple
+Apple {"Apple":170, "Apricot":86, "Banana":85}
+Received on Apple_github.com/arcaneiceman/GoVector/capture.ReadFrom+0x161_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:28 Apple
+Apple {"Apple":171, "Apricot":86, "Banana":85}
+Sending from Apple_github.com/arcaneiceman/GoVector/capture.Write+0x87_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:33 Apple
+Apple {"Apple":172, "Apricot":86, "Banana":87}
+Received on Apple_github.com/arcaneiceman/GoVector/capture.Read+0x121_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:21 Apple
+Apple {"Apple":173, "Apricot":86, "Banana":87}
+Sending from Apple_github.com/arcaneiceman/GoVector/capture.WriteTo+0x8d_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:39 Apple
+Apple {"Apple":174, "Apricot":88, "Banana":87}
+Received on Apple_github.com/arcaneiceman/GoVector/capture.ReadFrom+0x161_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:28 Apple
+Apple {"Apple":175, "Apricot":88, "Banana":87}
+Sending from Apple_github.com/arcaneiceman/GoVector/capture.Write+0x87_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:33 Apple
+Apple {"Apple":176, "Apricot":88, "Banana":89}
+Received on Apple_github.com/arcaneiceman/GoVector/capture.Read+0x121_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:21 Apple
+Apple {"Apple":177, "Apricot":88, "Banana":89}
+Sending from Apple_github.com/arcaneiceman/GoVector/capture.WriteTo+0x8d_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:39 Apple
+Apple {"Apple":178, "Apricot":90, "Banana":89}
+Received on Apple_github.com/arcaneiceman/GoVector/capture.ReadFrom+0x161_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:28 Apple
+Apple {"Apple":179, "Apricot":90, "Banana":89}
+Sending from Apple_github.com/arcaneiceman/GoVector/capture.Write+0x87_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:33 Apple
+Apple {"Apple":180, "Apricot":90, "Banana":91}
+Received on Apple_github.com/arcaneiceman/GoVector/capture.Read+0x121_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:21 Apple
+Apple {"Apple":181, "Apricot":90, "Banana":91}
+Sending from Apple_github.com/arcaneiceman/GoVector/capture.WriteTo+0x8d_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:39 Apple
+Apple {"Apple":182, "Apricot":92, "Banana":91}
+Received on Apple_github.com/arcaneiceman/GoVector/capture.ReadFrom+0x161_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:28 Apple
+Apple {"Apple":183, "Apricot":92, "Banana":91}
+Sending from Apple_github.com/arcaneiceman/GoVector/capture.Write+0x87_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:33 Apple
+Apple {"Apple":184, "Apricot":92, "Banana":93}
+Received on Apple_github.com/arcaneiceman/GoVector/capture.Read+0x121_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:21 Apple
+Apple {"Apple":185, "Apricot":92, "Banana":93}
+Sending from Apple_github.com/arcaneiceman/GoVector/capture.WriteTo+0x8d_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:39 Apple
+Apple {"Apple":186, "Apricot":94, "Banana":93}
+Received on Apple_github.com/arcaneiceman/GoVector/capture.ReadFrom+0x161_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:28 Apple
+Apple {"Apple":187, "Apricot":94, "Banana":93}
+Sending from Apple_github.com/arcaneiceman/GoVector/capture.Write+0x87_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:33 Apple
+Apple {"Apple":188, "Apricot":94, "Banana":95}
+Received on Apple_github.com/arcaneiceman/GoVector/capture.Read+0x121_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:21 Apple
+Apple {"Apple":189, "Apricot":94, "Banana":95}
+Sending from Apple_github.com/arcaneiceman/GoVector/capture.WriteTo+0x8d_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:39 Apple
+Apple {"Apple":190, "Apricot":96, "Banana":95}
+Received on Apple_github.com/arcaneiceman/GoVector/capture.ReadFrom+0x161_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:28 Apple
+Apple {"Apple":191, "Apricot":96, "Banana":95}
+Sending from Apple_github.com/arcaneiceman/GoVector/capture.Write+0x87_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:33 Apple
+Apple {"Apple":192, "Apricot":96, "Banana":97}
+Received on Apple_github.com/arcaneiceman/GoVector/capture.Read+0x121_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:21 Apple
+Apple {"Apple":193, "Apricot":96, "Banana":97}
+Sending from Apple_github.com/arcaneiceman/GoVector/capture.WriteTo+0x8d_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:39 Apple
+Apple {"Apple":194, "Apricot":98, "Banana":97}
+Received on Apple_github.com/arcaneiceman/GoVector/capture.ReadFrom+0x161_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:28 Apple
+Apple {"Apple":195, "Apricot":98, "Banana":97}
+Sending from Apple_github.com/arcaneiceman/GoVector/capture.Write+0x87_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:33 Apple
+Apple {"Apple":196, "Apricot":98, "Banana":99}
+Received on Apple_github.com/arcaneiceman/GoVector/capture.Read+0x121_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:21 Apple
+Apple {"Apple":197, "Apricot":98, "Banana":99}
+Sending from Apple_github.com/arcaneiceman/GoVector/capture.WriteTo+0x8d_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:39 Apple
+Apple {"Apple":198, "Apricot":100, "Banana":99}
+Received on Apple_github.com/arcaneiceman/GoVector/capture.ReadFrom+0x161_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:28 Apple
+Apple {"Apple":199, "Apricot":100, "Banana":99}
+Sending from Apple_github.com/arcaneiceman/GoVector/capture.Write+0x87_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:33 Apple
+Apple {"Apple":200, "Apricot":100, "Banana":101}
+Received on Apple_github.com/arcaneiceman/GoVector/capture.Read+0x121_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:21 Apple
+Apple {"Apple":201, "Apricot":100, "Banana":101}
+Sending from Apple_github.com/arcaneiceman/GoVector/capture.WriteTo+0x8d_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:39 Apple
+Apple {"Apple":202, "Apricot":102, "Banana":101}
+Received on Apple_github.com/arcaneiceman/GoVector/capture.ReadFrom+0x161_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:28 Apple
+Apple {"Apple":203, "Apricot":102, "Banana":101}
+Sending from Apple_github.com/arcaneiceman/GoVector/capture.Write+0x87_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:33 Apple
+Apple {"Apple":204, "Apricot":102, "Banana":103}
+Received on Apple_github.com/arcaneiceman/GoVector/capture.Read+0x121_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:21 Apple
+Apple {"Apple":205, "Apricot":102, "Banana":103}
+Sending from Apple_github.com/arcaneiceman/GoVector/capture.WriteTo+0x8d_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:39 Apple
 Banana {"Banana":1}
 Initialization Complete
-Banana {"Apple":2, "Banana":2}
-Received on Banana
-Banana {"Apple":2, "Banana":3}
-Sending from Banana
-Banana {"Apple":2, "Apricot":3, "Banana":4}
-Received on Banana
-Banana {"Apple":2, "Apricot":3, "Banana":5}
-Sending from Banana
-Banana {"Apple":4, "Apricot":3, "Banana":6}
-Received on Banana
-Banana {"Apple":4, "Apricot":3, "Banana":7}
-Sending from Banana
-Banana {"Apple":4, "Apricot":5, "Banana":8}
-Received on Banana
-Banana {"Apple":4, "Apricot":5, "Banana":9}
-Sending from Banana
-Banana {"Apple":6, "Apricot":5, "Banana":10}
-Received on Banana
-Banana {"Apple":6, "Apricot":5, "Banana":11}
-Sending from Banana
-Banana {"Apple":6, "Apricot":7, "Banana":12}
-Received on Banana
-Banana {"Apple":6, "Apricot":7, "Banana":13}
-Sending from Banana
-Banana {"Apple":8, "Apricot":7, "Banana":14}
-Received on Banana
-Banana {"Apple":8, "Apricot":7, "Banana":15}
-Sending from Banana
-Banana {"Apple":8, "Apricot":9, "Banana":16}
-Received on Banana
-Banana {"Apple":8, "Apricot":9, "Banana":17}
-Sending from Banana
-Banana {"Apple":10, "Apricot":9, "Banana":18}
-Received on Banana
-Banana {"Apple":10, "Apricot":9, "Banana":19}
-Sending from Banana
-Banana {"Apple":10, "Apricot":11, "Banana":20}
-Received on Banana
-Banana {"Apple":10, "Apricot":11, "Banana":21}
-Sending from Banana
-Banana {"Apple":12, "Apricot":11, "Banana":22}
-Received on Banana
-Banana {"Apple":12, "Apricot":11, "Banana":23}
-Sending from Banana
-Banana {"Apple":12, "Apricot":13, "Banana":24}
-Received on Banana
-Banana {"Apple":12, "Apricot":13, "Banana":25}
-Sending from Banana
-Banana {"Apple":14, "Apricot":13, "Banana":26}
-Received on Banana
-Banana {"Apple":14, "Apricot":13, "Banana":27}
-Sending from Banana
-Banana {"Apple":14, "Apricot":15, "Banana":28}
-Received on Banana
-Banana {"Apple":14, "Apricot":15, "Banana":29}
-Sending from Banana
-Banana {"Apple":16, "Apricot":15, "Banana":30}
-Received on Banana
-Banana {"Apple":16, "Apricot":15, "Banana":31}
-Sending from Banana
-Banana {"Apple":16, "Apricot":17, "Banana":32}
-Received on Banana
-Banana {"Apple":16, "Apricot":17, "Banana":33}
-Sending from Banana
-Banana {"Apple":18, "Apricot":17, "Banana":34}
-Received on Banana
-Banana {"Apple":18, "Apricot":17, "Banana":35}
-Sending from Banana
-Banana {"Apple":18, "Apricot":19, "Banana":36}
-Received on Banana
-Banana {"Apple":18, "Apricot":19, "Banana":37}
-Sending from Banana
-Banana {"Apple":20, "Apricot":19, "Banana":38}
-Received on Banana
-Banana {"Apple":20, "Apricot":19, "Banana":39}
-Sending from Banana
-Banana {"Apple":20, "Apricot":21, "Banana":40}
-Received on Banana
-Banana {"Apple":20, "Apricot":21, "Banana":41}
-Sending from Banana
-Banana {"Apple":22, "Apricot":21, "Banana":42}
-Received on Banana
-Banana {"Apple":22, "Apricot":21, "Banana":43}
-Sending from Banana
-Banana {"Apple":22, "Apricot":23, "Banana":44}
-Received on Banana
-Banana {"Apple":22, "Apricot":23, "Banana":45}
-Sending from Banana
-Banana {"Apple":24, "Apricot":23, "Banana":46}
-Received on Banana
-Banana {"Apple":24, "Apricot":23, "Banana":47}
-Sending from Banana
-Banana {"Apple":24, "Apricot":25, "Banana":48}
-Received on Banana
-Banana {"Apple":24, "Apricot":25, "Banana":49}
-Sending from Banana
-Banana {"Apple":26, "Apricot":25, "Banana":50}
-Received on Banana
-Banana {"Apple":26, "Apricot":25, "Banana":51}
-Sending from Banana
-Banana {"Apple":26, "Apricot":27, "Banana":52}
-Received on Banana
-Banana {"Apple":26, "Apricot":27, "Banana":53}
-Sending from Banana
-Banana {"Apple":28, "Apricot":27, "Banana":54}
-Received on Banana
-Banana {"Apple":28, "Apricot":27, "Banana":55}
-Sending from Banana
-Banana {"Apple":28, "Apricot":29, "Banana":56}
-Received on Banana
-Banana {"Apple":28, "Apricot":29, "Banana":57}
-Sending from Banana
-Banana {"Apple":30, "Apricot":29, "Banana":58}
-Received on Banana
-Banana {"Apple":30, "Apricot":29, "Banana":59}
-Sending from Banana
-Banana {"Apple":30, "Apricot":31, "Banana":60}
-Received on Banana
-Banana {"Apple":30, "Apricot":31, "Banana":61}
-Sending from Banana
-Banana {"Apple":32, "Apricot":31, "Banana":62}
-Received on Banana
-Banana {"Apple":32, "Apricot":31, "Banana":63}
-Sending from Banana
-Banana {"Apple":32, "Apricot":33, "Banana":64}
-Received on Banana
-Banana {"Apple":32, "Apricot":33, "Banana":65}
-Sending from Banana
-Banana {"Apple":34, "Apricot":33, "Banana":66}
-Received on Banana
-Banana {"Apple":34, "Apricot":33, "Banana":67}
-Sending from Banana
-Banana {"Apple":34, "Apricot":35, "Banana":68}
-Received on Banana
-Banana {"Apple":34, "Apricot":35, "Banana":69}
-Sending from Banana
-Banana {"Apple":36, "Apricot":35, "Banana":70}
-Received on Banana
-Banana {"Apple":36, "Apricot":35, "Banana":71}
-Sending from Banana
-Banana {"Apple":36, "Apricot":37, "Banana":72}
-Received on Banana
-Banana {"Apple":36, "Apricot":37, "Banana":73}
-Sending from Banana
-Banana {"Apple":38, "Apricot":37, "Banana":74}
-Received on Banana
-Banana {"Apple":38, "Apricot":37, "Banana":75}
-Sending from Banana
-Banana {"Apple":38, "Apricot":39, "Banana":76}
-Received on Banana
-Banana {"Apple":38, "Apricot":39, "Banana":77}
-Sending from Banana
-Banana {"Apple":40, "Apricot":39, "Banana":78}
-Received on Banana
-Banana {"Apple":40, "Apricot":39, "Banana":79}
-Sending from Banana
-Banana {"Apple":40, "Apricot":41, "Banana":80}
-Received on Banana
-Banana {"Apple":40, "Apricot":41, "Banana":81}
-Sending from Banana
-Banana {"Apple":42, "Apricot":41, "Banana":82}
-Received on Banana
-Banana {"Apple":42, "Apricot":41, "Banana":83}
-Sending from Banana
-Banana {"Apple":42, "Apricot":43, "Banana":84}
-Received on Banana
-Banana {"Apple":42, "Apricot":43, "Banana":85}
-Sending from Banana
-Banana {"Apple":44, "Apricot":43, "Banana":86}
-Received on Banana
-Banana {"Apple":44, "Apricot":43, "Banana":87}
-Sending from Banana
-Banana {"Apple":44, "Apricot":45, "Banana":88}
-Received on Banana
-Banana {"Apple":44, "Apricot":45, "Banana":89}
-Sending from Banana
-Banana {"Apple":46, "Apricot":45, "Banana":90}
-Received on Banana
-Banana {"Apple":46, "Apricot":45, "Banana":91}
-Sending from Banana
-Banana {"Apple":46, "Apricot":47, "Banana":92}
-Received on Banana
-Banana {"Apple":46, "Apricot":47, "Banana":93}
-Sending from Banana
-Banana {"Apple":48, "Apricot":47, "Banana":94}
-Received on Banana
-Banana {"Apple":48, "Apricot":47, "Banana":95}
-Sending from Banana
-Banana {"Apple":48, "Apricot":49, "Banana":96}
-Received on Banana
-Banana {"Apple":48, "Apricot":49, "Banana":97}
-Sending from Banana
-Banana {"Apple":50, "Apricot":49, "Banana":98}
-Received on Banana
-Banana {"Apple":50, "Apricot":49, "Banana":99}
-Sending from Banana
-Banana {"Apple":50, "Apricot":51, "Banana":100}
-Received on Banana
-Banana {"Apple":50, "Apricot":51, "Banana":101}
-Sending from Banana
-Banana {"Apple":52, "Apricot":51, "Banana":102}
-Received on Banana
-Banana {"Apple":52, "Apricot":51, "Banana":103}
-Sending from Banana
-Banana {"Apple":52, "Apricot":53, "Banana":104}
-Received on Banana
-Banana {"Apple":52, "Apricot":53, "Banana":105}
-Sending from Banana
-Banana {"Apple":54, "Apricot":53, "Banana":106}
-Received on Banana
-Banana {"Apple":54, "Apricot":53, "Banana":107}
-Sending from Banana
-Banana {"Apple":54, "Apricot":55, "Banana":108}
-Received on Banana
-Banana {"Apple":54, "Apricot":55, "Banana":109}
-Sending from Banana
-Banana {"Apple":56, "Apricot":55, "Banana":110}
-Received on Banana
-Banana {"Apple":56, "Apricot":55, "Banana":111}
-Sending from Banana
-Banana {"Apple":56, "Apricot":57, "Banana":112}
-Received on Banana
-Banana {"Apple":56, "Apricot":57, "Banana":113}
-Sending from Banana
-Banana {"Apple":58, "Apricot":57, "Banana":114}
-Received on Banana
-Banana {"Apple":58, "Apricot":57, "Banana":115}
-Sending from Banana
-Banana {"Apple":58, "Apricot":59, "Banana":116}
-Received on Banana
-Banana {"Apple":58, "Apricot":59, "Banana":117}
-Sending from Banana
-Banana {"Apple":60, "Apricot":59, "Banana":118}
-Received on Banana
-Banana {"Apple":60, "Apricot":59, "Banana":119}
-Sending from Banana
-Banana {"Apple":60, "Apricot":61, "Banana":120}
-Received on Banana
-Banana {"Apple":60, "Apricot":61, "Banana":121}
-Sending from Banana
-Banana {"Apple":62, "Apricot":61, "Banana":122}
-Received on Banana
-Banana {"Apple":62, "Apricot":61, "Banana":123}
-Sending from Banana
-Banana {"Apple":62, "Apricot":63, "Banana":124}
-Received on Banana
-Banana {"Apple":62, "Apricot":63, "Banana":125}
-Sending from Banana
-Banana {"Apple":64, "Apricot":63, "Banana":126}
-Received on Banana
-Banana {"Apple":64, "Apricot":63, "Banana":127}
-Sending from Banana
-Banana {"Apple":64, "Apricot":65, "Banana":128}
-Received on Banana
-Banana {"Apple":64, "Apricot":65, "Banana":129}
-Sending from Banana
-Banana {"Apple":66, "Apricot":65, "Banana":130}
-Received on Banana
-Banana {"Apple":66, "Apricot":65, "Banana":131}
-Sending from Banana
-Banana {"Apple":66, "Apricot":67, "Banana":132}
-Received on Banana
-Banana {"Apple":66, "Apricot":67, "Banana":133}
-Sending from Banana
-Banana {"Apple":68, "Apricot":67, "Banana":134}
-Received on Banana
-Banana {"Apple":68, "Apricot":67, "Banana":135}
-Sending from Banana
-Banana {"Apple":68, "Apricot":69, "Banana":136}
-Received on Banana
-Banana {"Apple":68, "Apricot":69, "Banana":137}
-Sending from Banana
-Banana {"Apple":70, "Apricot":69, "Banana":138}
-Received on Banana
-Banana {"Apple":70, "Apricot":69, "Banana":139}
-Sending from Banana
-Banana {"Apple":70, "Apricot":71, "Banana":140}
-Received on Banana
-Banana {"Apple":70, "Apricot":71, "Banana":141}
-Sending from Banana
-Banana {"Apple":72, "Apricot":71, "Banana":142}
-Received on Banana
-Banana {"Apple":72, "Apricot":71, "Banana":143}
-Sending from Banana
-Banana {"Apple":72, "Apricot":73, "Banana":144}
-Received on Banana
-Banana {"Apple":72, "Apricot":73, "Banana":145}
-Sending from Banana
-Banana {"Apple":74, "Apricot":73, "Banana":146}
-Received on Banana
-Banana {"Apple":74, "Apricot":73, "Banana":147}
-Sending from Banana
-Banana {"Apple":74, "Apricot":75, "Banana":148}
-Received on Banana
-Banana {"Apple":74, "Apricot":75, "Banana":149}
-Sending from Banana
-Banana {"Apple":76, "Apricot":75, "Banana":150}
-Received on Banana
-Banana {"Apple":76, "Apricot":75, "Banana":151}
-Sending from Banana
-Banana {"Apple":76, "Apricot":77, "Banana":152}
-Received on Banana
-Banana {"Apple":76, "Apricot":77, "Banana":153}
-Sending from Banana
-Banana {"Apple":78, "Apricot":77, "Banana":154}
-Received on Banana
-Banana {"Apple":78, "Apricot":77, "Banana":155}
-Sending from Banana
-Banana {"Apple":78, "Apricot":79, "Banana":156}
-Received on Banana
-Banana {"Apple":78, "Apricot":79, "Banana":157}
-Sending from Banana
-Banana {"Apple":80, "Apricot":79, "Banana":158}
-Received on Banana
-Banana {"Apple":80, "Apricot":79, "Banana":159}
-Sending from Banana
-Banana {"Apple":80, "Apricot":81, "Banana":160}
-Received on Banana
-Banana {"Apple":80, "Apricot":81, "Banana":161}
-Sending from Banana
-Banana {"Apple":82, "Apricot":81, "Banana":162}
-Received on Banana
-Banana {"Apple":82, "Apricot":81, "Banana":163}
-Sending from Banana
-Banana {"Apple":82, "Apricot":83, "Banana":164}
-Received on Banana
-Banana {"Apple":82, "Apricot":83, "Banana":165}
-Sending from Banana
-Banana {"Apple":84, "Apricot":83, "Banana":166}
-Received on Banana
-Banana {"Apple":84, "Apricot":83, "Banana":167}
-Sending from Banana
-Banana {"Apple":84, "Apricot":85, "Banana":168}
-Received on Banana
-Banana {"Apple":84, "Apricot":85, "Banana":169}
-Sending from Banana
-Banana {"Apple":86, "Apricot":85, "Banana":170}
-Received on Banana
-Banana {"Apple":86, "Apricot":85, "Banana":171}
-Sending from Banana
-Banana {"Apple":86, "Apricot":87, "Banana":172}
-Received on Banana
-Banana {"Apple":86, "Apricot":87, "Banana":173}
-Sending from Banana
-Banana {"Apple":88, "Apricot":87, "Banana":174}
-Received on Banana
-Banana {"Apple":88, "Apricot":87, "Banana":175}
-Sending from Banana
-Banana {"Apple":88, "Apricot":89, "Banana":176}
-Received on Banana
-Banana {"Apple":88, "Apricot":89, "Banana":177}
-Sending from Banana
-Banana {"Apple":90, "Apricot":89, "Banana":178}
-Received on Banana
-Banana {"Apple":90, "Apricot":89, "Banana":179}
-Sending from Banana
-Banana {"Apple":90, "Apricot":91, "Banana":180}
-Received on Banana
-Banana {"Apple":90, "Apricot":91, "Banana":181}
-Sending from Banana
-Banana {"Apple":92, "Apricot":91, "Banana":182}
-Received on Banana
-Banana {"Apple":92, "Apricot":91, "Banana":183}
-Sending from Banana
-Banana {"Apple":92, "Apricot":93, "Banana":184}
-Received on Banana
-Banana {"Apple":92, "Apricot":93, "Banana":185}
-Sending from Banana
-Banana {"Apple":94, "Apricot":93, "Banana":186}
-Received on Banana
-Banana {"Apple":94, "Apricot":93, "Banana":187}
-Sending from Banana
-Banana {"Apple":94, "Apricot":95, "Banana":188}
-Received on Banana
-Banana {"Apple":94, "Apricot":95, "Banana":189}
-Sending from Banana
-Banana {"Apple":96, "Apricot":95, "Banana":190}
-Received on Banana
-Banana {"Apple":96, "Apricot":95, "Banana":191}
-Sending from Banana
-Banana {"Apple":96, "Apricot":97, "Banana":192}
-Received on Banana
-Banana {"Apple":96, "Apricot":97, "Banana":193}
-Sending from Banana
-Banana {"Apple":98, "Apricot":97, "Banana":194}
-Received on Banana
-Banana {"Apple":98, "Apricot":97, "Banana":195}
-Sending from Banana
-Banana {"Apple":98, "Apricot":99, "Banana":196}
-Received on Banana
-Banana {"Apple":98, "Apricot":99, "Banana":197}
-Sending from Banana
-Banana {"Apple":100, "Apricot":99, "Banana":198}
-Received on Banana
-Banana {"Apple":100, "Apricot":99, "Banana":199}
-Sending from Banana
-Banana {"Apple":100, "Apricot":101, "Banana":200}
-Received on Banana
-Banana {"Apple":100, "Apricot":101, "Banana":201}
-Sending from Banana
-Banana {"Apple":102, "Apricot":101, "Banana":202}
-Received on Banana
-Banana {"Apple":102, "Apricot":101, "Banana":203}
-Sending from Banana
-Banana {"Apple":102, "Apricot":103, "Banana":204}
-Received on Banana
-Banana {"Apple":102, "Apricot":103, "Banana":205}
-Sending from Banana
+Banana {"Apple":3, "Apricot":2, "Banana":2}
+Received on Banana_github.com/arcaneiceman/GoVector/capture.ReadFrom+0x161_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:28 Banana
+Banana {"Apple":3, "Apricot":2, "Banana":3}
+Sending from Banana_github.com/arcaneiceman/GoVector/capture.WriteTo+0x8d_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:39 Banana
+Banana {"Apple":7, "Apricot":4, "Banana":4}
+Received on Banana_github.com/arcaneiceman/GoVector/capture.ReadFrom+0x161_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:28 Banana
+Banana {"Apple":7, "Apricot":4, "Banana":5}
+Sending from Banana_github.com/arcaneiceman/GoVector/capture.WriteTo+0x8d_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:39 Banana
+Banana {"Apple":11, "Apricot":6, "Banana":6}
+Received on Banana_github.com/arcaneiceman/GoVector/capture.ReadFrom+0x161_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:28 Banana
+Banana {"Apple":11, "Apricot":6, "Banana":7}
+Sending from Banana_github.com/arcaneiceman/GoVector/capture.WriteTo+0x8d_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:39 Banana
+Banana {"Apple":15, "Apricot":8, "Banana":8}
+Received on Banana_github.com/arcaneiceman/GoVector/capture.ReadFrom+0x161_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:28 Banana
+Banana {"Apple":15, "Apricot":8, "Banana":9}
+Sending from Banana_github.com/arcaneiceman/GoVector/capture.WriteTo+0x8d_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:39 Banana
+Banana {"Apple":19, "Apricot":10, "Banana":10}
+Received on Banana_github.com/arcaneiceman/GoVector/capture.ReadFrom+0x161_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:28 Banana
+Banana {"Apple":19, "Apricot":10, "Banana":11}
+Sending from Banana_github.com/arcaneiceman/GoVector/capture.WriteTo+0x8d_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:39 Banana
+Banana {"Apple":23, "Apricot":12, "Banana":12}
+Received on Banana_github.com/arcaneiceman/GoVector/capture.ReadFrom+0x161_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:28 Banana
+Banana {"Apple":23, "Apricot":12, "Banana":13}
+Sending from Banana_github.com/arcaneiceman/GoVector/capture.WriteTo+0x8d_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:39 Banana
+Banana {"Apple":27, "Apricot":14, "Banana":14}
+Received on Banana_github.com/arcaneiceman/GoVector/capture.ReadFrom+0x161_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:28 Banana
+Banana {"Apple":27, "Apricot":14, "Banana":15}
+Sending from Banana_github.com/arcaneiceman/GoVector/capture.WriteTo+0x8d_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:39 Banana
+Banana {"Apple":31, "Apricot":16, "Banana":16}
+Received on Banana_github.com/arcaneiceman/GoVector/capture.ReadFrom+0x161_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:28 Banana
+Banana {"Apple":31, "Apricot":16, "Banana":17}
+Sending from Banana_github.com/arcaneiceman/GoVector/capture.WriteTo+0x8d_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:39 Banana
+Banana {"Apple":35, "Apricot":18, "Banana":18}
+Received on Banana_github.com/arcaneiceman/GoVector/capture.ReadFrom+0x161_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:28 Banana
+Banana {"Apple":35, "Apricot":18, "Banana":19}
+Sending from Banana_github.com/arcaneiceman/GoVector/capture.WriteTo+0x8d_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:39 Banana
+Banana {"Apple":39, "Apricot":20, "Banana":20}
+Received on Banana_github.com/arcaneiceman/GoVector/capture.ReadFrom+0x161_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:28 Banana
+Banana {"Apple":39, "Apricot":20, "Banana":21}
+Sending from Banana_github.com/arcaneiceman/GoVector/capture.WriteTo+0x8d_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:39 Banana
+Banana {"Apple":43, "Apricot":22, "Banana":22}
+Received on Banana_github.com/arcaneiceman/GoVector/capture.ReadFrom+0x161_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:28 Banana
+Banana {"Apple":43, "Apricot":22, "Banana":23}
+Sending from Banana_github.com/arcaneiceman/GoVector/capture.WriteTo+0x8d_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:39 Banana
+Banana {"Apple":47, "Apricot":24, "Banana":24}
+Received on Banana_github.com/arcaneiceman/GoVector/capture.ReadFrom+0x161_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:28 Banana
+Banana {"Apple":47, "Apricot":24, "Banana":25}
+Sending from Banana_github.com/arcaneiceman/GoVector/capture.WriteTo+0x8d_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:39 Banana
+Banana {"Apple":51, "Apricot":26, "Banana":26}
+Received on Banana_github.com/arcaneiceman/GoVector/capture.ReadFrom+0x161_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:28 Banana
+Banana {"Apple":51, "Apricot":26, "Banana":27}
+Sending from Banana_github.com/arcaneiceman/GoVector/capture.WriteTo+0x8d_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:39 Banana
+Banana {"Apple":55, "Apricot":28, "Banana":28}
+Received on Banana_github.com/arcaneiceman/GoVector/capture.ReadFrom+0x161_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:28 Banana
+Banana {"Apple":55, "Apricot":28, "Banana":29}
+Sending from Banana_github.com/arcaneiceman/GoVector/capture.WriteTo+0x8d_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:39 Banana
+Banana {"Apple":59, "Apricot":30, "Banana":30}
+Received on Banana_github.com/arcaneiceman/GoVector/capture.ReadFrom+0x161_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:28 Banana
+Banana {"Apple":59, "Apricot":30, "Banana":31}
+Sending from Banana_github.com/arcaneiceman/GoVector/capture.WriteTo+0x8d_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:39 Banana
+Banana {"Apple":63, "Apricot":32, "Banana":32}
+Received on Banana_github.com/arcaneiceman/GoVector/capture.ReadFrom+0x161_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:28 Banana
+Banana {"Apple":63, "Apricot":32, "Banana":33}
+Sending from Banana_github.com/arcaneiceman/GoVector/capture.WriteTo+0x8d_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:39 Banana
+Banana {"Apple":67, "Apricot":34, "Banana":34}
+Received on Banana_github.com/arcaneiceman/GoVector/capture.ReadFrom+0x161_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:28 Banana
+Banana {"Apple":67, "Apricot":34, "Banana":35}
+Sending from Banana_github.com/arcaneiceman/GoVector/capture.WriteTo+0x8d_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:39 Banana
+Banana {"Apple":71, "Apricot":36, "Banana":36}
+Received on Banana_github.com/arcaneiceman/GoVector/capture.ReadFrom+0x161_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:28 Banana
+Banana {"Apple":71, "Apricot":36, "Banana":37}
+Sending from Banana_github.com/arcaneiceman/GoVector/capture.WriteTo+0x8d_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:39 Banana
+Banana {"Apple":75, "Apricot":38, "Banana":38}
+Received on Banana_github.com/arcaneiceman/GoVector/capture.ReadFrom+0x161_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:28 Banana
+Banana {"Apple":75, "Apricot":38, "Banana":39}
+Sending from Banana_github.com/arcaneiceman/GoVector/capture.WriteTo+0x8d_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:39 Banana
+Banana {"Apple":79, "Apricot":40, "Banana":40}
+Received on Banana_github.com/arcaneiceman/GoVector/capture.ReadFrom+0x161_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:28 Banana
+Banana {"Apple":79, "Apricot":40, "Banana":41}
+Sending from Banana_github.com/arcaneiceman/GoVector/capture.WriteTo+0x8d_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:39 Banana
+Banana {"Apple":83, "Apricot":42, "Banana":42}
+Received on Banana_github.com/arcaneiceman/GoVector/capture.ReadFrom+0x161_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:28 Banana
+Banana {"Apple":83, "Apricot":42, "Banana":43}
+Sending from Banana_github.com/arcaneiceman/GoVector/capture.WriteTo+0x8d_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:39 Banana
+Banana {"Apple":87, "Apricot":44, "Banana":44}
+Received on Banana_github.com/arcaneiceman/GoVector/capture.ReadFrom+0x161_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:28 Banana
+Banana {"Apple":87, "Apricot":44, "Banana":45}
+Sending from Banana_github.com/arcaneiceman/GoVector/capture.WriteTo+0x8d_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:39 Banana
+Banana {"Apple":91, "Apricot":46, "Banana":46}
+Received on Banana_github.com/arcaneiceman/GoVector/capture.ReadFrom+0x161_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:28 Banana
+Banana {"Apple":91, "Apricot":46, "Banana":47}
+Sending from Banana_github.com/arcaneiceman/GoVector/capture.WriteTo+0x8d_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:39 Banana
+Banana {"Apple":95, "Apricot":48, "Banana":48}
+Received on Banana_github.com/arcaneiceman/GoVector/capture.ReadFrom+0x161_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:28 Banana
+Banana {"Apple":95, "Apricot":48, "Banana":49}
+Sending from Banana_github.com/arcaneiceman/GoVector/capture.WriteTo+0x8d_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:39 Banana
+Banana {"Apple":99, "Apricot":50, "Banana":50}
+Received on Banana_github.com/arcaneiceman/GoVector/capture.ReadFrom+0x161_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:28 Banana
+Banana {"Apple":99, "Apricot":50, "Banana":51}
+Sending from Banana_github.com/arcaneiceman/GoVector/capture.WriteTo+0x8d_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:39 Banana
+Banana {"Apple":103, "Apricot":52, "Banana":52}
+Received on Banana_github.com/arcaneiceman/GoVector/capture.ReadFrom+0x161_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:28 Banana
+Banana {"Apple":103, "Apricot":52, "Banana":53}
+Sending from Banana_github.com/arcaneiceman/GoVector/capture.WriteTo+0x8d_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:39 Banana
+Banana {"Apple":107, "Apricot":54, "Banana":54}
+Received on Banana_github.com/arcaneiceman/GoVector/capture.ReadFrom+0x161_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:28 Banana
+Banana {"Apple":107, "Apricot":54, "Banana":55}
+Sending from Banana_github.com/arcaneiceman/GoVector/capture.WriteTo+0x8d_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:39 Banana
+Banana {"Apple":111, "Apricot":56, "Banana":56}
+Received on Banana_github.com/arcaneiceman/GoVector/capture.ReadFrom+0x161_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:28 Banana
+Banana {"Apple":111, "Apricot":56, "Banana":57}
+Sending from Banana_github.com/arcaneiceman/GoVector/capture.WriteTo+0x8d_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:39 Banana
+Banana {"Apple":115, "Apricot":58, "Banana":58}
+Received on Banana_github.com/arcaneiceman/GoVector/capture.ReadFrom+0x161_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:28 Banana
+Banana {"Apple":115, "Apricot":58, "Banana":59}
+Sending from Banana_github.com/arcaneiceman/GoVector/capture.WriteTo+0x8d_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:39 Banana
+Banana {"Apple":119, "Apricot":60, "Banana":60}
+Received on Banana_github.com/arcaneiceman/GoVector/capture.ReadFrom+0x161_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:28 Banana
+Banana {"Apple":119, "Apricot":60, "Banana":61}
+Sending from Banana_github.com/arcaneiceman/GoVector/capture.WriteTo+0x8d_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:39 Banana
+Banana {"Apple":123, "Apricot":62, "Banana":62}
+Received on Banana_github.com/arcaneiceman/GoVector/capture.ReadFrom+0x161_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:28 Banana
+Banana {"Apple":123, "Apricot":62, "Banana":63}
+Sending from Banana_github.com/arcaneiceman/GoVector/capture.WriteTo+0x8d_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:39 Banana
+Banana {"Apple":127, "Apricot":64, "Banana":64}
+Received on Banana_github.com/arcaneiceman/GoVector/capture.ReadFrom+0x161_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:28 Banana
+Banana {"Apple":127, "Apricot":64, "Banana":65}
+Sending from Banana_github.com/arcaneiceman/GoVector/capture.WriteTo+0x8d_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:39 Banana
+Banana {"Apple":131, "Apricot":66, "Banana":66}
+Received on Banana_github.com/arcaneiceman/GoVector/capture.ReadFrom+0x161_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:28 Banana
+Banana {"Apple":131, "Apricot":66, "Banana":67}
+Sending from Banana_github.com/arcaneiceman/GoVector/capture.WriteTo+0x8d_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:39 Banana
+Banana {"Apple":135, "Apricot":68, "Banana":68}
+Received on Banana_github.com/arcaneiceman/GoVector/capture.ReadFrom+0x161_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:28 Banana
+Banana {"Apple":135, "Apricot":68, "Banana":69}
+Sending from Banana_github.com/arcaneiceman/GoVector/capture.WriteTo+0x8d_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:39 Banana
+Banana {"Apple":139, "Apricot":70, "Banana":70}
+Received on Banana_github.com/arcaneiceman/GoVector/capture.ReadFrom+0x161_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:28 Banana
+Banana {"Apple":139, "Apricot":70, "Banana":71}
+Sending from Banana_github.com/arcaneiceman/GoVector/capture.WriteTo+0x8d_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:39 Banana
+Banana {"Apple":143, "Apricot":72, "Banana":72}
+Received on Banana_github.com/arcaneiceman/GoVector/capture.ReadFrom+0x161_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:28 Banana
+Banana {"Apple":143, "Apricot":72, "Banana":73}
+Sending from Banana_github.com/arcaneiceman/GoVector/capture.WriteTo+0x8d_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:39 Banana
+Banana {"Apple":147, "Apricot":74, "Banana":74}
+Received on Banana_github.com/arcaneiceman/GoVector/capture.ReadFrom+0x161_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:28 Banana
+Banana {"Apple":147, "Apricot":74, "Banana":75}
+Sending from Banana_github.com/arcaneiceman/GoVector/capture.WriteTo+0x8d_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:39 Banana
+Banana {"Apple":151, "Apricot":76, "Banana":76}
+Received on Banana_github.com/arcaneiceman/GoVector/capture.ReadFrom+0x161_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:28 Banana
+Banana {"Apple":151, "Apricot":76, "Banana":77}
+Sending from Banana_github.com/arcaneiceman/GoVector/capture.WriteTo+0x8d_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:39 Banana
+Banana {"Apple":155, "Apricot":78, "Banana":78}
+Received on Banana_github.com/arcaneiceman/GoVector/capture.ReadFrom+0x161_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:28 Banana
+Banana {"Apple":155, "Apricot":78, "Banana":79}
+Sending from Banana_github.com/arcaneiceman/GoVector/capture.WriteTo+0x8d_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:39 Banana
+Banana {"Apple":159, "Apricot":80, "Banana":80}
+Received on Banana_github.com/arcaneiceman/GoVector/capture.ReadFrom+0x161_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:28 Banana
+Banana {"Apple":159, "Apricot":80, "Banana":81}
+Sending from Banana_github.com/arcaneiceman/GoVector/capture.WriteTo+0x8d_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:39 Banana
+Banana {"Apple":163, "Apricot":82, "Banana":82}
+Received on Banana_github.com/arcaneiceman/GoVector/capture.ReadFrom+0x161_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:28 Banana
+Banana {"Apple":163, "Apricot":82, "Banana":83}
+Sending from Banana_github.com/arcaneiceman/GoVector/capture.WriteTo+0x8d_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:39 Banana
+Banana {"Apple":167, "Apricot":84, "Banana":84}
+Received on Banana_github.com/arcaneiceman/GoVector/capture.ReadFrom+0x161_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:28 Banana
+Banana {"Apple":167, "Apricot":84, "Banana":85}
+Sending from Banana_github.com/arcaneiceman/GoVector/capture.WriteTo+0x8d_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:39 Banana
+Banana {"Apple":171, "Apricot":86, "Banana":86}
+Received on Banana_github.com/arcaneiceman/GoVector/capture.ReadFrom+0x161_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:28 Banana
+Banana {"Apple":171, "Apricot":86, "Banana":87}
+Sending from Banana_github.com/arcaneiceman/GoVector/capture.WriteTo+0x8d_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:39 Banana
+Banana {"Apple":175, "Apricot":88, "Banana":88}
+Received on Banana_github.com/arcaneiceman/GoVector/capture.ReadFrom+0x161_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:28 Banana
+Banana {"Apple":175, "Apricot":88, "Banana":89}
+Sending from Banana_github.com/arcaneiceman/GoVector/capture.WriteTo+0x8d_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:39 Banana
+Banana {"Apple":179, "Apricot":90, "Banana":90}
+Received on Banana_github.com/arcaneiceman/GoVector/capture.ReadFrom+0x161_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:28 Banana
+Banana {"Apple":179, "Apricot":90, "Banana":91}
+Sending from Banana_github.com/arcaneiceman/GoVector/capture.WriteTo+0x8d_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:39 Banana
+Banana {"Apple":183, "Apricot":92, "Banana":92}
+Received on Banana_github.com/arcaneiceman/GoVector/capture.ReadFrom+0x161_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:28 Banana
+Banana {"Apple":183, "Apricot":92, "Banana":93}
+Sending from Banana_github.com/arcaneiceman/GoVector/capture.WriteTo+0x8d_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:39 Banana
+Banana {"Apple":187, "Apricot":94, "Banana":94}
+Received on Banana_github.com/arcaneiceman/GoVector/capture.ReadFrom+0x161_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:28 Banana
+Banana {"Apple":187, "Apricot":94, "Banana":95}
+Sending from Banana_github.com/arcaneiceman/GoVector/capture.WriteTo+0x8d_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:39 Banana
+Banana {"Apple":191, "Apricot":96, "Banana":96}
+Received on Banana_github.com/arcaneiceman/GoVector/capture.ReadFrom+0x161_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:28 Banana
+Banana {"Apple":191, "Apricot":96, "Banana":97}
+Sending from Banana_github.com/arcaneiceman/GoVector/capture.WriteTo+0x8d_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:39 Banana
+Banana {"Apple":195, "Apricot":98, "Banana":98}
+Received on Banana_github.com/arcaneiceman/GoVector/capture.ReadFrom+0x161_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:28 Banana
+Banana {"Apple":195, "Apricot":98, "Banana":99}
+Sending from Banana_github.com/arcaneiceman/GoVector/capture.WriteTo+0x8d_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:39 Banana
+Banana {"Apple":199, "Apricot":100, "Banana":100}
+Received on Banana_github.com/arcaneiceman/GoVector/capture.ReadFrom+0x161_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:28 Banana
+Banana {"Apple":199, "Apricot":100, "Banana":101}
+Sending from Banana_github.com/arcaneiceman/GoVector/capture.WriteTo+0x8d_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:39 Banana
+Banana {"Apple":203, "Apricot":102, "Banana":102}
+Received on Banana_github.com/arcaneiceman/GoVector/capture.ReadFrom+0x161_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:28 Banana
+Banana {"Apple":203, "Apricot":102, "Banana":103}
+Sending from Banana_github.com/arcaneiceman/GoVector/capture.WriteTo+0x8d_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:39 Banana
 Apricot {"Apricot":1}
 Initialization Complete
-Apricot {"Apple":2, "Apricot":2, "Banana":3}
-Received on Apricot
-Apricot {"Apple":2, "Apricot":3, "Banana":3}
-Sending from Apricot
-Apricot {"Apple":4, "Apricot":4, "Banana":7}
-Received on Apricot
-Apricot {"Apple":4, "Apricot":5, "Banana":7}
-Sending from Apricot
-Apricot {"Apple":6, "Apricot":6, "Banana":11}
-Received on Apricot
-Apricot {"Apple":6, "Apricot":7, "Banana":11}
-Sending from Apricot
-Apricot {"Apple":8, "Apricot":8, "Banana":15}
-Received on Apricot
-Apricot {"Apple":8, "Apricot":9, "Banana":15}
-Sending from Apricot
-Apricot {"Apple":10, "Apricot":10, "Banana":19}
-Received on Apricot
-Apricot {"Apple":10, "Apricot":11, "Banana":19}
-Sending from Apricot
-Apricot {"Apple":12, "Apricot":12, "Banana":23}
-Received on Apricot
-Apricot {"Apple":12, "Apricot":13, "Banana":23}
-Sending from Apricot
-Apricot {"Apple":14, "Apricot":14, "Banana":27}
-Received on Apricot
-Apricot {"Apple":14, "Apricot":15, "Banana":27}
-Sending from Apricot
-Apricot {"Apple":16, "Apricot":16, "Banana":31}
-Received on Apricot
-Apricot {"Apple":16, "Apricot":17, "Banana":31}
-Sending from Apricot
-Apricot {"Apple":18, "Apricot":18, "Banana":35}
-Received on Apricot
-Apricot {"Apple":18, "Apricot":19, "Banana":35}
-Sending from Apricot
-Apricot {"Apple":20, "Apricot":20, "Banana":39}
-Received on Apricot
-Apricot {"Apple":20, "Apricot":21, "Banana":39}
-Sending from Apricot
-Apricot {"Apple":22, "Apricot":22, "Banana":43}
-Received on Apricot
-Apricot {"Apple":22, "Apricot":23, "Banana":43}
-Sending from Apricot
-Apricot {"Apple":24, "Apricot":24, "Banana":47}
-Received on Apricot
-Apricot {"Apple":24, "Apricot":25, "Banana":47}
-Sending from Apricot
-Apricot {"Apple":26, "Apricot":26, "Banana":51}
-Received on Apricot
-Apricot {"Apple":26, "Apricot":27, "Banana":51}
-Sending from Apricot
-Apricot {"Apple":28, "Apricot":28, "Banana":55}
-Received on Apricot
-Apricot {"Apple":28, "Apricot":29, "Banana":55}
-Sending from Apricot
-Apricot {"Apple":30, "Apricot":30, "Banana":59}
-Received on Apricot
-Apricot {"Apple":30, "Apricot":31, "Banana":59}
-Sending from Apricot
-Apricot {"Apple":32, "Apricot":32, "Banana":63}
-Received on Apricot
-Apricot {"Apple":32, "Apricot":33, "Banana":63}
-Sending from Apricot
-Apricot {"Apple":34, "Apricot":34, "Banana":67}
-Received on Apricot
-Apricot {"Apple":34, "Apricot":35, "Banana":67}
-Sending from Apricot
-Apricot {"Apple":36, "Apricot":36, "Banana":71}
-Received on Apricot
-Apricot {"Apple":36, "Apricot":37, "Banana":71}
-Sending from Apricot
-Apricot {"Apple":38, "Apricot":38, "Banana":75}
-Received on Apricot
-Apricot {"Apple":38, "Apricot":39, "Banana":75}
-Sending from Apricot
-Apricot {"Apple":40, "Apricot":40, "Banana":79}
-Received on Apricot
-Apricot {"Apple":40, "Apricot":41, "Banana":79}
-Sending from Apricot
-Apricot {"Apple":42, "Apricot":42, "Banana":83}
-Received on Apricot
-Apricot {"Apple":42, "Apricot":43, "Banana":83}
-Sending from Apricot
-Apricot {"Apple":44, "Apricot":44, "Banana":87}
-Received on Apricot
-Apricot {"Apple":44, "Apricot":45, "Banana":87}
-Sending from Apricot
-Apricot {"Apple":46, "Apricot":46, "Banana":91}
-Received on Apricot
-Apricot {"Apple":46, "Apricot":47, "Banana":91}
-Sending from Apricot
-Apricot {"Apple":48, "Apricot":48, "Banana":95}
-Received on Apricot
-Apricot {"Apple":48, "Apricot":49, "Banana":95}
-Sending from Apricot
-Apricot {"Apple":50, "Apricot":50, "Banana":99}
-Received on Apricot
-Apricot {"Apple":50, "Apricot":51, "Banana":99}
-Sending from Apricot
-Apricot {"Apple":52, "Apricot":52, "Banana":103}
-Received on Apricot
-Apricot {"Apple":52, "Apricot":53, "Banana":103}
-Sending from Apricot
-Apricot {"Apple":54, "Apricot":54, "Banana":107}
-Received on Apricot
-Apricot {"Apple":54, "Apricot":55, "Banana":107}
-Sending from Apricot
-Apricot {"Apple":56, "Apricot":56, "Banana":111}
-Received on Apricot
-Apricot {"Apple":56, "Apricot":57, "Banana":111}
-Sending from Apricot
-Apricot {"Apple":58, "Apricot":58, "Banana":115}
-Received on Apricot
-Apricot {"Apple":58, "Apricot":59, "Banana":115}
-Sending from Apricot
-Apricot {"Apple":60, "Apricot":60, "Banana":119}
-Received on Apricot
-Apricot {"Apple":60, "Apricot":61, "Banana":119}
-Sending from Apricot
-Apricot {"Apple":62, "Apricot":62, "Banana":123}
-Received on Apricot
-Apricot {"Apple":62, "Apricot":63, "Banana":123}
-Sending from Apricot
-Apricot {"Apple":64, "Apricot":64, "Banana":127}
-Received on Apricot
-Apricot {"Apple":64, "Apricot":65, "Banana":127}
-Sending from Apricot
-Apricot {"Apple":66, "Apricot":66, "Banana":131}
-Received on Apricot
-Apricot {"Apple":66, "Apricot":67, "Banana":131}
-Sending from Apricot
-Apricot {"Apple":68, "Apricot":68, "Banana":135}
-Received on Apricot
-Apricot {"Apple":68, "Apricot":69, "Banana":135}
-Sending from Apricot
-Apricot {"Apple":70, "Apricot":70, "Banana":139}
-Received on Apricot
-Apricot {"Apple":70, "Apricot":71, "Banana":139}
-Sending from Apricot
-Apricot {"Apple":72, "Apricot":72, "Banana":143}
-Received on Apricot
-Apricot {"Apple":72, "Apricot":73, "Banana":143}
-Sending from Apricot
-Apricot {"Apple":74, "Apricot":74, "Banana":147}
-Received on Apricot
-Apricot {"Apple":74, "Apricot":75, "Banana":147}
-Sending from Apricot
-Apricot {"Apple":76, "Apricot":76, "Banana":151}
-Received on Apricot
-Apricot {"Apple":76, "Apricot":77, "Banana":151}
-Sending from Apricot
-Apricot {"Apple":78, "Apricot":78, "Banana":155}
-Received on Apricot
-Apricot {"Apple":78, "Apricot":79, "Banana":155}
-Sending from Apricot
-Apricot {"Apple":80, "Apricot":80, "Banana":159}
-Received on Apricot
-Apricot {"Apple":80, "Apricot":81, "Banana":159}
-Sending from Apricot
-Apricot {"Apple":82, "Apricot":82, "Banana":163}
-Received on Apricot
-Apricot {"Apple":82, "Apricot":83, "Banana":163}
-Sending from Apricot
-Apricot {"Apple":84, "Apricot":84, "Banana":167}
-Received on Apricot
-Apricot {"Apple":84, "Apricot":85, "Banana":167}
-Sending from Apricot
-Apricot {"Apple":86, "Apricot":86, "Banana":171}
-Received on Apricot
-Apricot {"Apple":86, "Apricot":87, "Banana":171}
-Sending from Apricot
-Apricot {"Apple":88, "Apricot":88, "Banana":175}
-Received on Apricot
-Apricot {"Apple":88, "Apricot":89, "Banana":175}
-Sending from Apricot
-Apricot {"Apple":90, "Apricot":90, "Banana":179}
-Received on Apricot
-Apricot {"Apple":90, "Apricot":91, "Banana":179}
-Sending from Apricot
-Apricot {"Apple":92, "Apricot":92, "Banana":183}
-Received on Apricot
-Apricot {"Apple":92, "Apricot":93, "Banana":183}
-Sending from Apricot
-Apricot {"Apple":94, "Apricot":94, "Banana":187}
-Received on Apricot
-Apricot {"Apple":94, "Apricot":95, "Banana":187}
-Sending from Apricot
-Apricot {"Apple":96, "Apricot":96, "Banana":191}
-Received on Apricot
-Apricot {"Apple":96, "Apricot":97, "Banana":191}
-Sending from Apricot
-Apricot {"Apple":98, "Apricot":98, "Banana":195}
-Received on Apricot
-Apricot {"Apple":98, "Apricot":99, "Banana":195}
-Sending from Apricot
-Apricot {"Apple":100, "Apricot":100, "Banana":199}
-Received on Apricot
-Apricot {"Apple":100, "Apricot":101, "Banana":199}
-Sending from Apricot
-Apricot {"Apple":102, "Apricot":102, "Banana":203}
-Received on Apricot
-Apricot {"Apple":102, "Apricot":103, "Banana":203}
-Sending from Apricot
-Strawberry {"Strawberry":1}
-Initialization Complete
-Strawberry {"Strawberry":2}
-Sending from Strawberry
-Strawberry {"Strawberry":3}
-Received on Strawberry
+Apricot {"Apricot":2}
+Sending from Apricot_github.com/arcaneiceman/GoVector/capture.Write+0x87_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:33 Apricot
+Apricot {"Apple":5, "Apricot":3, "Banana":3}
+Received on Apricot_github.com/arcaneiceman/GoVector/capture.Read+0x121_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:21 Apricot
+Apricot {"Apple":5, "Apricot":4, "Banana":3}
+Sending from Apricot_github.com/arcaneiceman/GoVector/capture.Write+0x87_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:33 Apricot
+Apricot {"Apple":9, "Apricot":5, "Banana":5}
+Received on Apricot_github.com/arcaneiceman/GoVector/capture.Read+0x121_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:21 Apricot
+Apricot {"Apple":9, "Apricot":6, "Banana":5}
+Sending from Apricot_github.com/arcaneiceman/GoVector/capture.Write+0x87_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:33 Apricot
+Apricot {"Apple":13, "Apricot":7, "Banana":7}
+Received on Apricot_github.com/arcaneiceman/GoVector/capture.Read+0x121_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:21 Apricot
+Apricot {"Apple":13, "Apricot":8, "Banana":7}
+Sending from Apricot_github.com/arcaneiceman/GoVector/capture.Write+0x87_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:33 Apricot
+Apricot {"Apple":17, "Apricot":9, "Banana":9}
+Received on Apricot_github.com/arcaneiceman/GoVector/capture.Read+0x121_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:21 Apricot
+Apricot {"Apple":17, "Apricot":10, "Banana":9}
+Sending from Apricot_github.com/arcaneiceman/GoVector/capture.Write+0x87_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:33 Apricot
+Apricot {"Apple":21, "Apricot":11, "Banana":11}
+Received on Apricot_github.com/arcaneiceman/GoVector/capture.Read+0x121_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:21 Apricot
+Apricot {"Apple":21, "Apricot":12, "Banana":11}
+Sending from Apricot_github.com/arcaneiceman/GoVector/capture.Write+0x87_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:33 Apricot
+Apricot {"Apple":25, "Apricot":13, "Banana":13}
+Received on Apricot_github.com/arcaneiceman/GoVector/capture.Read+0x121_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:21 Apricot
+Apricot {"Apple":25, "Apricot":14, "Banana":13}
+Sending from Apricot_github.com/arcaneiceman/GoVector/capture.Write+0x87_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:33 Apricot
+Apricot {"Apple":29, "Apricot":15, "Banana":15}
+Received on Apricot_github.com/arcaneiceman/GoVector/capture.Read+0x121_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:21 Apricot
+Apricot {"Apple":29, "Apricot":16, "Banana":15}
+Sending from Apricot_github.com/arcaneiceman/GoVector/capture.Write+0x87_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:33 Apricot
+Apricot {"Apple":33, "Apricot":17, "Banana":17}
+Received on Apricot_github.com/arcaneiceman/GoVector/capture.Read+0x121_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:21 Apricot
+Apricot {"Apple":33, "Apricot":18, "Banana":17}
+Sending from Apricot_github.com/arcaneiceman/GoVector/capture.Write+0x87_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:33 Apricot
+Apricot {"Apple":37, "Apricot":19, "Banana":19}
+Received on Apricot_github.com/arcaneiceman/GoVector/capture.Read+0x121_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:21 Apricot
+Apricot {"Apple":37, "Apricot":20, "Banana":19}
+Sending from Apricot_github.com/arcaneiceman/GoVector/capture.Write+0x87_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:33 Apricot
+Apricot {"Apple":41, "Apricot":21, "Banana":21}
+Received on Apricot_github.com/arcaneiceman/GoVector/capture.Read+0x121_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:21 Apricot
+Apricot {"Apple":41, "Apricot":22, "Banana":21}
+Sending from Apricot_github.com/arcaneiceman/GoVector/capture.Write+0x87_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:33 Apricot
+Apricot {"Apple":45, "Apricot":23, "Banana":23}
+Received on Apricot_github.com/arcaneiceman/GoVector/capture.Read+0x121_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:21 Apricot
+Apricot {"Apple":45, "Apricot":24, "Banana":23}
+Sending from Apricot_github.com/arcaneiceman/GoVector/capture.Write+0x87_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:33 Apricot
+Apricot {"Apple":49, "Apricot":25, "Banana":25}
+Received on Apricot_github.com/arcaneiceman/GoVector/capture.Read+0x121_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:21 Apricot
+Apricot {"Apple":49, "Apricot":26, "Banana":25}
+Sending from Apricot_github.com/arcaneiceman/GoVector/capture.Write+0x87_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:33 Apricot
+Apricot {"Apple":53, "Apricot":27, "Banana":27}
+Received on Apricot_github.com/arcaneiceman/GoVector/capture.Read+0x121_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:21 Apricot
+Apricot {"Apple":53, "Apricot":28, "Banana":27}
+Sending from Apricot_github.com/arcaneiceman/GoVector/capture.Write+0x87_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:33 Apricot
+Apricot {"Apple":57, "Apricot":29, "Banana":29}
+Received on Apricot_github.com/arcaneiceman/GoVector/capture.Read+0x121_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:21 Apricot
+Apricot {"Apple":57, "Apricot":30, "Banana":29}
+Sending from Apricot_github.com/arcaneiceman/GoVector/capture.Write+0x87_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:33 Apricot
+Apricot {"Apple":61, "Apricot":31, "Banana":31}
+Received on Apricot_github.com/arcaneiceman/GoVector/capture.Read+0x121_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:21 Apricot
+Apricot {"Apple":61, "Apricot":32, "Banana":31}
+Sending from Apricot_github.com/arcaneiceman/GoVector/capture.Write+0x87_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:33 Apricot
+Apricot {"Apple":65, "Apricot":33, "Banana":33}
+Received on Apricot_github.com/arcaneiceman/GoVector/capture.Read+0x121_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:21 Apricot
+Apricot {"Apple":65, "Apricot":34, "Banana":33}
+Sending from Apricot_github.com/arcaneiceman/GoVector/capture.Write+0x87_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:33 Apricot
+Apricot {"Apple":69, "Apricot":35, "Banana":35}
+Received on Apricot_github.com/arcaneiceman/GoVector/capture.Read+0x121_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:21 Apricot
+Apricot {"Apple":69, "Apricot":36, "Banana":35}
+Sending from Apricot_github.com/arcaneiceman/GoVector/capture.Write+0x87_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:33 Apricot
+Apricot {"Apple":73, "Apricot":37, "Banana":37}
+Received on Apricot_github.com/arcaneiceman/GoVector/capture.Read+0x121_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:21 Apricot
+Apricot {"Apple":73, "Apricot":38, "Banana":37}
+Sending from Apricot_github.com/arcaneiceman/GoVector/capture.Write+0x87_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:33 Apricot
+Apricot {"Apple":77, "Apricot":39, "Banana":39}
+Received on Apricot_github.com/arcaneiceman/GoVector/capture.Read+0x121_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:21 Apricot
+Apricot {"Apple":77, "Apricot":40, "Banana":39}
+Sending from Apricot_github.com/arcaneiceman/GoVector/capture.Write+0x87_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:33 Apricot
+Apricot {"Apple":81, "Apricot":41, "Banana":41}
+Received on Apricot_github.com/arcaneiceman/GoVector/capture.Read+0x121_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:21 Apricot
+Apricot {"Apple":81, "Apricot":42, "Banana":41}
+Sending from Apricot_github.com/arcaneiceman/GoVector/capture.Write+0x87_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:33 Apricot
+Apricot {"Apple":85, "Apricot":43, "Banana":43}
+Received on Apricot_github.com/arcaneiceman/GoVector/capture.Read+0x121_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:21 Apricot
+Apricot {"Apple":85, "Apricot":44, "Banana":43}
+Sending from Apricot_github.com/arcaneiceman/GoVector/capture.Write+0x87_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:33 Apricot
+Apricot {"Apple":89, "Apricot":45, "Banana":45}
+Received on Apricot_github.com/arcaneiceman/GoVector/capture.Read+0x121_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:21 Apricot
+Apricot {"Apple":89, "Apricot":46, "Banana":45}
+Sending from Apricot_github.com/arcaneiceman/GoVector/capture.Write+0x87_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:33 Apricot
+Apricot {"Apple":93, "Apricot":47, "Banana":47}
+Received on Apricot_github.com/arcaneiceman/GoVector/capture.Read+0x121_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:21 Apricot
+Apricot {"Apple":93, "Apricot":48, "Banana":47}
+Sending from Apricot_github.com/arcaneiceman/GoVector/capture.Write+0x87_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:33 Apricot
+Apricot {"Apple":97, "Apricot":49, "Banana":49}
+Received on Apricot_github.com/arcaneiceman/GoVector/capture.Read+0x121_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:21 Apricot
+Apricot {"Apple":97, "Apricot":50, "Banana":49}
+Sending from Apricot_github.com/arcaneiceman/GoVector/capture.Write+0x87_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:33 Apricot
+Apricot {"Apple":101, "Apricot":51, "Banana":51}
+Received on Apricot_github.com/arcaneiceman/GoVector/capture.Read+0x121_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:21 Apricot
+Apricot {"Apple":101, "Apricot":52, "Banana":51}
+Sending from Apricot_github.com/arcaneiceman/GoVector/capture.Write+0x87_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:33 Apricot
+Apricot {"Apple":105, "Apricot":53, "Banana":53}
+Received on Apricot_github.com/arcaneiceman/GoVector/capture.Read+0x121_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:21 Apricot
+Apricot {"Apple":105, "Apricot":54, "Banana":53}
+Sending from Apricot_github.com/arcaneiceman/GoVector/capture.Write+0x87_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:33 Apricot
+Apricot {"Apple":109, "Apricot":55, "Banana":55}
+Received on Apricot_github.com/arcaneiceman/GoVector/capture.Read+0x121_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:21 Apricot
+Apricot {"Apple":109, "Apricot":56, "Banana":55}
+Sending from Apricot_github.com/arcaneiceman/GoVector/capture.Write+0x87_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:33 Apricot
+Apricot {"Apple":113, "Apricot":57, "Banana":57}
+Received on Apricot_github.com/arcaneiceman/GoVector/capture.Read+0x121_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:21 Apricot
+Apricot {"Apple":113, "Apricot":58, "Banana":57}
+Sending from Apricot_github.com/arcaneiceman/GoVector/capture.Write+0x87_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:33 Apricot
+Apricot {"Apple":117, "Apricot":59, "Banana":59}
+Received on Apricot_github.com/arcaneiceman/GoVector/capture.Read+0x121_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:21 Apricot
+Apricot {"Apple":117, "Apricot":60, "Banana":59}
+Sending from Apricot_github.com/arcaneiceman/GoVector/capture.Write+0x87_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:33 Apricot
+Apricot {"Apple":121, "Apricot":61, "Banana":61}
+Received on Apricot_github.com/arcaneiceman/GoVector/capture.Read+0x121_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:21 Apricot
+Apricot {"Apple":121, "Apricot":62, "Banana":61}
+Sending from Apricot_github.com/arcaneiceman/GoVector/capture.Write+0x87_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:33 Apricot
+Apricot {"Apple":125, "Apricot":63, "Banana":63}
+Received on Apricot_github.com/arcaneiceman/GoVector/capture.Read+0x121_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:21 Apricot
+Apricot {"Apple":125, "Apricot":64, "Banana":63}
+Sending from Apricot_github.com/arcaneiceman/GoVector/capture.Write+0x87_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:33 Apricot
+Apricot {"Apple":129, "Apricot":65, "Banana":65}
+Received on Apricot_github.com/arcaneiceman/GoVector/capture.Read+0x121_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:21 Apricot
+Apricot {"Apple":129, "Apricot":66, "Banana":65}
+Sending from Apricot_github.com/arcaneiceman/GoVector/capture.Write+0x87_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:33 Apricot
+Apricot {"Apple":133, "Apricot":67, "Banana":67}
+Received on Apricot_github.com/arcaneiceman/GoVector/capture.Read+0x121_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:21 Apricot
+Apricot {"Apple":133, "Apricot":68, "Banana":67}
+Sending from Apricot_github.com/arcaneiceman/GoVector/capture.Write+0x87_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:33 Apricot
+Apricot {"Apple":137, "Apricot":69, "Banana":69}
+Received on Apricot_github.com/arcaneiceman/GoVector/capture.Read+0x121_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:21 Apricot
+Apricot {"Apple":137, "Apricot":70, "Banana":69}
+Sending from Apricot_github.com/arcaneiceman/GoVector/capture.Write+0x87_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:33 Apricot
+Apricot {"Apple":141, "Apricot":71, "Banana":71}
+Received on Apricot_github.com/arcaneiceman/GoVector/capture.Read+0x121_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:21 Apricot
+Apricot {"Apple":141, "Apricot":72, "Banana":71}
+Sending from Apricot_github.com/arcaneiceman/GoVector/capture.Write+0x87_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:33 Apricot
+Apricot {"Apple":145, "Apricot":73, "Banana":73}
+Received on Apricot_github.com/arcaneiceman/GoVector/capture.Read+0x121_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:21 Apricot
+Apricot {"Apple":145, "Apricot":74, "Banana":73}
+Sending from Apricot_github.com/arcaneiceman/GoVector/capture.Write+0x87_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:33 Apricot
+Apricot {"Apple":149, "Apricot":75, "Banana":75}
+Received on Apricot_github.com/arcaneiceman/GoVector/capture.Read+0x121_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:21 Apricot
+Apricot {"Apple":149, "Apricot":76, "Banana":75}
+Sending from Apricot_github.com/arcaneiceman/GoVector/capture.Write+0x87_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:33 Apricot
+Apricot {"Apple":153, "Apricot":77, "Banana":77}
+Received on Apricot_github.com/arcaneiceman/GoVector/capture.Read+0x121_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:21 Apricot
+Apricot {"Apple":153, "Apricot":78, "Banana":77}
+Sending from Apricot_github.com/arcaneiceman/GoVector/capture.Write+0x87_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:33 Apricot
+Apricot {"Apple":157, "Apricot":79, "Banana":79}
+Received on Apricot_github.com/arcaneiceman/GoVector/capture.Read+0x121_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:21 Apricot
+Apricot {"Apple":157, "Apricot":80, "Banana":79}
+Sending from Apricot_github.com/arcaneiceman/GoVector/capture.Write+0x87_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:33 Apricot
+Apricot {"Apple":161, "Apricot":81, "Banana":81}
+Received on Apricot_github.com/arcaneiceman/GoVector/capture.Read+0x121_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:21 Apricot
+Apricot {"Apple":161, "Apricot":82, "Banana":81}
+Sending from Apricot_github.com/arcaneiceman/GoVector/capture.Write+0x87_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:33 Apricot
+Apricot {"Apple":165, "Apricot":83, "Banana":83}
+Received on Apricot_github.com/arcaneiceman/GoVector/capture.Read+0x121_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:21 Apricot
+Apricot {"Apple":165, "Apricot":84, "Banana":83}
+Sending from Apricot_github.com/arcaneiceman/GoVector/capture.Write+0x87_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:33 Apricot
+Apricot {"Apple":169, "Apricot":85, "Banana":85}
+Received on Apricot_github.com/arcaneiceman/GoVector/capture.Read+0x121_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:21 Apricot
+Apricot {"Apple":169, "Apricot":86, "Banana":85}
+Sending from Apricot_github.com/arcaneiceman/GoVector/capture.Write+0x87_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:33 Apricot
+Apricot {"Apple":173, "Apricot":87, "Banana":87}
+Received on Apricot_github.com/arcaneiceman/GoVector/capture.Read+0x121_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:21 Apricot
+Apricot {"Apple":173, "Apricot":88, "Banana":87}
+Sending from Apricot_github.com/arcaneiceman/GoVector/capture.Write+0x87_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:33 Apricot
+Apricot {"Apple":177, "Apricot":89, "Banana":89}
+Received on Apricot_github.com/arcaneiceman/GoVector/capture.Read+0x121_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:21 Apricot
+Apricot {"Apple":177, "Apricot":90, "Banana":89}
+Sending from Apricot_github.com/arcaneiceman/GoVector/capture.Write+0x87_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:33 Apricot
+Apricot {"Apple":181, "Apricot":91, "Banana":91}
+Received on Apricot_github.com/arcaneiceman/GoVector/capture.Read+0x121_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:21 Apricot
+Apricot {"Apple":181, "Apricot":92, "Banana":91}
+Sending from Apricot_github.com/arcaneiceman/GoVector/capture.Write+0x87_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:33 Apricot
+Apricot {"Apple":185, "Apricot":93, "Banana":93}
+Received on Apricot_github.com/arcaneiceman/GoVector/capture.Read+0x121_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:21 Apricot
+Apricot {"Apple":185, "Apricot":94, "Banana":93}
+Sending from Apricot_github.com/arcaneiceman/GoVector/capture.Write+0x87_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:33 Apricot
+Apricot {"Apple":189, "Apricot":95, "Banana":95}
+Received on Apricot_github.com/arcaneiceman/GoVector/capture.Read+0x121_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:21 Apricot
+Apricot {"Apple":189, "Apricot":96, "Banana":95}
+Sending from Apricot_github.com/arcaneiceman/GoVector/capture.Write+0x87_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:33 Apricot
+Apricot {"Apple":193, "Apricot":97, "Banana":97}
+Received on Apricot_github.com/arcaneiceman/GoVector/capture.Read+0x121_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:21 Apricot
+Apricot {"Apple":193, "Apricot":98, "Banana":97}
+Sending from Apricot_github.com/arcaneiceman/GoVector/capture.Write+0x87_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:33 Apricot
+Apricot {"Apple":197, "Apricot":99, "Banana":99}
+Received on Apricot_github.com/arcaneiceman/GoVector/capture.Read+0x121_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:21 Apricot
+Apricot {"Apple":197, "Apricot":100, "Banana":99}
+Sending from Apricot_github.com/arcaneiceman/GoVector/capture.Write+0x87_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:33 Apricot
+Apricot {"Apple":201, "Apricot":101, "Banana":101}
+Received on Apricot_github.com/arcaneiceman/GoVector/capture.Read+0x121_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:21 Apricot
+Apricot {"Apple":201, "Apricot":102, "Banana":101}
+Sending from Apricot_github.com/arcaneiceman/GoVector/capture.Write+0x87_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:33 Apricot
+Apricot {"Apple":205, "Apricot":103, "Banana":103}
+Received on Apricot_github.com/arcaneiceman/GoVector/capture.Read+0x121_/home/stewartgrant/go/src/github.com/arcaneiceman/GoVector/capture/capture.go:21 Apricot
