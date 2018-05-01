@@ -1,6 +1,6 @@
 [![Screenshot](https://bitbucket.org/bestchai/dinv/raw/default/figs/play-demo-video.jpg)](https://www.youtube.com/watch?v=n9fH9ABJ6S4)
 
-A demo video explaining Dinv.
+A demo video explaining DInv.
 
 
 # DInv is a distributed system data invariant detector
@@ -46,11 +46,11 @@ More concretely, DInv analyzes Go programs and can:
 
 DInv is written in [go lang](http://golang.org/) and requires a working installation of [Daikon](http://plse.cs.washington.edu/daikon/). The following instructions are for Ubuntu 14.04.
 
-The version of Go available through the apt package manager is out of date. Please [download go from the offical website](https://golang.org/dl/) and follow the [installation instructions](https://golang.org/doc/install#install) to setup a go workspace. The latest version of Go that DInv is confirmed to work with is `1.6.3`.
+The version of Go available through the apt package manager is out of date. Please [download go from the offical website](https://golang.org/dl/) and follow the [installation instructions](https://golang.org/doc/install#install) to set up a go workspace. The latest version of Go that DInv is confirmed to work with is `1.6.3`.
 
 (Note that DInv cannot be compiled using gccgo. Running DInv with gccgo will cause spurious errors.)
 
-DInv is built to run within a standard go workspace environment. Go workspaces provide a mechanism for importing, and running the source code of bitbucket and github repositories. This interface is used throughout the installation, and is necessary for the instrumentation process. For detailed instructions on how to configure a go workspace see [how to write go code](http://golang.org/doc/code.html#Organization).
+DInv is built to run within a standard go workspace environment. Go workspaces provide a mechanism for importing and running the source code of bitbucket and github repositories. This interface is used throughout the installation, and is necessary for the instrumentation process. For detailed instructions on how to configure a go workspace see [how to write go code](http://golang.org/doc/code.html#Organization).
 
 The `GOPATH` environment variable is a reference to the root of your go workspace. This variable must be set to use both the `go get` instruction, as well as our example programs.
 
@@ -64,11 +64,11 @@ To clone the repository run the following commands
 
 `hg clone https://bitbucket.org/bestchai/dinv`
 
-For a quick start to using Dinv check out out [tutorial](./TUTORIAL.md)
+For a quick start to using DInv check out the [tutorial](./TUTORIAL.md)
 
 ## Dependencies
 
-Dinv depends on a number of remote repositories, you can install these by running `dependencies.sh`:
+DInv depends on a number of remote repositories, you can install these by running `dependencies.sh`:
 
  * github.com/godoctor/godoctor/analysis/cfg
  * github.com/arcaneiceman/GoVector/govec/vclock
@@ -87,7 +87,7 @@ To infer invariants on the trace files produced by DInv
 After you install the above dependencies, install DInv by running:
 `go install bitbucket.org/bestchai/dinv`
 
-The dinv binary will be generated at `$GOPATH/bin/dinv`.
+The DInv binary will be generated at `$GOPATH/bin/dinv`.
 
 
 
@@ -127,10 +127,10 @@ code can be processed by the instrumenter. Instrumentation occurs at
 the directory level. All source files within the directory will be
 analyzed for annotations. The result of instrumentation is two
 directories. If `foo` was the directory given to the instrumenter, the
-result would be `foo` and `foo_orig`. `foo_orig` Contains the original
+result would be `foo` and `foo_orig`. `foo_orig` contains the original
 files, and `foo` contains instrumented code.
 
-Running instrumented code produces the logs dinv uses to detect
+Running instrumented code produces the logs DInv uses to detect
 invariants. Instrumented directories retain the name of the original,
 preserving external dependencies. You should be able to run
 instrumented code, using identical methods for uninstrumented code.
@@ -166,7 +166,7 @@ The variables logged by dump code are only those which are in scope, and have th
     10   sendMsg(Pack(response))
 ```
 
-In this example the variables collected by the dump annotation include {`buf`,`msg`,`response`}. The variable `foo` is not collected because it's value is not affected by the sending function, and its value does not directly affect the value of `response`. For more information checkout the [dump wiki entry](https://bitbucket.org/bestchai/dinv/wiki/Dump%20Annotations).
+In this example the variables collected by the dump annotation include {`buf`,`msg`,`response`}. The variable `foo` is not collected because its value is not affected by the sending function, and its value does not directly affect the value of `response`. For more information check out the [dump wiki entry](https://bitbucket.org/bestchai/dinv/wiki/Dump%20Annotations).
 
 
 ### Wrap messages with vector timestamps (Step 2)
@@ -240,7 +240,7 @@ server.go
        1 message := instrumenter.Unpack ( buffer )
 ```
 
-For more information on the runtime api checkout `/instrumenter/api`
+For more information on the runtime api, check out `/instrumenter/api`
 
 ### Run the instrumenter (Step 3)
 --------------------------------------
@@ -255,7 +255,7 @@ Instrumentation runs at the directory level. Running `dinv -i foo` produces:
 ## Run system and analyze its logs ( Part 2 )
 ---------------
 
-Dinv mines invariants by analyzing the logs generated by instrumented code. Instrumented code retains external dependences and can be run like the original code. The product of running instrumented code is a set of log files for each host in the system. The logs contain vector clocks maintained over the course of the execution, along with variables, and their values at the `//@dump` annotations. The vector clocks are used to model the history of the execution. By examining the execution total orderings between host communication can be determined. Program points logged in these total orderings are merged together. The merged points are grouped together by both host and line number the points were collected on. Variable values from these groups are transcribed into Daikon readable trace files. The last step of the execution is to run Daikon on the generated trace files, to infer invariants on their values.
+DInv mines invariants by analyzing the logs generated by instrumented code. Instrumented code retains external dependences and can be run like the original code. The product of running instrumented code is a set of log files for each host in the system. The logs contain vector clocks maintained over the course of the execution, along with variables, and their values at the `//@dump` annotations. The vector clocks are used to model the history of the execution. By examining the execution, total orderings between host communication can be determined. Program points logged in these total orderings are merged together. The merged points are grouped together by both host and line number the points were collected on. Variable values from these groups are transcribed into Daikon readable trace files. The last step of the execution is to run Daikon on the generated trace files to infer invariants on their values.
 
 ### Run instrumented code ( Step 4 )
 ---------------------------------------------
@@ -273,10 +273,10 @@ code. The difference is insturmented code generates logs. The logs are written t
 ####GoVector logs
 
 GoVector logs are generated with the format
-`packagename_timestampId_log.Log.txt` the logs contain a
+`packagename_timestampId_log.Log.txt` and the logs contain a
 [ShiViz](http://bestchai.bitbucket.org/shiviz/) log generated on the host with a corresponding timestamp.
 These entries in these logs are generated by calls to the `Pack()` and `Unpack()`
-methods. Log entries are of the form.
+methods. Log entries are of the form
 
     SelfHostID { "hostID:time", ..., "hostID:time" }
     Event Message - filename:lineOfCode SelfHostID
@@ -293,7 +293,7 @@ Two logs are generated for each host of the form
  * PackageName-HostID-Encoded.txt
  * PackageName-HostID-Readable.txt
 
-The readable log is a debugging tool and is not used again by Dinv. The log entries have the format
+The readable log is a debugging tool and is not used again by DInv. The log entries have the format
 
     hostId_package_filename_lineNumber
     {"hostid":clockvalue, ... }
@@ -305,7 +305,7 @@ The encoded log used by the log merger in the next step. Conceptually the encode
 ### Merge logs ( Step 5 )
 ---------------------------
 
-Post execution independent logging files have been written by each
+Post-execution independent logging files have been written by each
 instrumented host. In order to detect data invariants on the logged
 variables, all the logs must be analysed together. The log merging
 process tracks vector clocks logged along with variables. The
@@ -317,22 +317,22 @@ for invariant detection. The output of the logmerger is a set of
 trace files uniquely identified by the consistent distributed point
 they represent.
 
-Merging logs is hands off when compared with instrumenting. In order
-to merge the logs accurately all of the encoded program point logs, and
+Merging logs is hands-off when compared with instrumenting. In order
+to merge the logs accurately, all of the encoded program point logs and
 GoVector logs generated during the execution of the instrumented code
 must be given to the logmerger.
 
-the logmerger expects as a argument the list of all GoVec logs and encoded point logs written during execution. The order of the arguments does not matter, however the inclusion of each file is necessary. In the case of a missing log an error will be thrown and the merging process terminated.
+The logmerger expects as a argument the list of all GoVec logs and encoded point logs written during execution. The order of the arguments does not matter; however, the inclusion of each file is necessary. In the case of a missing log an error will be thrown and the merging process terminated.
 
 
-as an example consider the merging of logs collected from two host
+As an example consider the merging of logs collected from two host
 client and server
 
 `dinv -logmerger client-clientidEncoded.txt server-serveridEncoded.txt clientid.log-Log.txt serverid.log-Log.txt`
 
 This example is verbose, for the sake of explanation.
 
-The simplest way to execute the logmerger, is to move all generated
+The simplest way to execute the logmerger is to move all generated
 logs to a single directory and run
 
 `dinv -l *Encoded.txt *Log.txt`
@@ -342,8 +342,8 @@ logs to a single directory and run
 
 
 The output of the logmerger is a set of dtrace files. The dtrace files
-have names corresponding to the program points where the values they track have been
-extracted from. An individual point has a name of the form
+have names corresponding to the program points from where the values they track have been
+extracted. An individual point has a name of the form
 
 `point` = `_hostid_packageName_FileName_lineNumber` 
 
@@ -381,7 +381,7 @@ a directory.
 
 The examples directory contains a number of small distributed systems
 that have been instrumented with DInv's interface. Using DInv is a
-multi step procedure. Each of the example programs is paired with a
+multi-step procedure. Each of the example programs is paired with a
 script `run.sh`. The script oversees the execution of each stage, and
 pipes each steps output into its successor. The scripts have a
 standard interface
@@ -392,7 +392,7 @@ standard interface
     + Options :
         * -d : dirty run, the generated files at each stage are
       not remove after execution
-        * -c : cleanup generated files
+        * -c : clean up generated files
 
 ### Hello DInv
 Hello DInv is our introductory example program, in which a client
@@ -422,24 +422,24 @@ server which adds them, and sends back the results as the variable
 
 ### Linear
 
-The linear example program is located in `exampels/linear`. The
+The linear example program is located in `examples/linear`. The
 execution of the program is scripted in `run.sh`. In order to run the
 script, use the following command.
 
     DinvDirectory/examples/linear/run.sh
 
-Linear is a three host system. The hosts are `client`, `coeff`, and
-`linn`. The hosts only pass messages with their neighbours IE `client
+Linear is a three host-system. The hosts are `client`, `coeff`, and
+`linn`. The hosts only pass messages with their neighbours, i.e. `client
 <--> coeff <--> linn`.
 
-Similar to the sum system the `client` randomly generates two terms,
+Similar to the sum system, the `client` randomly generates two terms,
 packages them, and sends them to its neighbour `coeff`. `coeff`
 generates a coefficient for the first term, then packages it along
 with the first two terms and sends to `linn`. `linn` calculates the
 linear equation `linn = coeff * term1 + term2`. The variables `sum` is
 propagated back through `coeff` to the `client` host.
 
-Detected invariant include:
+Detected invariants include
 
     linn > coeff
     linn > term1
@@ -455,7 +455,7 @@ Dinv has a set of command line arguments that can be broken into 3 categories
 
 ## Instrumenter dinv - i
 
-The `-i` argument specifies the instrumenter, valid proceding arguments are as follows
+The `-i` argument specifies the instrumenter; valid proceding arguments are as follows
 
  * `-file` specifies a file for insturmentation `dinv -i -file=example.go`
  * `-dir` specifies a directory for instrumentation `dinv -i -dir=exampleDir`
@@ -464,7 +464,7 @@ The `-i` argument specifies the instrumenter, valid proceding arguments are as f
 
 ## LogMerger dinv -l
 
-The `-l` argument specifies the log merger, the following arguments should be followed with a complete list of shiviz, and encoded log files from an execution.
+The `-l` argument specifies the log merger; the following arguments should be followed with a complete list of shiviz, and encoded log files from an execution.
 
  * `-plan` speficies the plan to use while merging logs (default is totally ordered cuts) `dinv -l -plan="TOLN" files`
  * `-sample` the sample rate of consistat cuts to be analyzed (default 100%) `dinv -l -sample=50 files`
