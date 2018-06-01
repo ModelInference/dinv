@@ -200,7 +200,7 @@ func InstrumentCalls(p *programslicer.ProgramWrapper, pnum, snum int, netConns m
 	})
 	//if code was added, add the apropriate import
 	if injected {
-		astutil.AddImport(p.Fset, p.Packages[pnum].Sources[snum].Comments, "github.com/DistributedClocks/GoVector/capture")
+		astutil.AddImport(p.Fset, p.Packages[pnum].Sources[snum].Comments, "bitbucket.org/bestchai/dinv/capture")
 	}
 
 }
