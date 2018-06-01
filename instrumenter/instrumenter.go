@@ -23,7 +23,7 @@ import (
 	"strings"
 
 	"bitbucket.org/bestchai/dinv/programslicer"
-	"github.com/arcaneiceman/GoVector/capture"
+	"bitbucket.org/bestchai/dinv/capture"
 	"golang.org/x/tools/go/ast/astutil"
 )
 
