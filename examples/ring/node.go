@@ -5,7 +5,7 @@ import (
 	"encoding/binary"
 	"flag"
 	"fmt"
-	"github.com/arcaneiceman/GoVector/capture"
+	"bitbucket.org/bestchai/dinv/capture"
 	"log"
 	"net"
 	"os"

@@ -8,7 +8,7 @@ import (
 
 	"bitbucket.org/bestchai/dinv/dinvRT"
 
-	"github.com/arcaneiceman/GoVector/capture"
+	"bitbucket.org/bestchai/dinv/capture"
 )
 
 const addr = ":9090"
