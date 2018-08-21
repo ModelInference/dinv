@@ -71,7 +71,7 @@ For a quick start to using DInv check out the [tutorial](./TUTORIAL.md)
 DInv depends on a number of remote repositories, you can install these by running `dependencies.sh`:
 
  * github.com/godoctor/godoctor/analysis/cfg
- * github.com/arcaneiceman/GoVector/govec/vclock
+ * github.com/DistirbutedClocks/GoVector/govec/vclock
  * github.com/willf/bitset
  * golang.org/x/tools/go/loader
  * golang.org/go/types
