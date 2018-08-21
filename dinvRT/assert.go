@@ -7,6 +7,8 @@ import (
 	"reflect"
 	"strings"
 	"time"
+
+	"github.com/DistributedClocks/GoVector/govec"
 )
 
 // ============================================= CONST =============================================
@@ -353,7 +355,7 @@ func InitDistributedAssert(addr string, assertPeers []string, processName string
 	} else if os.Getenv("DINV_ASSERT_LISTEN") != "" {
 		address = os.Getenv("DINV_ASSERT_LISTEN")
 	} else {
-		goVecLogger.LogLocalEvent("Cannot Initalize Assert Address Dying!")
+		goVecLogger.LogLocalEvent("Cannot Initalize Assert Address Dying!", govec.GetDefaultLogOptions())
 		os.Exit(1)
 	}
 	//initalize assert peers
@@ -362,7 +364,7 @@ func InitDistributedAssert(addr string, assertPeers []string, processName string
 	} else if os.Getenv("DINV_ASSERT_PEERS") != "" {
 		peers = strings.Split(os.Getenv("DINV_ASSERT_PEERS"), ",")
 	} else {
-		goVecLogger.LogLocalEvent("Cannot parse assert peers dying!!")
+		goVecLogger.LogLocalEvent("Cannot parse assert peers dying!!", govec.GetDefaultLogOptions())
 		os.Exit(1)
 	}
 

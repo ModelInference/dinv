@@ -17,7 +17,7 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/arcaneiceman/GoVector/govec/vclock"
+	"github.com/DistributedClocks/GoVector/govec/vclock"
 )
 
 //VectorClockArraysFromLogs extracts the set of vector clocks

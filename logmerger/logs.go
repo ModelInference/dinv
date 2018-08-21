@@ -13,7 +13,7 @@ import (
 	"regexp"
 	"strings"
 
-	"github.com/arcaneiceman/GoVector/govec/vclock"
+	"github.com/DistributedClocks/GoVector/govec/vclock"
 )
 
 const HOSTNAMEREGEXP = "A-Za-z0-9_:."

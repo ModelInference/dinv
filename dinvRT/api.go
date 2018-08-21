@@ -231,7 +231,7 @@ func logPairList(pairs []logmerger.NameValuePair, did string) {
 	point := logmerger.Point{
 		Dump:               pairs,
 		Id:                 dumpID,
-		VectorClock:        GetLogger().GetCurrentVC(),
+		VectorClock:        GetLogger().GetCurrentVC().Bytes(),
 		CommunicationDelta: 0,
 	}
 	fmt.Println(pairs)
@@ -324,7 +324,7 @@ func Pack(msg interface{}) []byte {
 		dump := getHashedId()
 		loggedMsg = "Sending from " + dump.String() + " " + id
 	}
-	buf := goVecLogger.PrepareSend(loggedMsg, msg)
+	buf := goVecLogger.PrepareSend(loggedMsg, msg, govec.GetDefaultLogOptions())
 	//log after updating vector clock
 	log(msg, ls.SEND, loggedMsg)
 	return buf
@@ -334,7 +334,7 @@ func Pack(msg interface{}) []byte {
 //to be logged
 func PackM(msg interface{}, info string) []byte {
 	initDinv("")
-	buf := goVecLogger.PrepareSend(info, msg)
+	buf := goVecLogger.PrepareSend(info, msg, govec.GetDefaultLogOptions())
 	//log after updating vector clock
 	log(msg, ls.SEND, info)
 	return buf
@@ -353,21 +353,21 @@ func Unpack(msg []byte, pack interface{}) {
 		dump := getHashedId()
 		loggedMsg = "Received on " + dump.String() + " " + id
 	}
-	goVecLogger.UnpackReceive(loggedMsg, msg, pack)
+	goVecLogger.UnpackReceive(loggedMsg, msg, pack, govec.GetDefaultLogOptions())
 	log(pack, ls.REC, loggedMsg)
 	return
 }
 
 func UnpackM(msg []byte, pack interface{}, info string) {
 	initDinv("")
-	goVecLogger.UnpackReceive(info, msg, pack)
+	goVecLogger.UnpackReceive(info, msg, pack, govec.GetDefaultLogOptions())
 	log(pack, ls.REC, info)
 	return
 }
 
 func Local(msg string) {
 	initDinv("")
-	goVecLogger.LogLocalEvent(msg)
+	goVecLogger.LogLocalEvent(msg, govec.GetDefaultLogOptions())
 	log(nil, ls.LOCAL, msg) //logVarStore()
 }
 
@@ -404,21 +404,6 @@ func GetId() string {
 	return id
 }
 
-//CustomEncoderDecoder allows users to specify the functions that are
-//used to encode or decode their messages. In cases where message
-//types are not basic Go types this can be useful
-//encoder is a function taking an interface as an argument, and
-//returning that interface as an encoded array of bytes, return nil if
-//the interface is not encodeable
-//decoder is encoders counterpart, taking an encoded array of bytes
-//and returning the underlying go object as an interface. The returned
-//value must by type cast before it can be used
-func CustomEncoderDecoder(encoder func(interface{}) ([]byte, error), decoder func([]byte, interface{}) error) {
-	initDinv("")
-	gvLogger := GetLogger()
-	gvLogger.SetEncoderDecoder(encoder, decoder)
-}
-
 //initDinv instatiates a logger for the running process, and generates
 //an id for it. This method is called only once per logger, and
 //writes the first log.
@@ -436,7 +421,7 @@ func initDinv(hostName string) {
 		} else {
 			id = fmt.Sprintf("%d", time.Now().Nanosecond())
 		}
-		goVecLogger = govec.InitGoVector(id, id+".log")
+		goVecLogger = govec.InitGoVector(id, id+".log", govec.GetDefaultConfig())
 		//Log everything locally to a file
 		if !remotelogging {
 			encodedLogname := fmt.Sprintf("%sEncoded.txt", id)
@@ -561,7 +546,7 @@ func CreatePoint(vars []interface{}, varNames []string, id string, logger *govec
 			dumps = append(dumps, dump)
 		}
 	}
-	point := logmerger.Point{dumps, hashedId, logger.GetCurrentVC(), 0}
+	point := logmerger.Point{dumps, hashedId, logger.GetCurrentVC().Bytes(), 0}
 	return point
 }
 
@@ -593,7 +578,7 @@ func log(msg interface{}, eventType int, info string) {
 		}
 		//TODO figure out a better way to do this than sorting is it even nessisary with JSON?
 		sort.Sort(ByName(state))
-		sclock := goVecLogger.GetCurrentVC()
+		sclock := goVecLogger.GetCurrentVC().Bytes()
 		sstate, err := json.Marshal(state)
 		if err != nil {
 			l.Fatal(err)

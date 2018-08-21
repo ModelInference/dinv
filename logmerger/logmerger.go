@@ -21,7 +21,7 @@ import (
 	"sort"
 	"strconv"
 
-	"github.com/arcaneiceman/GoVector/govec/vclock"
+	"github.com/DistributedClocks/GoVector/govec/vclock"
 )
 
 //specifies how the program points should be merged. The merger
