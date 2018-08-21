@@ -4,7 +4,7 @@ import (
 	"bitbucket.org/bestchai/dinv/dinvRT"
 	"encoding/binary"
 	"fmt"
-	"github.com/arcaneiceman/GoVector/capture"
+	"bitbucket.org/bestchai/dinv/capture"
 	"math/rand"
 	"net"
 	"os"

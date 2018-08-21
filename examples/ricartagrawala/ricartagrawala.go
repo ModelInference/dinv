@@ -6,7 +6,7 @@ import (
 	"encoding/gob"
 	"flag"
 	"fmt"
-	"github.com/arcaneiceman/GoVector/capture"
+	"bitbucket.org/bestchai/dinv/capture"
 	"io"
 	"log"
 	"math/rand"
