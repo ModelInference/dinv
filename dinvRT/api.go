@@ -16,11 +16,44 @@ import (
 
 	"bitbucket.org/bestchai/dinv/logmerger"
 	"github.com/DistributedClocks/GoVector/govec"
-	ls "github.com/wantonsolutions/dara/servers/logserver"
 
 	l "log"
 	"net/rpc"
 )
+
+const (
+	NEW_SESSION_TIMEOUT = 10
+	SEND                = iota
+	REC
+	LOCAL
+	TERM
+)
+
+//Log id is a unique identifier for each logged trace
+type LogId struct {
+	Project string
+	Session string
+	Node    string
+}
+
+//SE log is a state event log, each state is paired with an event
+type SElog struct {
+	Type      int
+	Message   []byte
+	VC        []byte
+	State     []byte
+	Event     []byte
+	DumpTrace []byte
+}
+
+/* types for remote logging */
+type PostReq struct {
+	Id  LogId
+	Log SElog
+}
+type PostReply struct {
+	Id LogId
+}
 
 //enviornment variables
 const (
@@ -51,7 +84,7 @@ var (
 	initMutex *sync.Mutex = &sync.Mutex{}
 
 	//remote logging data
-	rid              ls.LogId // discriptive log for communicating with a logging server
+	rid              LogId // discriptive log for communicating with a logging server
 	logStoreLocation string   //ip port of log store //specifed as an enviornment var "
 	rpcClient        *rpc.Client
 )
@@ -326,7 +359,7 @@ func Pack(msg interface{}) []byte {
 	}
 	buf := goVecLogger.PrepareSend(loggedMsg, msg, govec.GetDefaultLogOptions())
 	//log after updating vector clock
-	log(msg, ls.SEND, loggedMsg)
+	log(msg, SEND, loggedMsg)
 	return buf
 }
 
@@ -336,7 +369,7 @@ func PackM(msg interface{}, info string) []byte {
 	initDinv("")
 	buf := goVecLogger.PrepareSend(info, msg, govec.GetDefaultLogOptions())
 	//log after updating vector clock
-	log(msg, ls.SEND, info)
+	log(msg, SEND, info)
 	return buf
 }
 
@@ -354,21 +387,21 @@ func Unpack(msg []byte, pack interface{}) {
 		loggedMsg = "Received on " + dump.String() + " " + id
 	}
 	goVecLogger.UnpackReceive(loggedMsg, msg, pack, govec.GetDefaultLogOptions())
-	log(pack, ls.REC, loggedMsg)
+	log(pack, REC, loggedMsg)
 	return
 }
 
 func UnpackM(msg []byte, pack interface{}, info string) {
 	initDinv("")
 	goVecLogger.UnpackReceive(info, msg, pack, govec.GetDefaultLogOptions())
-	log(pack, ls.REC, info)
+	log(pack, REC, info)
 	return
 }
 
 func Local(msg string) {
 	initDinv("")
 	goVecLogger.LogLocalEvent(msg, govec.GetDefaultLogOptions())
-	log(nil, ls.LOCAL, msg) //logVarStore()
+	log(nil, LOCAL, msg) //logVarStore()
 }
 
 //Initalize is an optional call for naming hosts uniquely based on a
@@ -589,12 +622,12 @@ func log(msg interface{}, eventType int, info string) {
 		traceBytes := trace.Marshal()
 		trace.Reset()
 		//turn into NV pair list
-		log := ls.SElog{Type: eventType, Message: []byte(info), VC: sclock, State: sstate, Event: sevent, DumpTrace: traceBytes}
+		log := SElog{Type: eventType, Message: []byte(info), VC: sclock, State: sstate, Event: sevent, DumpTrace: traceBytes}
 		if err != nil {
 			l.Fatal(err)
 		}
-		request := ls.PostReq{Id: rid, Log: log}
-		resp := ls.PostReply{}
+		request := PostReq{Id: rid, Log: log}
+		resp := PostReply{}
 		rpcClient.Call("LogStore.Log", request, &resp)
 		//l.Println(resp)
 		//TODO Handel errors
