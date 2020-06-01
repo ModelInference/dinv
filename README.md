@@ -1,11 +1,22 @@
-[![Screenshot](https://bitbucket.org/bestchai/dinv/raw/default/figs/play-demo-video.jpg)](https://www.youtube.com/watch?v=n9fH9ABJ6S4)
-
-A demo video explaining DInv.
-
-
 # DInv is a distributed system data invariant detector
 
+[*A demo video explaining DInv*](https://www.youtube.com/watch?v=n9fH9ABJ6S4)
+
 Distributed system state is not easily accessible and must be pieced together from the state at the individual hosts. Developers have few tools to help them extract, check, and reason about distributed state.
+
+The DInv project is described in a published paper:
+
+[*Inferring and Asserting Distributed System Invariants*](https://www.cs.ubc.ca/~bestchai/papers/dinv-icse18.pdf). Stewart Grant, Hendrik Cech, Ivan Beschastnikh. ICSE 2018
+```
+@inproceedings{Grant2018,
+  author    = {Grant, Stewart and Cech, Hendrik and Beschastnikh, Ivan},
+  title     = {{Inferring and Asserting Distributed System Invariants}},
+  year      = {2018},
+  url       = {https://doi.org/10.1145/3180155.3180199},
+  booktitle = {Proceedings of the 40th International Conference on Software Engineering (ICSE)},
+  pages     = {1149–1159},
+}
+```
 
 DInv is a suite of tools that can (1) semi-automatically detect distributed state, and (2) infer data invariants over distributed state.
 
